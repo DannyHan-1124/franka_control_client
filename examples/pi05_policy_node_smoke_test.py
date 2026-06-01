@@ -35,7 +35,7 @@ def main() -> None:
     obs_pub = pyzlc.Publisher(args.obs_topic)
     action_sub = LatestMsgSubscriber(args.action_topic, wait_for_first_message=False)
 
-    image = np.zeros((224, 224, 3), dtype=np.uint8)
+    image = np.zeros((224, 224, 3), dtype=np.uint8).tolist()
     obs = {
         "observation.images.base_0_rgb": image,
         "observation.images.left_wrist_0_rgb": image,

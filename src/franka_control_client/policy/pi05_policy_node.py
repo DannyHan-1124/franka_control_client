@@ -14,7 +14,7 @@ import torch
 from lerobot.configs.train import TrainPipelineConfig
 from lerobot.policies.factory import make_policy, make_pre_post_processors
 from lerobot.utils.random_utils import set_seed
-
+from lerobot.datasets.lerobot_dataset import LeRobotDatasetMetadata
 
 @dataclass
 class Pi05NodeConfig:
@@ -77,19 +77,33 @@ class Pi05PolicyNode:
         )
 
     def _load_policy_stack(self):
+        ds_meta = None
+        if self.cfg.dataset_path:
+            ds_meta = LeRobotDatasetMetadata(
+                repo_id=getattr(self.train_cfg.dataset, "repo_id", None),
+                root=self.cfg.dataset_path,
+            )
+
         policy = make_policy(
             cfg=self.train_cfg.policy,
             env_cfg=None,
-            ds_meta=None,
+            ds_meta=ds_meta,
             rename_map=getattr(self.train_cfg, "rename_map", None),
         )
+    
         policy.eval()
-        policy.to(self.cfg.device)
+
+        device = self.cfg.device
+        if device == "cuda" and not torch.cuda.is_available():
+            pyzlc.info("CUDA unavailable; falling back to CPU")
+            device = "cpu"
+
+        policy.to(device)
 
         preprocessor, postprocessor = make_pre_post_processors(
             policy_cfg=self.train_cfg.policy,
             pretrained_path=self.train_cfg.policy.pretrained_path,
-            preprocessor_overrides={"device_processor": {"device": self.cfg.device}},
+            preprocessor_overrides={"device_processor": {"device": device}},
         )
         pyzlc.info(f"Pi0.5 policy loaded on {self.cfg.device}")
         return policy, preprocessor, postprocessor
