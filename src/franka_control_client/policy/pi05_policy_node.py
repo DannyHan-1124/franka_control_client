@@ -109,6 +109,7 @@ class Pi05PolicyNode:
         return policy, preprocessor, postprocessor
 
     def _on_observation(self, msg: Dict[str, Any]) -> None:
+        # print(f"Received observation keys: {list(msg.keys())}", flush=True)
         self._latest_obs = msg
 
     def _get_expected_image_shapes(self) -> dict[str, tuple[int, int, int]]:
@@ -158,16 +159,7 @@ class Pi05PolicyNode:
 
     def _build_observation(self, obs_msg: Dict[str, Any]) -> Dict[str, Any]:
         state = np.asarray(obs_msg["observation.state"], dtype=np.float32).reshape(1, -1)
-        if self._expected_state_dim is not None and state.shape[-1] != self._expected_state_dim:
-            if state.shape[-1] > self._expected_state_dim:
-                state = state[:, : self._expected_state_dim]
-            else:
-                state = np.pad(
-                    state,
-                    ((0, 0), (0, self._expected_state_dim - state.shape[-1])),
-                    mode="constant",
-                )
-
+        
         observation: Dict[str, Any] = {
             "observation.state": torch.from_numpy(state),
         }

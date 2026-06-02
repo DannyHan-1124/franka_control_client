@@ -1,12 +1,12 @@
 python -m franka_control_client.policy.pi05_policy_node \
     --checkpoint_path /home/jjiang/utphd/pretrained_model \
     --dataset_path /home/jjiang/jing/dataset/lerobot/cylinder_full \
-    --device cuda \
+    --device cpu \
     --policy_dtype bfloat16 \
     --obs_topic pi05/observation \
     --action_topic pi05/action \
     --fps 20 \
     --default_task "Put the yellow block on the blue block." \
-    --pyzlc_host 0.0.0.0 \
+    --pyzlc_host 127.0.0.1 \
     --pyzlc_group_name DroidGroup \
     --pyzlc_group_port 7730
