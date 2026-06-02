@@ -121,6 +121,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.policy.send_observation(self._build_observation())
 
         action_msg = self.policy.current_action
+        pyzlc.info(f"Received policy action: {action_msg}")
         if action_msg is not None:
             timestamp = float(action_msg["timestamp"])
             if timestamp != self._last_action_timestamp:
@@ -149,13 +150,23 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _stop_infering(self) -> None:
         super()._stop_infering()
 
+    def _reset_arm(self) -> None:
+        self._ui_console.log("Resetting robot arm position...")
+        try:
+            self.control_pair.go_home()
+            time.sleep(3.0)
+            self.control_pair.reset_action()
+            self._ui_console.log("Robot arm reset to home position.")
+        except Exception as exc:
+            self._ui_console.log(f"Failed to reset arm: {exc}")
+
     def _build_observation(self) -> Dict[str, Any]:
         blank = np.zeros((IMAGE_SIZE[1], IMAGE_SIZE[0], 3), dtype=np.uint8)
         return {
-            "observation.images.base_0_rgb": self._capture_rgb(self.static_cam),
-            "observation.images.left_wrist_0_rgb": self._capture_rgb(self.wrist_cam),
-            "observation.images.right_wrist_0_rgb": blank,
-            "observation.images.empty_camera_0": blank,
+            "observation.images.base_0_rgb": _encode_rgb_image(self._capture_rgb(self.static_cam)),
+            "observation.images.left_wrist_0_rgb": _encode_rgb_image(self._capture_rgb(self.wrist_cam)),
+            "observation.images.right_wrist_0_rgb": _encode_rgb_image(blank),
+            "observation.images.empty_camera_0": _encode_rgb_image(blank),
             "observation.state": self._build_state_vector().tolist(),
             "task": self.task,
         }
@@ -217,6 +228,19 @@ def _extract_ee_pose(arm_state: Dict[str, Any]) -> np.ndarray:
     pos = transform[:3, 3].astype(np.float32)
     quat = _rotation_matrix_to_quat_xyzw(transform[:3, :3]).astype(np.float32)
     return np.concatenate([pos, quat])
+
+
+def _encode_rgb_image(image: np.ndarray) -> Dict[str, Any]:
+    rgb = np.ascontiguousarray(image, dtype=np.uint8)
+    if rgb.ndim != 3:
+        raise ValueError(f"Expected RGB image with 3 dimensions, got {rgb.shape}")
+    h, w, c = rgb.shape
+    return {
+        "height": int(h),
+        "width": int(w),
+        "channels": int(c),
+        "rgb_data": rgb.tobytes(),
+    }
 
 
 def _rotation_matrix_to_quat_xyzw(matrix: np.ndarray) -> np.ndarray:

@@ -16,6 +16,7 @@ DEFAULT_CONTROL_HZ: float = 100.0
 GRIPPER_DEADBAND: float = 1e-3
 GRIPPER_SPEED: float = 0.7
 GRIPPER_FORCE: float = 0.3
+DEFAULT_POSITION = (0.0, 0.0, 0.0, -2.15, 0.0, 2.15, 0.0)
 
 
 class CartesianPolicyPandaRobotiqControlPair(ControlPair):
@@ -60,6 +61,18 @@ class CartesianPolicyPandaRobotiqControlPair(ControlPair):
 
     def control_reset(self) -> None:
         self.panda_arm.set_franka_arm_control_mode(ControlMode.CartesianImpedance)
+
+    def control_rest(self) -> None:
+        self.control_reset()
+
+    def go_home(self) -> None:
+        self.panda_arm.move_franka_arm_to_joint_position(DEFAULT_POSITION)
+        self.gripper.send_grasp_command(
+            position=0.0,
+            speed=GRIPPER_SPEED,
+            force=GRIPPER_FORCE,
+            blocking=True,
+        )
 
     def control_step(self) -> None:
         action = self._get_latest_action()

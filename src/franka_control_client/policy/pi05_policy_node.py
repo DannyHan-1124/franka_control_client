@@ -109,7 +109,7 @@ class Pi05PolicyNode:
         return policy, preprocessor, postprocessor
 
     def _on_observation(self, msg: Dict[str, Any]) -> None:
-        # print(f"Received observation keys: {list(msg.keys())}", flush=True)
+        print(f"Received observation keys: {list(msg.keys())}", flush=True)
         self._latest_obs = msg
 
     def _get_expected_image_shapes(self) -> dict[str, tuple[int, int, int]]:

@@ -56,8 +56,8 @@ def main() -> None:
 
     follower = PandaRobotiq(
         "PandaRobotiq",
-        RemotePandaArm(args.robot_name),
-        RemoteRobotiqGripper(args.robot_name),
+        RemotePandaArm("FrankaPanda"),
+        RemoteRobotiqGripper("FrankaPanda"),
     )
     control_pair = CartesianPolicyPandaRobotiqControlPair(
         follower.panda_arm,
