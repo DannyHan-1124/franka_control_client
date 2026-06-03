@@ -3,6 +3,7 @@ from __future__ import annotations
 import time
 from typing import TypedDict, Optional, Dict, Any
 import pyzlc
+import zmq
 
 from ..core.remote_device import RemoteDevice
 from ..core.latest_msg_subscriber import LatestMsgSubscriber
@@ -64,3 +65,57 @@ class RemotePolicy(RemoteDevice):
     def send_observation(self, obs: PolicyObservationMsg) -> None:
         """Send observation."""
         self.obs_publisher.publish(obs)
+
+
+class DirectZmqPolicy(RemoteDevice):
+    """Synchronous policy client using one explicit ZeroMQ REQ/REP endpoint."""
+
+    def __init__(
+        self,
+        device_name: str,
+        endpoint: str,
+        timeout_ms: int = 30000,
+    ) -> None:
+        super().__init__(device_name)
+        self.endpoint = endpoint
+        self.timeout_ms = timeout_ms
+        self._ctx = zmq.Context.instance()
+        self._socket = self._ctx.socket(zmq.REQ)
+        self._socket.setsockopt(zmq.LINGER, 0)
+        self._socket.setsockopt(zmq.RCVTIMEO, timeout_ms)
+        self._socket.setsockopt(zmq.SNDTIMEO, timeout_ms)
+        self._socket.connect(endpoint)
+        self._current_action: Optional[PolicyActionMsg] = PolicyActionMsg(
+            timestamp=time.time(),
+            action=DEFAULT_INIT_ACTION,
+            shape=[len(DEFAULT_INIT_ACTION)],
+        )
+
+    @property
+    def current_action(self) -> Optional[PolicyActionMsg]:
+        return self._current_action
+
+    def send_observation(self, obs: PolicyObservationMsg) -> None:
+        """Send one observation and wait for the corresponding action."""
+        try:
+            self._socket.send_pyobj(obs)
+            msg = self._socket.recv_pyobj()
+        except zmq.Again as exc:
+            self._reset_socket()
+            raise TimeoutError(
+                f"Timed out waiting for direct policy endpoint {self.endpoint}"
+            ) from exc
+
+        self._current_action = PolicyActionMsg(
+            timestamp=msg["timestamp"],
+            action=msg["action"],
+            shape=msg["shape"],
+        )
+
+    def _reset_socket(self) -> None:
+        self._socket.close(linger=0)
+        self._socket = self._ctx.socket(zmq.REQ)
+        self._socket.setsockopt(zmq.LINGER, 0)
+        self._socket.setsockopt(zmq.RCVTIMEO, self.timeout_ms)
+        self._socket.setsockopt(zmq.SNDTIMEO, self.timeout_ms)
+        self._socket.connect(self.endpoint)

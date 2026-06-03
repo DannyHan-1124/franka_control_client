@@ -18,7 +18,7 @@ from ..data_collection.irl_wrapper import (
     PandaArmDataWrapper,
     RobotiqGripperDataWrapper,
 )
-from ..policy.policy import RemotePolicy
+from ..policy.policy import DirectZmqPolicy, RemotePolicy
 
 
 IMAGE_SIZE = (224, 224)
@@ -47,6 +47,9 @@ class Pi05PolicyInferenceConfig:
     obs_topic: Optional[str] = None
     action_topic: Optional[str] = None
     clamp_actions: bool = True
+    policy_transport: str = "pyzlc"
+    policy_zmq_endpoint: Optional[str] = None
+    policy_zmq_timeout_ms: int = 30000
 
 
 class Pi05PolicyInference(PolicyInferenceManager):
@@ -68,11 +71,22 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.data_collectors = data_collectors
         self.control_pair = control_pair
         self.cfg = cfg
-        self.policy = RemotePolicy(
-            cfg.policy_name,
-            obs_topic=cfg.obs_topic,
-            action_topic=cfg.action_topic,
-        )
+        if cfg.policy_transport == "zmq":
+            if not cfg.policy_zmq_endpoint:
+                raise ValueError("policy_zmq_endpoint is required for ZMQ policy transport.")
+            self.policy = DirectZmqPolicy(
+                cfg.policy_name,
+                endpoint=cfg.policy_zmq_endpoint,
+                timeout_ms=cfg.policy_zmq_timeout_ms,
+            )
+        elif cfg.policy_transport == "pyzlc":
+            self.policy = RemotePolicy(
+                cfg.policy_name,
+                obs_topic=cfg.obs_topic,
+                action_topic=cfg.action_topic,
+            )
+        else:
+            raise ValueError(f"Unsupported policy transport: {cfg.policy_transport!r}")
 
         self.static_cam: Optional[ImageDataWrapper] = None
         self.wrist_cam: Optional[ImageDataWrapper] = None

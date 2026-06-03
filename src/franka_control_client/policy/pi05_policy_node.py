@@ -10,6 +10,7 @@ from typing import Any, Dict, Optional
 import numpy as np
 import pyzlc
 import torch
+import zmq
 
 from lerobot.configs.train import TrainPipelineConfig
 from lerobot.policies.factory import make_policy, make_pre_post_processors
@@ -30,6 +31,7 @@ class Pi05NodeConfig:
     pyzlc_host: str
     pyzlc_group_name: str
     pyzlc_group_port: int
+    direct_zmq_bind: Optional[str]
     seed: int
 
 
@@ -46,14 +48,23 @@ class Pi05PolicyNode:
         self._latest_obs: Optional[Dict[str, Any]] = None
         self._running = False
 
-        pyzlc.init(
-            cfg.pyzlc_name,
-            cfg.pyzlc_host,
-            group_name=cfg.pyzlc_group_name,
-            group_port=cfg.pyzlc_group_port,
-        )
-        pyzlc.register_subscriber_handler(cfg.obs_topic, self._on_observation)
-        self._action_pub = pyzlc.Publisher(cfg.action_topic)
+        self._action_pub = None
+        self._direct_socket = None
+        if cfg.direct_zmq_bind:
+            self._ctx = zmq.Context.instance()
+            self._direct_socket = self._ctx.socket(zmq.REP)
+            self._direct_socket.setsockopt(zmq.LINGER, 0)
+            self._direct_socket.bind(cfg.direct_zmq_bind)
+            print(f"Direct ZMQ policy endpoint bound to {cfg.direct_zmq_bind}", flush=True)
+        else:
+            pyzlc.init(
+                cfg.pyzlc_name,
+                cfg.pyzlc_host,
+                group_name=cfg.pyzlc_group_name,
+                group_port=cfg.pyzlc_group_port,
+            )
+            pyzlc.register_subscriber_handler(cfg.obs_topic, self._on_observation)
+            self._action_pub = pyzlc.Publisher(cfg.action_topic)
 
         self.train_cfg = self._load_train_cfg()
         self.policy, self.preprocessor, self.postprocessor = self._load_policy_stack()
@@ -105,7 +116,10 @@ class Pi05PolicyNode:
             pretrained_path=self.train_cfg.policy.pretrained_path,
             preprocessor_overrides={"device_processor": {"device": device}},
         )
-        pyzlc.info(f"Pi0.5 policy loaded on {self.cfg.device}")
+        if self.cfg.direct_zmq_bind:
+            print(f"Pi0.5 policy loaded on {self.cfg.device}", flush=True)
+        else:
+            pyzlc.info(f"Pi0.5 policy loaded on {self.cfg.device}")
         return policy, preprocessor, postprocessor
 
     def _on_observation(self, msg: Dict[str, Any]) -> None:
@@ -184,11 +198,8 @@ class Pi05PolicyNode:
             observation["task"] = task
         return observation
 
-    def step(self) -> None:
-        if self._latest_obs is None:
-            return
-
-        observation = self._build_observation(self._latest_obs)
+    def _predict_action_msg(self, obs_msg: Dict[str, Any]) -> Dict[str, Any]:
+        observation = self._build_observation(obs_msg)
         observation = self.preprocessor(observation)
 
         with torch.inference_mode():
@@ -216,15 +227,45 @@ class Pi05PolicyNode:
             processed_actions.append(processed.detach().float().cpu().numpy()[:8])
 
         action_array = np.stack(processed_actions, axis=0)
-        self._action_pub.publish(
-            {
-                "timestamp": time.time(),
-                "action": action_array.tolist(),
-                "shape": list(action_array.shape),
-            }
-        )
+        return {
+            "timestamp": time.time(),
+            "action": action_array.tolist(),
+            "shape": list(action_array.shape),
+        }
+
+    def step(self) -> None:
+        if self._latest_obs is None:
+            return
+        if self._action_pub is None:
+            raise RuntimeError("pyzlc action publisher is unavailable in direct ZMQ mode.")
+
+        self._action_pub.publish(self._predict_action_msg(self._latest_obs))
+
+    def run_direct_zmq(self) -> None:
+        if self._direct_socket is None:
+            raise RuntimeError("Direct ZMQ socket is not configured.")
+
+        self._running = True
+        while self._running:
+            obs_msg = self._direct_socket.recv_pyobj()
+            try:
+                self._direct_socket.send_pyobj(self._predict_action_msg(obs_msg))
+            except Exception as exc:
+                print(f"Pi0.5 direct policy step failed: {exc}", flush=True)
+                self._direct_socket.send_pyobj(
+                    {
+                        "timestamp": time.time(),
+                        "action": [[0.0, 0.0, 0.0, -2.15, 0.0, 2.15, 0.0, 0.0]],
+                        "shape": [1, 8],
+                        "error": str(exc),
+                    }
+                )
 
     def run(self) -> None:
+        if self.cfg.direct_zmq_bind:
+            self.run_direct_zmq()
+            return
+
         self._running = True
         dt = 1.0 / self.cfg.fps if self.cfg.fps > 0 else 0.0
         while self._running:
@@ -253,6 +294,11 @@ def _parse_args() -> Pi05NodeConfig:
     parser.add_argument("--pyzlc_host", default="0.0.0.0")
     parser.add_argument("--pyzlc_group_name", default="DroidGroup")
     parser.add_argument("--pyzlc_group_port", type=int, default=7730)
+    parser.add_argument(
+        "--direct_zmq_bind",
+        default=None,
+        help="Optional direct REQ/REP policy endpoint, e.g. tcp://127.0.0.1:40023.",
+    )
     parser.add_argument("--seed", type=int, default=1000)
     args = parser.parse_args()
     return Pi05NodeConfig(**vars(args))
