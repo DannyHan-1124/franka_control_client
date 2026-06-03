@@ -17,9 +17,9 @@ python examples/pi05_policy_inference_franka.py \
     --pyzlc_group_port 7725 \
     --policy_transport zmq \
     --policy_zmq_endpoint tcp://127.0.0.1:17725 \
-    --max_position_step_m 0.005 \
-    --max_rotation_step_rad 0.05 \
+    --max_position_step_m 0.012 \
+    --max_rotation_step_rad 0.10 \
     --static_camera static_cam \
     --wrist_camera wrist_cam \
-    --fps 10 \
-    --control_hz 50
+    --fps 15 \
+    --control_hz 75
