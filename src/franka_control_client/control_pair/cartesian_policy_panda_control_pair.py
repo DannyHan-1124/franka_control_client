@@ -17,6 +17,7 @@ GRIPPER_DEADBAND: float = 1e-3
 GRIPPER_SPEED: float = 0.7
 GRIPPER_FORCE: float = 0.3
 DEFAULT_POSITION = (0.0, 0.0, 0.0, -2.15, 0.0, 2.15, 0.0)
+MAX_POSITION_COMMAND_STEP_M: float = 0.01
 
 
 class CartesianPolicyPandaRobotiqControlPair(ControlPair):
@@ -40,6 +41,7 @@ class CartesianPolicyPandaRobotiqControlPair(ControlPair):
         self._action_lock = threading.Lock()
         self._latest_action: Optional[np.ndarray] = None
         self._last_gripper_cmd: Optional[float] = None
+        self._last_sent_pos: Optional[np.ndarray] = None
 
     def update_action(self, action: np.ndarray) -> None:
         arr = np.asarray(action, dtype=np.float64).reshape(-1)
@@ -52,6 +54,7 @@ class CartesianPolicyPandaRobotiqControlPair(ControlPair):
         with self._action_lock:
             self._latest_action = None
         self._last_gripper_cmd = None
+        self._last_sent_pos = None
 
     def _get_latest_action(self) -> Optional[np.ndarray]:
         with self._action_lock:
@@ -80,7 +83,8 @@ class CartesianPolicyPandaRobotiqControlPair(ControlPair):
             pyzlc.sleep(1.0 / self.control_hz)
             return
 
-        self.panda_arm.send_cartesian_pose_command(action[:3], action[3:7])
+        pos = self._limit_position_command(action[:3])
+        self.panda_arm.send_cartesian_pose_command(pos, action[3:7])
 
         gripper_cmd = 1.0 if float(action[7]) >= 0.5 else 0.0
         if (
@@ -99,6 +103,31 @@ class CartesianPolicyPandaRobotiqControlPair(ControlPair):
 
     def control_end(self) -> None:
         self.panda_arm.set_franka_arm_control_mode(ControlMode.IDLE)
+
+    def _limit_position_command(self, target_pos: np.ndarray) -> np.ndarray:
+        target = np.asarray(target_pos, dtype=np.float64).reshape(3)
+        if self._last_sent_pos is None:
+            state = self.panda_arm.current_state
+            if state is not None:
+                if "EE_pos" in state:
+                    self._last_sent_pos = np.asarray(state["EE_pos"], dtype=np.float64).reshape(3)
+                elif "O_T_EE" in state:
+                    transform = np.asarray(state["O_T_EE"], dtype=np.float64).reshape(4, 4).T
+                    self._last_sent_pos = transform[:3, 3]
+            if self._last_sent_pos is None:
+                self._last_sent_pos = target.copy()
+                return target
+
+        delta = target - self._last_sent_pos
+        dist = float(np.linalg.norm(delta))
+        if dist > MAX_POSITION_COMMAND_STEP_M:
+            target = self._last_sent_pos + delta * (MAX_POSITION_COMMAND_STEP_M / dist)
+            pyzlc.warning(
+                "Limited Cartesian command step in control loop: "
+                f"{dist:.4f}m -> {MAX_POSITION_COMMAND_STEP_M:.4f}m"
+            )
+        self._last_sent_pos = target.copy()
+        return target
 
     def _control_task(self) -> None:
         try:

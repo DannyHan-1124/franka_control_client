@@ -50,6 +50,8 @@ class Pi05PolicyInferenceConfig:
     policy_transport: str = "pyzlc"
     policy_zmq_endpoint: Optional[str] = None
     policy_zmq_timeout_ms: int = 30000
+    max_position_step_m: float = 0.005
+    max_rotation_step_rad: float = 0.05
 
 
 class Pi05PolicyInference(PolicyInferenceManager):
@@ -225,8 +227,30 @@ class Pi05PolicyInference(PolicyInferenceManager):
         quat_norm = np.linalg.norm(quat)
         if quat_norm > 1e-6:
             arr[3:7] = quat / quat_norm
+        arr = self._limit_cartesian_step(arr)
         arr[7] = 1.0 if arr[7] >= 0.5 else 0.0
         return arr
+
+    def _limit_cartesian_step(self, action: np.ndarray) -> np.ndarray:
+        current_state = self.arm_wrapper.capture_step()
+        current_pose = _extract_ee_pose(current_state).astype(np.float64)
+        limited = action.copy()
+
+        pos_delta = limited[:3] - current_pose[:3]
+        pos_dist = float(np.linalg.norm(pos_delta))
+        max_pos_step = float(self.cfg.max_position_step_m)
+        if max_pos_step > 0.0 and pos_dist > max_pos_step:
+            limited[:3] = current_pose[:3] + pos_delta * (max_pos_step / pos_dist)
+            pyzlc.warning(
+                "Limited Cartesian position step: "
+                f"{pos_dist:.4f}m -> {max_pos_step:.4f}m"
+            )
+
+        max_rot_step = float(self.cfg.max_rotation_step_rad)
+        if max_rot_step > 0.0:
+            limited[3:7] = _limit_quat_step(current_pose[3:7], limited[3:7], max_rot_step)
+
+        return limited
 
 
 def _extract_ee_pose(arm_state: Dict[str, Any]) -> np.ndarray:
@@ -288,3 +312,45 @@ def _rotation_matrix_to_quat_xyzw(matrix: np.ndarray) -> np.ndarray:
             qz = 0.25 * s
     quat = np.asarray([qx, qy, qz, qw], dtype=np.float64)
     return quat / max(np.linalg.norm(quat), 1e-12)
+
+
+def _limit_quat_step(current: np.ndarray, target: np.ndarray, max_angle_rad: float) -> np.ndarray:
+    current_q = _normalize_quat(current)
+    target_q = _normalize_quat(target)
+    dot = float(np.dot(current_q, target_q))
+    if dot < 0.0:
+        target_q = -target_q
+        dot = -dot
+    dot = float(np.clip(dot, -1.0, 1.0))
+    angle = 2.0 * np.arccos(dot)
+    if angle <= max_angle_rad:
+        return target_q
+
+    t = max_angle_rad / max(angle, 1e-12)
+    limited = _slerp_quat(current_q, target_q, t)
+    pyzlc.warning(
+        "Limited Cartesian rotation step: "
+        f"{angle:.4f}rad -> {max_angle_rad:.4f}rad"
+    )
+    return limited
+
+
+def _slerp_quat(q0: np.ndarray, q1: np.ndarray, t: float) -> np.ndarray:
+    dot = float(np.clip(np.dot(q0, q1), -1.0, 1.0))
+    if dot > 0.9995:
+        return _normalize_quat(q0 + t * (q1 - q0))
+
+    theta_0 = np.arccos(dot)
+    sin_theta_0 = np.sin(theta_0)
+    theta = theta_0 * t
+    s0 = np.sin(theta_0 - theta) / sin_theta_0
+    s1 = np.sin(theta) / sin_theta_0
+    return _normalize_quat((s0 * q0) + (s1 * q1))
+
+
+def _normalize_quat(quat: np.ndarray) -> np.ndarray:
+    q = np.asarray(quat, dtype=np.float64).reshape(4)
+    norm = float(np.linalg.norm(q))
+    if norm <= 1e-12:
+        return np.asarray([0.0, 0.0, 0.0, 1.0], dtype=np.float64)
+    return q / norm

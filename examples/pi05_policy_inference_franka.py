@@ -41,6 +41,8 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--policy_transport", choices=("pyzlc", "zmq"), default="pyzlc")
     parser.add_argument("--policy_zmq_endpoint", default=None)
     parser.add_argument("--policy_zmq_timeout_ms", type=int, default=30000)
+    parser.add_argument("--max_position_step_m", type=float, default=0.005)
+    parser.add_argument("--max_rotation_step_rad", type=float, default=0.05)
     parser.add_argument("--robot_name", default="FrankaPanda")
     parser.add_argument("--static_camera", default="static_cam")
     parser.add_argument("--wrist_camera", default="wrist_cam")
@@ -91,6 +93,8 @@ def main() -> None:
         policy_transport=args.policy_transport,
         policy_zmq_endpoint=args.policy_zmq_endpoint,
         policy_zmq_timeout_ms=args.policy_zmq_timeout_ms,
+        max_position_step_m=args.max_position_step_m,
+        max_rotation_step_rad=args.max_rotation_step_rad,
     )
     inference_manager = Pi05PolicyInference(
         data_collectors=data_collectors,
