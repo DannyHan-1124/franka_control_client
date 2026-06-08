@@ -127,6 +127,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._release_confirmed = False
         self._release_armed = False
         self._stop_after_release_countdown: Optional[int] = None
+        self._last_sanitized_action: Optional[np.ndarray] = None
 
         self.register_start_infering_event(self.control_pair.start_control_pair)
         self.register_stop_infering_event(self.control_pair.stop_control_pair)
@@ -139,6 +140,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._release_confirmed = False
         self._release_armed = False
         self._stop_after_release_countdown = None
+        self._last_sanitized_action = None
         current_action = self.policy.current_action
         self._last_action_timestamp = (
             float(current_action["timestamp"]) if current_action is not None else None
@@ -163,7 +165,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if self._action_chunk is not None and self._chunk_step < len(self._action_chunk):
             action = self._action_chunk[self._chunk_step]
             self._chunk_step += 1
-            self.control_pair.update_action(self._sanitize_action(action))
+            sanitized_action = self._sanitize_action(action)
+            self._last_sanitized_action = sanitized_action.copy()
+            self.control_pair.update_action(sanitized_action)
             self._maybe_stop_after_release()
 
         elapsed = time.perf_counter() - start
@@ -185,6 +189,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
         first_close = int(close_steps[0]) if close_steps.size else None
         first_open = int(open_steps[0]) if open_steps.size else None
         longest_open_run = _longest_true_run(gripper < 0.5)
+        pos_min = action_chunk[:, :3].min(axis=0)
+        pos_max = action_chunk[:, :3].max(axis=0)
+        pos_start = action_chunk[0, :3]
+        pos_end = action_chunk[-1, :3]
         if first_close == 0 and first_open is None and not self._release_armed:
             self._release_armed = True
             pyzlc.info("Armed stop-after-release guard after closed carry chunk.")
@@ -192,7 +200,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "Received Pi0.5 action chunk: "
             f"len={len(action_chunk)}, gripper_min={gripper.min():.3f}, "
             f"gripper_max={gripper.max():.3f}, first_close_step={first_close}, "
-            f"first_open_step={first_open}, longest_open_run={longest_open_run}"
+            f"first_open_step={first_open}, longest_open_run={longest_open_run}, "
+            f"pos_start={_format_vec(pos_start)}, pos_end={_format_vec(pos_end)}, "
+            f"pos_min={_format_vec(pos_min)}, pos_max={_format_vec(pos_max)}"
         )
 
     def _save_episode(self) -> None:
@@ -287,12 +297,26 @@ class Pi05PolicyInference(PolicyInferenceManager):
             if not self._release_confirmed:
                 self._release_confirmed = True
                 self._stop_after_release_countdown = max(0, int(self.cfg.stop_after_release_steps))
-                pyzlc.info("Confirmed first gripper release.")
+                self._log_confirmed_release()
         else:
             self._pending_open_steps = 0
 
         self._last_gripper_cmd = gripper_cmd
         return gripper_cmd
+
+    def _log_confirmed_release(self) -> None:
+        try:
+            current_pose = _extract_ee_pose(self.arm_wrapper.capture_step())
+            current_pos = current_pose[:3]
+        except Exception:
+            current_pos = None
+        target_pos = None
+        if self._last_sanitized_action is not None:
+            target_pos = self._last_sanitized_action[:3]
+        pyzlc.info(
+            "Confirmed first gripper release: "
+            f"current_pos={_format_vec(current_pos)}, target_pos={_format_vec(target_pos)}"
+        )
 
     def _maybe_stop_after_release(self) -> None:
         if not self.cfg.stop_after_first_release:
@@ -371,6 +395,13 @@ def _longest_true_run(mask: np.ndarray) -> int:
         else:
             current = 0
     return longest
+
+
+def _format_vec(vec: Optional[np.ndarray]) -> str:
+    if vec is None:
+        return "None"
+    arr = np.asarray(vec, dtype=np.float64).reshape(-1)
+    return "[" + ", ".join(f"{value:.4f}" for value in arr) + "]"
 
 
 def _rotation_matrix_to_quat_xyzw(matrix: np.ndarray) -> np.ndarray:
