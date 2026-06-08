@@ -43,7 +43,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--policy_zmq_timeout_ms", type=int, default=30000)
     parser.add_argument("--max_position_step_m", type=float, default=0.005)
     parser.add_argument("--max_rotation_step_rad", type=float, default=0.05)
-    parser.add_argument("--chunk_replan_steps", type=int, default=20)
+    parser.add_argument("--chunk_replan_steps", type=int, default=50)
     parser.add_argument("--gripper_open_confirm_steps", type=int, default=12)
     parser.add_argument("--robot_name", default="FrankaPanda")
     parser.add_argument("--static_camera", default="static_cam")

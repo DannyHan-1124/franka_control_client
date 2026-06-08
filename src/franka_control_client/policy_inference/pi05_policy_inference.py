@@ -52,7 +52,7 @@ class Pi05PolicyInferenceConfig:
     policy_zmq_timeout_ms: int = 30000
     max_position_step_m: float = 0.005
     max_rotation_step_rad: float = 0.05
-    chunk_replan_steps: int = 20
+    chunk_replan_steps: int = 50
     gripper_open_confirm_steps: int = 12
 
 
@@ -172,11 +172,15 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _log_action_chunk_debug(self, action_chunk: np.ndarray) -> None:
         gripper = np.asarray(action_chunk[:, 7], dtype=np.float64)
         close_steps = np.flatnonzero(gripper >= 0.5)
+        open_steps = np.flatnonzero(gripper < 0.5)
         first_close = int(close_steps[0]) if close_steps.size else None
+        first_open = int(open_steps[0]) if open_steps.size else None
+        longest_open_run = _longest_true_run(gripper < 0.5)
         pyzlc.info(
             "Received Pi0.5 action chunk: "
             f"len={len(action_chunk)}, gripper_min={gripper.min():.3f}, "
-            f"gripper_max={gripper.max():.3f}, first_close_step={first_close}"
+            f"gripper_max={gripper.max():.3f}, first_close_step={first_close}, "
+            f"first_open_step={first_open}, longest_open_run={longest_open_run}"
         )
 
     def _save_episode(self) -> None:
@@ -326,6 +330,18 @@ def _encode_rgb_image(image: np.ndarray) -> Dict[str, Any]:
         "channels": int(c),
         "rgb_data": rgb.tobytes(),
     }
+
+
+def _longest_true_run(mask: np.ndarray) -> int:
+    longest = 0
+    current = 0
+    for value in np.asarray(mask, dtype=bool).reshape(-1):
+        if value:
+            current += 1
+            longest = max(longest, current)
+        else:
+            current = 0
+    return longest
 
 
 def _rotation_matrix_to_quat_xyzw(matrix: np.ndarray) -> np.ndarray:
