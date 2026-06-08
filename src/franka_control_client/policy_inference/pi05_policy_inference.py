@@ -125,6 +125,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._last_gripper_cmd: Optional[float] = None
         self._pending_open_steps = 0
         self._release_confirmed = False
+        self._release_armed = False
         self._stop_after_release_countdown: Optional[int] = None
 
         self.register_start_infering_event(self.control_pair.start_control_pair)
@@ -136,6 +137,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._last_gripper_cmd = None
         self._pending_open_steps = 0
         self._release_confirmed = False
+        self._release_armed = False
         self._stop_after_release_countdown = None
         current_action = self.policy.current_action
         self._last_action_timestamp = (
@@ -183,6 +185,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
         first_close = int(close_steps[0]) if close_steps.size else None
         first_open = int(open_steps[0]) if open_steps.size else None
         longest_open_run = _longest_true_run(gripper < 0.5)
+        if first_close == 0 and first_open is None and not self._release_armed:
+            self._release_armed = True
+            pyzlc.info("Armed stop-after-release guard after closed carry chunk.")
         pyzlc.info(
             "Received Pi0.5 action chunk: "
             f"len={len(action_chunk)}, gripper_min={gripper.min():.3f}, "
@@ -275,6 +280,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
         if self._last_gripper_cmd >= 0.5 and gripper_cmd < 0.5:
             self._pending_open_steps += 1
+            if not self._release_armed:
+                return 1.0
             if self._pending_open_steps < confirm_steps:
                 return 1.0
             if not self._release_confirmed:
