@@ -52,7 +52,7 @@ class Pi05PolicyInferenceConfig:
     policy_zmq_timeout_ms: int = 30000
     max_position_step_m: float = 0.005
     max_rotation_step_rad: float = 0.05
-    chunk_replan_steps: int = 10
+    chunk_replan_steps: int = 20
 
 
 class Pi05PolicyInference(PolicyInferenceManager):
@@ -237,7 +237,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         arr = np.asarray(action, dtype=np.float64).reshape(-1)[:ACTION_DIM]
         if self.cfg.clamp_actions:
             clipped = np.clip(arr, ACTION_MIN, ACTION_MAX)
-            if not np.allclose(clipped, arr):
+            if self._has_significant_clip(arr, clipped):
                 pyzlc.warning(f"Clipped out-of-range Pi0.5 action: raw={arr}, clipped={clipped}")
             arr = clipped
         quat = arr[3:7]
@@ -247,6 +247,12 @@ class Pi05PolicyInference(PolicyInferenceManager):
         arr = self._limit_cartesian_step(arr)
         arr[7] = 1.0 if arr[7] >= 0.5 else 0.0
         return arr
+
+    def _has_significant_clip(self, raw: np.ndarray, clipped: np.ndarray) -> bool:
+        delta = np.abs(clipped - raw)
+        if np.any(delta[:7] > 1e-4):
+            return True
+        return bool(delta[7] > 0.05)
 
     def _limit_cartesian_step(self, action: np.ndarray) -> np.ndarray:
         current_state = self.arm_wrapper.capture_step()
