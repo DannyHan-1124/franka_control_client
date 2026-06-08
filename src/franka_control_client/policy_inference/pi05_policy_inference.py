@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import cv2
@@ -56,6 +57,8 @@ class Pi05PolicyInferenceConfig:
     gripper_open_confirm_steps: int = 12
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
+    debug_image_dir: Optional[str] = None
+    debug_image_interval: int = 25
 
 
 class Pi05PolicyInference(PolicyInferenceManager):
@@ -128,6 +131,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._release_armed = False
         self._stop_after_release_countdown: Optional[int] = None
         self._last_sanitized_action: Optional[np.ndarray] = None
+        self._debug_image_step = 0
 
         self.register_start_infering_event(self.control_pair.start_control_pair)
         self.register_stop_infering_event(self.control_pair.stop_control_pair)
@@ -141,6 +145,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._release_armed = False
         self._stop_after_release_countdown = None
         self._last_sanitized_action = None
+        self._debug_image_step = 0
         current_action = self.policy.current_action
         self._last_action_timestamp = (
             float(current_action["timestamp"]) if current_action is not None else None
@@ -227,12 +232,31 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._ui_console.log(f"Failed to reset arm: {exc}")
 
     def _build_observation(self) -> Dict[str, Any]:
+        static_rgb = self._capture_rgb(self.static_cam)
+        wrist_rgb = self._capture_rgb(self.wrist_cam)
+        self._maybe_save_debug_images(static_rgb, wrist_rgb)
         return {
-            "observation.images.base_0_rgb": _encode_rgb_image(self._capture_rgb(self.static_cam)),
-            "observation.images.left_wrist_0_rgb": _encode_rgb_image(self._capture_rgb(self.wrist_cam)),
+            "observation.images.base_0_rgb": _encode_rgb_image(static_rgb),
+            "observation.images.left_wrist_0_rgb": _encode_rgb_image(wrist_rgb),
             "observation.state": self._build_state_vector().tolist(),
             "task": self.task,
         }
+
+    def _maybe_save_debug_images(self, static_rgb: np.ndarray, wrist_rgb: np.ndarray) -> None:
+        if not self.cfg.debug_image_dir:
+            return
+        interval = max(1, int(self.cfg.debug_image_interval))
+        if self._debug_image_step % interval != 0:
+            self._debug_image_step += 1
+            return
+
+        out_dir = Path(self.cfg.debug_image_dir)
+        out_dir.mkdir(parents=True, exist_ok=True)
+        for name, image_rgb in (("static", static_rgb), ("wrist", wrist_rgb)):
+            path = out_dir / f"{self._debug_image_step:06d}_{name}_rgb.png"
+            cv2.imwrite(str(path), cv2.cvtColor(image_rgb, cv2.COLOR_RGB2BGR))
+        pyzlc.info(f"Saved RGB debug images to {out_dir} at step {self._debug_image_step}.")
+        self._debug_image_step += 1
 
     def _capture_rgb(self, cam: ImageDataWrapper) -> np.ndarray:
         frame = cam.capture_step()
