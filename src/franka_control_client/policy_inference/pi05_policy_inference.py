@@ -52,6 +52,7 @@ class Pi05PolicyInferenceConfig:
     policy_zmq_timeout_ms: int = 30000
     max_position_step_m: float = 0.005
     max_rotation_step_rad: float = 0.05
+    chunk_replan_steps: int = 10
 
 
 class Pi05PolicyInference(PolicyInferenceManager):
@@ -134,16 +135,17 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
     def _infer_step(self) -> None:
         start = time.perf_counter()
-        self.policy.send_observation(self._build_observation())
+        if self._should_request_action_chunk():
+            self.policy.send_observation(self._build_observation())
 
-        action_msg = self.policy.current_action
-        pyzlc.info(f"Received policy action: {action_msg}")
-        if action_msg is not None:
-            timestamp = float(action_msg["timestamp"])
-            if timestamp != self._last_action_timestamp:
-                self._action_chunk = self._parse_action_payload(action_msg["action"])
-                self._chunk_step = 0
-                self._last_action_timestamp = timestamp
+            action_msg = self.policy.current_action
+            if action_msg is not None:
+                timestamp = float(action_msg["timestamp"])
+                if timestamp != self._last_action_timestamp:
+                    self._action_chunk = self._parse_action_payload(action_msg["action"])
+                    self._chunk_step = 0
+                    self._last_action_timestamp = timestamp
+                    self._log_action_chunk_debug(self._action_chunk)
 
         if self._action_chunk is not None and self._chunk_step < len(self._action_chunk):
             action = self._action_chunk[self._chunk_step]
@@ -154,6 +156,23 @@ class Pi05PolicyInference(PolicyInferenceManager):
         sleep_time = max(0.0, (1.0 / self.fps) - elapsed)
         if sleep_time > 0.001:
             time.sleep(sleep_time)
+
+    def _should_request_action_chunk(self) -> bool:
+        if self._action_chunk is None:
+            return True
+        if self._chunk_step >= len(self._action_chunk):
+            return True
+        return self._chunk_step >= max(1, int(self.cfg.chunk_replan_steps))
+
+    def _log_action_chunk_debug(self, action_chunk: np.ndarray) -> None:
+        gripper = np.asarray(action_chunk[:, 7], dtype=np.float64)
+        close_steps = np.flatnonzero(gripper >= 0.5)
+        first_close = int(close_steps[0]) if close_steps.size else None
+        pyzlc.info(
+            "Received Pi0.5 action chunk: "
+            f"len={len(action_chunk)}, gripper_min={gripper.min():.3f}, "
+            f"gripper_max={gripper.max():.3f}, first_close_step={first_close}"
+        )
 
     def _save_episode(self) -> None:
         self._stop_infering()
