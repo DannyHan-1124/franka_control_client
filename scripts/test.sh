@@ -12,7 +12,7 @@
 #     --pyzlc_group_port 7725
 
 python -m franka_control_client.policy.pi05_policy_node \
-    --checkpoint_path /hkfs/work/workspace/scratch/utphd-myspace/outputs/pi05_pGbs16_20k_accumulation4/checkpoints/010000/pretrained_model \
+    --checkpoint_path /hkfs/work/workspace/scratch/utphd-myspace/outputs/pi05_bs256_10ksteps_fixed_index/checkpoints/010000/pretrained_model \
     --dataset_path /hkfs/work/workspace/scratch/utphd-myspace/datasets/cylinder_cube_full \
     --device cuda \
     --policy_dtype bfloat16 \

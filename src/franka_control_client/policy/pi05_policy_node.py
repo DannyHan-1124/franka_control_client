@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import time
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Dict, Optional
 
 import numpy as np
@@ -67,6 +68,7 @@ class Pi05PolicyNode:
             self._action_pub = pyzlc.Publisher(cfg.action_topic)
 
         self.train_cfg = self._load_train_cfg()
+        self._validate_dataset_metadata()
         self.policy, self.preprocessor, self.postprocessor = self._load_policy_stack()
         self._expected_image_shapes = self._get_expected_image_shapes()
         self._expected_state_dim = self._get_expected_state_dim()
@@ -79,6 +81,7 @@ class Pi05PolicyNode:
         ]
         if self.cfg.dataset_path:
             cli_args.append(f"--dataset.root={self.cfg.dataset_path}")
+            cli_args.append(f"--dataset.repo_id={self.cfg.dataset_path}")
         if self.cfg.policy_dtype:
             cli_args.append(f"--policy.dtype={self.cfg.policy_dtype}")
 
@@ -87,11 +90,48 @@ class Pi05PolicyNode:
             cli_args=cli_args,
         )
 
+    def _validate_dataset_metadata(self) -> None:
+        if not self.cfg.dataset_path:
+            return
+
+        dataset = Path(self.cfg.dataset_path)
+        episodes_dir = dataset / "meta" / "episodes"
+
+        data_dir = dataset / "data"
+        if not data_dir.exists():
+            return
+
+        import pandas as pd
+        import pyarrow.parquet as pq
+
+        episodes_path = episodes_dir / "chunk-000" / "file-000.parquet"
+        episodes = pd.read_parquet(episodes_path)
+
+        parts = []
+        for parquet_path in sorted(data_dir.glob("*/*.parquet")):
+            parts.append(pq.read_table(parquet_path, columns=["episode_index", "index"]).to_pandas())
+
+        if not parts:
+            return
+
+        data = pd.concat(parts, ignore_index=True)
+        actual = data.groupby("episode_index")["index"].agg(["min", "max", "count"]).reset_index()
+        merged = episodes.merge(actual, on="episode_index", how="left")
+        bad = merged[
+            (merged["dataset_from_index"] != merged["min"])
+            | (merged["dataset_to_index"] != merged["max"] + 1)
+            | (merged["length"] != merged["count"])
+        ]
+        if len(bad) > 0:
+            raise RuntimeError(
+                f"Dataset episode metadata indexing is stale or inconsistent: {len(bad)} bad rows."
+            )
+
     def _load_policy_stack(self):
         ds_meta = None
         if self.cfg.dataset_path:
             ds_meta = LeRobotDatasetMetadata(
-                repo_id=getattr(self.train_cfg.dataset, "repo_id", None),
+                repo_id=self.cfg.dataset_path,
                 root=self.cfg.dataset_path,
             )
 
@@ -180,18 +220,10 @@ class Pi05PolicyNode:
 
         for key, shape in self._expected_image_shapes.items():
             if key not in obs_msg:
-                c, h, w = shape
-                rgb = np.zeros((h, w, c), dtype=np.uint8)
-            else:
-                rgb = self._decode_image(obs_msg[key])
-                rgb = self._resize_image(rgb, shape)
-            observation[key] = (
-                torch.from_numpy(np.ascontiguousarray(rgb))
-                .float()
-                .permute(2, 0, 1)
-                .unsqueeze(0)
-                / 255.0
-            )
+                continue
+            rgb = self._decode_image(obs_msg[key])
+            rgb = self._resize_image(rgb, shape)
+            observation[key] = torch.from_numpy(np.ascontiguousarray(rgb)).float().unsqueeze(0) / 255.0
 
         task = obs_msg.get("task") or self.cfg.default_task
         if task:

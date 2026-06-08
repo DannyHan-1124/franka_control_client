@@ -177,12 +177,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._ui_console.log(f"Failed to reset arm: {exc}")
 
     def _build_observation(self) -> Dict[str, Any]:
-        blank = np.zeros((IMAGE_SIZE[1], IMAGE_SIZE[0], 3), dtype=np.uint8)
         return {
             "observation.images.base_0_rgb": _encode_rgb_image(self._capture_rgb(self.static_cam)),
             "observation.images.left_wrist_0_rgb": _encode_rgb_image(self._capture_rgb(self.wrist_cam)),
-            "observation.images.right_wrist_0_rgb": _encode_rgb_image(blank),
-            "observation.images.empty_camera_0": _encode_rgb_image(blank),
             "observation.state": self._build_state_vector().tolist(),
             "task": self.task,
         }
