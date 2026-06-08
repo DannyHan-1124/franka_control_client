@@ -44,6 +44,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--max_position_step_m", type=float, default=0.005)
     parser.add_argument("--max_rotation_step_rad", type=float, default=0.05)
     parser.add_argument("--chunk_replan_steps", type=int, default=20)
+    parser.add_argument("--gripper_open_confirm_steps", type=int, default=12)
     parser.add_argument("--robot_name", default="FrankaPanda")
     parser.add_argument("--static_camera", default="static_cam")
     parser.add_argument("--wrist_camera", default="wrist_cam")
@@ -97,6 +98,7 @@ def main() -> None:
         max_position_step_m=args.max_position_step_m,
         max_rotation_step_rad=args.max_rotation_step_rad,
         chunk_replan_steps=args.chunk_replan_steps,
+        gripper_open_confirm_steps=args.gripper_open_confirm_steps,
     )
     inference_manager = Pi05PolicyInference(
         data_collectors=data_collectors,

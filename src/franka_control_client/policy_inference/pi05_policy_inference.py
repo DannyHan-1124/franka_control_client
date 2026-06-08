@@ -53,6 +53,7 @@ class Pi05PolicyInferenceConfig:
     max_position_step_m: float = 0.005
     max_rotation_step_rad: float = 0.05
     chunk_replan_steps: int = 20
+    gripper_open_confirm_steps: int = 12
 
 
 class Pi05PolicyInference(PolicyInferenceManager):
@@ -119,6 +120,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._action_chunk: Optional[np.ndarray] = None
         self._chunk_step = 0
         self._last_action_timestamp: Optional[float] = None
+        self._last_gripper_cmd: Optional[float] = None
+        self._pending_open_steps = 0
 
         self.register_start_infering_event(self.control_pair.start_control_pair)
         self.register_stop_infering_event(self.control_pair.stop_control_pair)
@@ -126,6 +129,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _start_infering(self) -> None:
         self._action_chunk = None
         self._chunk_step = 0
+        self._last_gripper_cmd = None
+        self._pending_open_steps = 0
         current_action = self.policy.current_action
         self._last_action_timestamp = (
             float(current_action["timestamp"]) if current_action is not None else None
@@ -245,8 +250,27 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if quat_norm > 1e-6:
             arr[3:7] = quat / quat_norm
         arr = self._limit_cartesian_step(arr)
-        arr[7] = 1.0 if arr[7] >= 0.5 else 0.0
+        arr[7] = self._stabilize_gripper_command(1.0 if arr[7] >= 0.5 else 0.0)
         return arr
+
+    def _stabilize_gripper_command(self, gripper_cmd: float) -> float:
+        confirm_steps = int(self.cfg.gripper_open_confirm_steps)
+        if confirm_steps <= 0:
+            return gripper_cmd
+
+        if self._last_gripper_cmd is None:
+            self._last_gripper_cmd = gripper_cmd
+            return gripper_cmd
+
+        if self._last_gripper_cmd >= 0.5 and gripper_cmd < 0.5:
+            self._pending_open_steps += 1
+            if self._pending_open_steps < confirm_steps:
+                return 1.0
+        else:
+            self._pending_open_steps = 0
+
+        self._last_gripper_cmd = gripper_cmd
+        return gripper_cmd
 
     def _has_significant_clip(self, raw: np.ndarray, clipped: np.ndarray) -> bool:
         delta = np.abs(clipped - raw)
