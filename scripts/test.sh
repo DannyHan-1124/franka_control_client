@@ -19,5 +19,5 @@ python -m franka_control_client.policy.pi05_policy_node \
     --obs_topic pi05/observation \
     --action_topic pi05/action \
     --fps 20 \
-    --default_task "put red cylinder on yellow cube and put green cylinder on blue cube" \
+    --default_task "put red cylinder on blue cube and put green cylinder on yellow cube" \
     --direct_zmq_bind tcp://0.0.0.0:40023

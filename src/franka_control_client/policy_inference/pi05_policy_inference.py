@@ -190,8 +190,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
             raise ValueError(f"Camera {cam.hw_name} returned no frame.")
         if not isinstance(frame, np.ndarray):
             raise ValueError(f"Camera {cam.hw_name} returned unsupported frame type.")
-        rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        return cv2.resize(rgb, IMAGE_SIZE, interpolation=cv2.INTER_AREA)
+        # CameraDevice.get_image() already returns RGB bytes. Converting here swaps
+        # red/blue and makes color-conditioned tasks target the wrong objects.
+        return cv2.resize(frame, IMAGE_SIZE, interpolation=cv2.INTER_AREA)
 
     def _build_state_vector(self) -> np.ndarray:
         arm_state = self.arm_wrapper.capture_step()
