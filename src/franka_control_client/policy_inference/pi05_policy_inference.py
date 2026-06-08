@@ -55,7 +55,7 @@ class Pi05PolicyInferenceConfig:
     chunk_replan_steps: int = 50
     gripper_open_confirm_steps: int = 12
     stop_after_first_release: bool = False
-    stop_after_release_steps: int = 8
+    stop_after_release_steps: int = 0
 
 
 class Pi05PolicyInference(PolicyInferenceManager):
@@ -326,8 +326,24 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if self._stop_after_release_countdown > 0:
             self._stop_after_release_countdown -= 1
             return
+        self._force_final_open_command()
         pyzlc.info("Stopping inference after first confirmed gripper release.")
         self._state_machine.trigger(PolicyInferenceEvent.DISCARD)
+
+    def _force_final_open_command(self) -> None:
+        if self._last_sanitized_action is not None:
+            open_action = self._last_sanitized_action.copy()
+            open_action[7] = 0.0
+            self.control_pair.update_action(open_action)
+        try:
+            self.control_pair.gripper.send_grasp_command(
+                position=0.0,
+                speed=0.7,
+                force=0.3,
+                blocking=False,
+            )
+        except Exception as exc:
+            pyzlc.warning(f"Failed to send final open gripper command: {exc}")
 
     def _has_significant_clip(self, raw: np.ndarray, clipped: np.ndarray) -> bool:
         delta = np.abs(clipped - raw)
