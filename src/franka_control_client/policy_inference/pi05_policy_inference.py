@@ -8,7 +8,7 @@ import cv2
 import numpy as np
 import pyzlc
 
-from .policy_inference_manager import PolicyInferenceManager
+from .policy_inference_manager import PolicyInferenceEvent, PolicyInferenceManager
 from ..control_pair.cartesian_policy_panda_control_pair import (
     CartesianPolicyPandaRobotiqControlPair,
 )
@@ -54,6 +54,8 @@ class Pi05PolicyInferenceConfig:
     max_rotation_step_rad: float = 0.05
     chunk_replan_steps: int = 50
     gripper_open_confirm_steps: int = 12
+    stop_after_first_release: bool = False
+    stop_after_release_steps: int = 8
 
 
 class Pi05PolicyInference(PolicyInferenceManager):
@@ -122,6 +124,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._last_action_timestamp: Optional[float] = None
         self._last_gripper_cmd: Optional[float] = None
         self._pending_open_steps = 0
+        self._release_confirmed = False
+        self._stop_after_release_countdown: Optional[int] = None
 
         self.register_start_infering_event(self.control_pair.start_control_pair)
         self.register_stop_infering_event(self.control_pair.stop_control_pair)
@@ -131,6 +135,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._chunk_step = 0
         self._last_gripper_cmd = None
         self._pending_open_steps = 0
+        self._release_confirmed = False
+        self._stop_after_release_countdown = None
         current_action = self.policy.current_action
         self._last_action_timestamp = (
             float(current_action["timestamp"]) if current_action is not None else None
@@ -156,6 +162,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             action = self._action_chunk[self._chunk_step]
             self._chunk_step += 1
             self.control_pair.update_action(self._sanitize_action(action))
+            self._maybe_stop_after_release()
 
         elapsed = time.perf_counter() - start
         sleep_time = max(0.0, (1.0 / self.fps) - elapsed)
@@ -270,11 +277,26 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._pending_open_steps += 1
             if self._pending_open_steps < confirm_steps:
                 return 1.0
+            if not self._release_confirmed:
+                self._release_confirmed = True
+                self._stop_after_release_countdown = max(0, int(self.cfg.stop_after_release_steps))
+                pyzlc.info("Confirmed first gripper release.")
         else:
             self._pending_open_steps = 0
 
         self._last_gripper_cmd = gripper_cmd
         return gripper_cmd
+
+    def _maybe_stop_after_release(self) -> None:
+        if not self.cfg.stop_after_first_release:
+            return
+        if self._stop_after_release_countdown is None:
+            return
+        if self._stop_after_release_countdown > 0:
+            self._stop_after_release_countdown -= 1
+            return
+        pyzlc.info("Stopping inference after first confirmed gripper release.")
+        self._state_machine.trigger(PolicyInferenceEvent.DISCARD)
 
     def _has_significant_clip(self, raw: np.ndarray, clipped: np.ndarray) -> bool:
         delta = np.abs(clipped - raw)
