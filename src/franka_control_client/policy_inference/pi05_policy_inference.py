@@ -60,6 +60,7 @@ class Pi05PolicyInferenceConfig:
     debug_image_dir: Optional[str] = None
     debug_image_interval: int = 25
     reclose_after_release_min_motion_m: float = 0.08
+    task_after_first_release: Optional[str] = None
 
 
 class Pi05PolicyInference(PolicyInferenceManager):
@@ -81,6 +82,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.data_collectors = data_collectors
         self.control_pair = control_pair
         self.cfg = cfg
+        self._initial_task = cfg.task
         if cfg.policy_transport == "zmq":
             if not cfg.policy_zmq_endpoint:
                 raise ValueError("policy_zmq_endpoint is required for ZMQ policy transport.")
@@ -149,6 +151,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._last_sanitized_action = None
         self._debug_image_step = 0
         self._release_pos = None
+        self.task = self._initial_task
         current_action = self.policy.current_action
         self._last_action_timestamp = (
             float(current_action["timestamp"]) if current_action is not None else None
@@ -350,6 +353,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "Confirmed first gripper release: "
             f"current_pos={_format_vec(current_pos)}, target_pos={_format_vec(target_pos)}"
         )
+        if self.cfg.task_after_first_release:
+            self.task = self.cfg.task_after_first_release
+            self._action_chunk = None
+            self._chunk_step = 0
+            pyzlc.info(f"Switching task after first release: {self.task}")
 
     def _should_suppress_post_release_close(self, gripper_cmd: float) -> bool:
         if not self._release_confirmed:

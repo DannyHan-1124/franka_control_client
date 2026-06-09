@@ -29,6 +29,7 @@ def _parse_args() -> argparse.Namespace:
         description="Run Franka Pi0.5 policy inference against a remote pyzlc policy node."
     )
     parser.add_argument("--task", required=True)
+    parser.add_argument("--task_after_first_release", default=None)
     parser.add_argument("--fps", type=int, default=20)
     parser.add_argument("--control_hz", type=float, default=100.0)
     parser.add_argument("--pyzlc_name", default="pi05_franka_client")
@@ -93,6 +94,7 @@ def main() -> None:
     inference_cfg = Pi05PolicyInferenceConfig(
         policy_name=args.policy_name,
         task=args.task,
+        task_after_first_release=args.task_after_first_release,
         fps=args.fps,
         obs_topic=args.obs_topic,
         action_topic=args.action_topic,
