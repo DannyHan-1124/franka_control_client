@@ -49,6 +49,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--stop_after_release_steps", type=int, default=0)
     parser.add_argument("--debug_image_dir", default=None)
     parser.add_argument("--debug_image_interval", type=int, default=25)
+    parser.add_argument("--reclose_after_release_min_motion_m", type=float, default=0.08)
     parser.add_argument("--robot_name", default="FrankaPanda")
     parser.add_argument("--static_camera", default="static_cam")
     parser.add_argument("--wrist_camera", default="wrist_cam")
@@ -107,6 +108,7 @@ def main() -> None:
         stop_after_release_steps=args.stop_after_release_steps,
         debug_image_dir=args.debug_image_dir,
         debug_image_interval=args.debug_image_interval,
+        reclose_after_release_min_motion_m=args.reclose_after_release_min_motion_m,
     )
     inference_manager = Pi05PolicyInference(
         data_collectors=data_collectors,
