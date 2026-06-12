@@ -38,6 +38,9 @@ ACTION_MAX = np.asarray(
      0.7829164267, 0.3113254011, 0.2575095892, 1.0],
     dtype=np.float64,
 )
+ACTION_CLIP_POS_WARN_M = 0.01
+ACTION_CLIP_QUAT_WARN = 0.05
+ACTION_CLIP_GRIPPER_WARN = 0.25
 
 
 @dataclass
@@ -442,8 +445,12 @@ class Pi05PolicyInference(PolicyInferenceManager):
         arr = np.asarray(action, dtype=np.float64).reshape(-1)[:ACTION_DIM]
         if self.cfg.clamp_actions:
             clipped = np.clip(arr, ACTION_MIN, ACTION_MAX)
-            if self._has_significant_clip(arr, clipped):
-                pyzlc.warning(f"Clipped out-of-range Pi0.5 action: raw={arr}, clipped={clipped}")
+            clip_summary = self._significant_clip_summary(arr, clipped)
+            if clip_summary:
+                pyzlc.warning(
+                    "Clipped out-of-range Pi0.5 action "
+                    f"({clip_summary}): raw={_format_vec(arr)}, clipped={_format_vec(clipped)}"
+                )
             arr = clipped
         quat = arr[3:7]
         quat_norm = np.linalg.norm(quat)
@@ -563,11 +570,23 @@ class Pi05PolicyInference(PolicyInferenceManager):
         except Exception as exc:
             pyzlc.warning(f"Failed to send final open gripper command: {exc}")
 
-    def _has_significant_clip(self, raw: np.ndarray, clipped: np.ndarray) -> bool:
+    def _significant_clip_summary(self, raw: np.ndarray, clipped: np.ndarray) -> str:
         delta = np.abs(clipped - raw)
-        if np.any(delta[:7] > 1e-4):
-            return True
-        return bool(delta[7] > 0.05)
+        parts = []
+
+        pos_delta = float(np.linalg.norm(delta[:3]))
+        if pos_delta > ACTION_CLIP_POS_WARN_M:
+            parts.append(f"pos_delta={pos_delta:.4f}m")
+
+        quat_delta = float(np.linalg.norm(delta[3:7]))
+        if quat_delta > ACTION_CLIP_QUAT_WARN:
+            parts.append(f"quat_delta={quat_delta:.4f}")
+
+        gripper_delta = float(delta[7])
+        if gripper_delta > ACTION_CLIP_GRIPPER_WARN:
+            parts.append(f"gripper_delta={gripper_delta:.3f}")
+
+        return ", ".join(parts)
 
     def _limit_cartesian_step(self, action: np.ndarray) -> np.ndarray:
         current_state = self.arm_wrapper.capture_step()

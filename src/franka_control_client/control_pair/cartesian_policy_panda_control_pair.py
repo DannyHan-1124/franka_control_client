@@ -18,6 +18,7 @@ GRIPPER_SPEED: float = 0.7
 GRIPPER_FORCE: float = 0.3
 DEFAULT_POSITION = (0.0, 0.0, 0.0, -2.15, 0.0, 2.15, 0.0)
 MAX_POSITION_COMMAND_STEP_M: float = 0.013
+POSITION_LIMIT_WARN_FACTOR: float = 2.0
 
 
 class CartesianPolicyPandaRobotiqControlPair(ControlPair):
@@ -122,10 +123,11 @@ class CartesianPolicyPandaRobotiqControlPair(ControlPair):
         dist = float(np.linalg.norm(delta))
         if dist > MAX_POSITION_COMMAND_STEP_M:
             target = self._last_sent_pos + delta * (MAX_POSITION_COMMAND_STEP_M / dist)
-            pyzlc.warning(
-                "Limited Cartesian command step in control loop: "
-                f"{dist:.4f}m -> {MAX_POSITION_COMMAND_STEP_M:.4f}m"
-            )
+            if dist > MAX_POSITION_COMMAND_STEP_M * POSITION_LIMIT_WARN_FACTOR:
+                pyzlc.warning(
+                    "Limited large Cartesian command step in control loop: "
+                    f"{dist:.4f}m -> {MAX_POSITION_COMMAND_STEP_M:.4f}m"
+                )
         self._last_sent_pos = target.copy()
         return target
 
