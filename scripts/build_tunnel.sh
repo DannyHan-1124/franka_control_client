@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Build the one SSH tunnel used by direct-ZMQ PI0.5 policy inference.
+# Build the one SSH tunnel used by streaming-ZMQ PI0.5 policy inference.
 #
 # Run on the lab computer after scripts/test.sh is running on the HoreKa GPU node.
 # Usage:
@@ -9,8 +9,8 @@ set -euo pipefail
 
 HOREKA_LOGIN="${HOREKA_LOGIN:-utphd@horeka.scc.kit.edu}"
 HOREKA_NODE="${1:-${HOREKA_NODE:-}}"
-LAB_POLICY_PORT="${LAB_POLICY_PORT:-17725}"
-HOREKA_POLICY_PORT="${HOREKA_POLICY_PORT:-40023}"
+LAB_POLICY_PORT="${LAB_POLICY_PORT:-17726}"
+HOREKA_POLICY_PORT="${HOREKA_POLICY_PORT:-40024}"
 
 if [[ -z "${HOREKA_NODE}" ]]; then
   cat >&2 <<EOF
