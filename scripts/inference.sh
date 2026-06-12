@@ -1,7 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export PYTHONPATH="${REPO_ROOT}/src:${PYTHONPATH:-}"
+
 # kill old connection
 # pgrep -af 'ssh.*(-L)'
 
-python examples/pi05_policy_inference_franka.py \
+python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --task "put red cylinder on green cube and put green cylinder on red cube" \
     --stop_after_first_release \
     --pyzlc_name policy_inference \
