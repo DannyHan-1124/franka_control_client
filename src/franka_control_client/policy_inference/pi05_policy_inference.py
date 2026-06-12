@@ -343,9 +343,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
         return obs
 
     def _build_policy_kwargs(self) -> Dict[str, Any]:
-        kwargs: Dict[str, Any] = {}
-        if self.cfg.faster_infer_time_schedule != "const":
-            kwargs["infer_time_schedule"] = self.cfg.faster_infer_time_schedule
+        kwargs: Dict[str, Any] = {
+            "infer_time_schedule": self.cfg.faster_infer_time_schedule,
+        }
         if self.cfg.faster_alpha != 1.0:
             kwargs["alpha"] = self.cfg.faster_alpha
         if self.cfg.faster_u0 != 0.9:

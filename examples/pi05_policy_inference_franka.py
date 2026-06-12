@@ -31,6 +31,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--task", required=True)
     parser.add_argument("--fps", type=int, default=20)
     parser.add_argument("--control_hz", type=float, default=100.0)
+    parser.add_argument("--robot_name", default="FrankaPanda")
     parser.add_argument("--pyzlc_name", default="pi05_franka_client")
     parser.add_argument("--pyzlc_host", default="192.168.0.109")
     parser.add_argument("--pyzlc_group_name", default="DroidGroup")
@@ -66,9 +67,9 @@ def main() -> None:
     )
 
     follower = PandaRobotiq(
-        "PandaRobotiq",
-        RemotePandaArm("FrankaPanda"),
-        RemoteRobotiqGripper("FrankaPanda"),
+        args.robot_name,
+        RemotePandaArm(args.robot_name),
+        RemoteRobotiqGripper(args.robot_name),
     )
     control_pair = CartesianPolicyPandaRobotiqControlPair(
         follower.panda_arm,

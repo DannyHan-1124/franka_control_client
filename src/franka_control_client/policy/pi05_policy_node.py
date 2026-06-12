@@ -237,7 +237,14 @@ class Pi05PolicyNode:
                 continue
             rgb = self._decode_image(obs_msg[key])
             rgb = self._resize_image(rgb, shape)
-            observation[key] = torch.from_numpy(np.ascontiguousarray(rgb)).float().unsqueeze(0) / 255.0
+            observation[key] = (
+                torch.from_numpy(np.ascontiguousarray(rgb))
+                .permute(2, 0, 1)
+                .contiguous()
+                .float()
+                .unsqueeze(0)
+                / 255.0
+            )
 
         task = obs_msg.get("task") or self.cfg.default_task
         if task:
@@ -344,7 +351,7 @@ class Pi05PolicyNode:
 
                 observation = self.preprocessor(self._build_observation(obs_msg))
                 policy_kwargs = self._policy_kwargs(obs_msg)
-                policy_kwargs.setdefault("infer_time_schedule", "HAS")
+                policy_kwargs.setdefault("infer_time_schedule", self.cfg.faster_infer_time_schedule)
 
                 emitted_indices: set[int] = set()
                 with torch.inference_mode():
