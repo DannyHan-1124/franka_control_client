@@ -152,6 +152,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._release_pos: Optional[np.ndarray] = None
         self._stream_request_id: Optional[int] = None
         self._stream_action_buffer: dict[int, np.ndarray] = {}
+        self._stream_current_chunk: dict[int, np.ndarray] = {}
         self._stream_next_index = 0
         self._stream_final = False
 
@@ -171,6 +172,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._release_pos = None
         self._stream_request_id = None
         self._stream_action_buffer = {}
+        self._stream_current_chunk = {}
         self._stream_next_index = 0
         self._stream_final = False
         self.task = self._initial_task
@@ -246,10 +248,42 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _request_stream(self) -> None:
         if self._streaming_policy is None:
             return
-        self._stream_request_id = self._streaming_policy.send_observation(self._build_observation())
+        obs = self._build_observation()
+        prefix_actions = self._build_stream_action_prefix()
+        if prefix_actions is not None:
+            policy_kwargs = obs.setdefault("policy_kwargs", {})
+            policy_kwargs["delay"] = int(len(prefix_actions))
+            policy_kwargs["action_prefix"] = _pad_action_prefix(prefix_actions).tolist()
+        self._stream_request_id = self._streaming_policy.send_observation(obs)
         self._stream_action_buffer = {}
+        self._stream_current_chunk = {}
+        if prefix_actions is not None:
+            for idx, action in enumerate(prefix_actions):
+                self._stream_action_buffer[idx] = action
+                self._stream_current_chunk[idx] = action
         self._stream_next_index = 0
         self._stream_final = False
+
+    def _build_stream_action_prefix(self) -> Optional[np.ndarray]:
+        prefix_steps = max(0, int(self.cfg.faster_delay_steps))
+        if prefix_steps <= 0 or self._stream_request_id is None:
+            return None
+
+        available = []
+        for idx in range(self._stream_next_index, self._stream_next_index + prefix_steps):
+            action = self._stream_current_chunk.get(idx)
+            if action is None:
+                break
+            available.append(action)
+        if not available:
+            return None
+
+        prefix = np.stack(available, axis=0)
+        pyzlc.info(
+            "Using streamed action prefix for continuity: "
+            f"steps={len(prefix)}, previous_start_index={self._stream_next_index}"
+        )
+        return prefix
 
     def _drain_streaming_updates(self) -> None:
         if self._streaming_policy is None:
@@ -261,6 +295,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             actions = self._parse_action_payload(msg.get("actions", [])) if indices else np.empty((0, ACTION_DIM))
             for idx, action in zip(indices, actions, strict=True):
                 self._stream_action_buffer[idx] = action
+                self._stream_current_chunk[idx] = action
             if msg.get("final"):
                 self._stream_final = True
             if indices:
@@ -350,8 +385,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
             kwargs["alpha"] = self.cfg.faster_alpha
         if self.cfg.faster_u0 != 0.9:
             kwargs["u0"] = self.cfg.faster_u0
-        if self.cfg.faster_delay_steps > 0:
-            kwargs["delay"] = self.cfg.faster_delay_steps
         return kwargs
 
     def _maybe_save_debug_images(self, static_rgb: np.ndarray, wrist_rgb: np.ndarray) -> None:
@@ -420,6 +453,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
         confirm_steps = int(self.cfg.gripper_open_confirm_steps)
         if confirm_steps <= 0:
             return gripper_cmd
+
+        if gripper_cmd >= 0.5 and not self._release_armed:
+            self._release_armed = True
+            pyzlc.info("Armed stop-after-release guard after closed gripper command.")
 
         if self._last_gripper_cmd is None:
             self._last_gripper_cmd = gripper_cmd
@@ -576,6 +613,18 @@ def _encode_rgb_image(image: np.ndarray) -> Dict[str, Any]:
         "channels": int(c),
         "rgb_data": rgb.tobytes(),
     }
+
+
+def _pad_action_prefix(prefix: np.ndarray, chunk_size: int = 50) -> np.ndarray:
+    arr = np.asarray(prefix, dtype=np.float32)
+    if arr.ndim != 2:
+        raise ValueError(f"Expected action prefix shape (steps, action_dim), got {arr.shape}")
+    if arr.shape[-1] < ACTION_DIM:
+        raise ValueError(f"Expected action prefix dim >= {ACTION_DIM}, got {arr.shape[-1]}")
+    out = np.zeros((chunk_size, ACTION_DIM), dtype=np.float32)
+    steps = min(chunk_size, arr.shape[0])
+    out[:steps] = arr[:steps, :ACTION_DIM]
+    return out[None, :, :]
 
 
 def _longest_true_run(mask: np.ndarray) -> int:

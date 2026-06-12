@@ -265,6 +265,17 @@ class Pi05PolicyNode:
         msg_kwargs = obs_msg.get("policy_kwargs")
         if isinstance(msg_kwargs, dict):
             kwargs.update(msg_kwargs)
+        action_prefix = kwargs.get("action_prefix")
+        if action_prefix is not None and not isinstance(action_prefix, torch.Tensor):
+            try:
+                device = next(self.policy.parameters()).device
+            except StopIteration:
+                device = torch.device(self.cfg.device)
+            kwargs["action_prefix"] = torch.as_tensor(
+                action_prefix,
+                dtype=torch.float32,
+                device=device,
+            )
         return kwargs
 
     def _postprocess_action_chunk(self, action_chunk: torch.Tensor) -> np.ndarray:
