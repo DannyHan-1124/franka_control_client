@@ -249,41 +249,45 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if self._streaming_policy is None:
             return
         obs = self._build_observation()
-        prefix_actions = self._build_stream_action_prefix()
-        if prefix_actions is not None:
+        prefix_request_id, prefix_start_index, prefix_steps = self._build_stream_prefix_metadata()
+        if prefix_request_id is not None and prefix_steps > 0:
             policy_kwargs = obs.setdefault("policy_kwargs", {})
-            policy_kwargs["delay"] = int(len(prefix_actions))
-            policy_kwargs["action_prefix"] = _pad_action_prefix(prefix_actions).tolist()
+            policy_kwargs["delay"] = int(prefix_steps)
+            policy_kwargs["prefix_request_id"] = int(prefix_request_id)
+            policy_kwargs["prefix_start_index"] = int(prefix_start_index)
+        previous_chunk = dict(self._stream_current_chunk)
         self._stream_request_id = self._streaming_policy.send_observation(obs)
         self._stream_action_buffer = {}
         self._stream_current_chunk = {}
-        if prefix_actions is not None:
-            for idx, action in enumerate(prefix_actions):
-                self._stream_action_buffer[idx] = action
-                self._stream_current_chunk[idx] = action
+        if prefix_request_id is not None and prefix_steps > 0:
+            for out_idx, src_idx in enumerate(range(prefix_start_index, prefix_start_index + prefix_steps)):
+                action = previous_chunk.get(src_idx)
+                if action is None:
+                    break
+                self._stream_action_buffer[out_idx] = action
+                self._stream_current_chunk[out_idx] = action
         self._stream_next_index = 0
         self._stream_final = False
 
-    def _build_stream_action_prefix(self) -> Optional[np.ndarray]:
+    def _build_stream_prefix_metadata(self) -> tuple[Optional[int], int, int]:
         prefix_steps = max(0, int(self.cfg.faster_delay_steps))
         if prefix_steps <= 0 or self._stream_request_id is None:
-            return None
+            return None, 0, 0
 
-        available = []
+        available_steps = 0
         for idx in range(self._stream_next_index, self._stream_next_index + prefix_steps):
-            action = self._stream_current_chunk.get(idx)
-            if action is None:
+            if idx not in self._stream_current_chunk:
                 break
-            available.append(action)
-        if not available:
-            return None
+            available_steps += 1
+        if available_steps <= 0:
+            return None, 0, 0
 
-        prefix = np.stack(available, axis=0)
         pyzlc.info(
             "Using streamed action prefix for continuity: "
-            f"steps={len(prefix)}, previous_start_index={self._stream_next_index}"
+            f"steps={available_steps}, previous_request_id={self._stream_request_id}, "
+            f"previous_start_index={self._stream_next_index}"
         )
-        return prefix
+        return self._stream_request_id, self._stream_next_index, available_steps
 
     def _drain_streaming_updates(self) -> None:
         if self._streaming_policy is None:
@@ -613,18 +617,6 @@ def _encode_rgb_image(image: np.ndarray) -> Dict[str, Any]:
         "channels": int(c),
         "rgb_data": rgb.tobytes(),
     }
-
-
-def _pad_action_prefix(prefix: np.ndarray, chunk_size: int = 50) -> np.ndarray:
-    arr = np.asarray(prefix, dtype=np.float32)
-    if arr.ndim != 2:
-        raise ValueError(f"Expected action prefix shape (steps, action_dim), got {arr.shape}")
-    if arr.shape[-1] < ACTION_DIM:
-        raise ValueError(f"Expected action prefix dim >= {ACTION_DIM}, got {arr.shape[-1]}")
-    out = np.zeros((chunk_size, ACTION_DIM), dtype=np.float32)
-    steps = min(chunk_size, arr.shape[0])
-    out[:steps] = arr[:steps, :ACTION_DIM]
-    return out[None, :, :]
 
 
 def _longest_true_run(mask: np.ndarray) -> int:

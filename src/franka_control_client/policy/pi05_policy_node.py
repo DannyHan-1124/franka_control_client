@@ -57,6 +57,7 @@ class Pi05PolicyNode:
         self._action_pub = None
         self._direct_socket = None
         self._streaming_socket = None
+        self._stream_raw_action_cache: dict[int, torch.Tensor] = {}
         if cfg.direct_zmq_bind and cfg.streaming_zmq_bind:
             raise ValueError("Use only one of direct_zmq_bind or streaming_zmq_bind.")
         if cfg.direct_zmq_bind:
@@ -278,6 +279,36 @@ class Pi05PolicyNode:
             )
         return kwargs
 
+    def _attach_raw_action_prefix(self, policy_kwargs: Dict[str, Any]) -> None:
+        prefix_request_id = policy_kwargs.pop("prefix_request_id", None)
+        prefix_start_index = int(policy_kwargs.pop("prefix_start_index", 0) or 0)
+        delay = int(policy_kwargs.get("delay", 0) or 0)
+        if prefix_request_id is None or delay <= 0:
+            return
+
+        cached = self._stream_raw_action_cache.get(int(prefix_request_id))
+        if cached is None:
+            print(
+                f"Requested action prefix from missing request_id={prefix_request_id}; proceeding without prefix.",
+                flush=True,
+            )
+            policy_kwargs.pop("delay", None)
+            return
+
+        available = max(0, min(delay, cached.shape[1] - prefix_start_index))
+        if available <= 0:
+            policy_kwargs.pop("delay", None)
+            return
+
+        try:
+            device = next(self.policy.parameters()).device
+        except StopIteration:
+            device = torch.device(self.cfg.device)
+        action_prefix = torch.zeros_like(cached)
+        action_prefix[:, :available, :] = cached[:, prefix_start_index : prefix_start_index + available, :]
+        policy_kwargs["delay"] = available
+        policy_kwargs["action_prefix"] = action_prefix.to(device=device, dtype=torch.float32)
+
     def _postprocess_action_chunk(self, action_chunk: torch.Tensor) -> np.ndarray:
         if action_chunk.ndim == 2:
             action_chunk = action_chunk.unsqueeze(1)
@@ -363,12 +394,15 @@ class Pi05PolicyNode:
                 observation = self.preprocessor(self._build_observation(obs_msg))
                 policy_kwargs = self._policy_kwargs(obs_msg)
                 policy_kwargs.setdefault("infer_time_schedule", self.cfg.faster_infer_time_schedule)
+                self._attach_raw_action_prefix(policy_kwargs)
 
                 emitted_indices: set[int] = set()
+                latest_raw_actions = None
                 with torch.inference_mode():
                     for newly_ready, action_tensor in self.policy.predict_action_stream(
                         observation, **policy_kwargs
                     ):
+                        latest_raw_actions = action_tensor.detach()
                         ready_indices = torch.nonzero(newly_ready[0], as_tuple=False).flatten()
                         if ready_indices.numel() == 0:
                             continue
@@ -386,6 +420,12 @@ class Pi05PolicyNode:
                                 "final": False,
                             }
                         )
+
+                if request_id is not None and latest_raw_actions is not None:
+                    self._stream_raw_action_cache[int(request_id)] = latest_raw_actions.detach().cpu()
+                    for old_request_id in list(self._stream_raw_action_cache):
+                        if old_request_id < int(request_id) - 4:
+                            del self._stream_raw_action_cache[old_request_id]
 
                 self._streaming_socket.send_pyobj(
                     {
