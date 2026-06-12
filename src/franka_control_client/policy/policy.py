@@ -119,3 +119,79 @@ class DirectZmqPolicy(RemoteDevice):
         self._socket.setsockopt(zmq.RCVTIMEO, self.timeout_ms)
         self._socket.setsockopt(zmq.SNDTIMEO, self.timeout_ms)
         self._socket.connect(self.endpoint)
+
+
+class StreamingZmqPolicy(RemoteDevice):
+    """Asynchronous one-to-one ZMQ policy client for streamed action deltas."""
+
+    def __init__(
+        self,
+        device_name: str,
+        endpoint: str,
+        timeout_ms: int = 30000,
+    ) -> None:
+        super().__init__(device_name)
+        self.endpoint = endpoint
+        self.timeout_ms = timeout_ms
+        self._ctx = zmq.Context.instance()
+        self._socket = self._ctx.socket(zmq.PAIR)
+        self._socket.setsockopt(zmq.LINGER, 0)
+        self._socket.setsockopt(zmq.RCVTIMEO, 0)
+        self._socket.setsockopt(zmq.SNDTIMEO, timeout_ms)
+        self._socket.connect(endpoint)
+        self._request_id = 0
+        self._active_request_id: Optional[int] = None
+        self._current_action: Optional[PolicyActionMsg] = PolicyActionMsg(
+            timestamp=time.time(),
+            action=DEFAULT_INIT_ACTION,
+            shape=[len(DEFAULT_INIT_ACTION)],
+        )
+
+    @property
+    def current_action(self) -> Optional[PolicyActionMsg]:
+        return self._current_action
+
+    @property
+    def active_request_id(self) -> Optional[int]:
+        return self._active_request_id
+
+    def send_observation(self, obs: PolicyObservationMsg) -> int:
+        """Send one observation without waiting for all action samples."""
+        self._request_id += 1
+        request_id = self._request_id
+        msg = {
+            "type": "observation",
+            "request_id": request_id,
+            "timestamp": time.time(),
+            "observation": obs,
+        }
+        self._socket.send_pyobj(msg)
+        self._active_request_id = request_id
+        return request_id
+
+    def recv_action_updates(self) -> list[dict[str, Any]]:
+        """Drain currently available streamed action messages."""
+        updates: list[dict[str, Any]] = []
+        while True:
+            try:
+                msg = self._socket.recv_pyobj(flags=zmq.NOBLOCK)
+            except zmq.Again:
+                break
+            if not isinstance(msg, dict):
+                continue
+            if msg.get("type") == "error":
+                self._active_request_id = None
+                raise RuntimeError(str(msg.get("error", "Unknown streaming policy error")))
+            if msg.get("type") != "action_delta":
+                continue
+            updates.append(msg)
+            if msg.get("final"):
+                if msg.get("request_id") == self._active_request_id:
+                    self._active_request_id = None
+            if "action" in msg:
+                self._current_action = PolicyActionMsg(
+                    timestamp=msg["timestamp"],
+                    action=msg["action"],
+                    shape=msg.get("shape", [len(msg["action"])]),
+                )
+        return updates

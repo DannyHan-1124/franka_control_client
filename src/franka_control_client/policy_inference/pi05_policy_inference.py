@@ -19,7 +19,7 @@ from ..data_collection.irl_wrapper import (
     PandaArmDataWrapper,
     RobotiqGripperDataWrapper,
 )
-from ..policy.policy import DirectZmqPolicy, RemotePolicy
+from ..policy.policy import DirectZmqPolicy, RemotePolicy, StreamingZmqPolicy
 
 
 IMAGE_SIZE = (224, 224)
@@ -61,6 +61,11 @@ class Pi05PolicyInferenceConfig:
     debug_image_interval: int = 25
     reclose_after_release_min_motion_m: float = 0.08
     task_after_first_release: Optional[str] = None
+    gripper_close_max_z_m: float = 0.0
+    faster_infer_time_schedule: str = "const"
+    faster_alpha: float = 1.0
+    faster_u0: float = 0.9
+    faster_delay_steps: int = 0
 
 
 class Pi05PolicyInference(PolicyInferenceManager):
@@ -83,6 +88,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.control_pair = control_pair
         self.cfg = cfg
         self._initial_task = cfg.task
+        self._streaming_policy: Optional[StreamingZmqPolicy] = None
         if cfg.policy_transport == "zmq":
             if not cfg.policy_zmq_endpoint:
                 raise ValueError("policy_zmq_endpoint is required for ZMQ policy transport.")
@@ -91,6 +97,15 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 endpoint=cfg.policy_zmq_endpoint,
                 timeout_ms=cfg.policy_zmq_timeout_ms,
             )
+        elif cfg.policy_transport == "streaming_zmq":
+            if not cfg.policy_zmq_endpoint:
+                raise ValueError("policy_zmq_endpoint is required for streaming ZMQ policy transport.")
+            self._streaming_policy = StreamingZmqPolicy(
+                cfg.policy_name,
+                endpoint=cfg.policy_zmq_endpoint,
+                timeout_ms=cfg.policy_zmq_timeout_ms,
+            )
+            self.policy = self._streaming_policy
         elif cfg.policy_transport == "pyzlc":
             self.policy = RemotePolicy(
                 cfg.policy_name,
@@ -136,6 +151,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._last_sanitized_action: Optional[np.ndarray] = None
         self._debug_image_step = 0
         self._release_pos: Optional[np.ndarray] = None
+        self._stream_request_id: Optional[int] = None
+        self._stream_action_buffer: dict[int, np.ndarray] = {}
+        self._stream_next_index = 0
+        self._stream_final = False
 
         self.register_start_infering_event(self.control_pair.start_control_pair)
         self.register_stop_infering_event(self.control_pair.stop_control_pair)
@@ -151,6 +170,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._last_sanitized_action = None
         self._debug_image_step = 0
         self._release_pos = None
+        self._stream_request_id = None
+        self._stream_action_buffer = {}
+        self._stream_next_index = 0
+        self._stream_final = False
         self.task = self._initial_task
         current_action = self.policy.current_action
         self._last_action_timestamp = (
@@ -161,6 +184,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
     def _infer_step(self) -> None:
         start = time.perf_counter()
+        if self._streaming_policy is not None:
+            self._infer_streaming_step(start)
+            return
+
         if self._should_request_action_chunk():
             self.policy.send_observation(self._build_observation())
 
@@ -185,6 +212,70 @@ class Pi05PolicyInference(PolicyInferenceManager):
         sleep_time = max(0.0, (1.0 / self.fps) - elapsed)
         if sleep_time > 0.001:
             time.sleep(sleep_time)
+
+    def _infer_streaming_step(self, start: float) -> None:
+        self._drain_streaming_updates()
+        if self._should_request_stream():
+            self._request_stream()
+            self._drain_streaming_updates()
+
+        action = self._pop_next_stream_action()
+        if action is not None:
+            sanitized_action = self._sanitize_action(action)
+            self._last_sanitized_action = sanitized_action.copy()
+            self.control_pair.update_action(sanitized_action)
+            self._maybe_stop_after_release()
+
+        elapsed = time.perf_counter() - start
+        sleep_time = max(0.0, (1.0 / self.fps) - elapsed)
+        if sleep_time > 0.001:
+            time.sleep(sleep_time)
+
+    def _should_request_stream(self) -> bool:
+        if self._streaming_policy is None:
+            return False
+        if self._streaming_policy.active_request_id is not None:
+            return False
+        if self._stream_request_id is None:
+            return True
+        if self._stream_next_index >= max(1, int(self.cfg.chunk_replan_steps)):
+            return True
+        if self._stream_final and self._stream_next_index not in self._stream_action_buffer:
+            return True
+        return False
+
+    def _request_stream(self) -> None:
+        if self._streaming_policy is None:
+            return
+        self._stream_request_id = self._streaming_policy.send_observation(self._build_observation())
+        self._stream_action_buffer = {}
+        self._stream_next_index = 0
+        self._stream_final = False
+
+    def _drain_streaming_updates(self) -> None:
+        if self._streaming_policy is None:
+            return
+        for msg in self._streaming_policy.recv_action_updates():
+            if msg.get("request_id") != self._stream_request_id:
+                continue
+            indices = [int(idx) for idx in msg.get("indices", [])]
+            actions = self._parse_action_payload(msg.get("actions", [])) if indices else np.empty((0, ACTION_DIM))
+            for idx, action in zip(indices, actions, strict=True):
+                self._stream_action_buffer[idx] = action
+            if msg.get("final"):
+                self._stream_final = True
+            if indices:
+                pyzlc.info(
+                    "Received streamed Pi0.5 actions: "
+                    f"request_id={self._stream_request_id}, indices={indices}, final={bool(msg.get('final'))}"
+                )
+
+    def _pop_next_stream_action(self) -> Optional[np.ndarray]:
+        action = self._stream_action_buffer.pop(self._stream_next_index, None)
+        if action is None:
+            return None
+        self._stream_next_index += 1
+        return action
 
     def _should_request_action_chunk(self) -> bool:
         if self._action_chunk is None:
@@ -241,12 +332,28 @@ class Pi05PolicyInference(PolicyInferenceManager):
         static_rgb = self._capture_rgb(self.static_cam)
         wrist_rgb = self._capture_rgb(self.wrist_cam)
         self._maybe_save_debug_images(static_rgb, wrist_rgb)
-        return {
+        obs = {
             "observation.images.base_0_rgb": _encode_rgb_image(static_rgb),
             "observation.images.left_wrist_0_rgb": _encode_rgb_image(wrist_rgb),
             "observation.state": self._build_state_vector().tolist(),
             "task": self.task,
         }
+        policy_kwargs = self._build_policy_kwargs()
+        if policy_kwargs:
+            obs["policy_kwargs"] = policy_kwargs
+        return obs
+
+    def _build_policy_kwargs(self) -> Dict[str, Any]:
+        kwargs: Dict[str, Any] = {}
+        if self.cfg.faster_infer_time_schedule != "const":
+            kwargs["infer_time_schedule"] = self.cfg.faster_infer_time_schedule
+        if self.cfg.faster_alpha != 1.0:
+            kwargs["alpha"] = self.cfg.faster_alpha
+        if self.cfg.faster_u0 != 0.9:
+            kwargs["u0"] = self.cfg.faster_u0
+        if self.cfg.faster_delay_steps > 0:
+            kwargs["delay"] = self.cfg.faster_delay_steps
+        return kwargs
 
     def _maybe_save_debug_images(self, static_rgb: np.ndarray, wrist_rgb: np.ndarray) -> None:
         if not self.cfg.debug_image_dir:
@@ -315,6 +422,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if confirm_steps <= 0:
             return gripper_cmd
 
+        if self._should_suppress_high_close(gripper_cmd):
+            self._pending_open_steps = 0
+            self._last_gripper_cmd = 0.0
+            return 0.0
+
         if self._last_gripper_cmd is None:
             self._last_gripper_cmd = gripper_cmd
             return gripper_cmd
@@ -337,6 +449,30 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
         self._last_gripper_cmd = gripper_cmd
         return gripper_cmd
+
+    def _should_suppress_high_close(self, gripper_cmd: float) -> bool:
+        max_z = float(self.cfg.gripper_close_max_z_m)
+        if max_z <= 0.0:
+            return False
+        if gripper_cmd < 0.5:
+            return False
+        if self._last_gripper_cmd is not None and self._last_gripper_cmd >= 0.5:
+            return False
+
+        try:
+            current_pose = _extract_ee_pose(self.arm_wrapper.capture_step())
+            current_z = float(current_pose[2])
+        except Exception:
+            return False
+
+        if current_z > max_z:
+            pyzlc.info(
+                "Suppressing close command above grasp height: "
+                f"current_z={current_z:.4f}m > {max_z:.4f}m"
+            )
+            return True
+        pyzlc.info(f"Allowing close at grasp height: current_z={current_z:.4f}m.")
+        return False
 
     def _log_confirmed_release(self) -> None:
         try:

@@ -29,17 +29,13 @@ def _parse_args() -> argparse.Namespace:
         description="Run Franka Pi0.5 policy inference against a remote pyzlc policy node."
     )
     parser.add_argument("--task", required=True)
-    parser.add_argument("--task_after_first_release", default=None)
     parser.add_argument("--fps", type=int, default=20)
     parser.add_argument("--control_hz", type=float, default=100.0)
     parser.add_argument("--pyzlc_name", default="pi05_franka_client")
     parser.add_argument("--pyzlc_host", default="192.168.0.109")
     parser.add_argument("--pyzlc_group_name", default="DroidGroup")
     parser.add_argument("--pyzlc_group_port", type=int, default=7730)
-    parser.add_argument("--policy_name", default="pi05")
-    parser.add_argument("--obs_topic", default="pi05/observation")
-    parser.add_argument("--action_topic", default="pi05/action")
-    parser.add_argument("--policy_transport", choices=("pyzlc", "zmq"), default="pyzlc")
+    parser.add_argument("--policy_transport", choices=("pyzlc", "zmq", "streaming_zmq"), default="pyzlc")
     parser.add_argument("--policy_zmq_endpoint", default=None)
     parser.add_argument("--policy_zmq_timeout_ms", type=int, default=30000)
     parser.add_argument("--max_position_step_m", type=float, default=0.005)
@@ -51,10 +47,13 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--debug_image_dir", default=None)
     parser.add_argument("--debug_image_interval", type=int, default=25)
     parser.add_argument("--reclose_after_release_min_motion_m", type=float, default=0.08)
-    parser.add_argument("--robot_name", default="FrankaPanda")
+    parser.add_argument("--gripper_close_max_z_m", type=float, default=0.0)
+    parser.add_argument("--faster_infer_time_schedule", choices=("const", "HAS"), default="const")
+    parser.add_argument("--faster_alpha", type=float, default=1.0)
+    parser.add_argument("--faster_u0", type=float, default=0.9)
+    parser.add_argument("--faster_delay_steps", type=int, default=0)
     parser.add_argument("--static_camera", default="static_cam")
     parser.add_argument("--wrist_camera", default="wrist_cam")
-    parser.add_argument("--no_clamp_actions", action="store_true")
     return parser.parse_args()
 
 
@@ -92,13 +91,8 @@ def main() -> None:
     ]
 
     inference_cfg = Pi05PolicyInferenceConfig(
-        policy_name=args.policy_name,
         task=args.task,
-        task_after_first_release=args.task_after_first_release,
         fps=args.fps,
-        obs_topic=args.obs_topic,
-        action_topic=args.action_topic,
-        clamp_actions=not args.no_clamp_actions,
         policy_transport=args.policy_transport,
         policy_zmq_endpoint=args.policy_zmq_endpoint,
         policy_zmq_timeout_ms=args.policy_zmq_timeout_ms,
@@ -111,6 +105,11 @@ def main() -> None:
         debug_image_dir=args.debug_image_dir,
         debug_image_interval=args.debug_image_interval,
         reclose_after_release_min_motion_m=args.reclose_after_release_min_motion_m,
+        gripper_close_max_z_m=args.gripper_close_max_z_m,
+        faster_infer_time_schedule=args.faster_infer_time_schedule,
+        faster_alpha=args.faster_alpha,
+        faster_u0=args.faster_u0,
+        faster_delay_steps=args.faster_delay_steps,
     )
     inference_manager = Pi05PolicyInference(
         data_collectors=data_collectors,

@@ -33,6 +33,11 @@ class Pi05NodeConfig:
     pyzlc_group_name: str
     pyzlc_group_port: int
     direct_zmq_bind: Optional[str]
+    streaming_zmq_bind: Optional[str]
+    faster_infer_time_schedule: str
+    faster_alpha: float
+    faster_u0: float
+    faster_delay_steps: int
     seed: int
 
 
@@ -51,12 +56,21 @@ class Pi05PolicyNode:
 
         self._action_pub = None
         self._direct_socket = None
+        self._streaming_socket = None
+        if cfg.direct_zmq_bind and cfg.streaming_zmq_bind:
+            raise ValueError("Use only one of direct_zmq_bind or streaming_zmq_bind.")
         if cfg.direct_zmq_bind:
             self._ctx = zmq.Context.instance()
             self._direct_socket = self._ctx.socket(zmq.REP)
             self._direct_socket.setsockopt(zmq.LINGER, 0)
             self._direct_socket.bind(cfg.direct_zmq_bind)
             print(f"Direct ZMQ policy endpoint bound to {cfg.direct_zmq_bind}", flush=True)
+        elif cfg.streaming_zmq_bind:
+            self._ctx = zmq.Context.instance()
+            self._streaming_socket = self._ctx.socket(zmq.PAIR)
+            self._streaming_socket.setsockopt(zmq.LINGER, 0)
+            self._streaming_socket.bind(cfg.streaming_zmq_bind)
+            print(f"Streaming ZMQ policy endpoint bound to {cfg.streaming_zmq_bind}", flush=True)
         else:
             pyzlc.init(
                 cfg.pyzlc_name,
@@ -156,7 +170,7 @@ class Pi05PolicyNode:
             pretrained_path=self.train_cfg.policy.pretrained_path,
             preprocessor_overrides={"device_processor": {"device": device}},
         )
-        if self.cfg.direct_zmq_bind:
+        if self.cfg.direct_zmq_bind or self.cfg.streaming_zmq_bind:
             print(f"Pi0.5 policy loaded on {self.cfg.device}", flush=True)
         else:
             pyzlc.info(f"Pi0.5 policy loaded on {self.cfg.device}")
@@ -230,16 +244,23 @@ class Pi05PolicyNode:
             observation["task"] = task
         return observation
 
-    def _predict_action_msg(self, obs_msg: Dict[str, Any]) -> Dict[str, Any]:
-        observation = self._build_observation(obs_msg)
-        observation = self.preprocessor(observation)
+    def _policy_kwargs(self, obs_msg: Dict[str, Any]) -> Dict[str, Any]:
+        kwargs: Dict[str, Any] = {}
+        if self.cfg.faster_infer_time_schedule != "const":
+            kwargs["infer_time_schedule"] = self.cfg.faster_infer_time_schedule
+        if self.cfg.faster_alpha != 1.0:
+            kwargs["alpha"] = self.cfg.faster_alpha
+        if self.cfg.faster_u0 != 0.9:
+            kwargs["u0"] = self.cfg.faster_u0
+        if self.cfg.faster_delay_steps > 0:
+            kwargs["delay"] = self.cfg.faster_delay_steps
 
-        with torch.inference_mode():
-            if hasattr(self.policy, "predict_action_chunk"):
-                action_chunk = self.policy.predict_action_chunk(observation)
-            else:
-                action_chunk = self.policy.select_action(observation)
+        msg_kwargs = obs_msg.get("policy_kwargs")
+        if isinstance(msg_kwargs, dict):
+            kwargs.update(msg_kwargs)
+        return kwargs
 
+    def _postprocess_action_chunk(self, action_chunk: torch.Tensor) -> np.ndarray:
         if action_chunk.ndim == 2:
             action_chunk = action_chunk.unsqueeze(1)
         elif action_chunk.ndim == 1:
@@ -258,7 +279,20 @@ class Pi05PolicyNode:
                 processed = processed[0]
             processed_actions.append(processed.detach().float().cpu().numpy()[:8])
 
-        action_array = np.stack(processed_actions, axis=0)
+        return np.stack(processed_actions, axis=0)
+
+    def _predict_action_msg(self, obs_msg: Dict[str, Any]) -> Dict[str, Any]:
+        observation = self._build_observation(obs_msg)
+        observation = self.preprocessor(observation)
+        policy_kwargs = self._policy_kwargs(obs_msg)
+
+        with torch.inference_mode():
+            if hasattr(self.policy, "predict_action_chunk"):
+                action_chunk = self.policy.predict_action_chunk(observation, **policy_kwargs)
+            else:
+                action_chunk = self.policy.select_action(observation)
+
+        action_array = self._postprocess_action_chunk(action_chunk)
         return {
             "timestamp": time.time(),
             "action": action_array.tolist(),
@@ -293,9 +327,77 @@ class Pi05PolicyNode:
                     }
                 )
 
+    def run_streaming_zmq(self) -> None:
+        if self._streaming_socket is None:
+            raise RuntimeError("Streaming ZMQ socket is not configured.")
+        if not hasattr(self.policy, "predict_action_stream"):
+            raise RuntimeError("Loaded policy does not implement predict_action_stream.")
+
+        self._running = True
+        while self._running:
+            msg = self._streaming_socket.recv_pyobj()
+            request_id = msg.get("request_id") if isinstance(msg, dict) else None
+            try:
+                obs_msg = msg.get("observation", msg) if isinstance(msg, dict) else msg
+                if not isinstance(obs_msg, dict):
+                    raise ValueError(f"Expected observation dict, got {type(obs_msg)!r}")
+
+                observation = self.preprocessor(self._build_observation(obs_msg))
+                policy_kwargs = self._policy_kwargs(obs_msg)
+                policy_kwargs.setdefault("infer_time_schedule", "HAS")
+
+                emitted_indices: set[int] = set()
+                with torch.inference_mode():
+                    for newly_ready, action_tensor in self.policy.predict_action_stream(
+                        observation, **policy_kwargs
+                    ):
+                        ready_indices = torch.nonzero(newly_ready[0], as_tuple=False).flatten()
+                        if ready_indices.numel() == 0:
+                            continue
+                        indices = [int(i) for i in ready_indices.detach().cpu().tolist()]
+                        emitted_indices.update(indices)
+                        action_array = self._postprocess_action_chunk(action_tensor[:, ready_indices, :])
+                        self._streaming_socket.send_pyobj(
+                            {
+                                "type": "action_delta",
+                                "request_id": request_id,
+                                "timestamp": time.time(),
+                                "indices": indices,
+                                "actions": action_array.tolist(),
+                                "shape": list(action_array.shape),
+                                "final": False,
+                            }
+                        )
+
+                self._streaming_socket.send_pyobj(
+                    {
+                        "type": "action_delta",
+                        "request_id": request_id,
+                        "timestamp": time.time(),
+                        "indices": [],
+                        "actions": [],
+                        "shape": [0, 8],
+                        "final": True,
+                        "emitted_indices": sorted(emitted_indices),
+                    }
+                )
+            except Exception as exc:
+                print(f"Pi0.5 streaming policy step failed: {exc}", flush=True)
+                self._streaming_socket.send_pyobj(
+                    {
+                        "type": "error",
+                        "request_id": request_id,
+                        "timestamp": time.time(),
+                        "error": str(exc),
+                    }
+                )
+
     def run(self) -> None:
         if self.cfg.direct_zmq_bind:
             self.run_direct_zmq()
+            return
+        if self.cfg.streaming_zmq_bind:
+            self.run_streaming_zmq()
             return
 
         self._running = True
@@ -331,6 +433,15 @@ def _parse_args() -> Pi05NodeConfig:
         default=None,
         help="Optional direct REQ/REP policy endpoint, e.g. tcp://127.0.0.1:40023.",
     )
+    parser.add_argument(
+        "--streaming_zmq_bind",
+        default=None,
+        help="Optional streaming PAIR policy endpoint, e.g. tcp://127.0.0.1:40024.",
+    )
+    parser.add_argument("--faster_infer_time_schedule", choices=("const", "HAS"), default="const")
+    parser.add_argument("--faster_alpha", type=float, default=1.0)
+    parser.add_argument("--faster_u0", type=float, default=0.9)
+    parser.add_argument("--faster_delay_steps", type=int, default=0)
     parser.add_argument("--seed", type=int, default=1000)
     args = parser.parse_args()
     return Pi05NodeConfig(**vars(args))
