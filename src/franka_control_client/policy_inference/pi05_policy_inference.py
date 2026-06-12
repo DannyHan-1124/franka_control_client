@@ -61,7 +61,6 @@ class Pi05PolicyInferenceConfig:
     debug_image_interval: int = 25
     reclose_after_release_min_motion_m: float = 0.08
     task_after_first_release: Optional[str] = None
-    gripper_close_max_z_m: float = 0.0
     faster_infer_time_schedule: str = "const"
     faster_alpha: float = 1.0
     faster_u0: float = 0.9
@@ -422,11 +421,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if confirm_steps <= 0:
             return gripper_cmd
 
-        if self._should_suppress_high_close(gripper_cmd):
-            self._pending_open_steps = 0
-            self._last_gripper_cmd = 0.0
-            return 0.0
-
         if self._last_gripper_cmd is None:
             self._last_gripper_cmd = gripper_cmd
             return gripper_cmd
@@ -449,30 +443,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
         self._last_gripper_cmd = gripper_cmd
         return gripper_cmd
-
-    def _should_suppress_high_close(self, gripper_cmd: float) -> bool:
-        max_z = float(self.cfg.gripper_close_max_z_m)
-        if max_z <= 0.0:
-            return False
-        if gripper_cmd < 0.5:
-            return False
-        if self._last_gripper_cmd is not None and self._last_gripper_cmd >= 0.5:
-            return False
-
-        try:
-            current_pose = _extract_ee_pose(self.arm_wrapper.capture_step())
-            current_z = float(current_pose[2])
-        except Exception:
-            return False
-
-        if current_z > max_z:
-            pyzlc.info(
-                "Suppressing close command above grasp height: "
-                f"current_z={current_z:.4f}m > {max_z:.4f}m"
-            )
-            return True
-        pyzlc.info(f"Allowing close at grasp height: current_z={current_z:.4f}m.")
-        return False
 
     def _log_confirmed_release(self) -> None:
         try:

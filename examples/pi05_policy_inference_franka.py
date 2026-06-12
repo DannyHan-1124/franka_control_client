@@ -47,7 +47,6 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--debug_image_dir", default=None)
     parser.add_argument("--debug_image_interval", type=int, default=25)
     parser.add_argument("--reclose_after_release_min_motion_m", type=float, default=0.08)
-    parser.add_argument("--gripper_close_max_z_m", type=float, default=0.0)
     parser.add_argument("--faster_infer_time_schedule", choices=("const", "HAS"), default="const")
     parser.add_argument("--faster_alpha", type=float, default=1.0)
     parser.add_argument("--faster_u0", type=float, default=0.9)
@@ -105,7 +104,6 @@ def main() -> None:
         debug_image_dir=args.debug_image_dir,
         debug_image_interval=args.debug_image_interval,
         reclose_after_release_min_motion_m=args.reclose_after_release_min_motion_m,
-        gripper_close_max_z_m=args.gripper_close_max_z_m,
         faster_infer_time_schedule=args.faster_infer_time_schedule,
         faster_alpha=args.faster_alpha,
         faster_u0=args.faster_u0,
