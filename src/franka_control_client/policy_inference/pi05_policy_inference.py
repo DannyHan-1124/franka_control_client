@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -68,6 +69,7 @@ class Pi05PolicyInferenceConfig:
     faster_alpha: float = 1.0
     faster_u0: float = 0.9
     faster_delay_steps: int = 0
+    metrics_path: Optional[str] = None
 
 
 class Pi05PolicyInference(PolicyInferenceManager):
@@ -158,11 +160,13 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._stream_current_chunk: dict[int, np.ndarray] = {}
         self._stream_next_index = 0
         self._stream_final = False
+        self._reset_metrics()
 
         self.register_start_infering_event(self.control_pair.start_control_pair)
         self.register_stop_infering_event(self.control_pair.stop_control_pair)
 
     def _start_infering(self) -> None:
+        self._reset_metrics()
         self._action_chunk = None
         self._chunk_step = 0
         self._last_gripper_cmd = None
@@ -186,6 +190,18 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.control_pair.reset_action()
         super()._start_infering()
 
+    def _reset_metrics(self) -> None:
+        self._metrics_start_perf: Optional[float] = None
+        self._metrics_start_wall: Optional[float] = None
+        self._metrics_reported = False
+        self._metrics_inference_calls = 0
+        self._metrics_actions_applied = 0
+        self._metrics_empty_action_steps = 0
+        self._metrics_chunks: list[dict[str, Any]] = []
+        self._metrics_stream_chunks: dict[int, dict[str, Any]] = {}
+        self._metrics_start_perf = time.perf_counter()
+        self._metrics_start_wall = time.time()
+
     def _infer_step(self) -> None:
         start = time.perf_counter()
         if self._streaming_policy is not None:
@@ -193,7 +209,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
             return
 
         if self._should_request_action_chunk():
+            request_start = time.perf_counter()
             self.policy.send_observation(self._build_observation())
+            self._metrics_inference_calls += 1
 
             action_msg = self.policy.current_action
             if action_msg is not None:
@@ -203,6 +221,16 @@ class Pi05PolicyInference(PolicyInferenceManager):
                     self._chunk_step = 0
                     self._last_action_timestamp = timestamp
                     self._log_action_chunk_debug(self._action_chunk)
+                    latency_s = time.perf_counter() - request_start
+                    self._metrics_chunks.append(
+                        {
+                            "request_id": self._metrics_inference_calls,
+                            "transport": self.cfg.policy_transport,
+                            "schedule": self.cfg.faster_infer_time_schedule,
+                            "request_latency_s": latency_s,
+                            "action_count": int(len(self._action_chunk)),
+                        }
+                    )
 
         if self._action_chunk is not None and self._chunk_step < len(self._action_chunk):
             action = self._action_chunk[self._chunk_step]
@@ -210,6 +238,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             sanitized_action = self._sanitize_action(action)
             self._last_sanitized_action = sanitized_action.copy()
             self.control_pair.update_action(sanitized_action)
+            self._metrics_actions_applied += 1
             self._maybe_stop_after_release()
 
         elapsed = time.perf_counter() - start
@@ -228,7 +257,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
             sanitized_action = self._sanitize_action(action)
             self._last_sanitized_action = sanitized_action.copy()
             self.control_pair.update_action(sanitized_action)
+            self._metrics_actions_applied += 1
             self._maybe_stop_after_release()
+        else:
+            self._metrics_empty_action_steps += 1
 
         elapsed = time.perf_counter() - start
         sleep_time = max(0.0, (1.0 / self.fps) - elapsed)
@@ -259,7 +291,22 @@ class Pi05PolicyInference(PolicyInferenceManager):
             policy_kwargs["prefix_request_id"] = int(prefix_request_id)
             policy_kwargs["prefix_start_index"] = int(prefix_start_index)
         previous_chunk = dict(self._stream_current_chunk)
+        request_start = time.perf_counter()
         self._stream_request_id = self._streaming_policy.send_observation(obs)
+        self._metrics_inference_calls += 1
+        self._metrics_stream_chunks[self._stream_request_id] = {
+            "request_id": int(self._stream_request_id),
+            "transport": self.cfg.policy_transport,
+            "schedule": self.cfg.faster_infer_time_schedule,
+            "request_time_s": request_start,
+            "prefix_steps": int(prefix_steps),
+            "prefix_request_id": int(prefix_request_id) if prefix_request_id is not None else None,
+            "prefix_start_index": int(prefix_start_index),
+            "first_action_latency_s": None,
+            "final_latency_s": None,
+            "emitted_action_count": 0,
+            "update_count": 0,
+        }
         self._stream_action_buffer = {}
         self._stream_current_chunk = {}
         if prefix_request_id is not None and prefix_steps > 0:
@@ -300,11 +347,21 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 continue
             indices = [int(idx) for idx in msg.get("indices", [])]
             actions = self._parse_action_payload(msg.get("actions", [])) if indices else np.empty((0, ACTION_DIM))
+            metric = self._metrics_stream_chunks.get(int(self._stream_request_id))
+            if metric is not None:
+                now = time.perf_counter()
+                metric["update_count"] += 1
+                metric["emitted_action_count"] += len(indices)
+                if indices and metric["first_action_latency_s"] is None:
+                    metric["first_action_latency_s"] = now - float(metric["request_time_s"])
             for idx, action in zip(indices, actions, strict=True):
                 self._stream_action_buffer[idx] = action
                 self._stream_current_chunk[idx] = action
             if msg.get("final"):
                 self._stream_final = True
+                if metric is not None:
+                    metric["final_latency_s"] = time.perf_counter() - float(metric["request_time_s"])
+                    self._metrics_chunks.append(dict(metric))
             if indices:
                 pyzlc.info(
                     "Received streamed Pi0.5 actions: "
@@ -357,7 +414,98 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._ui_console.log("Episode discarded.")
 
     def _stop_infering(self) -> None:
+        self._report_metrics()
         super()._stop_infering()
+
+    def _report_metrics(self) -> None:
+        if self._metrics_reported:
+            return
+        self._metrics_reported = True
+
+        end_perf = time.perf_counter()
+        total_time_s = (
+            end_perf - self._metrics_start_perf
+            if self._metrics_start_perf is not None
+            else 0.0
+        )
+        chunks = [dict(chunk) for chunk in self._metrics_chunks]
+        request_latencies = [
+            float(chunk["request_latency_s"])
+            for chunk in chunks
+            if chunk.get("request_latency_s") is not None
+        ]
+        first_action_latencies = [
+            float(chunk["first_action_latency_s"])
+            for chunk in chunks
+            if chunk.get("first_action_latency_s") is not None
+        ]
+        final_latencies = [
+            float(chunk["final_latency_s"])
+            for chunk in chunks
+            if chunk.get("final_latency_s") is not None
+        ]
+        prefix_chunks = sum(1 for chunk in chunks if int(chunk.get("prefix_steps") or 0) > 0)
+
+        summary = {
+            "task": self.task,
+            "transport": self.cfg.policy_transport,
+            "schedule": self.cfg.faster_infer_time_schedule,
+            "total_time_s": total_time_s,
+            "inference_calls": self._metrics_inference_calls,
+            "completed_chunks": len(chunks),
+            "prefix_chunks": prefix_chunks,
+            "actions_applied": self._metrics_actions_applied,
+            "empty_action_steps": self._metrics_empty_action_steps,
+            "avg_request_latency_s": _mean(request_latencies),
+            "avg_first_action_latency_s": _mean(first_action_latencies),
+            "avg_final_latency_s": _mean(final_latencies),
+        }
+
+        pyzlc.info(
+            "Pi0.5 inference metrics: "
+            f"total_time={summary['total_time_s']:.3f}s, "
+            f"inference_calls={summary['inference_calls']}, "
+            f"completed_chunks={summary['completed_chunks']}, "
+            f"prefix_chunks={summary['prefix_chunks']}, "
+            f"actions_applied={summary['actions_applied']}, "
+            f"empty_action_steps={summary['empty_action_steps']}, "
+            f"avg_first_action_latency={_format_optional(summary['avg_first_action_latency_s'])}s, "
+            f"avg_final_latency={_format_optional(summary['avg_final_latency_s'])}s"
+        )
+
+        for chunk in chunks:
+            if chunk.get("final_latency_s") is not None:
+                pyzlc.info(
+                    "Pi0.5 chunk metrics: "
+                    f"request_id={chunk.get('request_id')}, "
+                    f"prefix_steps={chunk.get('prefix_steps', 0)}, "
+                    f"first_action_latency={_format_optional(chunk.get('first_action_latency_s'))}s, "
+                    f"final_latency={_format_optional(chunk.get('final_latency_s'))}s, "
+                    f"emitted_actions={chunk.get('emitted_action_count')}"
+                )
+            else:
+                pyzlc.info(
+                    "Pi0.5 chunk metrics: "
+                    f"request_id={chunk.get('request_id')}, "
+                    f"request_latency={_format_optional(chunk.get('request_latency_s'))}s, "
+                    f"action_count={chunk.get('action_count')}"
+                )
+
+        if self.cfg.metrics_path:
+            self._write_metrics(summary, chunks)
+
+    def _write_metrics(self, summary: Dict[str, Any], chunks: List[Dict[str, Any]]) -> None:
+        path = Path(self.cfg.metrics_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        record = {
+            "type": "pi05_inference_episode",
+            "wall_time": self._metrics_start_wall,
+            "summary": summary,
+            "chunks": _json_safe(chunks),
+        }
+        with path.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(_json_safe(record), sort_keys=True) + "\n")
+        pyzlc.info(f"Wrote Pi0.5 inference metrics to {path}")
 
     def _reset_arm(self) -> None:
         self._ui_console.log("Resetting robot arm position...")
@@ -655,6 +803,32 @@ def _format_vec(vec: Optional[np.ndarray]) -> str:
         return "None"
     arr = np.asarray(vec, dtype=np.float64).reshape(-1)
     return "[" + ", ".join(f"{value:.4f}" for value in arr) + "]"
+
+
+def _mean(values: List[float]) -> Optional[float]:
+    if not values:
+        return None
+    return float(sum(values) / len(values))
+
+
+def _format_optional(value: Any) -> str:
+    if value is None:
+        return "n/a"
+    return f"{float(value):.3f}"
+
+
+def _json_safe(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {str(k): _json_safe(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_json_safe(v) for v in value]
+    if isinstance(value, tuple):
+        return [_json_safe(v) for v in value]
+    if isinstance(value, np.ndarray):
+        return value.tolist()
+    if isinstance(value, np.generic):
+        return value.item()
+    return value
 
 
 def _rotation_matrix_to_quat_xyzw(matrix: np.ndarray) -> np.ndarray:
