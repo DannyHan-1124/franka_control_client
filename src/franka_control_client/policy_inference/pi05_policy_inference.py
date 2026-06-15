@@ -509,9 +509,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "schedule": self.cfg.faster_infer_time_schedule,
             "fps": int(self.cfg.fps),
             "chunk_replan_steps": int(self.cfg.chunk_replan_steps),
-            "faster_alpha": float(self.cfg.faster_alpha),
-            "faster_u0": float(self.cfg.faster_u0),
-            "faster_delay_steps": int(self.cfg.faster_delay_steps),
             "gripper_open_confirm_steps": int(self.cfg.gripper_open_confirm_steps),
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),
             "total_time_s": total_time_s,
@@ -525,6 +522,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "avg_final_latency_s": _mean(final_latencies),
             "avg_chunk_execution_duration_s": _mean(execution_durations),
         }
+        if self.cfg.faster_infer_time_schedule.upper() == "HAS":
+            summary["faster_alpha"] = float(self.cfg.faster_alpha)
+            summary["faster_u0"] = float(self.cfg.faster_u0)
+        if int(self.cfg.faster_delay_steps) > 0:
+            summary["faster_delay_steps"] = int(self.cfg.faster_delay_steps)
 
         pyzlc.info(
             "Pi0.5 inference metrics: "
@@ -589,20 +591,31 @@ class Pi05PolicyInference(PolicyInferenceManager):
         else:
             timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(wall_time)))
 
+        config_parts = [
+            f"transport={summary.get('transport')}",
+            f"schedule={summary.get('schedule')}",
+        ]
+        if summary.get("schedule", "").upper() == "HAS":
+            config_parts.extend(
+                [
+                    f"u0={_format_optional(summary.get('faster_u0'))}",
+                    f"alpha={_format_optional(summary.get('faster_alpha'))}",
+                ]
+            )
+        if summary.get("faster_delay_steps") is not None:
+            config_parts.append(f"delay_steps={summary.get('faster_delay_steps')}")
+        config_parts.extend(
+            [
+                f"chunk_replan_steps={summary.get('chunk_replan_steps')}",
+                f"fps={summary.get('fps')}",
+            ]
+        )
+
         lines = [
             "",
             f"=== Pi0.5 inference episode: {timestamp} ===",
             f"task: {summary.get('task')}",
-            (
-                "config: "
-                f"transport={summary.get('transport')}, "
-                f"schedule={summary.get('schedule')}, "
-                f"u0={_format_optional(summary.get('faster_u0'))}, "
-                f"alpha={_format_optional(summary.get('faster_alpha'))}, "
-                f"delay_steps={summary.get('faster_delay_steps')}, "
-                f"chunk_replan_steps={summary.get('chunk_replan_steps')}, "
-                f"fps={summary.get('fps')}"
-            ),
+            "config: " + ", ".join(config_parts),
             (
                 "summary: "
                 f"total_time={_format_optional(summary.get('total_time_s'))}s, "
