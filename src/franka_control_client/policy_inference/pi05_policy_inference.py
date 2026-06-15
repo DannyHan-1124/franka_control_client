@@ -507,6 +507,13 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "task": self.task,
             "transport": self.cfg.policy_transport,
             "schedule": self.cfg.faster_infer_time_schedule,
+            "fps": int(self.cfg.fps),
+            "chunk_replan_steps": int(self.cfg.chunk_replan_steps),
+            "faster_alpha": float(self.cfg.faster_alpha),
+            "faster_u0": float(self.cfg.faster_u0),
+            "faster_delay_steps": int(self.cfg.faster_delay_steps),
+            "gripper_open_confirm_steps": int(self.cfg.gripper_open_confirm_steps),
+            "stop_after_first_release": bool(self.cfg.stop_after_first_release),
             "total_time_s": total_time_s,
             "inference_calls": self._metrics_inference_calls,
             "completed_chunks": len(chunks),
@@ -568,7 +575,71 @@ class Pi05PolicyInference(PolicyInferenceManager):
         }
         with path.open("a", encoding="utf-8") as f:
             f.write(json.dumps(_json_safe(record), sort_keys=True) + "\n")
-        pyzlc.info(f"Wrote Pi0.5 inference metrics to {path}")
+
+        text_path = path.with_suffix(".txt")
+        self._write_metrics_text(text_path, record)
+        pyzlc.info(f"Wrote Pi0.5 inference metrics to {path} and {text_path}")
+
+    def _write_metrics_text(self, path: Path, record: Dict[str, Any]) -> None:
+        summary = record["summary"]
+        chunks = record["chunks"]
+        wall_time = record.get("wall_time")
+        if wall_time is None:
+            timestamp = "unknown"
+        else:
+            timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(float(wall_time)))
+
+        lines = [
+            "",
+            f"=== Pi0.5 inference episode: {timestamp} ===",
+            f"task: {summary.get('task')}",
+            (
+                "config: "
+                f"transport={summary.get('transport')}, "
+                f"schedule={summary.get('schedule')}, "
+                f"u0={_format_optional(summary.get('faster_u0'))}, "
+                f"alpha={_format_optional(summary.get('faster_alpha'))}, "
+                f"delay_steps={summary.get('faster_delay_steps')}, "
+                f"chunk_replan_steps={summary.get('chunk_replan_steps')}, "
+                f"fps={summary.get('fps')}"
+            ),
+            (
+                "summary: "
+                f"total_time={_format_optional(summary.get('total_time_s'))}s, "
+                f"inference_calls={summary.get('inference_calls')}, "
+                f"completed_chunks={summary.get('completed_chunks')}, "
+                f"prefix_chunks={summary.get('prefix_chunks')}, "
+                f"actions_applied={summary.get('actions_applied')}, "
+                f"empty_action_steps={summary.get('empty_action_steps')}"
+            ),
+            (
+                "latency: "
+                f"avg_first_action={_format_optional(summary.get('avg_first_action_latency_s'))}s, "
+                f"avg_final={_format_optional(summary.get('avg_final_latency_s'))}s, "
+                f"avg_chunk_duration={_format_optional(summary.get('avg_chunk_execution_duration_s'))}s"
+            ),
+            "chunks:",
+            (
+                "  request  prefix  emitted  executed  updates  "
+                "first_action_s  final_s  duration_s"
+            ),
+        ]
+
+        for chunk in chunks:
+            lines.append(
+                "  "
+                f"{str(chunk.get('request_id')):>7}  "
+                f"{str(chunk.get('prefix_steps', 0)):>6}  "
+                f"{str(chunk.get('emitted_action_count', chunk.get('action_count', 'n/a'))):>7}  "
+                f"{str(chunk.get('executed_action_count')):>8}  "
+                f"{str(chunk.get('update_count', 'n/a')):>7}  "
+                f"{_format_optional(chunk.get('first_action_latency_s')):>14}  "
+                f"{_format_optional(chunk.get('final_latency_s')):>7}  "
+                f"{_format_optional(chunk.get('execution_duration_s')):>10}"
+            )
+
+        with path.open("a", encoding="utf-8") as f:
+            f.write("\n".join(lines) + "\n")
 
     def _reset_arm(self) -> None:
         self._ui_console.log("Resetting robot arm position...")
