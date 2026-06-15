@@ -21,7 +21,7 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --chunk_replan_steps 40 \
     --faster_infer_time_schedule HAS \
     --faster_alpha 1.0 \
-    --faster_u0 0.3 \
+    --faster_u0 0.9 \
     --faster_delay_steps 10 \
     --static_camera static_cam \
     --wrist_camera wrist_cam
