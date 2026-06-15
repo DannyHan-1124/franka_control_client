@@ -55,8 +55,8 @@ class Pi05PolicyInferenceConfig:
     policy_transport: str = "pyzlc"
     policy_zmq_endpoint: Optional[str] = None
     policy_zmq_timeout_ms: int = 30000
-    max_position_step_m: float = 0.005
-    max_rotation_step_rad: float = 0.05
+    max_position_step_m: float = 0.0
+    max_rotation_step_rad: float = 0.0
     chunk_replan_steps: int = 50
     gripper_open_confirm_steps: int = 12
     stop_after_first_release: bool = False
@@ -227,8 +227,14 @@ class Pi05PolicyInference(PolicyInferenceManager):
                             "request_id": self._metrics_inference_calls,
                             "transport": self.cfg.policy_transport,
                             "schedule": self.cfg.faster_infer_time_schedule,
+                            "request_time_s": request_start,
                             "request_latency_s": latency_s,
                             "action_count": int(len(self._action_chunk)),
+                            "executed_action_count": 0,
+                            "first_action_index": None,
+                            "last_action_index": None,
+                            "first_action_applied_latency_s": None,
+                            "execution_duration_s": None,
                         }
                     )
 
@@ -239,6 +245,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._last_sanitized_action = sanitized_action.copy()
             self.control_pair.update_action(sanitized_action)
             self._metrics_actions_applied += 1
+            if self._metrics_chunks:
+                self._record_chunk_action_execution(
+                    self._metrics_chunks[-1],
+                    self._chunk_step - 1,
+                )
             self._maybe_stop_after_release()
 
         elapsed = time.perf_counter() - start
@@ -305,6 +316,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "first_action_latency_s": None,
             "final_latency_s": None,
             "emitted_action_count": 0,
+            "executed_action_count": 0,
+            "first_action_index": None,
+            "last_action_index": None,
+            "first_action_applied_latency_s": None,
+            "execution_duration_s": None,
             "update_count": 0,
         }
         self._stream_action_buffer = {}
@@ -372,8 +388,32 @@ class Pi05PolicyInference(PolicyInferenceManager):
         action = self._stream_action_buffer.pop(self._stream_next_index, None)
         if action is None:
             return None
+        metric = self._metrics_stream_chunks.get(int(self._stream_request_id or -1))
+        if metric is not None:
+            self._record_chunk_action_execution(metric, self._stream_next_index)
         self._stream_next_index += 1
         return action
+
+    def _record_chunk_action_execution(self, metric: Dict[str, Any], action_index: int) -> None:
+        now = time.perf_counter()
+        first_time = metric.get("first_action_applied_time_s")
+        if first_time is None:
+            metric["first_action_applied_time_s"] = now
+            metric["first_action_index"] = int(action_index)
+            request_time = metric.get("request_time_s")
+            if request_time is not None:
+                metric["first_action_applied_latency_s"] = now - float(request_time)
+
+        metric["last_action_applied_time_s"] = now
+        metric["last_action_index"] = int(action_index)
+        metric["executed_action_count"] = int(metric.get("executed_action_count") or 0) + 1
+        metric["execution_duration_s"] = now - float(metric["first_action_applied_time_s"])
+
+        request_id = metric.get("request_id")
+        for chunk in self._metrics_chunks:
+            if chunk.get("request_id") == request_id:
+                chunk.update(metric)
+                break
 
     def _should_request_action_chunk(self) -> bool:
         if self._action_chunk is None:
@@ -428,7 +468,19 @@ class Pi05PolicyInference(PolicyInferenceManager):
             if self._metrics_start_perf is not None
             else 0.0
         )
-        chunks = [dict(chunk) for chunk in self._metrics_chunks]
+        chunks = []
+        seen_stream_request_ids = set()
+        for chunk in self._metrics_chunks:
+            request_id = chunk.get("request_id")
+            latest_stream_chunk = self._metrics_stream_chunks.get(int(request_id)) if request_id is not None else None
+            if latest_stream_chunk is not None:
+                chunks.append(dict(latest_stream_chunk))
+                seen_stream_request_ids.add(int(request_id))
+            else:
+                chunks.append(dict(chunk))
+        for request_id, chunk in sorted(self._metrics_stream_chunks.items()):
+            if request_id not in seen_stream_request_ids:
+                chunks.append(dict(chunk))
         request_latencies = [
             float(chunk["request_latency_s"])
             for chunk in chunks
@@ -443,6 +495,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
             float(chunk["final_latency_s"])
             for chunk in chunks
             if chunk.get("final_latency_s") is not None
+        ]
+        execution_durations = [
+            float(chunk["execution_duration_s"])
+            for chunk in chunks
+            if chunk.get("execution_duration_s") is not None
         ]
         prefix_chunks = sum(1 for chunk in chunks if int(chunk.get("prefix_steps") or 0) > 0)
 
@@ -459,6 +516,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "avg_request_latency_s": _mean(request_latencies),
             "avg_first_action_latency_s": _mean(first_action_latencies),
             "avg_final_latency_s": _mean(final_latencies),
+            "avg_chunk_execution_duration_s": _mean(execution_durations),
         }
 
         pyzlc.info(
@@ -470,7 +528,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
             f"actions_applied={summary['actions_applied']}, "
             f"empty_action_steps={summary['empty_action_steps']}, "
             f"avg_first_action_latency={_format_optional(summary['avg_first_action_latency_s'])}s, "
-            f"avg_final_latency={_format_optional(summary['avg_final_latency_s'])}s"
+            f"avg_final_latency={_format_optional(summary['avg_final_latency_s'])}s, "
+            f"avg_chunk_duration={_format_optional(summary['avg_chunk_execution_duration_s'])}s"
         )
 
         for chunk in chunks:
@@ -481,6 +540,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
                     f"prefix_steps={chunk.get('prefix_steps', 0)}, "
                     f"first_action_latency={_format_optional(chunk.get('first_action_latency_s'))}s, "
                     f"final_latency={_format_optional(chunk.get('final_latency_s'))}s, "
+                    f"chunk_duration={_format_optional(chunk.get('execution_duration_s'))}s, "
+                    f"executed_actions={chunk.get('executed_action_count')}, "
                     f"emitted_actions={chunk.get('emitted_action_count')}"
                 )
             else:
@@ -488,6 +549,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
                     "Pi0.5 chunk metrics: "
                     f"request_id={chunk.get('request_id')}, "
                     f"request_latency={_format_optional(chunk.get('request_latency_s'))}s, "
+                    f"chunk_duration={_format_optional(chunk.get('execution_duration_s'))}s, "
+                    f"executed_actions={chunk.get('executed_action_count')}, "
                     f"action_count={chunk.get('action_count')}"
                 )
 

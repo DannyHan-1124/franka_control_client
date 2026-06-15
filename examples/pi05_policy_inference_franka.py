@@ -28,33 +28,73 @@ def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Run Franka Pi0.5 policy inference against a remote pyzlc policy node."
     )
-    parser.add_argument("--task", required=True)
-    parser.add_argument("--fps", type=int, default=20)
-    parser.add_argument("--control_hz", type=float, default=100.0)
-    parser.add_argument("--robot_name", default="FrankaPanda")
+    parser.add_argument("--task", required=True, help="Language command sent to the policy.")
+    parser.add_argument("--fps", type=int, default=20, help="High-level policy action application rate.")
+    parser.add_argument("--control_hz", type=float, default=100.0, help="Low-level Cartesian control loop rate.")
+    parser.add_argument("--robot_name", default="FrankaPanda", help="pyzlc robot namespace for arm and gripper topics.")
     parser.add_argument("--pyzlc_name", default="pi05_franka_client")
     parser.add_argument("--pyzlc_host", default="192.168.0.109")
     parser.add_argument("--pyzlc_group_name", default="DroidGroup")
     parser.add_argument("--pyzlc_group_port", type=int, default=7730)
-    parser.add_argument("--policy_transport", choices=("pyzlc", "zmq", "streaming_zmq"), default="pyzlc")
-    parser.add_argument("--policy_zmq_endpoint", default=None)
-    parser.add_argument("--policy_zmq_timeout_ms", type=int, default=30000)
-    parser.add_argument("--max_position_step_m", type=float, default=0.005)
-    parser.add_argument("--max_rotation_step_rad", type=float, default=0.05)
-    parser.add_argument("--chunk_replan_steps", type=int, default=50)
-    parser.add_argument("--gripper_open_confirm_steps", type=int, default=12)
-    parser.add_argument("--stop_after_first_release", action="store_true")
-    parser.add_argument("--stop_after_release_steps", type=int, default=0)
-    parser.add_argument("--debug_image_dir", default=None)
-    parser.add_argument("--debug_image_interval", type=int, default=25)
-    parser.add_argument("--metrics_path", default=None)
-    parser.add_argument("--reclose_after_release_min_motion_m", type=float, default=0.08)
-    parser.add_argument("--faster_infer_time_schedule", choices=("const", "HAS"), default="const")
-    parser.add_argument("--faster_alpha", type=float, default=1.0)
-    parser.add_argument("--faster_u0", type=float, default=0.9)
-    parser.add_argument("--faster_delay_steps", type=int, default=0)
-    parser.add_argument("--static_camera", default="static_cam")
-    parser.add_argument("--wrist_camera", default="wrist_cam")
+    parser.add_argument(
+        "--policy_transport",
+        choices=("pyzlc", "zmq", "streaming_zmq"),
+        default="pyzlc",
+        help="Transport to the remote policy server; streaming_zmq enables FASTER action streaming.",
+    )
+    parser.add_argument("--policy_zmq_endpoint", default=None, help="ZMQ endpoint for zmq/streaming_zmq policy transport.")
+    parser.add_argument("--policy_zmq_timeout_ms", type=int, default=30000, help="ZMQ send/receive timeout.")
+    parser.add_argument(
+        "--max_position_step_m",
+        type=float,
+        default=0.0,
+        help="Inference-side max Cartesian position step; disabled by default.",
+    )
+    parser.add_argument(
+        "--max_rotation_step_rad",
+        type=float,
+        default=0.0,
+        help="Inference-side max quaternion rotation step; disabled by default.",
+    )
+    parser.add_argument(
+        "--chunk_replan_steps",
+        type=int,
+        default=50,
+        help="Number of actions to execute before requesting a new chunk.",
+    )
+    parser.add_argument(
+        "--gripper_open_confirm_steps",
+        type=int,
+        default=12,
+        help="Require this many consecutive open commands before confirming release.",
+    )
+    parser.add_argument("--stop_after_first_release", action="store_true", help="Stop the episode after the first confirmed release.")
+    parser.add_argument("--stop_after_release_steps", type=int, default=0, help="Extra policy steps to run after release before stopping.")
+    parser.add_argument("--debug_image_dir", default=None, help="Directory for saved camera debug frames.")
+    parser.add_argument("--debug_image_interval", type=int, default=25, help="Save one debug image pair every N policy steps.")
+    parser.add_argument("--metrics_path", default=None, help="Append per-episode metrics as JSONL to this path.")
+    parser.add_argument(
+        "--reclose_after_release_min_motion_m",
+        type=float,
+        default=0.08,
+        help="Suppress post-release close commands until the end effector moves this far from release pose.",
+    )
+    parser.add_argument(
+        "--faster_infer_time_schedule",
+        choices=("const", "HAS"),
+        default="const",
+        help="Denoising schedule: const is fully denoised baseline; HAS enables FASTER horizon-aware streaming.",
+    )
+    parser.add_argument("--faster_alpha", type=float, default=1.0, help="HAS horizon curve exponent; larger values change how speedup varies over the horizon.")
+    parser.add_argument("--faster_u0", type=float, default=0.9, help="HAS aggressiveness; lower values denoise early actions more and are usually smoother.")
+    parser.add_argument(
+        "--faster_delay_steps",
+        type=int,
+        default=0,
+        help="Number of old tail actions to preserve as prefix for chunk-to-chunk continuity.",
+    )
+    parser.add_argument("--static_camera", default="static_cam", help="pyzlc static/base camera node name.")
+    parser.add_argument("--wrist_camera", default="wrist_cam", help="pyzlc wrist camera node name.")
     return parser.parse_args()
 
 
