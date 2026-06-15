@@ -1147,3 +1147,20 @@ chunks:
        49      10       40        40       11           0.145    0.296       1.948
        50      10       40        40       11           0.095    0.296       1.949
        51      10       40        22       11           0.095    0.296       1.047
+
+=== Pi0.5 inference episode: 2026-06-15 16:42:10 ===
+task: put red cylinder on blue cube and put green cylinder on yellow cube
+config: transport=streaming_zmq, schedule=HAS, u0=0.900, alpha=1.000, delay_steps=10, phase_fallback=const@before_gripper_open, chunk_replan_steps=40, fps=20
+summary: total_time=16.376s, inference_calls=9, completed_chunks=9, prefix_chunks=8, actions_applied=325, empty_action_steps=3
+latency: avg_first_action=0.118s, avg_final=0.290s, avg_chunk_duration=1.754s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       35       HAS       0       50        40       11           0.146    0.296       1.953
+       36       HAS      10       40        40       11           0.095    0.296       1.948
+       37       HAS      10       40        40       11           0.095    0.296       1.948
+       38       HAS      10       40        40       11           0.096    0.296       1.948
+       39       HAS      10       40        40       11           0.095    0.296       1.949
+       40       HAS      10       40        40       11           0.096    0.296       1.948
+       41       HAS      10       40        40       11           0.095    0.296       1.948
+       42       HAS      10       40         6       11           0.096    0.296       0.246
+       43     const      10       50        39        2           0.246    0.246       1.899

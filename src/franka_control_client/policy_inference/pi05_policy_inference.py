@@ -313,6 +313,18 @@ class Pi05PolicyInference(PolicyInferenceManager):
         active_schedule = self._active_infer_time_schedule()
         obs = self._build_observation()
         prefix_request_id, prefix_start_index, prefix_steps = self._build_stream_prefix_metadata()
+        previous_metric = (
+            self._metrics_stream_chunks.get(int(self._stream_request_id))
+            if self._stream_request_id is not None
+            else None
+        )
+        previous_schedule = previous_metric.get("schedule") if previous_metric is not None else None
+        if previous_schedule is not None and previous_schedule != active_schedule and prefix_steps > 0:
+            pyzlc.info(
+                "Dropping streamed action prefix across schedule change: "
+                f"{previous_schedule} -> {active_schedule}"
+            )
+            prefix_request_id, prefix_start_index, prefix_steps = None, 0, 0
         if prefix_request_id is not None and prefix_steps > 0:
             policy_kwargs = obs.setdefault("policy_kwargs", {})
             policy_kwargs["delay"] = int(prefix_steps)
