@@ -93,6 +93,18 @@ def _parse_args() -> argparse.Namespace:
         default=0,
         help="Number of old tail actions to preserve as prefix for chunk-to-chunk continuity.",
     )
+    parser.add_argument(
+        "--phase_fallback_schedule",
+        choices=("none", "const", "HAS"),
+        default="none",
+        help="Optional schedule to use for a later task phase; const is safer for final placement.",
+    )
+    parser.add_argument(
+        "--phase_fallback_trigger",
+        choices=("after_gripper_close", "before_gripper_open"),
+        default="after_gripper_close",
+        help="When to switch to phase_fallback_schedule; before_gripper_open only switches near release.",
+    )
     parser.add_argument("--static_camera", default="static_cam", help="pyzlc static/base camera node name.")
     parser.add_argument("--wrist_camera", default="wrist_cam", help="pyzlc wrist camera node name.")
     return parser.parse_args()
@@ -151,6 +163,8 @@ def main() -> None:
         faster_alpha=args.faster_alpha,
         faster_u0=args.faster_u0,
         faster_delay_steps=args.faster_delay_steps,
+        phase_fallback_schedule=args.phase_fallback_schedule,
+        phase_fallback_trigger=args.phase_fallback_trigger,
     )
     inference_manager = Pi05PolicyInference(
         data_collectors=data_collectors,

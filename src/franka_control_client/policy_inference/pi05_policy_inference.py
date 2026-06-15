@@ -69,6 +69,8 @@ class Pi05PolicyInferenceConfig:
     faster_alpha: float = 1.0
     faster_u0: float = 0.9
     faster_delay_steps: int = 0
+    phase_fallback_schedule: str = "none"
+    phase_fallback_trigger: str = "after_gripper_close"
     metrics_path: Optional[str] = None
 
 
@@ -160,6 +162,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._stream_current_chunk: dict[int, np.ndarray] = {}
         self._stream_next_index = 0
         self._stream_final = False
+        self._last_policy_schedule: Optional[str] = None
+        self._phase_fallback_open_detected = False
+        self._phase_fallback_replan_pending = False
         self._reset_metrics()
 
         self.register_start_infering_event(self.control_pair.start_control_pair)
@@ -182,6 +187,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._stream_current_chunk = {}
         self._stream_next_index = 0
         self._stream_final = False
+        self._last_policy_schedule = None
+        self._phase_fallback_open_detected = False
+        self._phase_fallback_replan_pending = False
         self.task = self._initial_task
         current_action = self.policy.current_action
         self._last_action_timestamp = (
@@ -209,8 +217,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
             return
 
         if self._should_request_action_chunk():
+            active_schedule = self._active_infer_time_schedule()
             request_start = time.perf_counter()
             self.policy.send_observation(self._build_observation())
+            self._phase_fallback_replan_pending = False
             self._metrics_inference_calls += 1
 
             action_msg = self.policy.current_action
@@ -221,12 +231,16 @@ class Pi05PolicyInference(PolicyInferenceManager):
                     self._chunk_step = 0
                     self._last_action_timestamp = timestamp
                     self._log_action_chunk_debug(self._action_chunk)
+                    self._maybe_trigger_open_fallback(
+                        range(len(self._action_chunk)),
+                        self._action_chunk,
+                    )
                     latency_s = time.perf_counter() - request_start
                     self._metrics_chunks.append(
                         {
                             "request_id": self._metrics_inference_calls,
                             "transport": self.cfg.policy_transport,
-                            "schedule": self.cfg.faster_infer_time_schedule,
+                            "schedule": active_schedule,
                             "request_time_s": request_start,
                             "request_latency_s": latency_s,
                             "action_count": int(len(self._action_chunk)),
@@ -285,6 +299,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
             return False
         if self._stream_request_id is None:
             return True
+        if self._phase_fallback_replan_pending:
+            return True
         if self._stream_next_index >= max(1, int(self.cfg.chunk_replan_steps)):
             return True
         if self._stream_final and self._stream_next_index not in self._stream_action_buffer:
@@ -294,6 +310,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _request_stream(self) -> None:
         if self._streaming_policy is None:
             return
+        active_schedule = self._active_infer_time_schedule()
         obs = self._build_observation()
         prefix_request_id, prefix_start_index, prefix_steps = self._build_stream_prefix_metadata()
         if prefix_request_id is not None and prefix_steps > 0:
@@ -308,7 +325,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._metrics_stream_chunks[self._stream_request_id] = {
             "request_id": int(self._stream_request_id),
             "transport": self.cfg.policy_transport,
-            "schedule": self.cfg.faster_infer_time_schedule,
+            "schedule": active_schedule,
             "request_time_s": request_start,
             "prefix_steps": int(prefix_steps),
             "prefix_request_id": int(prefix_request_id) if prefix_request_id is not None else None,
@@ -325,6 +342,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         }
         self._stream_action_buffer = {}
         self._stream_current_chunk = {}
+        self._phase_fallback_replan_pending = False
         if prefix_request_id is not None and prefix_steps > 0:
             for out_idx, src_idx in enumerate(range(prefix_start_index, prefix_start_index + prefix_steps)):
                 action = previous_chunk.get(src_idx)
@@ -373,6 +391,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             for idx, action in zip(indices, actions, strict=True):
                 self._stream_action_buffer[idx] = action
                 self._stream_current_chunk[idx] = action
+            self._maybe_trigger_open_fallback(indices, actions)
             if msg.get("final"):
                 self._stream_final = True
                 if metric is not None:
@@ -417,6 +436,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
     def _should_request_action_chunk(self) -> bool:
         if self._action_chunk is None:
+            return True
+        if self._phase_fallback_replan_pending:
             return True
         if self._chunk_step >= len(self._action_chunk):
             return True
@@ -527,6 +548,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
             summary["faster_u0"] = float(self.cfg.faster_u0)
         if int(self.cfg.faster_delay_steps) > 0:
             summary["faster_delay_steps"] = int(self.cfg.faster_delay_steps)
+        if self.cfg.phase_fallback_schedule.lower() != "none":
+            summary["phase_fallback_schedule"] = self.cfg.phase_fallback_schedule
+            summary["phase_fallback_trigger"] = self.cfg.phase_fallback_trigger
 
         pyzlc.info(
             "Pi0.5 inference metrics: "
@@ -604,6 +628,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
             )
         if summary.get("faster_delay_steps") is not None:
             config_parts.append(f"delay_steps={summary.get('faster_delay_steps')}")
+        if summary.get("phase_fallback_schedule") is not None:
+            config_parts.append(
+                "phase_fallback="
+                f"{summary.get('phase_fallback_schedule')}@{summary.get('phase_fallback_trigger')}"
+            )
         config_parts.extend(
             [
                 f"chunk_replan_steps={summary.get('chunk_replan_steps')}",
@@ -633,7 +662,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             ),
             "chunks:",
             (
-                "  request  prefix  emitted  executed  updates  "
+                "  request  schedule  prefix  emitted  executed  updates  "
                 "first_action_s  final_s  duration_s"
             ),
         ]
@@ -642,6 +671,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             lines.append(
                 "  "
                 f"{str(chunk.get('request_id')):>7}  "
+                f"{str(chunk.get('schedule', 'n/a')):>8}  "
                 f"{str(chunk.get('prefix_steps', 0)):>6}  "
                 f"{str(chunk.get('emitted_action_count', chunk.get('action_count', 'n/a'))):>7}  "
                 f"{str(chunk.get('executed_action_count')):>8}  "
@@ -680,14 +710,67 @@ class Pi05PolicyInference(PolicyInferenceManager):
         return obs
 
     def _build_policy_kwargs(self) -> Dict[str, Any]:
+        schedule = self._active_infer_time_schedule()
         kwargs: Dict[str, Any] = {
-            "infer_time_schedule": self.cfg.faster_infer_time_schedule,
+            "infer_time_schedule": schedule,
         }
-        if self.cfg.faster_alpha != 1.0:
+        if schedule.upper() == "HAS" and self.cfg.faster_alpha != 1.0:
             kwargs["alpha"] = self.cfg.faster_alpha
-        if self.cfg.faster_u0 != 0.9:
+        if schedule.upper() == "HAS" and self.cfg.faster_u0 != 0.9:
             kwargs["u0"] = self.cfg.faster_u0
+        if schedule != self._last_policy_schedule:
+            self._last_policy_schedule = schedule
+            pyzlc.info(
+                "Using Pi0.5 inference schedule: "
+                f"{schedule}, phase_fallback_active={self._phase_fallback_active()}"
+            )
         return kwargs
+
+    def _active_infer_time_schedule(self) -> str:
+        fallback = self.cfg.phase_fallback_schedule
+        if fallback.lower() == "none":
+            return self.cfg.faster_infer_time_schedule
+        if self._phase_fallback_active():
+            return fallback
+        return self.cfg.faster_infer_time_schedule
+
+    def _phase_fallback_active(self) -> bool:
+        if self.cfg.phase_fallback_schedule.lower() == "none":
+            return False
+        trigger = self.cfg.phase_fallback_trigger
+        if trigger == "before_gripper_open":
+            return self._phase_fallback_open_detected or self._release_confirmed
+        return self._release_armed or self._release_confirmed
+
+    def _maybe_trigger_open_fallback(self, indices: Any, actions: np.ndarray) -> None:
+        if self.cfg.phase_fallback_schedule.lower() == "none":
+            return
+        if self.cfg.phase_fallback_trigger != "before_gripper_open":
+            return
+        if self._phase_fallback_open_detected:
+            return
+        if not self._release_armed:
+            return
+
+        arr = np.asarray(actions, dtype=np.float64)
+        if arr.size == 0:
+            return
+        if arr.ndim == 1:
+            arr = arr.reshape(1, -1)
+
+        index_list = [int(idx) for idx in indices]
+        for idx, action in zip(index_list, arr, strict=True):
+            if idx < self._stream_next_index:
+                continue
+            if action.shape[0] > 7 and float(action[7]) < 0.5:
+                self._phase_fallback_open_detected = True
+                self._phase_fallback_replan_pending = True
+                pyzlc.info(
+                    "Detected upcoming gripper open; enabling phase fallback: "
+                    f"schedule={self.cfg.phase_fallback_schedule}, "
+                    f"trigger={self.cfg.phase_fallback_trigger}, open_index={idx}"
+                )
+                return
 
     def _maybe_save_debug_images(self, static_rgb: np.ndarray, wrist_rgb: np.ndarray) -> None:
         if not self.cfg.debug_image_dir:
