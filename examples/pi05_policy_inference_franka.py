@@ -45,6 +45,12 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--policy_zmq_endpoint", default=None, help="ZMQ endpoint for zmq/streaming_zmq policy transport.")
     parser.add_argument("--policy_zmq_timeout_ms", type=int, default=30000, help="ZMQ send/receive timeout.")
     parser.add_argument(
+        "--streaming_mode",
+        choices=("chunk_replan", "continuous"),
+        default="chunk_replan",
+        help="streaming_zmq mode: chunk_replan is the existing behavior; continuous replans as soon as each chunk finishes.",
+    )
+    parser.add_argument(
         "--max_position_step_m",
         type=float,
         default=0.0,
@@ -65,8 +71,8 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--gripper_open_confirm_steps",
         type=int,
-        default=12,
-        help="Require this many consecutive open commands before confirming release.",
+        default=0,
+        help="Extra debouncing for release; 0 confirms on the first open command after close.",
     )
     parser.add_argument("--stop_after_first_release", action="store_true", help="Stop the episode after the first confirmed release.")
     parser.add_argument("--stop_after_release_steps", type=int, default=0, help="Extra policy steps to run after release before stopping.")
@@ -149,6 +155,7 @@ def main() -> None:
         policy_transport=args.policy_transport,
         policy_zmq_endpoint=args.policy_zmq_endpoint,
         policy_zmq_timeout_ms=args.policy_zmq_timeout_ms,
+        streaming_mode=args.streaming_mode,
         max_position_step_m=args.max_position_step_m,
         max_rotation_step_rad=args.max_rotation_step_rad,
         chunk_replan_steps=args.chunk_replan_steps,

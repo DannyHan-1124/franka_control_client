@@ -55,10 +55,11 @@ class Pi05PolicyInferenceConfig:
     policy_transport: str = "pyzlc"
     policy_zmq_endpoint: Optional[str] = None
     policy_zmq_timeout_ms: int = 30000
+    streaming_mode: str = "chunk_replan"
     max_position_step_m: float = 0.0
     max_rotation_step_rad: float = 0.0
     chunk_replan_steps: int = 50
-    gripper_open_confirm_steps: int = 12
+    gripper_open_confirm_steps: int = 0
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
     debug_image_dir: Optional[str] = None
@@ -162,6 +163,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._stream_current_chunk: dict[int, np.ndarray] = {}
         self._stream_next_index = 0
         self._stream_final = False
+        self._stream_global_step = 0
+        self._stream_request_start_steps: dict[int, int] = {}
+        self._stream_action_sources: dict[int, tuple[int, int]] = {}
         self._last_policy_schedule: Optional[str] = None
         self._phase_fallback_open_detected = False
         self._phase_fallback_replan_pending = False
@@ -187,6 +191,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._stream_current_chunk = {}
         self._stream_next_index = 0
         self._stream_final = False
+        self._stream_global_step = 0
+        self._stream_request_start_steps = {}
+        self._stream_action_sources = {}
         self._last_policy_schedule = None
         self._phase_fallback_open_detected = False
         self._phase_fallback_replan_pending = False
@@ -287,6 +294,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
         else:
             self._metrics_empty_action_steps += 1
 
+        if self.cfg.streaming_mode == "continuous":
+            self._stream_global_step += 1
+
         elapsed = time.perf_counter() - start
         sleep_time = max(0.0, (1.0 / self.fps) - elapsed)
         if sleep_time > 0.001:
@@ -297,6 +307,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
             return False
         if self._streaming_policy.active_request_id is not None:
             return False
+        if self.cfg.streaming_mode == "continuous":
+            return True
         if self._stream_request_id is None:
             return True
         if self._phase_fallback_replan_pending:
@@ -312,7 +324,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
             return
         active_schedule = self._active_infer_time_schedule()
         obs = self._build_observation()
-        prefix_request_id, prefix_start_index, prefix_steps = self._build_stream_prefix_metadata()
+        if self.cfg.streaming_mode == "continuous":
+            prefix_request_id, prefix_start_index, prefix_steps = None, 0, 0
+        else:
+            prefix_request_id, prefix_start_index, prefix_steps = self._build_stream_prefix_metadata()
         previous_metric = (
             self._metrics_stream_chunks.get(int(self._stream_request_id))
             if self._stream_request_id is not None
@@ -334,10 +349,13 @@ class Pi05PolicyInference(PolicyInferenceManager):
         request_start = time.perf_counter()
         self._stream_request_id = self._streaming_policy.send_observation(obs)
         self._metrics_inference_calls += 1
+        self._stream_request_start_steps[self._stream_request_id] = int(self._stream_global_step)
         self._metrics_stream_chunks[self._stream_request_id] = {
             "request_id": int(self._stream_request_id),
             "transport": self.cfg.policy_transport,
             "schedule": active_schedule,
+            "streaming_mode": self.cfg.streaming_mode,
+            "request_start_step": int(self._stream_global_step),
             "request_time_s": request_start,
             "prefix_steps": int(prefix_steps),
             "prefix_request_id": int(prefix_request_id) if prefix_request_id is not None else None,
@@ -352,17 +370,21 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "execution_duration_s": None,
             "update_count": 0,
         }
-        self._stream_action_buffer = {}
-        self._stream_current_chunk = {}
+        if self.cfg.streaming_mode != "continuous":
+            self._stream_action_buffer = {}
+            self._stream_current_chunk = {}
+            self._stream_action_sources = {}
         self._phase_fallback_replan_pending = False
-        if prefix_request_id is not None and prefix_steps > 0:
+        if self.cfg.streaming_mode != "continuous" and prefix_request_id is not None and prefix_steps > 0:
             for out_idx, src_idx in enumerate(range(prefix_start_index, prefix_start_index + prefix_steps)):
                 action = previous_chunk.get(src_idx)
                 if action is None:
                     break
                 self._stream_action_buffer[out_idx] = action
                 self._stream_current_chunk[out_idx] = action
-        self._stream_next_index = 0
+                self._stream_action_sources[out_idx] = (int(prefix_request_id), int(src_idx))
+        if self.cfg.streaming_mode != "continuous":
+            self._stream_next_index = 0
         self._stream_final = False
 
     def _build_stream_prefix_metadata(self) -> tuple[Optional[int], int, int]:
@@ -401,8 +423,18 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 if indices and metric["first_action_latency_s"] is None:
                     metric["first_action_latency_s"] = now - float(metric["request_time_s"])
             for idx, action in zip(indices, actions, strict=True):
-                self._stream_action_buffer[idx] = action
-                self._stream_current_chunk[idx] = action
+                if self.cfg.streaming_mode == "continuous":
+                    start_step = self._stream_request_start_steps.get(int(self._stream_request_id), 0)
+                    target_step = int(start_step + idx)
+                    if target_step < self._stream_global_step:
+                        continue
+                    self._stream_action_buffer[target_step] = action
+                    self._stream_current_chunk[target_step] = action
+                    self._stream_action_sources[target_step] = (int(self._stream_request_id), int(idx))
+                else:
+                    self._stream_action_buffer[idx] = action
+                    self._stream_current_chunk[idx] = action
+                    self._stream_action_sources[idx] = (int(self._stream_request_id), int(idx))
             self._maybe_trigger_open_fallback(indices, actions)
             if msg.get("final"):
                 self._stream_final = True
@@ -416,6 +448,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 )
 
     def _pop_next_stream_action(self) -> Optional[np.ndarray]:
+        if self.cfg.streaming_mode == "continuous":
+            return self._pop_next_continuous_stream_action()
+
         action = self._stream_action_buffer.pop(self._stream_next_index, None)
         if action is None:
             return None
@@ -423,6 +458,20 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if metric is not None:
             self._record_chunk_action_execution(metric, self._stream_next_index)
         self._stream_next_index += 1
+        return action
+
+    def _pop_next_continuous_stream_action(self) -> Optional[np.ndarray]:
+        action = self._stream_action_buffer.pop(self._stream_global_step, None)
+        source = self._stream_action_sources.pop(self._stream_global_step, None)
+        self._stream_current_chunk.pop(self._stream_global_step, None)
+        if action is None:
+            return None
+
+        if source is not None:
+            request_id, local_index = source
+            metric = self._metrics_stream_chunks.get(int(request_id))
+            if metric is not None:
+                self._record_chunk_action_execution(metric, int(local_index))
         return action
 
     def _record_chunk_action_execution(self, metric: Dict[str, Any], action_index: int) -> None:
@@ -540,6 +589,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "task": self.task,
             "transport": self.cfg.policy_transport,
             "schedule": self.cfg.faster_infer_time_schedule,
+            "streaming_mode": self.cfg.streaming_mode,
             "fps": int(self.cfg.fps),
             "chunk_replan_steps": int(self.cfg.chunk_replan_steps),
             "gripper_open_confirm_steps": int(self.cfg.gripper_open_confirm_steps),
@@ -558,7 +608,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if self.cfg.faster_infer_time_schedule.upper() == "HAS":
             summary["faster_alpha"] = float(self.cfg.faster_alpha)
             summary["faster_u0"] = float(self.cfg.faster_u0)
-        if int(self.cfg.faster_delay_steps) > 0:
+        if self.cfg.streaming_mode != "continuous" and int(self.cfg.faster_delay_steps) > 0:
             summary["faster_delay_steps"] = int(self.cfg.faster_delay_steps)
         if self.cfg.phase_fallback_schedule.lower() != "none":
             summary["phase_fallback_schedule"] = self.cfg.phase_fallback_schedule
@@ -630,6 +680,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         config_parts = [
             f"transport={summary.get('transport')}",
             f"schedule={summary.get('schedule')}",
+            f"streaming_mode={summary.get('streaming_mode')}",
         ]
         if summary.get("schedule", "").upper() == "HAS":
             config_parts.extend(
@@ -851,9 +902,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         return arr
 
     def _stabilize_gripper_command(self, gripper_cmd: float) -> float:
-        confirm_steps = int(self.cfg.gripper_open_confirm_steps)
-        if confirm_steps <= 0:
-            return gripper_cmd
+        confirm_steps = max(1, int(self.cfg.gripper_open_confirm_steps))
 
         if gripper_cmd >= 0.5 and not self._release_armed:
             self._release_armed = True
