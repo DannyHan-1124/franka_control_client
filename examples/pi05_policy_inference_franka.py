@@ -71,8 +71,8 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--gripper_open_confirm_steps",
         type=int,
-        default=0,
-        help="Extra debouncing for release; 0 confirms on the first open command after close.",
+        default=1,
+        help="Consecutive open commands required to confirm release; 1 confirms immediately after close.",
     )
     parser.add_argument("--stop_after_first_release", action="store_true", help="Stop the episode after the first confirmed release.")
     parser.add_argument("--stop_after_release_steps", type=int, default=0, help="Extra policy steps to run after release before stopping.")

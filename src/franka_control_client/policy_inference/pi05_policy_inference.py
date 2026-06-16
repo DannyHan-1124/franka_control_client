@@ -59,7 +59,7 @@ class Pi05PolicyInferenceConfig:
     max_position_step_m: float = 0.0
     max_rotation_step_rad: float = 0.0
     chunk_replan_steps: int = 50
-    gripper_open_confirm_steps: int = 0
+    gripper_open_confirm_steps: int = 1
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
     debug_image_dir: Optional[str] = None
@@ -902,7 +902,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
         return arr
 
     def _stabilize_gripper_command(self, gripper_cmd: float) -> float:
-        confirm_steps = max(1, int(self.cfg.gripper_open_confirm_steps))
+        confirm_steps = int(self.cfg.gripper_open_confirm_steps)
+        if confirm_steps < 1:
+            raise ValueError("gripper_open_confirm_steps must be >= 1.")
 
         if gripper_cmd >= 0.5 and not self._release_armed:
             self._release_armed = True
