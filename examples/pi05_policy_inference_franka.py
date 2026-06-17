@@ -76,8 +76,8 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--reclose_after_release_min_motion_m",
         type=float,
-        default=0.08,
-        help="Suppress post-release close commands until the end effector moves this far from release pose.",
+        default=0.0,
+        help="Suppress post-release close commands until this much motion from release pose",
     )
     parser.add_argument(
         "--faster_infer_time_schedule",
