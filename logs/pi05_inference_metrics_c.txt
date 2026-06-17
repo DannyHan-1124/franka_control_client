@@ -54,95 +54,161 @@ chunks:
        14     const       0       50        50        2           0.296    0.296       2.454
        15     const       0       50        42        2           0.296    0.296       2.053
 
-=== Pi0.5 inference episode: 2026-06-17 15:12:27 ===
+=== Pi0.5 inference episode: 2026-06-17 15:23:39 ===
 task: put green cylinder on blue cube
 config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, chunk_replan_steps=50, fps=20
-summary: total_time=5.815s, inference_calls=24, completed_chunks=24, prefix_chunks=0, actions_applied=111, empty_action_steps=6
+summary: total_time=5.814s, inference_calls=24, completed_chunks=24, prefix_chunks=0, actions_applied=111, empty_action_steps=6
 latency: avg_first_action=0.248s, avg_final=0.248s, avg_chunk_duration=0.187s
 chunks:
   request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
-       30     const       0       50         5        2           0.296    0.296       0.195
-       31     const       0       50         5        2           0.245    0.246       0.195
-       32     const       0       50         5        2           0.245    0.245       0.195
-       33     const       0       50         5        2           0.245    0.245       0.196
-       34     const       0       50         5        2           0.246    0.246       0.195
-       35     const       0       50         5        2           0.246    0.246       0.195
-       36     const       0       50         5        2           0.246    0.246       0.195
-       37     const       0       50         5        2           0.245    0.245       0.196
-       38     const       0       50         5        2           0.246    0.246       0.195
-       39     const       0       50         5        2           0.245    0.246       0.196
-       40     const       0       50         5        2           0.246    0.246       0.195
-       41     const       0       50         5        2           0.245    0.245       0.196
-       42     const       0       50         5        2           0.246    0.246       0.195
-       43     const       0       50         5        2           0.246    0.246       0.195
-       44     const       0       50         5        2           0.246    0.246       0.195
-       45     const       0       50         5        2           0.245    0.245       0.196
-       46     const       0       50         5        2           0.246    0.246       0.195
-       47     const       0       50         5        2           0.246    0.246       0.195
-       48     const       0       50         5        2           0.245    0.245       0.196
-       49     const       0       50         5        2           0.246    0.246       0.196
-       50     const       0       50         5        2           0.246    0.246       0.195
-       51     const       0       50         5        2           0.245    0.245       0.196
-       52     const       0       50         1        2           0.246    0.246       0.000
-       53     const       0        0         0        0             n/a      n/a         n/a
+      201     const       0       50         5        2           0.296    0.296       0.195
+      202     const       0       50         5        2           0.246    0.246       0.196
+      203     const       0       50         5        2           0.246    0.246       0.195
+      204     const       0       50         5        2           0.245    0.245       0.196
+      205     const       0       50         5        2           0.246    0.246       0.196
+      206     const       0       50         5        2           0.246    0.246       0.196
+      207     const       0       50         5        2           0.246    0.246       0.196
+      208     const       0       50         5        2           0.246    0.246       0.196
+      209     const       0       50         5        2           0.246    0.246       0.195
+      210     const       0       50         5        2           0.246    0.246       0.195
+      211     const       0       50         5        2           0.246    0.246       0.195
+      212     const       0       50         5        2           0.245    0.246       0.196
+      213     const       0       50         5        2           0.246    0.246       0.195
+      214     const       0       50         5        2           0.245    0.246       0.195
+      215     const       0       50         5        2           0.246    0.246       0.195
+      216     const       0       50         5        2           0.245    0.246       0.196
+      217     const       0       50         5        2           0.246    0.246       0.195
+      218     const       0       50         5        2           0.245    0.246       0.196
+      219     const       0       50         5        2           0.246    0.246       0.196
+      220     const       0       50         5        2           0.246    0.246       0.196
+      221     const       0       50         5        2           0.246    0.246       0.195
+      222     const       0       50         5        2           0.246    0.246       0.195
+      223     const       0       50         1        2           0.246    0.246       0.000
+      224     const       0        0         0        0             n/a      n/a         n/a
 
-=== Pi0.5 inference episode: 2026-06-17 15:13:33 ===
+=== Pi0.5 inference episode: 2026-06-17 15:25:09 ===
 task: put green cylinder on blue cube
 config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, chunk_replan_steps=50, fps=20
-summary: total_time=5.659s, inference_calls=23, completed_chunks=23, prefix_chunks=0, actions_applied=107, empty_action_steps=6
-latency: avg_first_action=0.248s, avg_final=0.248s, avg_chunk_duration=0.188s
+summary: total_time=6.065s, inference_calls=25, completed_chunks=25, prefix_chunks=0, actions_applied=116, empty_action_steps=6
+latency: avg_first_action=0.248s, avg_final=0.248s, avg_chunk_duration=0.187s
 chunks:
   request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
-       90     const       0       50         5        2           0.295    0.295       0.195
-       91     const       0       50         5        2           0.245    0.245       0.195
-       92     const       0       50         5        2           0.245    0.246       0.195
-       93     const       0       50         5        2           0.245    0.245       0.195
-       94     const       0       50         5        2           0.245    0.246       0.195
-       95     const       0       50         5        2           0.245    0.245       0.196
-       96     const       0       50         5        2           0.246    0.246       0.195
-       97     const       0       50         5        2           0.245    0.245       0.196
-       98     const       0       50         5        2           0.246    0.246       0.195
-       99     const       0       50         5        2           0.246    0.246       0.196
-      100     const       0       50         5        2           0.246    0.246       0.195
-      101     const       0       50         5        2           0.245    0.245       0.196
-      102     const       0       50         5        2           0.246    0.246       0.195
-      103     const       0       50         5        2           0.245    0.245       0.195
-      104     const       0       50         5        2           0.246    0.246       0.195
-      105     const       0       50         5        2           0.245    0.245       0.196
-      106     const       0       50         5        2           0.246    0.246       0.195
-      107     const       0       50         5        2           0.246    0.246       0.196
-      108     const       0       50         5        2           0.246    0.246       0.195
-      109     const       0       50         5        2           0.245    0.245       0.196
-      110     const       0       50         5        2           0.246    0.246       0.195
-      111     const       0       50         2        2           0.245    0.245       0.045
-      112     const       0        0         0        0             n/a      n/a         n/a
+      295     const       0       50         5        2           0.296    0.296       0.196
+      296     const       0       50         5        2           0.246    0.246       0.196
+      297     const       0       50         5        2           0.246    0.246       0.196
+      298     const       0       50         5        2           0.246    0.246       0.195
+      299     const       0       50         5        2           0.245    0.245       0.195
+      300     const       0       50         5        2           0.246    0.246       0.195
+      301     const       0       50         5        2           0.245    0.246       0.195
+      302     const       0       50         5        2           0.246    0.246       0.195
+      303     const       0       50         5        2           0.245    0.245       0.196
+      304     const       0       50         5        2           0.246    0.246       0.195
+      305     const       0       50         5        2           0.246    0.246       0.196
+      306     const       0       50         5        2           0.246    0.246       0.195
+      307     const       0       50         5        2           0.245    0.245       0.196
+      308     const       0       50         5        2           0.246    0.246       0.195
+      309     const       0       50         5        2           0.245    0.246       0.196
+      310     const       0       50         5        2           0.246    0.246       0.195
+      311     const       0       50         5        2           0.245    0.245       0.196
+      312     const       0       50         5        2           0.246    0.246       0.195
+      313     const       0       50         5        2           0.245    0.245       0.196
+      314     const       0       50         5        2           0.246    0.246       0.195
+      315     const       0       50         5        2           0.245    0.245       0.196
+      316     const       0       50         5        2           0.246    0.246       0.195
+      317     const       0       50         5        2           0.245    0.245       0.196
+      318     const       0       50         1        2           0.246    0.246       0.000
+      319     const       0        0         0        0             n/a      n/a         n/a
 
-=== Pi0.5 inference episode: 2026-06-17 15:13:49 ===
+=== Pi0.5 inference episode: 2026-06-17 15:27:18 ===
 task: put green cylinder on blue cube
 config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, chunk_replan_steps=50, fps=20
-summary: total_time=5.509s, inference_calls=22, completed_chunks=22, prefix_chunks=0, actions_applied=104, empty_action_steps=6
+summary: total_time=5.710s, inference_calls=23, completed_chunks=23, prefix_chunks=0, actions_applied=109, empty_action_steps=6
 latency: avg_first_action=0.248s, avg_final=0.248s, avg_chunk_duration=0.193s
 chunks:
   request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
-      113     const       0       50         5        2           0.296    0.296       0.196
-      114     const       0       50         5        2           0.246    0.246       0.195
-      115     const       0       50         5        2           0.246    0.246       0.196
-      116     const       0       50         5        2           0.246    0.246       0.195
-      117     const       0       50         5        2           0.246    0.246       0.196
-      118     const       0       50         5        2           0.246    0.246       0.195
-      119     const       0       50         5        2           0.245    0.246       0.195
-      120     const       0       50         5        2           0.245    0.245       0.195
-      121     const       0       50         5        2           0.245    0.245       0.196
-      122     const       0       50         5        2           0.246    0.246       0.195
-      123     const       0       50         5        2           0.245    0.246       0.196
-      124     const       0       50         5        2           0.246    0.246       0.195
-      125     const       0       50         5        2           0.245    0.245       0.196
-      126     const       0       50         5        2           0.246    0.246       0.195
-      127     const       0       50         5        2           0.245    0.245       0.195
-      128     const       0       50         5        2           0.246    0.246       0.195
-      129     const       0       50         5        2           0.245    0.245       0.196
-      130     const       0       50         5        2           0.246    0.246       0.195
-      131     const       0       50         5        2           0.245    0.245       0.195
-      132     const       0       50         5        2           0.246    0.246       0.195
-      133     const       0       50         4        2           0.245    0.245       0.146
-      134     const       0        0         0        0             n/a      n/a         n/a
+      355     const       0       50         5        2           0.296    0.296       0.195
+      356     const       0       50         5        2           0.245    0.245       0.196
+      357     const       0       50         5        2           0.246    0.246       0.195
+      358     const       0       50         5        2           0.245    0.245       0.195
+      359     const       0       50         5        2           0.246    0.246       0.195
+      360     const       0       50         5        2           0.245    0.245       0.195
+      361     const       0       50         5        2           0.246    0.246       0.195
+      362     const       0       50         5        2           0.245    0.245       0.196
+      363     const       0       50         5        2           0.246    0.246       0.195
+      364     const       0       50         5        2           0.245    0.245       0.196
+      365     const       0       50         5        2           0.246    0.246       0.195
+      366     const       0       50         5        2           0.245    0.245       0.196
+      367     const       0       50         5        2           0.246    0.246       0.195
+      368     const       0       50         5        2           0.245    0.245       0.195
+      369     const       0       50         5        2           0.246    0.246       0.195
+      370     const       0       50         5        2           0.245    0.245       0.196
+      371     const       0       50         5        2           0.246    0.246       0.195
+      372     const       0       50         5        2           0.245    0.245       0.196
+      373     const       0       50         5        2           0.246    0.246       0.195
+      374     const       0       50         5        2           0.245    0.245       0.196
+      375     const       0       50         5        2           0.246    0.246       0.195
+      376     const       0       50         4        2           0.246    0.246       0.145
+      377     const       0        0         0        0             n/a      n/a         n/a
+
+=== Pi0.5 inference episode: 2026-06-17 15:28:08 ===
+task: put green cylinder on blue cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, chunk_replan_steps=50, fps=20
+summary: total_time=5.816s, inference_calls=24, completed_chunks=24, prefix_chunks=0, actions_applied=111, empty_action_steps=6
+latency: avg_first_action=0.248s, avg_final=0.248s, avg_chunk_duration=0.187s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+      390     const       0       50         5        2           0.297    0.297       0.195
+      391     const       0       50         5        2           0.246    0.246       0.196
+      392     const       0       50         5        2           0.246    0.246       0.196
+      393     const       0       50         5        2           0.246    0.246       0.196
+      394     const       0       50         5        2           0.246    0.246       0.195
+      395     const       0       50         5        2           0.245    0.246       0.195
+      396     const       0       50         5        2           0.246    0.246       0.195
+      397     const       0       50         5        2           0.245    0.245       0.196
+      398     const       0       50         5        2           0.246    0.246       0.196
+      399     const       0       50         5        2           0.246    0.246       0.196
+      400     const       0       50         5        2           0.246    0.246       0.196
+      401     const       0       50         5        2           0.246    0.246       0.196
+      402     const       0       50         5        2           0.246    0.246       0.196
+      403     const       0       50         5        2           0.246    0.246       0.195
+      404     const       0       50         5        2           0.246    0.246       0.196
+      405     const       0       50         5        2           0.246    0.246       0.195
+      406     const       0       50         5        2           0.245    0.246       0.196
+      407     const       0       50         5        2           0.246    0.246       0.196
+      408     const       0       50         5        2           0.246    0.246       0.195
+      409     const       0       50         5        2           0.246    0.246       0.195
+      410     const       0       50         5        2           0.246    0.246       0.195
+      411     const       0       50         5        2           0.246    0.246       0.195
+      412     const       0       50         1        2           0.245    0.245       0.000
+      413     const       0        0         0        0             n/a      n/a         n/a
+
+=== Pi0.5 inference episode: 2026-06-17 15:29:12 ===
+task: put green cylinder on blue cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, chunk_replan_steps=50, fps=20
+summary: total_time=5.660s, inference_calls=23, completed_chunks=23, prefix_chunks=0, actions_applied=108, empty_action_steps=6
+latency: avg_first_action=0.248s, avg_final=0.248s, avg_chunk_duration=0.191s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+      437     const       0       50         5        2           0.296    0.296       0.195
+      438     const       0       50         5        2           0.246    0.246       0.195
+      439     const       0       50         5        2           0.246    0.246       0.195
+      440     const       0       50         5        2           0.245    0.245       0.196
+      441     const       0       50         5        2           0.246    0.246       0.195
+      442     const       0       50         5        2           0.245    0.245       0.196
+      443     const       0       50         5        2           0.246    0.246       0.194
+      444     const       0       50         5        2           0.244    0.244       0.196
+      445     const       0       50         5        2           0.246    0.246       0.195
+      446     const       0       50         5        2           0.245    0.245       0.196
+      447     const       0       50         5        2           0.246    0.246       0.195
+      448     const       0       50         5        2           0.245    0.245       0.196
+      449     const       0       50         5        2           0.246    0.246       0.195
+      450     const       0       50         5        2           0.245    0.246       0.196
+      451     const       0       50         5        2           0.246    0.246       0.195
+      452     const       0       50         5        2           0.245    0.245       0.196
+      453     const       0       50         5        2           0.246    0.246       0.194
+      454     const       0       50         5        2           0.244    0.245       0.195
+      455     const       0       50         5        2           0.246    0.246       0.195
+      456     const       0       50         5        2           0.245    0.245       0.196
+      457     const       0       50         5        2           0.246    0.246       0.195
+      458     const       0       50         3        2           0.245    0.245       0.095
+      459     const       0        0         0        0             n/a      n/a         n/a
