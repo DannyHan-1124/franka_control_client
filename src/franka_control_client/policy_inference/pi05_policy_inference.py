@@ -533,6 +533,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
     def _discard_infering(self) -> None:
         self._stop_infering()
+        self._open_gripper()
         self._ui_console.log("Episode discarded.")
 
     def _stop_infering(self) -> None:
@@ -753,9 +754,28 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self.control_pair.go_home()
             time.sleep(3.0)
             self.control_pair.reset_action()
+            self._open_gripper()
             self._ui_console.log("Robot arm reset to home position.")
         except Exception as exc:
             self._ui_console.log(f"Failed to reset arm: {exc}")
+
+    def _open_gripper(self) -> None:
+        self._ui_console.log("Opening gripper...")
+        if self._last_sanitized_action is not None:
+            open_action = self._last_sanitized_action.copy()
+            open_action[7] = 0.0
+            self.control_pair.update_action(open_action)
+        try:
+            self.control_pair.gripper.send_grasp_command(
+                position=0.0,
+                speed=0.7,
+                force=0.3,
+                blocking=False,
+            )
+            self._last_gripper_cmd = 0.0
+            self._ui_console.log("Gripper open command sent.")
+        except Exception as exc:
+            self._ui_console.log(f"Failed to open gripper: {exc}")
 
     def _build_observation(self) -> Dict[str, Any]:
         static_rgb = self._capture_rgb(self.static_cam)
@@ -997,19 +1017,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._state_machine.trigger(PolicyInferenceEvent.DISCARD)
 
     def _force_final_open_command(self) -> None:
-        if self._last_sanitized_action is not None:
-            open_action = self._last_sanitized_action.copy()
-            open_action[7] = 0.0
-            self.control_pair.update_action(open_action)
-        try:
-            self.control_pair.gripper.send_grasp_command(
-                position=0.0,
-                speed=0.7,
-                force=0.3,
-                blocking=False,
-            )
-        except Exception as exc:
-            pyzlc.warning(f"Failed to send final open gripper command: {exc}")
+        self._open_gripper()
 
     def _significant_clip_summary(self, raw: np.ndarray, clipped: np.ndarray) -> str:
         delta = np.abs(clipped - raw)
