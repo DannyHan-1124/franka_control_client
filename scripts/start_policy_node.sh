@@ -7,7 +7,7 @@ export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot/src:${PYTHONPATH:-
 
 python -m franka_control_client.policy.pi05_policy_node \
     --checkpoint_path /hkfs/work/workspace/scratch/utphd-myspace/outputs/pi05_bs256_20ksteps_fixed_index/checkpoints/010000/pretrained_model \
-    --dataset_path /hkfs/work/workspace/scratch/utphd-myspace/datasets/cylinder_cube_full \
+    --dataset_path /hkfs/work/workspace/scratch/utphd-myspace/datasets/cylinder_full \
     --device cuda \
     --policy_dtype bfloat16 \
     --obs_topic pi05/observation \
