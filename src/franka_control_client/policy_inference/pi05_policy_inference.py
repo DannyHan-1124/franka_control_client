@@ -64,7 +64,7 @@ class Pi05PolicyInferenceConfig:
     stop_after_release_steps: int = 0
     debug_image_dir: Optional[str] = None
     debug_image_interval: int = 25
-    reclose_after_release_min_motion_m: float = 0.08
+    reclose_after_release_min_motion_m: float = 0.0
     task_after_first_release: Optional[str] = None
     faster_infer_time_schedule: str = "const"
     faster_alpha: float = 1.0
