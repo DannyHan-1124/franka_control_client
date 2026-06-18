@@ -51,6 +51,12 @@ def _parse_args() -> argparse.Namespace:
         help="streaming_zmq mode: chunk_replan is the existing behavior; continuous replans as soon as each chunk finishes.",
     )
     parser.add_argument(
+        "--continuous_min_execute_steps",
+        type=int,
+        default=0,
+        help="For continuous streaming, execute at least this many actions from a request before sending the next one.",
+    )
+    parser.add_argument(
         "--max_position_step_m",
         type=float,
         default=0.0,
@@ -156,6 +162,7 @@ def main() -> None:
         policy_zmq_endpoint=args.policy_zmq_endpoint,
         policy_zmq_timeout_ms=args.policy_zmq_timeout_ms,
         streaming_mode=args.streaming_mode,
+        continuous_min_execute_steps=args.continuous_min_execute_steps,
         max_position_step_m=args.max_position_step_m,
         max_rotation_step_rad=args.max_rotation_step_rad,
         chunk_replan_steps=args.chunk_replan_steps,

@@ -56,6 +56,7 @@ class Pi05PolicyInferenceConfig:
     policy_zmq_endpoint: Optional[str] = None
     policy_zmq_timeout_ms: int = 30000
     streaming_mode: str = "chunk_replan"
+    continuous_min_execute_steps: int = 0
     max_position_step_m: float = 0.0
     max_rotation_step_rad: float = 0.0
     chunk_replan_steps: int = 50
@@ -97,6 +98,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._initial_task = cfg.task
         self._streaming_policy: Optional[StreamingZmqPolicy] = None
         if cfg.policy_transport == "zmq":
+            # Direct request/response ZMQ: send one observation and block until
+            # the server returns a complete action chunk.
             if not cfg.policy_zmq_endpoint:
                 raise ValueError("policy_zmq_endpoint is required for ZMQ policy transport.")
             self.policy = DirectZmqPolicy(
@@ -105,6 +108,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 timeout_ms=cfg.policy_zmq_timeout_ms,
             )
         elif cfg.policy_transport == "streaming_zmq":
+            # Streaming ZMQ: send one observation and consume partial action
+            # updates as they arrive. This is used by FASTER and continuous
+            # inference because early actions can be applied before the whole
+            # chunk is finished.
             if not cfg.policy_zmq_endpoint:
                 raise ValueError("policy_zmq_endpoint is required for streaming ZMQ policy transport.")
             self._streaming_policy = StreamingZmqPolicy(
@@ -114,6 +121,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
             )
             self.policy = self._streaming_policy
         elif cfg.policy_transport == "pyzlc":
+            # Legacy pyzlc topic transport: publish observations on one topic
+            # and read complete action chunks from another topic.
             self.policy = RemotePolicy(
                 cfg.policy_name,
                 obs_topic=cfg.obs_topic,
@@ -158,6 +167,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._last_sanitized_action: Optional[np.ndarray] = None
         self._debug_image_step = 0
         self._release_pos: Optional[np.ndarray] = None
+        # Streaming buffers are keyed differently by mode:
+        # - chunk_replan: local chunk index 0..N
+        # - continuous: global control step, so late/stale actions can be dropped.
         self._stream_request_id: Optional[int] = None
         self._stream_action_buffer: dict[int, np.ndarray] = {}
         self._stream_current_chunk: dict[int, np.ndarray] = {}
@@ -308,7 +320,30 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if self._streaming_policy.active_request_id is not None:
             return False
         if self.cfg.streaming_mode == "continuous":
-            return True
+            if self._stream_request_id is None:
+                return True
+            min_execute_steps = max(0, int(self.cfg.continuous_min_execute_steps))
+            if min_execute_steps <= 0:
+                return True
+            metric = self._metrics_stream_chunks.get(int(self._stream_request_id))
+            executed_steps = int(metric.get("executed_action_count") or 0) if metric is not None else 0
+            if executed_steps >= min_execute_steps:
+                return True
+            # Without this gate, continuous mode can replace each 50-action
+            # plan after only ~5 executed actions. The minimum window keeps the
+            # robot from living forever in the first few actions of each chunk.
+            has_future_actions = any(
+                int(step) >= self._stream_global_step
+                for step in self._stream_action_buffer
+            )
+            if not has_future_actions:
+                pyzlc.info(
+                    "Requesting next continuous chunk before min execution window "
+                    f"because action buffer is empty: executed={executed_steps}, "
+                    f"min={min_execute_steps}"
+                )
+                return True
+            return False
         if self._stream_request_id is None:
             return True
         if self._phase_fallback_replan_pending:
@@ -325,6 +360,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
         active_schedule = self._active_infer_time_schedule()
         obs = self._build_observation()
         if self.cfg.streaming_mode == "continuous":
+            # Continuous mode aligns chunks by global time instead of preserving
+            # an explicit prefix from the previous request.
             prefix_request_id, prefix_start_index, prefix_steps = None, 0, 0
         else:
             prefix_request_id, prefix_start_index, prefix_steps = self._build_stream_prefix_metadata()
@@ -335,6 +372,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
         )
         previous_schedule = previous_metric.get("schedule") if previous_metric is not None else None
         if previous_schedule is not None and previous_schedule != active_schedule and prefix_steps > 0:
+            # A prefix generated under a different denoising schedule can inject
+            # a discontinuity near phase fallback, so start fresh after switches.
             pyzlc.info(
                 "Dropping streamed action prefix across schedule change: "
                 f"{previous_schedule} -> {active_schedule}"
@@ -376,6 +415,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._stream_action_sources = {}
         self._phase_fallback_replan_pending = False
         if self.cfg.streaming_mode != "continuous" and prefix_request_id is not None and prefix_steps > 0:
+            # Reuse the tail of the previous chunk at the start of the new one
+            # so FASTER/HAS does not introduce a hard boundary between chunks.
             for out_idx, src_idx in enumerate(range(prefix_start_index, prefix_start_index + prefix_steps)):
                 action = previous_chunk.get(src_idx)
                 if action is None:
@@ -426,6 +467,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 if self.cfg.streaming_mode == "continuous":
                     start_step = self._stream_request_start_steps.get(int(self._stream_request_id), 0)
                     target_step = int(start_step + idx)
+                    # If inference finished after this control step passed, the
+                    # action is stale and should not be applied retroactively.
                     if target_step < self._stream_global_step:
                         continue
                     self._stream_action_buffer[target_step] = action
@@ -591,6 +634,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "transport": self.cfg.policy_transport,
             "schedule": self.cfg.faster_infer_time_schedule,
             "streaming_mode": self.cfg.streaming_mode,
+            "continuous_min_execute_steps": int(self.cfg.continuous_min_execute_steps),
             "fps": int(self.cfg.fps),
             "chunk_replan_steps": int(self.cfg.chunk_replan_steps),
             "gripper_open_confirm_steps": int(self.cfg.gripper_open_confirm_steps),
@@ -692,6 +736,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
             )
         if summary.get("faster_delay_steps") is not None:
             config_parts.append(f"delay_steps={summary.get('faster_delay_steps')}")
+        if summary.get("streaming_mode") == "continuous":
+            config_parts.append(
+                f"continuous_min_execute_steps={summary.get('continuous_min_execute_steps')}"
+            )
         if summary.get("phase_fallback_schedule") is not None:
             config_parts.append(
                 "phase_fallback="
@@ -905,6 +953,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _sanitize_action(self, action: np.ndarray) -> np.ndarray:
         arr = np.asarray(action, dtype=np.float64).reshape(-1)[:ACTION_DIM]
         if self.cfg.clamp_actions:
+            # Clamp before sending to the robot; large clips are still logged so
+            # bad model outputs remain visible in real-robot tests.
             clipped = np.clip(arr, ACTION_MIN, ACTION_MAX)
             clip_summary = self._significant_clip_summary(arr, clipped)
             if clip_summary:
@@ -938,6 +988,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
             return 0.0
 
         if self._last_gripper_cmd >= 0.5 and gripper_cmd < 0.5:
+            # Treat close->open as the release signal, but optionally require
+            # repeated open commands so a one-step blip does not end the episode.
             self._pending_open_steps += 1
             if not self._release_armed:
                 return 1.0
