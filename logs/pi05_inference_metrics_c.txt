@@ -311,19 +311,6 @@ chunks:
        10       HAS       0       50        28       11           0.095    0.296       1.352
        11       HAS       0       12         1        3           0.096      n/a       0.000
 
-=== Pi0.5 inference episode: 2026-06-18 13:23:36 ===
-task: put green cylinder on blue cube
-config: transport=streaming_zmq, schedule=HAS, streaming_mode=continuous, u0=0.900, alpha=1.000, continuous_min_execute_steps=25, chunk_replan_steps=50, fps=20
-summary: total_time=6.861s, inference_calls=5, completed_chunks=5, prefix_chunks=0, actions_applied=96, empty_action_steps=42
-latency: avg_first_action=0.446s, avg_final=0.721s, avg_chunk_duration=0.911s
-chunks:
-  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
-        1       HAS       0       50        11       11           1.797    1.998       0.500
-        2       HAS       0       50        28       11           0.145    0.296       1.352
-        3       HAS       0       50        28       11           0.096    0.296       1.352
-        4       HAS       0       50        28       11           0.095    0.296       1.352
-        5       HAS       0       17         1        4           0.096      n/a       0.000
-
 === Pi0.5 inference episode: 2026-06-18 13:24:37 ===
 task: put green cylinder on blue cube
 config: transport=streaming_zmq, schedule=HAS, streaming_mode=continuous, u0=0.900, alpha=1.000, continuous_min_execute_steps=25, chunk_replan_steps=50, fps=20
@@ -393,3 +380,19 @@ chunks:
        33       HAS       0       50        28       11           0.095    0.295       1.352
        34       HAS       0       50        28       11           0.095    0.295       1.352
        35       HAS       0       17         1        4           0.095      n/a       0.000
+
+=== Pi0.5 inference episode: 2026-06-18 13:35:04 ===
+task: put green cylinder on blue cube
+config: transport=streaming_zmq, schedule=HAS, streaming_mode=continuous, u0=0.900, alpha=1.000, continuous_min_execute_steps=20, chunk_replan_steps=50, fps=20
+summary: total_time=8.814s, inference_calls=8, completed_chunks=8, prefix_chunks=0, actions_applied=174, empty_action_steps=3
+latency: avg_first_action=0.114s, avg_final=0.295s, avg_chunk_duration=1.039s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0       50        23       11           0.144    0.295       1.101
+        2       HAS       0       50        23       11           0.095    0.295       1.101
+        3       HAS       0       50        23       11           0.145    0.295       1.102
+        4       HAS       0       50        23       11           0.095    0.296       1.102
+        5       HAS       0       50        23       11           0.095    0.296       1.101
+        6       HAS       0       50        23       11           0.144    0.295       1.102
+        7       HAS       0       50        23       11           0.095    0.296       1.102
+        8       HAS       0       50        13       11           0.094    0.294       0.601
