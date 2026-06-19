@@ -57,7 +57,7 @@ class Pi05PolicyInferenceConfig:
     policy_zmq_timeout_ms: int = 30000
     max_position_step_m: float = 0.0
     max_rotation_step_rad: float = 0.0
-    chunk_replan_steps: int = 50
+    execution_horizon: int = 50
     gripper_open_confirm_steps: int = 1
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
@@ -68,7 +68,8 @@ class Pi05PolicyInferenceConfig:
     faster_infer_time_schedule: str = "const"
     faster_alpha: float = 1.0
     faster_u0: float = 0.9
-    faster_delay_steps: int = 0
+    delay: int = 0
+    early_stop_actions: int = 0
     phase_fallback_schedule: str = "none"
     phase_fallback_trigger: str = "after_gripper_close"
     metrics_path: Optional[str] = None
@@ -93,6 +94,13 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.data_collectors = data_collectors
         self.control_pair = control_pair
         self.cfg = cfg
+        if 0 < cfg.early_stop_actions < cfg.execution_horizon:
+            raise ValueError(
+                "early_stop_actions must be 0 (disabled) or at least execution_horizon "
+                "so the next delay prefix remains available."
+            )
+        if cfg.early_stop_actions > 0 and cfg.policy_transport != "streaming_zmq":
+            raise ValueError("early_stop_actions requires policy_transport=streaming_zmq.")
         self._initial_task = cfg.task
         self._streaming_policy: Optional[StreamingZmqPolicy] = None
         if cfg.policy_transport == "zmq":
@@ -301,7 +309,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             return True
         if self._phase_fallback_replan_pending:
             return True
-        if self._stream_next_index >= max(1, int(self.cfg.chunk_replan_steps)):
+        if self._stream_next_index >= int(self.cfg.execution_horizon):
             return True
         if self._stream_final and self._stream_next_index not in self._stream_action_buffer:
             return True
@@ -330,6 +338,17 @@ class Pi05PolicyInference(PolicyInferenceManager):
             policy_kwargs["delay"] = int(prefix_steps)
             policy_kwargs["prefix_request_id"] = int(prefix_request_id)
             policy_kwargs["prefix_start_index"] = int(prefix_start_index)
+        effective_early_stop_actions = 0
+        if self.cfg.early_stop_actions > 0 and active_schedule.upper() == "HAS":
+            # Generate enough actions to execute this chunk and retain the next delay prefix.
+            required_new_actions = self.cfg.execution_horizon + self.cfg.delay - prefix_steps
+            effective_early_stop_actions = max(
+                self.cfg.early_stop_actions,
+                required_new_actions,
+            )
+            obs.setdefault("policy_kwargs", {})["early_stop_actions"] = int(
+                effective_early_stop_actions
+            )
         previous_chunk = dict(self._stream_current_chunk)
         request_start = time.perf_counter()
         self._stream_request_id = self._streaming_policy.send_observation(obs)
@@ -342,6 +361,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "prefix_steps": int(prefix_steps),
             "prefix_request_id": int(prefix_request_id) if prefix_request_id is not None else None,
             "prefix_start_index": int(prefix_start_index),
+            "early_stop_actions": int(effective_early_stop_actions),
             "first_action_latency_s": None,
             "final_latency_s": None,
             "emitted_action_count": 0,
@@ -366,7 +386,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._stream_final = False
 
     def _build_stream_prefix_metadata(self) -> tuple[Optional[int], int, int]:
-        prefix_steps = max(0, int(self.cfg.faster_delay_steps))
+        prefix_steps = int(self.cfg.delay)
         if prefix_steps <= 0 or self._stream_request_id is None:
             return None, 0, 0
 
@@ -453,7 +473,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             return True
         if self._chunk_step >= len(self._action_chunk):
             return True
-        return self._chunk_step >= max(1, int(self.cfg.chunk_replan_steps))
+        return self._chunk_step >= int(self.cfg.execution_horizon)
 
     def _log_action_chunk_debug(self, action_chunk: np.ndarray) -> None:
         gripper = np.asarray(action_chunk[:, 7], dtype=np.float64)
@@ -535,13 +555,21 @@ class Pi05PolicyInference(PolicyInferenceManager):
             if chunk.get("execution_duration_s") is not None
         ]
         prefix_chunks = sum(1 for chunk in chunks if int(chunk.get("prefix_steps") or 0) > 0)
+        p95_first_action_latency_s = (
+            float(np.percentile(first_action_latencies, 95)) if first_action_latencies else None
+        )
+        recommended_delay = (
+            int(np.ceil(p95_first_action_latency_s * self.cfg.fps))
+            if p95_first_action_latency_s is not None
+            else None
+        )
 
         summary = {
             "task": self.task,
             "transport": self.cfg.policy_transport,
             "schedule": self.cfg.faster_infer_time_schedule,
             "fps": int(self.cfg.fps),
-            "chunk_replan_steps": int(self.cfg.chunk_replan_steps),
+            "execution_horizon": int(self.cfg.execution_horizon),
             "gripper_open_confirm_steps": int(self.cfg.gripper_open_confirm_steps),
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),
             "total_time_s": total_time_s,
@@ -552,14 +580,18 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "empty_action_steps": self._metrics_empty_action_steps,
             "avg_request_latency_s": _mean(request_latencies),
             "avg_first_action_latency_s": _mean(first_action_latencies),
+            "p95_first_action_latency_s": p95_first_action_latency_s,
+            "recommended_delay": recommended_delay,
             "avg_final_latency_s": _mean(final_latencies),
             "avg_chunk_execution_duration_s": _mean(execution_durations),
         }
         if self.cfg.faster_infer_time_schedule.upper() == "HAS":
             summary["faster_alpha"] = float(self.cfg.faster_alpha)
             summary["faster_u0"] = float(self.cfg.faster_u0)
-        if int(self.cfg.faster_delay_steps) > 0:
-            summary["faster_delay_steps"] = int(self.cfg.faster_delay_steps)
+        if self.cfg.delay > 0:
+            summary["delay"] = int(self.cfg.delay)
+        if self.cfg.early_stop_actions > 0:
+            summary["early_stop_actions"] = int(self.cfg.early_stop_actions)
         if self.cfg.phase_fallback_schedule.lower() != "none":
             summary["phase_fallback_schedule"] = self.cfg.phase_fallback_schedule
             summary["phase_fallback_trigger"] = self.cfg.phase_fallback_trigger
@@ -573,6 +605,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
             f"actions_applied={summary['actions_applied']}, "
             f"empty_action_steps={summary['empty_action_steps']}, "
             f"avg_first_action_latency={_format_optional(summary['avg_first_action_latency_s'])}s, "
+            f"p95_first_action_latency={_format_optional(summary['p95_first_action_latency_s'])}s, "
+            f"recommended_delay={summary['recommended_delay']}, "
             f"avg_final_latency={_format_optional(summary['avg_final_latency_s'])}s, "
             f"avg_chunk_duration={_format_optional(summary['avg_chunk_execution_duration_s'])}s"
         )
@@ -638,8 +672,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
                     f"alpha={_format_optional(summary.get('faster_alpha'))}",
                 ]
             )
-        if summary.get("faster_delay_steps") is not None:
-            config_parts.append(f"delay_steps={summary.get('faster_delay_steps')}")
+        if summary.get("delay") is not None:
+            config_parts.append(f"delay={summary.get('delay')}")
+        if summary.get("early_stop_actions") is not None:
+            config_parts.append(f"early_stop_actions={summary.get('early_stop_actions')}")
         if summary.get("phase_fallback_schedule") is not None:
             config_parts.append(
                 "phase_fallback="
@@ -647,7 +683,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             )
         config_parts.extend(
             [
-                f"chunk_replan_steps={summary.get('chunk_replan_steps')}",
+                f"execution_horizon={summary.get('execution_horizon')}",
                 f"fps={summary.get('fps')}",
             ]
         )
@@ -669,12 +705,14 @@ class Pi05PolicyInference(PolicyInferenceManager):
             (
                 "latency: "
                 f"avg_first_action={_format_optional(summary.get('avg_first_action_latency_s'))}s, "
+                f"p95_first_action={_format_optional(summary.get('p95_first_action_latency_s'))}s, "
+                f"recommended_delay={summary.get('recommended_delay')}, "
                 f"avg_final={_format_optional(summary.get('avg_final_latency_s'))}s, "
                 f"avg_chunk_duration={_format_optional(summary.get('avg_chunk_execution_duration_s'))}s"
             ),
             "chunks:",
             (
-                "  request  schedule  prefix  emitted  executed  updates  "
+                "  request  schedule  prefix  early_stop  emitted  executed  updates  "
                 "first_action_s  final_s  duration_s"
             ),
         ]
@@ -685,6 +723,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 f"{str(chunk.get('request_id')):>7}  "
                 f"{str(chunk.get('schedule', 'n/a')):>8}  "
                 f"{str(chunk.get('prefix_steps', 0)):>6}  "
+                f"{str(chunk.get('early_stop_actions', 'n/a')):>10}  "
                 f"{str(chunk.get('emitted_action_count', chunk.get('action_count', 'n/a'))):>7}  "
                 f"{str(chunk.get('executed_action_count')):>8}  "
                 f"{str(chunk.get('update_count', 'n/a')):>7}  "

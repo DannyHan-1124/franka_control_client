@@ -57,10 +57,10 @@ def _parse_args() -> argparse.Namespace:
         help="Inference-side max quaternion rotation step; disabled by default.",
     )
     parser.add_argument(
-        "--chunk_replan_steps",
+        "--execution_horizon",
         type=int,
         default=50,
-        help="Number of actions to execute before requesting a new chunk.",
+        help="Actions executed from each chunk before requesting the next inference.",
     )
     parser.add_argument(
         "--gripper_open_confirm_steps",
@@ -88,10 +88,16 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--faster_alpha", type=float, default=1.0, help="HAS horizon curve exponent; larger values change how speedup varies over the horizon.")
     parser.add_argument("--faster_u0", type=float, default=0.9, help="HAS aggressiveness; lower values denoise early actions more and are usually smoother.")
     parser.add_argument(
-        "--faster_delay_steps",
+        "--delay",
         type=int,
         default=0,
-        help="Number of old tail actions to preserve as prefix for chunk-to-chunk continuity.",
+        help="Old-action prefix used while the next chunk becomes available.",
+    )
+    parser.add_argument(
+        "--early_stop_actions",
+        type=int,
+        default=0,
+        help="Stop HAS denoising after this many new actions are emitted; 0 disables early stopping.",
     )
     parser.add_argument(
         "--phase_fallback_schedule",
@@ -151,7 +157,7 @@ def main() -> None:
         policy_zmq_timeout_ms=args.policy_zmq_timeout_ms,
         max_position_step_m=args.max_position_step_m,
         max_rotation_step_rad=args.max_rotation_step_rad,
-        chunk_replan_steps=args.chunk_replan_steps,
+        execution_horizon=args.execution_horizon,
         gripper_open_confirm_steps=args.gripper_open_confirm_steps,
         stop_after_first_release=args.stop_after_first_release,
         stop_after_release_steps=args.stop_after_release_steps,
@@ -162,7 +168,8 @@ def main() -> None:
         faster_infer_time_schedule=args.faster_infer_time_schedule,
         faster_alpha=args.faster_alpha,
         faster_u0=args.faster_u0,
-        faster_delay_steps=args.faster_delay_steps,
+        delay=args.delay,
+        early_stop_actions=args.early_stop_actions,
         phase_fallback_schedule=args.phase_fallback_schedule,
         phase_fallback_trigger=args.phase_fallback_trigger,
     )
