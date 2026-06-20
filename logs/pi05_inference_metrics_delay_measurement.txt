@@ -542,3 +542,129 @@ chunks:
        27       HAS       3          30       30        30        9           0.095    0.246       1.447
        28       HAS       3          30       30        30        9           0.095    0.245       1.446
        29       HAS       3          30       30         8        9           0.095    0.246       0.346
+
+=== Pi0.5 inference episode: 2026-06-20 16:31:42 ===
+task: put green cylinder on blue cube
+config: transport=streaming_zmq, schedule=HAS, u0=0.900, alpha=1.000, delay=3, early_stop_actions=30, execution_horizon=30, fps=20
+summary: total_time=7.862s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=156, empty_action_steps=2
+latency: avg_first_action=0.095s, p95_first_action=0.096s, recommended_delay=2, avg_final=0.229s, avg_chunk_duration=1.248s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        4       HAS       0          33       33        30        8           0.096    0.246       1.452
+        5       HAS       3          30       30        30        8           0.095    0.246       1.447
+        6       HAS       3          30       30        30        8           0.095    0.246       1.447
+        7       HAS       3          30       30        30        8           0.095    0.196       1.447
+        8       HAS       3          30       30        30        8           0.095    0.246       1.447
+        9       HAS       3          30       30         6        8           0.096    0.196       0.246
+
+=== Pi0.5 inference episode: 2026-06-20 16:32:11 ===
+task: put green cylinder on blue cube
+config: transport=streaming_zmq, schedule=HAS, u0=0.900, alpha=1.000, delay=3, early_stop_actions=30, execution_horizon=30, fps=20
+summary: total_time=7.762s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=154, empty_action_steps=2
+latency: avg_first_action=0.104s, p95_first_action=0.133s, recommended_delay=3, avg_final=0.236s, avg_chunk_duration=1.231s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       12       HAS       0          33       33        30        8           0.095    0.246       1.452
+       13       HAS       3          30       30        30        8           0.095    0.246       1.447
+       14       HAS       3          30       30        30        8           0.095    0.245       1.447
+       15       HAS       3          30       30        30        8           0.095    0.196       1.447
+       16       HAS       3          30       30        30        8           0.145    0.246       1.447
+       17       HAS       3          30       16         4        4           0.095      n/a       0.145
+
+=== Pi0.5 inference episode: 2026-06-20 16:32:36 ===
+task: put green cylinder on blue cube
+config: transport=streaming_zmq, schedule=HAS, u0=0.900, alpha=1.000, delay=3, early_stop_actions=30, execution_horizon=30, fps=20
+summary: total_time=7.261s, inference_calls=5, completed_chunks=5, prefix_chunks=4, actions_applied=143, empty_action_steps=3
+latency: avg_first_action=0.105s, p95_first_action=0.135s, recommended_delay=3, avg_final=0.236s, avg_chunk_duration=1.378s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       18       HAS       0          33       33        30        8           0.145    0.245       1.452
+       19       HAS       3          30       30        30        8           0.095    0.246       1.447
+       20       HAS       3          30       30        30        8           0.095    0.246       1.447
+       21       HAS       3          30       30        30        8           0.095    0.196       1.447
+       22       HAS       3          30       30        23        8           0.096    0.246       1.097
+
+=== Pi0.5 inference episode: 2026-06-20 16:32:57 ===
+task: put green cylinder on blue cube
+config: transport=streaming_zmq, schedule=HAS, u0=0.900, alpha=1.000, delay=3, early_stop_actions=30, execution_horizon=30, fps=20
+summary: total_time=8.113s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=160, empty_action_steps=3
+latency: avg_first_action=0.103s, p95_first_action=0.133s, recommended_delay=3, avg_final=0.237s, avg_chunk_duration=1.281s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       23       HAS       0          33       33        30        8           0.146    0.246       1.452
+       24       HAS       3          30       30        30        8           0.095    0.246       1.447
+       25       HAS       3          30       30        30        8           0.095    0.246       1.447
+       26       HAS       3          30       30        30        8           0.095    0.195       1.447
+       27       HAS       3          30       30        30        8           0.094    0.245       1.446
+       28       HAS       3          30       30        10        8           0.095    0.245       0.446
+
+=== Pi0.5 inference episode: 2026-06-20 16:35:27 ===
+task: put green cylinder on blue cube
+config: transport=streaming_zmq, schedule=HAS, u0=0.900, alpha=1.000, delay=2, early_stop_actions=25, execution_horizon=25, fps=20
+summary: total_time=6.760s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=133, empty_action_steps=3
+latency: avg_first_action=0.103s, p95_first_action=0.131s, recommended_delay=3, avg_final=0.195s, avg_chunk_duration=1.055s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0          27       27        25        7           0.143    0.194       1.202
+        2       HAS       2          25       25        25        7           0.095    0.195       1.196
+        3       HAS       2          25       25        25        7           0.096    0.196       1.197
+        4       HAS       2          25       25        25        7           0.095    0.195       1.196
+        5       HAS       2          25       25        25        7           0.095    0.196       1.197
+        6       HAS       2          25       25         8        7           0.094    0.194       0.344
+
+=== Pi0.5 inference episode: 2026-06-20 16:36:01 ===
+task: put green cylinder on blue cube
+config: transport=streaming_zmq, schedule=HAS, u0=0.900, alpha=1.000, delay=2, early_stop_actions=25, execution_horizon=25, fps=20
+summary: total_time=6.911s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=135, empty_action_steps=4
+latency: avg_first_action=0.111s, p95_first_action=0.144s, recommended_delay=3, avg_final=0.195s, avg_chunk_duration=1.081s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        7       HAS       0          27       27        25        7           0.143    0.193       1.202
+        8       HAS       2          25       25        25        7           0.144    0.194       1.246
+        9       HAS       2          25       25        25        7           0.095    0.195       1.197
+       10       HAS       2          25       25        25        7           0.095    0.196       1.197
+       11       HAS       2          25       25        25        7           0.095    0.196       1.197
+       12       HAS       2          25       25        10        7           0.095    0.196       0.446
+
+=== Pi0.5 inference episode: 2026-06-20 16:36:47 ===
+task: put green cylinder on blue cube
+config: transport=streaming_zmq, schedule=HAS, u0=0.900, alpha=1.000, delay=2, early_stop_actions=25, execution_horizon=25, fps=20
+summary: total_time=7.862s, inference_calls=7, completed_chunks=7, prefix_chunks=6, actions_applied=155, empty_action_steps=3
+latency: avg_first_action=0.103s, p95_first_action=0.131s, recommended_delay=3, avg_final=0.196s, avg_chunk_duration=1.062s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       13       HAS       0          27       27        25        7           0.096    0.196       1.202
+       14       HAS       2          25       25        25        7           0.095    0.195       1.197
+       15       HAS       2          25       25        25        7           0.095    0.196       1.197
+       16       HAS       2          25       25        25        7           0.095    0.195       1.197
+       17       HAS       2          25       25        25        7           0.146    0.196       1.247
+       18       HAS       2          25       25        25        7           0.096    0.196       1.197
+       19       HAS       2          25       25         5        7           0.095    0.196       0.196
+
+=== Pi0.5 inference episode: 2026-06-20 16:37:30 ===
+task: put green cylinder on blue cube
+config: transport=streaming_zmq, schedule=HAS, u0=0.900, alpha=1.000, delay=2, early_stop_actions=25, execution_horizon=25, fps=20
+summary: total_time=7.161s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=142, empty_action_steps=2
+latency: avg_first_action=0.096s, p95_first_action=0.096s, recommended_delay=2, avg_final=0.196s, avg_chunk_duration=1.131s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       20       HAS       0          27       27        25        7           0.096    0.196       1.202
+       21       HAS       2          25       25        25        7           0.096    0.196       1.197
+       22       HAS       2          25       25        25        7           0.096    0.196       1.197
+       23       HAS       2          25       25        25        7           0.095    0.196       1.197
+       24       HAS       2          25       25        25        7           0.096    0.196       1.197
+       25       HAS       2          25       25        17        7           0.095    0.196       0.796
+
+=== Pi0.5 inference episode: 2026-06-20 16:38:12 ===
+task: put green cylinder on blue cube
+config: transport=streaming_zmq, schedule=HAS, u0=0.900, alpha=1.000, delay=2, early_stop_actions=25, execution_horizon=25, fps=20
+summary: total_time=7.111s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=141, empty_action_steps=2
+latency: avg_first_action=0.095s, p95_first_action=0.095s, recommended_delay=2, avg_final=0.195s, avg_chunk_duration=1.122s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       26       HAS       0          27       27        25        7           0.095    0.195       1.202
+       27       HAS       2          25       25        25        7           0.095    0.196       1.197
+       28       HAS       2          25       25        25        7           0.094    0.194       1.195
+       29       HAS       2          25       25        25        7           0.095    0.195       1.197
+       30       HAS       2          25       25        25        7           0.095    0.195       1.197
+       31       HAS       2          25       25        16        7           0.095    0.196       0.746
