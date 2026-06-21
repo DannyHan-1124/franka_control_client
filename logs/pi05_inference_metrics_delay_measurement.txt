@@ -740,3 +740,51 @@ chunks:
        52       HAS       3           0       47        25       11           0.096    0.196       1.197
        53       HAS       3           0       47        25       11           0.095    0.245       1.197
        54       HAS       3           0       47        23       11           0.095    0.196       1.097
+
+=== Pi0.5 inference episode: 2026-06-21 14:31:58 ===
+task: put green cylinder on blue cube
+config: transport=streaming_zmq, schedule=HAS, u0=0.900, alpha=1.000, delay=3, execution_horizon=47, fps=20
+summary: total_time=8.415s, inference_calls=4, completed_chunks=4, prefix_chunks=3, actions_applied=167, empty_action_steps=2
+latency: avg_first_action=0.095s, p95_first_action=0.095s, recommended_delay=2, avg_final=0.221s, avg_chunk_duration=2.037s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0           0       50        47       11           0.094    0.247       2.305
+        2       HAS       3           0       47        47       11           0.095    0.246       2.299
+        3       HAS       3           0       47        47       11           0.095    0.195       2.298
+        4       HAS       3           0       47        26       11           0.095    0.196       1.247
+
+=== Pi0.5 inference episode: 2026-06-21 14:32:17 ===
+task: put green cylinder on blue cube
+config: transport=streaming_zmq, schedule=HAS, u0=0.900, alpha=1.000, delay=3, execution_horizon=47, fps=20
+summary: total_time=8.363s, inference_calls=4, completed_chunks=4, prefix_chunks=3, actions_applied=166, empty_action_steps=2
+latency: avg_first_action=0.095s, p95_first_action=0.096s, recommended_delay=2, avg_final=0.221s, avg_chunk_duration=2.024s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        5       HAS       0           0       50        47       11           0.096    0.196       2.303
+        6       HAS       3           0       47        47       11           0.095    0.245       2.298
+        7       HAS       3           0       47        47       11           0.096    0.246       2.299
+        8       HAS       3           0       47        25       11           0.095    0.195       1.196
+
+=== Pi0.5 inference episode: 2026-06-21 14:32:40 ===
+task: put green cylinder on blue cube
+config: transport=streaming_zmq, schedule=HAS, u0=0.900, alpha=1.000, delay=3, execution_horizon=47, fps=20
+summary: total_time=8.162s, inference_calls=4, completed_chunks=4, prefix_chunks=3, actions_applied=162, empty_action_steps=2
+latency: avg_first_action=0.095s, p95_first_action=0.095s, recommended_delay=2, avg_final=0.233s, avg_chunk_duration=1.974s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        9       HAS       0           0       50        47       11           0.095    0.196       2.303
+       10       HAS       3           0       47        47       11           0.095    0.245       2.298
+       11       HAS       3           0       47        47       11           0.095    0.245       2.298
+       12       HAS       3           0       47        21       11           0.095    0.245       0.996
+
+=== Pi0.5 inference episode: 2026-06-21 14:46:15 ===
+task: put green cylinder on blue cube
+config: transport=streaming_zmq, schedule=HAS, u0=0.900, alpha=1.000, delay=3, execution_horizon=47, fps=20
+summary: total_time=8.164s, inference_calls=4, completed_chunks=4, prefix_chunks=3, actions_applied=162, empty_action_steps=2
+latency: avg_first_action=0.095s, p95_first_action=0.095s, recommended_delay=2, avg_final=0.220s, avg_chunk_duration=1.975s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0           0       50        47       11           0.095    0.245       2.304
+        2       HAS       3           0       47        47       11           0.095    0.195       2.298
+        3       HAS       3           0       47        47       11           0.096    0.246       2.299
+        4       HAS       3           0       47        21       11           0.095    0.195       0.997
