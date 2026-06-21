@@ -358,11 +358,15 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if self._streaming_policy is None:
             return
         active_schedule = self._active_infer_time_schedule()
+        observation_step = int(self._stream_global_step)
         obs = self._build_observation()
         if self.cfg.streaming_mode == "continuous":
             # Continuous mode aligns chunks by global time instead of preserving
-            # an explicit prefix from the previous request.
+            # an explicit prefix from the previous request. Override any
+            # server-side delay default so prefix skipping and LAAS stale-action
+            # removal cannot both be applied to the same request.
             prefix_request_id, prefix_start_index, prefix_steps = None, 0, 0
+            obs.setdefault("policy_kwargs", {})["delay"] = 0
         else:
             prefix_request_id, prefix_start_index, prefix_steps = self._build_stream_prefix_metadata()
         previous_metric = (
@@ -388,13 +392,13 @@ class Pi05PolicyInference(PolicyInferenceManager):
         request_start = time.perf_counter()
         self._stream_request_id = self._streaming_policy.send_observation(obs)
         self._metrics_inference_calls += 1
-        self._stream_request_start_steps[self._stream_request_id] = int(self._stream_global_step)
+        self._stream_request_start_steps[self._stream_request_id] = observation_step
         self._metrics_stream_chunks[self._stream_request_id] = {
             "request_id": int(self._stream_request_id),
             "transport": self.cfg.policy_transport,
             "schedule": active_schedule,
             "streaming_mode": self.cfg.streaming_mode,
-            "request_start_step": int(self._stream_global_step),
+            "request_start_step": observation_step,
             "request_time_s": request_start,
             "prefix_steps": int(prefix_steps),
             "prefix_request_id": int(prefix_request_id) if prefix_request_id is not None else None,
@@ -470,6 +474,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
                     # If inference finished after this control step passed, the
                     # action is stale and should not be applied retroactively.
                     if target_step < self._stream_global_step:
+                        continue
+                    previous_source = self._stream_action_sources.get(target_step)
+                    if previous_source is not None and previous_source[0] > int(self._stream_request_id):
                         continue
                     self._stream_action_buffer[target_step] = action
                     self._stream_current_chunk[target_step] = action
