@@ -61,12 +61,8 @@ class Pi05PolicyInferenceConfig:
     max_position_step_m: float = 0.0
     max_rotation_step_rad: float = 0.0
     chunk_replan_steps: int = 50
-    gripper_open_confirm_steps: int = 1
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
-    debug_image_dir: Optional[str] = None
-    debug_image_interval: int = 25
-    reclose_after_release_min_motion_m: float = 0.0
     task_after_first_release: Optional[str] = None
     faster_infer_time_schedule: str = "const"
     faster_alpha: float = 1.0
@@ -179,13 +175,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._chunk_step = 0
         self._last_action_timestamp: Optional[float] = None
         self._last_gripper_cmd: Optional[float] = None
-        self._pending_open_steps = 0
         self._release_confirmed = False
         self._release_armed = False
         self._stop_after_release_countdown: Optional[int] = None
         self._last_sanitized_action: Optional[np.ndarray] = None
-        self._debug_image_step = 0
-        self._release_pos: Optional[np.ndarray] = None
         # Streaming buffers are keyed differently by mode:
         # - chunk_replan: local chunk index 0..N
         # - continuous: global control step, so late/stale actions can be dropped.
@@ -213,13 +206,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._action_chunk = None
         self._chunk_step = 0
         self._last_gripper_cmd = None
-        self._pending_open_steps = 0
         self._release_confirmed = False
         self._release_armed = False
         self._stop_after_release_countdown = None
         self._last_sanitized_action = None
-        self._debug_image_step = 0
-        self._release_pos = None
         self._stream_request_id = None
         self._stream_action_buffer = {}
         self._stream_current_chunk = {}
@@ -763,7 +753,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "continuous_min_execute_steps": int(self.cfg.continuous_min_execute_steps),
             "fps": int(self.cfg.fps),
             "chunk_replan_steps": int(self.cfg.chunk_replan_steps),
-            "gripper_open_confirm_steps": int(self.cfg.gripper_open_confirm_steps),
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),
             "total_time_s": total_time_s,
             "inference_calls": self._metrics_inference_calls,
@@ -966,7 +955,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _build_observation(self) -> Dict[str, Any]:
         static_rgb = self._capture_rgb(self.static_cam)
         wrist_rgb = self._capture_rgb(self.wrist_cam)
-        self._maybe_save_debug_images(static_rgb, wrist_rgb)
         obs = {
             "observation.images.base_0_rgb": _encode_rgb_image(static_rgb),
             "observation.images.left_wrist_0_rgb": _encode_rgb_image(wrist_rgb),
@@ -1041,22 +1029,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 )
                 return
 
-    def _maybe_save_debug_images(self, static_rgb: np.ndarray, wrist_rgb: np.ndarray) -> None:
-        if not self.cfg.debug_image_dir:
-            return
-        interval = max(1, int(self.cfg.debug_image_interval))
-        if self._debug_image_step % interval != 0:
-            self._debug_image_step += 1
-            return
-
-        out_dir = Path(self.cfg.debug_image_dir)
-        out_dir.mkdir(parents=True, exist_ok=True)
-        for name, image_rgb in (("static", static_rgb), ("wrist", wrist_rgb)):
-            path = out_dir / f"{self._debug_image_step:06d}_{name}_rgb.png"
-            cv2.imwrite(str(path), cv2.cvtColor(image_rgb, cv2.COLOR_RGB2BGR))
-        pyzlc.info(f"Saved RGB debug images to {out_dir} at step {self._debug_image_step}.")
-        self._debug_image_step += 1
-
     def _capture_rgb(self, cam: ImageDataWrapper) -> np.ndarray:
         frame = cam.capture_step()
         if frame is None:
@@ -1110,10 +1082,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         return arr
 
     def _stabilize_gripper_command(self, gripper_cmd: float) -> float:
-        confirm_steps = int(self.cfg.gripper_open_confirm_steps)
-        if confirm_steps < 1:
-            raise ValueError("gripper_open_confirm_steps must be >= 1.")
-
         if gripper_cmd >= 0.5 and not self._release_armed:
             self._release_armed = True
             pyzlc.info("Armed stop-after-release guard after closed gripper command.")
@@ -1122,23 +1090,14 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._last_gripper_cmd = gripper_cmd
             return gripper_cmd
 
-        if self._should_suppress_post_release_close(gripper_cmd):
-            return 0.0
-
         if self._last_gripper_cmd >= 0.5 and gripper_cmd < 0.5:
-            # Treat close->open as the release signal, but optionally require
-            # repeated open commands so a one-step blip does not end the episode.
-            self._pending_open_steps += 1
+            # The first close-to-open transition is the release signal.
             if not self._release_armed:
-                return 1.0
-            if self._pending_open_steps < confirm_steps:
                 return 1.0
             if not self._release_confirmed:
                 self._release_confirmed = True
                 self._stop_after_release_countdown = max(0, int(self.cfg.stop_after_release_steps))
                 self._log_confirmed_release()
-        else:
-            self._pending_open_steps = 0
 
         self._last_gripper_cmd = gripper_cmd
         return gripper_cmd
@@ -1152,8 +1111,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         target_pos = None
         if self._last_sanitized_action is not None:
             target_pos = self._last_sanitized_action[:3]
-        if current_pos is not None:
-            self._release_pos = np.asarray(current_pos, dtype=np.float64).reshape(3)
         pyzlc.info(
             "Confirmed first gripper release: "
             f"current_pos={_format_vec(current_pos)}, target_pos={_format_vec(target_pos)}"
@@ -1163,36 +1120,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._action_chunk = None
             self._chunk_step = 0
             pyzlc.info(f"Switching task after first release: {self.task}")
-
-    def _should_suppress_post_release_close(self, gripper_cmd: float) -> bool:
-        if not self._release_confirmed:
-            return False
-        if self._last_gripper_cmd is None or self._last_gripper_cmd >= 0.5:
-            return False
-        if gripper_cmd < 0.5:
-            return False
-        if self._release_pos is None:
-            return False
-
-        min_motion = float(self.cfg.reclose_after_release_min_motion_m)
-        if min_motion <= 0.0:
-            return False
-
-        try:
-            current_pose = _extract_ee_pose(self.arm_wrapper.capture_step())
-            current_pos = current_pose[:3].astype(np.float64)
-        except Exception:
-            return False
-
-        dist = float(np.linalg.norm(current_pos - self._release_pos))
-        if dist < min_motion:
-            pyzlc.info(
-                "Suppressing close command near first release pose: "
-                f"motion={dist:.4f}m < {min_motion:.4f}m"
-            )
-            return True
-        pyzlc.info(f"Allowing post-release close after moving {dist:.4f}m.")
-        return False
 
     def _maybe_stop_after_release(self) -> None:
         if not self.cfg.stop_after_first_release:

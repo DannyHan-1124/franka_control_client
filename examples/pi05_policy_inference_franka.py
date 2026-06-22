@@ -83,23 +83,9 @@ def _parse_args() -> argparse.Namespace:
         default=50,
         help="Number of actions to execute before requesting a new chunk.",
     )
-    parser.add_argument(
-        "--gripper_open_confirm_steps",
-        type=int,
-        default=1,
-        help="Consecutive open commands required to confirm release; 1 confirms immediately after close.",
-    )
     parser.add_argument("--stop_after_first_release", action="store_true", help="Stop the episode after the first confirmed release.")
     parser.add_argument("--stop_after_release_steps", type=int, default=0, help="Extra policy steps to run after release before stopping.")
-    parser.add_argument("--debug_image_dir", default=None, help="Directory for saved camera debug frames.")
-    parser.add_argument("--debug_image_interval", type=int, default=25, help="Save one debug image pair every N policy steps.")
     parser.add_argument("--metrics_path", default=None, help="Append per-episode metrics as JSONL to this path.")
-    parser.add_argument(
-        "--reclose_after_release_min_motion_m",
-        type=float,
-        default=0.0,
-        help="Suppress post-release close commands until the end effector moves this far from release pose.",
-    )
     parser.add_argument(
         "--faster_infer_time_schedule",
         choices=("const", "HAS"),
@@ -176,13 +162,9 @@ def main() -> None:
         max_position_step_m=args.max_position_step_m,
         max_rotation_step_rad=args.max_rotation_step_rad,
         chunk_replan_steps=args.chunk_replan_steps,
-        gripper_open_confirm_steps=args.gripper_open_confirm_steps,
         stop_after_first_release=args.stop_after_first_release,
         stop_after_release_steps=args.stop_after_release_steps,
-        debug_image_dir=args.debug_image_dir,
-        debug_image_interval=args.debug_image_interval,
         metrics_path=args.metrics_path,
-        reclose_after_release_min_motion_m=args.reclose_after_release_min_motion_m,
         faster_infer_time_schedule=args.faster_infer_time_schedule,
         faster_alpha=args.faster_alpha,
         faster_u0=args.faster_u0,
