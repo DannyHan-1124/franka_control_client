@@ -100,6 +100,15 @@ def _parse_args() -> argparse.Namespace:
         help="Stop HAS denoising after this many new actions are emitted; 0 disables early stopping.",
     )
     parser.add_argument(
+        "--faster_prefix_mode",
+        choices=("legacy", "official_rtc"),
+        default="legacy",
+        help=(
+            "Prefix timing: legacy preserves this project's behavior; "
+            "official_rtc matches FASTER piper-aio."
+        ),
+    )
+    parser.add_argument(
         "--phase_fallback_schedule",
         choices=("none", "const", "HAS"),
         default="none",
@@ -170,6 +179,7 @@ def main() -> None:
         faster_u0=args.faster_u0,
         delay=args.delay,
         early_stop_actions=args.early_stop_actions,
+        faster_prefix_mode=args.faster_prefix_mode,
         phase_fallback_schedule=args.phase_fallback_schedule,
         phase_fallback_trigger=args.phase_fallback_trigger,
     )

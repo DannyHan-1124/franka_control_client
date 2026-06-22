@@ -17,13 +17,14 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --pyzlc_group_port 7725 \
     --policy_transport streaming_zmq \
     --policy_zmq_endpoint tcp://127.0.0.1:17726 \
-    --metrics_path "${REPO_ROOT}/logs/pi05_inference_metrics_delay_measurement.jsonl" \
+    --metrics_path "${REPO_ROOT}/logs/pi05_inference_metrics_official_rtc.jsonl" \
     --execution_horizon 47 \
     --faster_infer_time_schedule HAS \
     --faster_alpha 1.0 \
     --faster_u0 0.9 \
     --delay 3 \
     --early_stop_actions 0 \
+    --faster_prefix_mode official_rtc \
     --phase_fallback_schedule "none" \
     --phase_fallback_trigger "before_gripper_open" \
     --static_camera static_cam \

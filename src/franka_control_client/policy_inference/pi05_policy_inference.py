@@ -26,6 +26,7 @@ from ..policy.policy import DirectZmqPolicy, RemotePolicy, StreamingZmqPolicy
 IMAGE_SIZE = (224, 224)
 STATE_DIM = 8
 ACTION_DIM = 8
+MODEL_ACTION_HORIZON = 50
 
 # Conservative bounds from the provided dataset stats. They catch obvious
 # malformed actions before a command reaches the robot.
@@ -70,6 +71,7 @@ class Pi05PolicyInferenceConfig:
     faster_u0: float = 0.9
     delay: int = 0
     early_stop_actions: int = 0
+    faster_prefix_mode: str = "legacy"
     phase_fallback_schedule: str = "none"
     phase_fallback_trigger: str = "after_gripper_close"
     metrics_path: Optional[str] = None
@@ -94,6 +96,12 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.data_collectors = data_collectors
         self.control_pair = control_pair
         self.cfg = cfg
+        if cfg.execution_horizon <= 0:
+            raise ValueError("execution_horizon must be positive.")
+        if cfg.delay < 0:
+            raise ValueError("delay must be non-negative.")
+        if cfg.early_stop_actions < 0:
+            raise ValueError("early_stop_actions must be non-negative.")
         if 0 < cfg.early_stop_actions < cfg.execution_horizon:
             raise ValueError(
                 "early_stop_actions must be 0 (disabled) or at least execution_horizon "
@@ -101,6 +109,20 @@ class Pi05PolicyInference(PolicyInferenceManager):
             )
         if cfg.early_stop_actions > 0 and cfg.policy_transport != "streaming_zmq":
             raise ValueError("early_stop_actions requires policy_transport=streaming_zmq.")
+        if cfg.faster_prefix_mode not in ("legacy", "official_rtc"):
+            raise ValueError("faster_prefix_mode must be 'legacy' or 'official_rtc'.")
+        if cfg.faster_prefix_mode == "official_rtc":
+            if cfg.policy_transport != "streaming_zmq":
+                raise ValueError(
+                    "official_rtc prefix handling requires policy_transport=streaming_zmq."
+                )
+            if cfg.delay > cfg.execution_horizon:
+                raise ValueError("official_rtc requires delay <= execution_horizon.")
+            if cfg.execution_horizon + cfg.delay > MODEL_ACTION_HORIZON:
+                raise ValueError(
+                    "official_rtc requires execution_horizon + delay <= "
+                    f"the model action horizon ({MODEL_ACTION_HORIZON})."
+                )
         self._initial_task = cfg.task
         self._streaming_policy: Optional[StreamingZmqPolicy] = None
         if cfg.policy_transport == "zmq":
@@ -170,6 +192,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._stream_current_chunk: dict[int, np.ndarray] = {}
         self._stream_next_index = 0
         self._stream_final = False
+        self._reset_official_rtc_state()
         self._last_policy_schedule: Optional[str] = None
         self._phase_fallback_open_detected = False
         self._phase_fallback_replan_pending = False
@@ -195,6 +218,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._stream_current_chunk = {}
         self._stream_next_index = 0
         self._stream_final = False
+        self._reset_official_rtc_state()
         self._last_policy_schedule = None
         self._phase_fallback_open_detected = False
         self._phase_fallback_replan_pending = False
@@ -217,6 +241,20 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._metrics_stream_chunks: dict[int, dict[str, Any]] = {}
         self._metrics_start_perf = time.perf_counter()
         self._metrics_start_wall = time.time()
+
+    def _reset_official_rtc_state(self) -> None:
+        # The official RTC client keeps the executing and incoming chunks separate.
+        self._official_current_actions: dict[int, np.ndarray] = {}
+        self._official_current_request_id: Optional[int] = None
+        self._official_current_model_offset = 0
+        self._official_current_step = 0
+        self._official_current_final = False
+        self._official_next_actions: dict[int, np.ndarray] = {}
+        self._official_next_request_id: Optional[int] = None
+        self._official_next_model_offset = 0
+        self._official_next_final = False
+        self._official_request_targets: dict[int, str] = {}
+        self._official_last_launch_source_request_id: Optional[int] = None
 
     def _infer_step(self) -> None:
         start = time.perf_counter()
@@ -280,6 +318,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
             time.sleep(sleep_time)
 
     def _infer_streaming_step(self, start: float) -> None:
+        if self.cfg.faster_prefix_mode == "official_rtc":
+            self._infer_official_rtc_step(start)
+            return
+
         self._drain_streaming_updates()
         if self._should_request_stream():
             self._request_stream()
@@ -299,6 +341,230 @@ class Pi05PolicyInference(PolicyInferenceManager):
         sleep_time = max(0.0, (1.0 / self.fps) - elapsed)
         if sleep_time > 0.001:
             time.sleep(sleep_time)
+
+    def _infer_official_rtc_step(self, start: float) -> None:
+        """Run the two-buffer RTC loop used by the official FASTER client."""
+        self._drain_official_rtc_updates()
+        if self._should_request_official_rtc():
+            self._request_official_rtc()
+            self._drain_official_rtc_updates()
+
+        action = self._pop_official_rtc_action()
+        if action is not None:
+            sanitized_action = self._sanitize_action(action)
+            self._last_sanitized_action = sanitized_action.copy()
+            self.control_pair.update_action(sanitized_action)
+            self._metrics_actions_applied += 1
+            self._maybe_stop_after_release()
+        else:
+            self._metrics_empty_action_steps += 1
+
+        elapsed = time.perf_counter() - start
+        sleep_time = max(0.0, (1.0 / self.fps) - elapsed)
+        if sleep_time > 0.001:
+            time.sleep(sleep_time)
+
+    def _should_request_official_rtc(self) -> bool:
+        if self._streaming_policy is None or self._streaming_policy.active_request_id is not None:
+            return False
+        if self._official_current_request_id is None:
+            return True
+        if self._official_next_request_id is not None:
+            return False
+
+        horizon = int(self.cfg.execution_horizon)
+        current_is_full = all(idx in self._official_current_actions for idx in range(horizon))
+        if not current_is_full:
+            return False
+        if self._phase_fallback_replan_pending:
+            return True
+        if self._official_last_launch_source_request_id == self._official_current_request_id:
+            return False
+
+        # Matches StreamActionBuffer.mark_launch_if_ready() in piper-aio.
+        launch_step = max(horizon - int(self.cfg.delay) - 1, 0)
+        return self._official_current_step >= launch_step
+
+    def _request_official_rtc(self) -> None:
+        if self._streaming_policy is None:
+            return
+
+        active_schedule = self._active_infer_time_schedule()
+        obs = self._build_observation()
+        is_initial = self._official_current_request_id is None
+        prefix_request_id: Optional[int] = None
+        prefix_start_index = 0
+        prefix_steps = 0
+
+        if not is_initial and self.cfg.delay > 0:
+            previous_metric = self._metrics_stream_chunks.get(
+                int(self._official_current_request_id)
+            )
+            previous_schedule = previous_metric.get("schedule") if previous_metric is not None else None
+            if previous_schedule == active_schedule:
+                prefix_request_id = self._official_current_request_id
+                prefix_steps = int(self.cfg.delay)
+                prefix_start_index = (
+                    self._official_current_model_offset
+                    + int(self.cfg.execution_horizon)
+                    - prefix_steps
+                )
+                policy_kwargs = obs.setdefault("policy_kwargs", {})
+                policy_kwargs["delay"] = prefix_steps
+                policy_kwargs["prefix_request_id"] = int(prefix_request_id)
+                policy_kwargs["prefix_start_index"] = prefix_start_index
+            elif previous_schedule is not None:
+                pyzlc.info(
+                    "Dropping official RTC prefix across schedule change: "
+                    f"{previous_schedule} -> {active_schedule}"
+                )
+
+        effective_early_stop_actions = 0
+        if self.cfg.early_stop_actions > 0 and active_schedule.upper() == "HAS":
+            # Official FASTER counts only newly generated (non-prefix) actions.
+            effective_early_stop_actions = int(self.cfg.early_stop_actions)
+            obs.setdefault("policy_kwargs", {})["early_stop_actions"] = effective_early_stop_actions
+
+        request_start = time.perf_counter()
+        request_id = self._streaming_policy.send_observation(obs)
+        self._stream_request_id = request_id
+        self._metrics_inference_calls += 1
+        self._metrics_stream_chunks[request_id] = {
+            "request_id": int(request_id),
+            "transport": self.cfg.policy_transport,
+            "schedule": active_schedule,
+            "request_time_s": request_start,
+            "prefix_steps": prefix_steps,
+            "prefix_request_id": int(prefix_request_id) if prefix_request_id is not None else None,
+            "prefix_start_index": prefix_start_index,
+            "early_stop_actions": effective_early_stop_actions,
+            "first_action_latency_s": None,
+            "final_latency_s": None,
+            "emitted_action_count": 0,
+            "executed_action_count": 0,
+            "first_action_index": None,
+            "last_action_index": None,
+            "first_action_applied_latency_s": None,
+            "execution_duration_s": None,
+            "update_count": 0,
+        }
+
+        target = "current" if is_initial else "next"
+        self._official_request_targets[request_id] = target
+        if is_initial:
+            self._official_current_request_id = request_id
+            self._official_current_model_offset = 0
+            self._official_current_actions = {}
+            self._official_current_final = False
+        else:
+            self._official_next_request_id = request_id
+            self._official_next_model_offset = prefix_steps
+            self._official_next_actions = {}
+            self._official_next_final = False
+            self._official_last_launch_source_request_id = self._official_current_request_id
+        self._phase_fallback_replan_pending = False
+
+    def _drain_official_rtc_updates(self) -> None:
+        if self._streaming_policy is None:
+            return
+        horizon = int(self.cfg.execution_horizon)
+        for msg in self._streaming_policy.recv_action_updates():
+            request_id = int(msg.get("request_id", -1))
+            target = self._official_request_targets.get(request_id)
+            if target is None:
+                continue
+            metric = self._metrics_stream_chunks.get(request_id)
+            indices = [int(idx) for idx in msg.get("indices", [])]
+            actions = (
+                self._parse_action_payload(msg.get("actions", []))
+                if indices
+                else np.empty((0, ACTION_DIM))
+            )
+            now = time.perf_counter()
+            if metric is not None:
+                metric["update_count"] += 1
+                metric["emitted_action_count"] += len(indices)
+                if indices and metric["first_action_latency_s"] is None:
+                    metric["first_action_latency_s"] = now - float(metric["request_time_s"])
+
+            model_offset = (
+                self._official_current_model_offset
+                if target == "current"
+                else self._official_next_model_offset
+            )
+            target_actions = (
+                self._official_current_actions
+                if target == "current"
+                else self._official_next_actions
+            )
+            accepted_indices: list[int] = []
+            accepted_actions: list[np.ndarray] = []
+            for model_idx, action in zip(indices, actions, strict=True):
+                executable_idx = model_idx - model_offset
+                # Discard conditioned prefix [0:d) and unused tail [d+s:H).
+                if executable_idx < 0 or executable_idx >= horizon:
+                    continue
+                target_actions[executable_idx] = action
+                accepted_indices.append(executable_idx)
+                accepted_actions.append(action)
+            if accepted_indices:
+                self._maybe_trigger_open_fallback(
+                    accepted_indices,
+                    np.asarray(accepted_actions, dtype=np.float64),
+                )
+
+            if msg.get("final"):
+                if target == "current":
+                    self._official_current_final = True
+                else:
+                    self._official_next_final = True
+                if metric is not None:
+                    metric["final_latency_s"] = now - float(metric["request_time_s"])
+                    self._metrics_chunks.append(dict(metric))
+            if indices:
+                pyzlc.info(
+                    "Received official RTC Pi0.5 actions: "
+                    f"request_id={request_id}, target={target}, model_indices={indices}, "
+                    f"final={bool(msg.get('final'))}"
+                )
+
+    def _pop_official_rtc_action(self) -> Optional[np.ndarray]:
+        if self._official_current_request_id is None:
+            return None
+        horizon = int(self.cfg.execution_horizon)
+
+        # Official piper-aio obtains the first chunk synchronously before moving.
+        if self._official_current_step == 0 and self._metrics_actions_applied == 0:
+            if not self._official_current_final:
+                return None
+            if not all(idx in self._official_current_actions for idx in range(horizon)):
+                return None
+
+        executable_idx = self._official_current_step
+        action = self._official_current_actions.get(executable_idx)
+        if action is None:
+            return None
+
+        metric = self._metrics_stream_chunks.get(int(self._official_current_request_id))
+        if metric is not None:
+            self._record_chunk_action_execution(
+                metric,
+                self._official_current_model_offset + executable_idx,
+            )
+        self._official_current_step += 1
+
+        if self._official_current_step == horizon:
+            self._official_current_actions = self._official_next_actions
+            self._official_current_request_id = self._official_next_request_id
+            self._official_current_model_offset = self._official_next_model_offset
+            self._official_current_final = self._official_next_final
+            self._official_current_step = 0
+            self._official_next_actions = {}
+            self._official_next_request_id = None
+            self._official_next_model_offset = 0
+            self._official_next_final = False
+
+        return action
 
     def _should_request_stream(self) -> bool:
         if self._streaming_policy is None:
@@ -568,6 +834,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "task": self.task,
             "transport": self.cfg.policy_transport,
             "schedule": self.cfg.faster_infer_time_schedule,
+            "faster_prefix_mode": self.cfg.faster_prefix_mode,
             "fps": int(self.cfg.fps),
             "execution_horizon": int(self.cfg.execution_horizon),
             "gripper_open_confirm_steps": int(self.cfg.gripper_open_confirm_steps),
@@ -664,6 +931,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         config_parts = [
             f"transport={summary.get('transport')}",
             f"schedule={summary.get('schedule')}",
+            f"prefix_mode={summary.get('faster_prefix_mode', 'legacy')}",
         ]
         if summary.get("schedule", "").upper() == "HAS":
             config_parts.extend(
