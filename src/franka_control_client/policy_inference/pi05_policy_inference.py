@@ -95,6 +95,15 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.data_collectors = data_collectors
         self.control_pair = control_pair
         self.cfg = cfg
+        if cfg.streaming_mode == "continuous":
+            if cfg.policy_transport != "streaming_zmq":
+                raise ValueError("continuous mode requires policy_transport=streaming_zmq.")
+            if cfg.faster_infer_time_schedule != "const":
+                raise ValueError("continuous mode requires faster_infer_time_schedule=const.")
+            if cfg.faster_delay_steps != 0:
+                raise ValueError("continuous mode does not use a FASTER action prefix.")
+            if cfg.phase_fallback_schedule != "none":
+                raise ValueError("continuous mode does not use FASTER phase fallback.")
         self._initial_task = cfg.task
         self._streaming_policy: Optional[StreamingZmqPolicy] = None
         if cfg.policy_transport == "zmq":
