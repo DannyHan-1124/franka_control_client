@@ -169,6 +169,20 @@ class StreamingZmqPolicy(RemoteDevice):
         self._active_request_id = request_id
         return request_id
 
+    def publish_latest_observation(self, obs: PolicyObservationMsg) -> int:
+        """Publish an indexed observation without serializing on the active request."""
+        self._request_id += 1
+        request_id = self._request_id
+        self._socket.send_pyobj(
+            {
+                "type": "latest_observation",
+                "request_id": request_id,
+                "timestamp": time.time(),
+                "observation": obs,
+            }
+        )
+        return request_id
+
     def recv_action_updates(self) -> list[dict[str, Any]]:
         """Drain currently available streamed action messages."""
         updates: list[dict[str, Any]] = []

@@ -56,6 +56,7 @@ class Pi05PolicyInferenceConfig:
     policy_zmq_endpoint: Optional[str] = None
     policy_zmq_timeout_ms: int = 30000
     streaming_mode: str = "chunk_replan"
+    continuous_strategy: str = "min_window"
     continuous_min_execute_steps: int = 0
     max_position_step_m: float = 0.0
     max_rotation_step_rad: float = 0.0
@@ -95,6 +96,24 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.data_collectors = data_collectors
         self.control_pair = control_pair
         self.cfg = cfg
+        if cfg.continuous_strategy not in ("min_window", "official_dynamicvla"):
+            raise ValueError(
+                "continuous_strategy must be 'min_window' or 'official_dynamicvla'."
+            )
+        if cfg.continuous_strategy == "official_dynamicvla":
+            if cfg.streaming_mode != "continuous" or cfg.policy_transport != "streaming_zmq":
+                raise ValueError(
+                    "official_dynamicvla requires streaming_mode=continuous and "
+                    "policy_transport=streaming_zmq."
+                )
+            if cfg.continuous_min_execute_steps != 0:
+                raise ValueError("official_dynamicvla requires continuous_min_execute_steps=0.")
+            if cfg.faster_infer_time_schedule != "const":
+                raise ValueError("official_dynamicvla requires faster_infer_time_schedule=const.")
+            if cfg.faster_delay_steps != 0:
+                raise ValueError("official_dynamicvla does not use a FASTER action prefix.")
+            if cfg.phase_fallback_schedule != "none":
+                raise ValueError("official_dynamicvla does not use FASTER phase fallback.")
         self._initial_task = cfg.task
         self._streaming_policy: Optional[StreamingZmqPolicy] = None
         if cfg.policy_transport == "zmq":
@@ -177,6 +196,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._stream_final = False
         self._stream_global_step = 0
         self._stream_request_start_steps: dict[int, int] = {}
+        self._stream_request_times: dict[int, float] = {}
+        self._stream_request_schedules: dict[int, str] = {}
+        self._stream_inferred_request_ids: set[int] = set()
         self._stream_action_sources: dict[int, tuple[int, int]] = {}
         self._last_policy_schedule: Optional[str] = None
         self._phase_fallback_open_detected = False
@@ -205,6 +227,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._stream_final = False
         self._stream_global_step = 0
         self._stream_request_start_steps = {}
+        self._stream_request_times = {}
+        self._stream_request_schedules = {}
+        self._stream_inferred_request_ids = set()
         self._stream_action_sources = {}
         self._last_policy_schedule = None
         self._phase_fallback_open_detected = False
@@ -222,8 +247,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._metrics_start_wall: Optional[float] = None
         self._metrics_reported = False
         self._metrics_inference_calls = 0
+        self._metrics_observations_published = 0
         self._metrics_actions_applied = 0
         self._metrics_empty_action_steps = 0
+        self._metrics_stale_actions_dropped = 0
+        self._metrics_actions_overwritten = 0
         self._metrics_chunks: list[dict[str, Any]] = []
         self._metrics_stream_chunks: dict[int, dict[str, Any]] = {}
         self._metrics_start_perf = time.perf_counter()
@@ -291,6 +319,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
             time.sleep(sleep_time)
 
     def _infer_streaming_step(self, start: float) -> None:
+        if self.cfg.continuous_strategy == "official_dynamicvla":
+            self._infer_official_dynamicvla_step(start)
+            return
+
         self._drain_streaming_updates()
         if self._should_request_stream():
             self._request_stream()
@@ -313,6 +345,80 @@ class Pi05PolicyInference(PolicyInferenceManager):
         sleep_time = max(0.0, (1.0 / self.fps) - elapsed)
         if sleep_time > 0.001:
             time.sleep(sleep_time)
+
+    def _infer_official_dynamicvla_step(self, start: float) -> None:
+        """Publish the latest observation and merge indexed asynchronous chunks."""
+        self._publish_official_dynamicvla_observation()
+        self._drain_streaming_updates()
+
+        action = self._pop_next_continuous_stream_action()
+        if action is not None:
+            sanitized_action = self._sanitize_action(action)
+            self._last_sanitized_action = sanitized_action.copy()
+            self.control_pair.update_action(sanitized_action)
+            self._metrics_actions_applied += 1
+            self._maybe_stop_after_release()
+        else:
+            self._metrics_empty_action_steps += 1
+
+        self._stream_global_step += 1
+        elapsed = time.perf_counter() - start
+        sleep_time = max(0.0, (1.0 / self.fps) - elapsed)
+        if sleep_time > 0.001:
+            time.sleep(sleep_time)
+
+    def _publish_official_dynamicvla_observation(self) -> None:
+        if self._streaming_policy is None:
+            return
+        observation_step = int(self._stream_global_step)
+        obs = self._build_observation()
+        obs.setdefault("policy_kwargs", {})["delay"] = 0
+        request_time = time.perf_counter()
+        request_id = self._streaming_policy.publish_latest_observation(obs)
+        self._metrics_observations_published += 1
+        self._stream_request_start_steps[request_id] = observation_step
+        self._stream_request_times[request_id] = request_time
+        self._stream_request_schedules[request_id] = self._active_infer_time_schedule()
+
+        # Requests superseded in the server's latest-value mailbox never return.
+        cutoff = request_id - 100
+        for old_request_id in list(self._stream_request_start_steps):
+            if old_request_id < cutoff and old_request_id not in self._stream_inferred_request_ids:
+                self._stream_request_start_steps.pop(old_request_id, None)
+                self._stream_request_times.pop(old_request_id, None)
+                self._stream_request_schedules.pop(old_request_id, None)
+
+    def _ensure_official_dynamicvla_metric(self, request_id: int) -> dict[str, Any]:
+        metric = self._metrics_stream_chunks.get(request_id)
+        if metric is not None:
+            return metric
+
+        request_time = self._stream_request_times.get(request_id, time.perf_counter())
+        metric = {
+            "request_id": request_id,
+            "transport": self.cfg.policy_transport,
+            "schedule": self._stream_request_schedules.get(request_id, "const"),
+            "streaming_mode": self.cfg.streaming_mode,
+            "continuous_strategy": self.cfg.continuous_strategy,
+            "request_start_step": self._stream_request_start_steps.get(request_id),
+            "request_time_s": request_time,
+            "prefix_steps": 0,
+            "prefix_request_id": None,
+            "prefix_start_index": 0,
+            "first_action_latency_s": None,
+            "final_latency_s": None,
+            "emitted_action_count": 0,
+            "executed_action_count": 0,
+            "first_action_index": None,
+            "last_action_index": None,
+            "first_action_applied_latency_s": None,
+            "execution_duration_s": None,
+            "update_count": 0,
+        }
+        self._metrics_stream_chunks[request_id] = metric
+        self._stream_inferred_request_ids.add(request_id)
+        self._metrics_inference_calls += 1
+        return metric
 
     def _should_request_stream(self) -> bool:
         if self._streaming_policy is None:
@@ -456,11 +562,20 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if self._streaming_policy is None:
             return
         for msg in self._streaming_policy.recv_action_updates():
-            if msg.get("request_id") != self._stream_request_id:
+            request_id = int(msg.get("request_id", -1))
+            official_dynamicvla = self.cfg.continuous_strategy == "official_dynamicvla"
+            if official_dynamicvla and request_id not in self._stream_request_start_steps:
+                # The request belongs to an episode that has already been reset.
+                continue
+            if not official_dynamicvla and request_id != self._stream_request_id:
                 continue
             indices = [int(idx) for idx in msg.get("indices", [])]
             actions = self._parse_action_payload(msg.get("actions", [])) if indices else np.empty((0, ACTION_DIM))
-            metric = self._metrics_stream_chunks.get(int(self._stream_request_id))
+            metric = (
+                self._ensure_official_dynamicvla_metric(request_id)
+                if official_dynamicvla
+                else self._metrics_stream_chunks.get(int(self._stream_request_id))
+            )
             if metric is not None:
                 now = time.perf_counter()
                 metric["update_count"] += 1
@@ -469,18 +584,21 @@ class Pi05PolicyInference(PolicyInferenceManager):
                     metric["first_action_latency_s"] = now - float(metric["request_time_s"])
             for idx, action in zip(indices, actions, strict=True):
                 if self.cfg.streaming_mode == "continuous":
-                    start_step = self._stream_request_start_steps.get(int(self._stream_request_id), 0)
+                    start_step = self._stream_request_start_steps.get(request_id, 0)
                     target_step = int(start_step + idx)
                     # If inference finished after this control step passed, the
                     # action is stale and should not be applied retroactively.
                     if target_step < self._stream_global_step:
+                        self._metrics_stale_actions_dropped += 1
                         continue
                     previous_source = self._stream_action_sources.get(target_step)
-                    if previous_source is not None and previous_source[0] > int(self._stream_request_id):
+                    if previous_source is not None and previous_source[0] > request_id:
                         continue
+                    if previous_source is not None and previous_source[0] < request_id:
+                        self._metrics_actions_overwritten += 1
                     self._stream_action_buffer[target_step] = action
                     self._stream_current_chunk[target_step] = action
-                    self._stream_action_sources[target_step] = (int(self._stream_request_id), int(idx))
+                    self._stream_action_sources[target_step] = (request_id, int(idx))
                 else:
                     self._stream_action_buffer[idx] = action
                     self._stream_current_chunk[idx] = action
@@ -494,7 +612,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             if indices:
                 pyzlc.info(
                     "Received streamed Pi0.5 actions: "
-                    f"request_id={self._stream_request_id}, indices={indices}, final={bool(msg.get('final'))}"
+                    f"request_id={request_id}, indices={indices}, final={bool(msg.get('final'))}"
                 )
 
     def _pop_next_stream_action(self) -> Optional[np.ndarray]:
@@ -641,6 +759,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "transport": self.cfg.policy_transport,
             "schedule": self.cfg.faster_infer_time_schedule,
             "streaming_mode": self.cfg.streaming_mode,
+            "continuous_strategy": self.cfg.continuous_strategy,
             "continuous_min_execute_steps": int(self.cfg.continuous_min_execute_steps),
             "fps": int(self.cfg.fps),
             "chunk_replan_steps": int(self.cfg.chunk_replan_steps),
@@ -648,10 +767,13 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),
             "total_time_s": total_time_s,
             "inference_calls": self._metrics_inference_calls,
+            "observations_published": self._metrics_observations_published,
             "completed_chunks": len(chunks),
             "prefix_chunks": prefix_chunks,
             "actions_applied": self._metrics_actions_applied,
             "empty_action_steps": self._metrics_empty_action_steps,
+            "stale_actions_dropped": self._metrics_stale_actions_dropped,
+            "actions_overwritten": self._metrics_actions_overwritten,
             "avg_request_latency_s": _mean(request_latencies),
             "avg_first_action_latency_s": _mean(first_action_latencies),
             "avg_final_latency_s": _mean(final_latencies),
@@ -670,10 +792,13 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "Pi0.5 inference metrics: "
             f"total_time={summary['total_time_s']:.3f}s, "
             f"inference_calls={summary['inference_calls']}, "
+            f"observations_published={summary['observations_published']}, "
             f"completed_chunks={summary['completed_chunks']}, "
             f"prefix_chunks={summary['prefix_chunks']}, "
             f"actions_applied={summary['actions_applied']}, "
             f"empty_action_steps={summary['empty_action_steps']}, "
+            f"stale_actions_dropped={summary['stale_actions_dropped']}, "
+            f"actions_overwritten={summary['actions_overwritten']}, "
             f"avg_first_action_latency={_format_optional(summary['avg_first_action_latency_s'])}s, "
             f"avg_final_latency={_format_optional(summary['avg_final_latency_s'])}s, "
             f"avg_chunk_duration={_format_optional(summary['avg_chunk_execution_duration_s'])}s"
@@ -745,6 +870,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
             config_parts.append(f"delay_steps={summary.get('faster_delay_steps')}")
         if summary.get("streaming_mode") == "continuous":
             config_parts.append(
+                f"continuous_strategy={summary.get('continuous_strategy', 'min_window')}"
+            )
+            config_parts.append(
                 f"continuous_min_execute_steps={summary.get('continuous_min_execute_steps')}"
             )
         if summary.get("phase_fallback_schedule") is not None:
@@ -768,10 +896,13 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 "summary: "
                 f"total_time={_format_optional(summary.get('total_time_s'))}s, "
                 f"inference_calls={summary.get('inference_calls')}, "
+                f"observations_published={summary.get('observations_published')}, "
                 f"completed_chunks={summary.get('completed_chunks')}, "
                 f"prefix_chunks={summary.get('prefix_chunks')}, "
                 f"actions_applied={summary.get('actions_applied')}, "
-                f"empty_action_steps={summary.get('empty_action_steps')}"
+                f"empty_action_steps={summary.get('empty_action_steps')}, "
+                f"stale_actions_dropped={summary.get('stale_actions_dropped')}, "
+                f"actions_overwritten={summary.get('actions_overwritten')}"
             ),
             (
                 "latency: "

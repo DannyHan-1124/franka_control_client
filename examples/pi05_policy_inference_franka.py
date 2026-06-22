@@ -57,6 +57,15 @@ def _parse_args() -> argparse.Namespace:
         help="For continuous streaming, execute at least this many actions from a request before sending the next one.",
     )
     parser.add_argument(
+        "--continuous_strategy",
+        choices=("min_window", "official_dynamicvla"),
+        default="min_window",
+        help=(
+            "Continuous scheduling: min_window is the existing mode; "
+            "official_dynamicvla uses a latest-observation mailbox."
+        ),
+    )
+    parser.add_argument(
         "--max_position_step_m",
         type=float,
         default=0.0,
@@ -162,6 +171,7 @@ def main() -> None:
         policy_zmq_endpoint=args.policy_zmq_endpoint,
         policy_zmq_timeout_ms=args.policy_zmq_timeout_ms,
         streaming_mode=args.streaming_mode,
+        continuous_strategy=args.continuous_strategy,
         continuous_min_execute_steps=args.continuous_min_execute_steps,
         max_position_step_m=args.max_position_step_m,
         max_rotation_step_rad=args.max_rotation_step_rad,

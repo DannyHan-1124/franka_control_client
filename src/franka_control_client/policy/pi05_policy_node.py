@@ -385,6 +385,24 @@ class Pi05PolicyNode:
         self._running = True
         while self._running:
             msg = self._streaming_socket.recv_pyobj()
+            if isinstance(msg, dict) and msg.get("type") == "latest_observation":
+                # DynamicVLA uses a single latest-value observation mailbox.
+                # Drain observations accumulated during the previous inference
+                # and run only the newest request.
+                dropped = 0
+                while True:
+                    try:
+                        candidate = self._streaming_socket.recv_pyobj(flags=zmq.NOBLOCK)
+                    except zmq.Again:
+                        break
+                    if isinstance(candidate, dict) and candidate.get("type") == "latest_observation":
+                        msg = candidate
+                        dropped += 1
+                if dropped:
+                    print(
+                        f"DynamicVLA mailbox discarded {dropped} superseded observations.",
+                        flush=True,
+                    )
             request_id = msg.get("request_id") if isinstance(msg, dict) else None
             try:
                 obs_msg = msg.get("observation", msg) if isinstance(msg, dict) else msg
