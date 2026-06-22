@@ -58,12 +58,18 @@ def _parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--continuous_strategy",
-        choices=("min_window", "official_dynamicvla"),
+        choices=("min_window", "official_dynamicvla", "continuous_faster"),
         default="min_window",
         help=(
             "Continuous scheduling: min_window is the existing mode; "
             "official_dynamicvla uses a latest-observation mailbox."
         ),
+    )
+    parser.add_argument(
+        "--early_stop_actions",
+        type=int,
+        default=0,
+        help="Hybrid mode: stop HAS after this many new actions are emitted; 0 disables.",
     )
     parser.add_argument(
         "--max_position_step_m",
@@ -173,6 +179,7 @@ def main() -> None:
         streaming_mode=args.streaming_mode,
         continuous_strategy=args.continuous_strategy,
         continuous_min_execute_steps=args.continuous_min_execute_steps,
+        early_stop_actions=args.early_stop_actions,
         max_position_step_m=args.max_position_step_m,
         max_rotation_step_rad=args.max_rotation_step_rad,
         chunk_replan_steps=args.chunk_replan_steps,

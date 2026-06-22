@@ -18,8 +18,12 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --policy_transport streaming_zmq \
     --policy_zmq_endpoint tcp://127.0.0.1:17726 \
     --streaming_mode continuous \
-    --continuous_strategy official_dynamicvla \
+    --continuous_strategy continuous_faster \
     --continuous_min_execute_steps 0 \
-    --metrics_path "${REPO_ROOT}/logs/pi05_inference_metrics_dynamicvla_official.jsonl" \
+    --early_stop_actions 25 \
+    --metrics_path "${REPO_ROOT}/logs/pi05_inference_metrics_continuous_faster.jsonl" \
+    --faster_infer_time_schedule HAS \
+    --faster_alpha 1.0 \
+    --faster_u0 0.9 \
     --static_camera static_cam \
     --wrist_camera wrist_cam

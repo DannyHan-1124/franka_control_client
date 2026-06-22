@@ -26,6 +26,7 @@ from ..policy.policy import DirectZmqPolicy, RemotePolicy, StreamingZmqPolicy
 IMAGE_SIZE = (224, 224)
 STATE_DIM = 8
 ACTION_DIM = 8
+MODEL_ACTION_HORIZON = 50
 
 # Conservative bounds from the provided dataset stats. They catch obvious
 # malformed actions before a command reaches the robot.
@@ -58,6 +59,7 @@ class Pi05PolicyInferenceConfig:
     streaming_mode: str = "chunk_replan"
     continuous_strategy: str = "min_window"
     continuous_min_execute_steps: int = 0
+    early_stop_actions: int = 0
     max_position_step_m: float = 0.0
     max_rotation_step_rad: float = 0.0
     chunk_replan_steps: int = 50
@@ -96,24 +98,45 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.data_collectors = data_collectors
         self.control_pair = control_pair
         self.cfg = cfg
-        if cfg.continuous_strategy not in ("min_window", "official_dynamicvla"):
+        if cfg.continuous_strategy not in (
+            "min_window",
+            "official_dynamicvla",
+            "continuous_faster",
+        ):
             raise ValueError(
-                "continuous_strategy must be 'min_window' or 'official_dynamicvla'."
+                "continuous_strategy must be 'min_window', 'official_dynamicvla', "
+                "or 'continuous_faster'."
             )
-        if cfg.continuous_strategy == "official_dynamicvla":
+        if cfg.early_stop_actions < 0 or cfg.early_stop_actions > MODEL_ACTION_HORIZON:
+            raise ValueError(
+                f"early_stop_actions must be in [0, {MODEL_ACTION_HORIZON}]."
+            )
+        if cfg.continuous_strategy != "continuous_faster" and cfg.early_stop_actions != 0:
+            raise ValueError("early_stop_actions is only supported by continuous_faster.")
+        if cfg.continuous_strategy in ("official_dynamicvla", "continuous_faster"):
             if cfg.streaming_mode != "continuous" or cfg.policy_transport != "streaming_zmq":
                 raise ValueError(
-                    "official_dynamicvla requires streaming_mode=continuous and "
+                    f"{cfg.continuous_strategy} requires streaming_mode=continuous and "
                     "policy_transport=streaming_zmq."
                 )
             if cfg.continuous_min_execute_steps != 0:
-                raise ValueError("official_dynamicvla requires continuous_min_execute_steps=0.")
+                raise ValueError(
+                    f"{cfg.continuous_strategy} requires continuous_min_execute_steps=0."
+                )
+            if cfg.faster_delay_steps != 0:
+                raise ValueError(
+                    f"{cfg.continuous_strategy} does not use an RTC action prefix."
+                )
+            if cfg.phase_fallback_schedule != "none":
+                raise ValueError(
+                    f"{cfg.continuous_strategy} does not use FASTER phase fallback."
+                )
+        if cfg.continuous_strategy == "official_dynamicvla":
             if cfg.faster_infer_time_schedule != "const":
                 raise ValueError("official_dynamicvla requires faster_infer_time_schedule=const.")
-            if cfg.faster_delay_steps != 0:
-                raise ValueError("official_dynamicvla does not use a FASTER action prefix.")
-            if cfg.phase_fallback_schedule != "none":
-                raise ValueError("official_dynamicvla does not use FASTER phase fallback.")
+        if cfg.continuous_strategy == "continuous_faster":
+            if cfg.faster_infer_time_schedule != "HAS":
+                raise ValueError("continuous_faster requires faster_infer_time_schedule=HAS.")
         self._initial_task = cfg.task
         self._streaming_policy: Optional[StreamingZmqPolicy] = None
         if cfg.policy_transport == "zmq":
@@ -319,8 +342,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
             time.sleep(sleep_time)
 
     def _infer_streaming_step(self, start: float) -> None:
-        if self.cfg.continuous_strategy == "official_dynamicvla":
-            self._infer_official_dynamicvla_step(start)
+        if self.cfg.continuous_strategy in ("official_dynamicvla", "continuous_faster"):
+            self._infer_latest_observation_step(start)
             return
 
         self._drain_streaming_updates()
@@ -346,9 +369,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if sleep_time > 0.001:
             time.sleep(sleep_time)
 
-    def _infer_official_dynamicvla_step(self, start: float) -> None:
+    def _infer_latest_observation_step(self, start: float) -> None:
         """Publish the latest observation and merge indexed asynchronous chunks."""
-        self._publish_official_dynamicvla_observation()
+        self._publish_latest_observation()
         self._drain_streaming_updates()
 
         action = self._pop_next_continuous_stream_action()
@@ -367,12 +390,17 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if sleep_time > 0.001:
             time.sleep(sleep_time)
 
-    def _publish_official_dynamicvla_observation(self) -> None:
+    def _publish_latest_observation(self) -> None:
         if self._streaming_policy is None:
             return
         observation_step = int(self._stream_global_step)
         obs = self._build_observation()
-        obs.setdefault("policy_kwargs", {})["delay"] = 0
+        policy_kwargs = obs.setdefault("policy_kwargs", {})
+        # LAAS performs global-step stale-action removal, so RTC prefix skipping
+        # must remain disabled in the hybrid path.
+        policy_kwargs["delay"] = 0
+        if self.cfg.continuous_strategy == "continuous_faster" and self.cfg.early_stop_actions > 0:
+            policy_kwargs["early_stop_actions"] = int(self.cfg.early_stop_actions)
         request_time = time.perf_counter()
         request_id = self._streaming_policy.publish_latest_observation(obs)
         self._metrics_observations_published += 1
@@ -388,7 +416,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 self._stream_request_times.pop(old_request_id, None)
                 self._stream_request_schedules.pop(old_request_id, None)
 
-    def _ensure_official_dynamicvla_metric(self, request_id: int) -> dict[str, Any]:
+    def _ensure_latest_observation_metric(self, request_id: int) -> dict[str, Any]:
         metric = self._metrics_stream_chunks.get(request_id)
         if metric is not None:
             return metric
@@ -405,6 +433,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "prefix_steps": 0,
             "prefix_request_id": None,
             "prefix_start_index": 0,
+            "early_stop_actions": (
+                int(self.cfg.early_stop_actions)
+                if self.cfg.continuous_strategy == "continuous_faster"
+                else 0
+            ),
             "first_action_latency_s": None,
             "final_latency_s": None,
             "emitted_action_count": 0,
@@ -563,17 +596,20 @@ class Pi05PolicyInference(PolicyInferenceManager):
             return
         for msg in self._streaming_policy.recv_action_updates():
             request_id = int(msg.get("request_id", -1))
-            official_dynamicvla = self.cfg.continuous_strategy == "official_dynamicvla"
-            if official_dynamicvla and request_id not in self._stream_request_start_steps:
+            latest_observation_mode = self.cfg.continuous_strategy in (
+                "official_dynamicvla",
+                "continuous_faster",
+            )
+            if latest_observation_mode and request_id not in self._stream_request_start_steps:
                 # The request belongs to an episode that has already been reset.
                 continue
-            if not official_dynamicvla and request_id != self._stream_request_id:
+            if not latest_observation_mode and request_id != self._stream_request_id:
                 continue
             indices = [int(idx) for idx in msg.get("indices", [])]
             actions = self._parse_action_payload(msg.get("actions", [])) if indices else np.empty((0, ACTION_DIM))
             metric = (
-                self._ensure_official_dynamicvla_metric(request_id)
-                if official_dynamicvla
+                self._ensure_latest_observation_metric(request_id)
+                if latest_observation_mode
                 else self._metrics_stream_chunks.get(int(self._stream_request_id))
             )
             if metric is not None:
@@ -782,6 +818,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if self.cfg.faster_infer_time_schedule.upper() == "HAS":
             summary["faster_alpha"] = float(self.cfg.faster_alpha)
             summary["faster_u0"] = float(self.cfg.faster_u0)
+        if self.cfg.continuous_strategy == "continuous_faster":
+            summary["early_stop_actions"] = int(self.cfg.early_stop_actions)
         if self.cfg.streaming_mode != "continuous" and int(self.cfg.faster_delay_steps) > 0:
             summary["faster_delay_steps"] = int(self.cfg.faster_delay_steps)
         if self.cfg.phase_fallback_schedule.lower() != "none":
@@ -875,6 +913,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
             config_parts.append(
                 f"continuous_min_execute_steps={summary.get('continuous_min_execute_steps')}"
             )
+        if summary.get("continuous_strategy") == "continuous_faster":
+            config_parts.append(f"early_stop_actions={summary.get('early_stop_actions')}")
         if summary.get("phase_fallback_schedule") is not None:
             config_parts.append(
                 "phase_fallback="
