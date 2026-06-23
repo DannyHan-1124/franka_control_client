@@ -470,8 +470,14 @@ class Pi05PolicyInference(PolicyInferenceManager):
         horizon = int(self.cfg.execution_horizon)
         for msg in self._streaming_policy.recv_action_updates():
             request_id = int(msg.get("request_id", -1))
-            target = self._official_request_targets.get(request_id)
-            if target is None:
+            # A request starts as "next", then becomes "current" after the buffer swap.
+            # Route updates by the live request ids so late-arriving updates keep filling
+            # the same logical chunk after it becomes the executing chunk.
+            if request_id == self._official_current_request_id:
+                target = "current"
+            elif request_id == self._official_next_request_id:
+                target = "next"
+            else:
                 continue
             metric = self._metrics_stream_chunks.get(request_id)
             indices = [int(idx) for idx in msg.get("indices", [])]
