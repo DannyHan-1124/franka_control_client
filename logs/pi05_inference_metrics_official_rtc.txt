@@ -226,3 +226,162 @@ chunks:
        18       HAS      10           0       40        40       11           0.147    0.297       1.949
        19       HAS      10           0       40        40       11           0.146    0.296       1.949
        20       HAS      10           0       40        19       11           0.095    0.296       0.897
+
+=== Pi0.5 inference episode: 2026-06-23 16:42:43 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=10, execution_horizon=25, fps=20
+summary: total_time=9.118s, inference_calls=7, completed_chunks=7, prefix_chunks=6, actions_applied=147, empty_action_steps=36
+latency: avg_first_action=0.331s, p95_first_action=1.197s, recommended_delay=24, avg_final=0.496s, avg_chunk_duration=1.177s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0           0       50        25       11           1.647    1.798       1.202
+        2       HAS      10           0       40        25       11           0.145    0.295       1.203
+        3       HAS      10           0       40        25       11           0.096    0.296       1.203
+        4       HAS      10           0       40        25       11           0.095    0.246       1.202
+        5       HAS      10           0       40        25       11           0.095    0.245       1.202
+        6       HAS      10           0       40        22       11           0.146    0.296       1.052
+        7       HAS      10           0       40         0       11           0.095    0.296         n/a
+
+=== Pi0.5 inference episode: 2026-06-23 16:43:20 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=10, execution_horizon=25, fps=20
+summary: total_time=7.615s, inference_calls=7, completed_chunks=7, prefix_chunks=6, actions_applied=147, empty_action_steps=6
+latency: avg_first_action=0.110s, p95_first_action=0.146s, recommended_delay=3, avg_final=0.268s, avg_chunk_duration=1.177s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        8       HAS       0           0       50        25       11           0.146    0.297       1.202
+        9       HAS      10           0       40        25       11           0.096    0.246       1.203
+       10       HAS      10           0       40        25       11           0.096    0.246       1.202
+       11       HAS      10           0       40        25       11           0.095    0.246       1.202
+       12       HAS      10           0       40        25       11           0.146    0.296       1.202
+       13       HAS      10           0       40        22       11           0.096    0.296       1.052
+       14       HAS      10           0       40         0       11           0.096    0.246         n/a
+
+=== Pi0.5 inference episode: 2026-06-23 16:43:41 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=10, execution_horizon=25, fps=20
+summary: total_time=8.365s, inference_calls=7, completed_chunks=7, prefix_chunks=6, actions_applied=162, empty_action_steps=6
+latency: avg_first_action=0.096s, p95_first_action=0.096s, recommended_delay=2, avg_final=0.267s, avg_chunk_duration=1.109s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       15       HAS       0           0       50        25       11           0.096    0.296       1.202
+       16       HAS      10           0       40        25       11           0.096    0.246       1.202
+       17       HAS      10           0       40        25       11           0.095    0.246       1.202
+       18       HAS      10           0       40        25       11           0.096    0.246       1.202
+       19       HAS      10           0       40        25       11           0.095    0.296       1.202
+       20       HAS      10           0       40        25       11           0.096    0.296       1.202
+       21       HAS      10           0       40        12       11           0.095    0.246       0.551
+
+=== Pi0.5 inference episode: 2026-06-23 16:44:02 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=10, execution_horizon=25, fps=20
+summary: total_time=8.165s, inference_calls=7, completed_chunks=7, prefix_chunks=6, actions_applied=158, empty_action_steps=6
+latency: avg_first_action=0.103s, p95_first_action=0.131s, recommended_delay=3, avg_final=0.267s, avg_chunk_duration=1.080s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       22       HAS       0           0       50        25       11           0.096    0.296       1.202
+       23       HAS      10           0       40        25       11           0.096    0.246       1.202
+       24       HAS      10           0       40        25       11           0.146    0.296       1.202
+       25       HAS      10           0       40        25       11           0.096    0.246       1.202
+       26       HAS      10           0       40        25       11           0.095    0.246       1.202
+       27       HAS      10           0       40        25       11           0.095    0.246       1.202
+       28       HAS      10           0       40         8       11           0.096    0.296       0.351
+
+=== Pi0.5 inference episode: 2026-06-23 16:44:53 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=10, execution_horizon=40, fps=20
+summary: total_time=7.164s, inference_calls=4, completed_chunks=4, prefix_chunks=3, actions_applied=138, empty_action_steps=6
+latency: avg_first_action=0.133s, p95_first_action=0.146s, recommended_delay=3, avg_final=0.283s, avg_chunk_duration=1.678s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0           0       50        40       11           0.145    0.295       1.954
+        2       HAS      10           0       40        40       11           0.096    0.246       1.954
+        3       HAS      10           0       40        40       11           0.146    0.296       1.953
+        4       HAS      10           0       40        18       11           0.146    0.296       0.851
+
+=== Pi0.5 inference episode: 2026-06-23 16:45:27 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=10, execution_horizon=40, fps=20
+summary: total_time=7.262s, inference_calls=4, completed_chunks=4, prefix_chunks=3, actions_applied=140, empty_action_steps=6
+latency: avg_first_action=0.133s, p95_first_action=0.146s, recommended_delay=3, avg_final=0.284s, avg_chunk_duration=1.703s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        5       HAS       0           0       50        40       11           0.146    0.296       1.953
+        6       HAS      10           0       40        40       11           0.096    0.246       1.953
+        7       HAS      10           0       40        40       11           0.146    0.296       1.954
+        8       HAS      10           0       40        20       11           0.146    0.296       0.952
+
+=== Pi0.5 inference episode: 2026-06-23 16:46:59 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=10, execution_horizon=25, fps=20
+summary: total_time=7.667s, inference_calls=7, completed_chunks=7, prefix_chunks=6, actions_applied=148, empty_action_steps=6
+latency: avg_first_action=0.103s, p95_first_action=0.130s, recommended_delay=3, avg_final=0.267s, avg_chunk_duration=1.186s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0           0       50        25       11           0.145    0.295       1.202
+        2       HAS      10           0       40        25       11           0.096    0.246       1.203
+        3       HAS      10           0       40        25       11           0.096    0.296       1.202
+        4       HAS      10           0       40        25       11           0.096    0.246       1.203
+        5       HAS      10           0       40        25       11           0.095    0.296       1.203
+        6       HAS      10           0       40        23       11           0.096    0.246       1.102
+        7       HAS      10           0       40         0       11           0.095    0.246         n/a
+
+=== Pi0.5 inference episode: 2026-06-23 16:47:58 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=10, execution_horizon=25, fps=20
+summary: total_time=7.764s, inference_calls=7, completed_chunks=7, prefix_chunks=6, actions_applied=150, empty_action_steps=6
+latency: avg_first_action=0.110s, p95_first_action=0.146s, recommended_delay=3, avg_final=0.275s, avg_chunk_duration=1.202s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        8       HAS       0           0       50        25       11           0.146    0.296       1.202
+        9       HAS      10           0       40        25       11           0.095    0.246       1.202
+       10       HAS      10           0       40        25       11           0.095    0.295       1.202
+       11       HAS      10           0       40        25       11           0.096    0.246       1.202
+       12       HAS      10           0       40        25       11           0.146    0.296       1.202
+       13       HAS      10           0       40        25       11           0.096    0.296       1.202
+       14       HAS      10           0       40         0       11           0.096    0.247         n/a
+
+=== Pi0.5 inference episode: 2026-06-23 16:48:21 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=10, execution_horizon=25, fps=20
+summary: total_time=7.664s, inference_calls=7, completed_chunks=7, prefix_chunks=6, actions_applied=148, empty_action_steps=6
+latency: avg_first_action=0.102s, p95_first_action=0.130s, recommended_delay=3, avg_final=0.267s, avg_chunk_duration=1.185s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       15       HAS       0           0       50        25       11           0.145    0.296       1.202
+       16       HAS      10           0       40        25       11           0.095    0.246       1.202
+       17       HAS      10           0       40        25       11           0.095    0.245       1.202
+       18       HAS      10           0       40        25       11           0.094    0.245       1.202
+       19       HAS      10           0       40        25       11           0.095    0.295       1.202
+       20       HAS      10           0       40        23       11           0.096    0.296       1.102
+       21       HAS      10           0       40         0       11           0.095    0.246         n/a
+
+=== Pi0.5 inference episode: 2026-06-23 16:49:08 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, execution_horizon=25, fps=20
+summary: total_time=10.620s, inference_calls=2, completed_chunks=2, prefix_chunks=1, actions_applied=33, empty_action_steps=179
+latency: avg_first_action=0.120s, p95_first_action=0.142s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=0.777s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0           0       50        25       11           0.145    0.295       1.203
+        2       HAS       3           0       47         8       11           0.096    0.296       0.350
+
+=== Pi0.5 inference episode: 2026-06-23 16:49:46 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, execution_horizon=47, fps=20
+summary: total_time=28.454s, inference_calls=2, completed_chunks=2, prefix_chunks=1, actions_applied=51, empty_action_steps=517
+latency: avg_first_action=0.144s, p95_first_action=0.145s, recommended_delay=3, avg_final=0.295s, avg_chunk_duration=1.227s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0           0       50        47       11           0.144    0.294       2.305
+        2       HAS       3           0       47         4       11           0.145    0.296       0.150
+
+=== Pi0.5 inference episode: 2026-06-23 16:51:23 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, execution_horizon=47, fps=20
+summary: total_time=5.609s, inference_calls=2, completed_chunks=2, prefix_chunks=1, actions_applied=51, empty_action_steps=61
+latency: avg_first_action=0.146s, p95_first_action=0.146s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=1.227s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        3       HAS       0           0       50        47       11           0.146    0.296       2.304
+        4       HAS       3           0       47         4       11           0.146    0.296       0.150

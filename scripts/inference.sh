@@ -8,7 +8,7 @@ export PYTHONPATH="${REPO_ROOT}/src:${PYTHONPATH:-}"
 # pgrep -af 'ssh.*(-L)'
 
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
-    --task "put green cylinder on blue cube" \
+    --task "put red cylinder on red cube" \
     --stop_after_first_release \
     --robot_name FrankaPanda \
     --pyzlc_name policy_inference \
@@ -20,7 +20,7 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --metrics_path "${REPO_ROOT}/logs/pi05_inference_metrics_official_rtc.jsonl" \
     --execution_horizon 47 \
     --faster_infer_time_schedule HAS \
-    --faster_alpha 1.0 \
+    --faster_alpha 0.6 \
     --faster_u0 0.9 \
     --delay 3 \
     --early_stop_actions 0 \
