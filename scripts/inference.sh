@@ -24,7 +24,6 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --faster_u0 0.9 \
     --delay 3 \
     --early_stop_actions 25 \
-    --faster_prefix_mode official_rtc \
     --phase_fallback_schedule "none" \
     --phase_fallback_trigger "before_gripper_open" \
     --static_camera static_cam \

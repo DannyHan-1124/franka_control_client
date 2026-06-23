@@ -71,7 +71,6 @@ class Pi05PolicyInferenceConfig:
     faster_u0: float = 0.9
     delay: int = 0
     early_stop_actions: int = 0
-    faster_prefix_mode: str = "legacy"
     phase_fallback_schedule: str = "none"
     phase_fallback_trigger: str = "after_gripper_close"
     metrics_path: Optional[str] = None
@@ -109,13 +108,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             )
         if cfg.early_stop_actions > 0 and cfg.policy_transport != "streaming_zmq":
             raise ValueError("early_stop_actions requires policy_transport=streaming_zmq.")
-        if cfg.faster_prefix_mode not in ("legacy", "official_rtc"):
-            raise ValueError("faster_prefix_mode must be 'legacy' or 'official_rtc'.")
-        if cfg.faster_prefix_mode == "official_rtc":
-            if cfg.policy_transport != "streaming_zmq":
-                raise ValueError(
-                    "official_rtc prefix handling requires policy_transport=streaming_zmq."
-                )
+        if cfg.policy_transport == "streaming_zmq":
             if cfg.delay > cfg.execution_horizon:
                 raise ValueError("official_rtc requires delay <= execution_horizon.")
             if cfg.execution_horizon + cfg.delay > MODEL_ACTION_HORIZON:
@@ -187,11 +180,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._last_sanitized_action: Optional[np.ndarray] = None
         self._debug_image_step = 0
         self._release_pos: Optional[np.ndarray] = None
-        self._stream_request_id: Optional[int] = None
-        self._stream_action_buffer: dict[int, np.ndarray] = {}
-        self._stream_current_chunk: dict[int, np.ndarray] = {}
-        self._stream_next_index = 0
-        self._stream_final = False
         self._reset_official_rtc_state()
         self._last_policy_schedule: Optional[str] = None
         self._phase_fallback_open_detected = False
@@ -213,11 +201,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._last_sanitized_action = None
         self._debug_image_step = 0
         self._release_pos = None
-        self._stream_request_id = None
-        self._stream_action_buffer = {}
-        self._stream_current_chunk = {}
-        self._stream_next_index = 0
-        self._stream_final = False
         self._reset_official_rtc_state()
         self._last_policy_schedule = None
         self._phase_fallback_open_detected = False
@@ -318,29 +301,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             time.sleep(sleep_time)
 
     def _infer_streaming_step(self, start: float) -> None:
-        if self.cfg.faster_prefix_mode == "official_rtc":
-            self._infer_official_rtc_step(start)
-            return
-
-        self._drain_streaming_updates()
-        if self._should_request_stream():
-            self._request_stream()
-            self._drain_streaming_updates()
-
-        action = self._pop_next_stream_action()
-        if action is not None:
-            sanitized_action = self._sanitize_action(action)
-            self._last_sanitized_action = sanitized_action.copy()
-            self.control_pair.update_action(sanitized_action)
-            self._metrics_actions_applied += 1
-            self._maybe_stop_after_release()
-        else:
-            self._metrics_empty_action_steps += 1
-
-        elapsed = time.perf_counter() - start
-        sleep_time = max(0.0, (1.0 / self.fps) - elapsed)
-        if sleep_time > 0.001:
-            time.sleep(sleep_time)
+        self._infer_official_rtc_step(start)
 
     def _infer_official_rtc_step(self, start: float) -> None:
         """Run the two-buffer RTC loop used by the official FASTER client."""
@@ -427,7 +388,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
         request_start = time.perf_counter()
         request_id = self._streaming_policy.send_observation(obs)
-        self._stream_request_id = request_id
         self._metrics_inference_calls += 1
         self._metrics_stream_chunks[request_id] = {
             "request_id": int(request_id),
@@ -572,151 +532,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
         return action
 
-    def _should_request_stream(self) -> bool:
-        if self._streaming_policy is None:
-            return False
-        if self._streaming_policy.active_request_id is not None:
-            return False
-        if self._stream_request_id is None:
-            return True
-        if self._phase_fallback_replan_pending:
-            return True
-        if self._stream_next_index >= int(self.cfg.execution_horizon):
-            return True
-        if self._stream_final and self._stream_next_index not in self._stream_action_buffer:
-            return True
-        return False
-
-    def _request_stream(self) -> None:
-        if self._streaming_policy is None:
-            return
-        active_schedule = self._active_infer_time_schedule()
-        obs = self._build_observation()
-        prefix_request_id, prefix_start_index, prefix_steps = self._build_stream_prefix_metadata()
-        previous_metric = (
-            self._metrics_stream_chunks.get(int(self._stream_request_id))
-            if self._stream_request_id is not None
-            else None
-        )
-        previous_schedule = previous_metric.get("schedule") if previous_metric is not None else None
-        if previous_schedule is not None and previous_schedule != active_schedule and prefix_steps > 0:
-            pyzlc.info(
-                "Dropping streamed action prefix across schedule change: "
-                f"{previous_schedule} -> {active_schedule}"
-            )
-            prefix_request_id, prefix_start_index, prefix_steps = None, 0, 0
-        if prefix_request_id is not None and prefix_steps > 0:
-            policy_kwargs = obs.setdefault("policy_kwargs", {})
-            policy_kwargs["delay"] = int(prefix_steps)
-            policy_kwargs["prefix_request_id"] = int(prefix_request_id)
-            policy_kwargs["prefix_start_index"] = int(prefix_start_index)
-        effective_early_stop_actions = 0
-        if self.cfg.early_stop_actions > 0 and active_schedule.upper() == "HAS":
-            # Generate enough actions to execute this chunk and retain the next delay prefix.
-            required_new_actions = self.cfg.execution_horizon + self.cfg.delay - prefix_steps
-            effective_early_stop_actions = max(
-                self.cfg.early_stop_actions,
-                required_new_actions,
-            )
-            obs.setdefault("policy_kwargs", {})["early_stop_actions"] = int(
-                effective_early_stop_actions
-            )
-        previous_chunk = dict(self._stream_current_chunk)
-        request_start = time.perf_counter()
-        self._stream_request_id = self._streaming_policy.send_observation(obs)
-        self._metrics_inference_calls += 1
-        self._metrics_stream_chunks[self._stream_request_id] = {
-            "request_id": int(self._stream_request_id),
-            "transport": self.cfg.policy_transport,
-            "schedule": active_schedule,
-            "request_time_s": request_start,
-            "prefix_steps": int(prefix_steps),
-            "prefix_request_id": int(prefix_request_id) if prefix_request_id is not None else None,
-            "prefix_start_index": int(prefix_start_index),
-            "early_stop_actions": int(effective_early_stop_actions),
-            "first_action_latency_s": None,
-            "final_latency_s": None,
-            "emitted_action_count": 0,
-            "executed_action_count": 0,
-            "first_action_index": None,
-            "last_action_index": None,
-            "first_action_applied_latency_s": None,
-            "execution_duration_s": None,
-            "update_count": 0,
-        }
-        self._stream_action_buffer = {}
-        self._stream_current_chunk = {}
-        self._phase_fallback_replan_pending = False
-        if prefix_request_id is not None and prefix_steps > 0:
-            for out_idx, src_idx in enumerate(range(prefix_start_index, prefix_start_index + prefix_steps)):
-                action = previous_chunk.get(src_idx)
-                if action is None:
-                    break
-                self._stream_action_buffer[out_idx] = action
-                self._stream_current_chunk[out_idx] = action
-        self._stream_next_index = 0
-        self._stream_final = False
-
-    def _build_stream_prefix_metadata(self) -> tuple[Optional[int], int, int]:
-        prefix_steps = int(self.cfg.delay)
-        if prefix_steps <= 0 or self._stream_request_id is None:
-            return None, 0, 0
-
-        available_steps = 0
-        for idx in range(self._stream_next_index, self._stream_next_index + prefix_steps):
-            if idx not in self._stream_current_chunk:
-                break
-            available_steps += 1
-        if available_steps <= 0:
-            return None, 0, 0
-
-        pyzlc.info(
-            "Using streamed action prefix for continuity: "
-            f"steps={available_steps}, previous_request_id={self._stream_request_id}, "
-            f"previous_start_index={self._stream_next_index}"
-        )
-        return self._stream_request_id, self._stream_next_index, available_steps
-
-    def _drain_streaming_updates(self) -> None:
-        if self._streaming_policy is None:
-            return
-        for msg in self._streaming_policy.recv_action_updates():
-            if msg.get("request_id") != self._stream_request_id:
-                continue
-            indices = [int(idx) for idx in msg.get("indices", [])]
-            actions = self._parse_action_payload(msg.get("actions", [])) if indices else np.empty((0, ACTION_DIM))
-            metric = self._metrics_stream_chunks.get(int(self._stream_request_id))
-            if metric is not None:
-                now = time.perf_counter()
-                metric["update_count"] += 1
-                metric["emitted_action_count"] += len(indices)
-                if indices and metric["first_action_latency_s"] is None:
-                    metric["first_action_latency_s"] = now - float(metric["request_time_s"])
-            for idx, action in zip(indices, actions, strict=True):
-                self._stream_action_buffer[idx] = action
-                self._stream_current_chunk[idx] = action
-            self._maybe_trigger_open_fallback(indices, actions)
-            if msg.get("final"):
-                self._stream_final = True
-                if metric is not None:
-                    metric["final_latency_s"] = time.perf_counter() - float(metric["request_time_s"])
-                    self._metrics_chunks.append(dict(metric))
-            if indices:
-                pyzlc.info(
-                    "Received streamed Pi0.5 actions: "
-                    f"request_id={self._stream_request_id}, indices={indices}, final={bool(msg.get('final'))}"
-                )
-
-    def _pop_next_stream_action(self) -> Optional[np.ndarray]:
-        action = self._stream_action_buffer.pop(self._stream_next_index, None)
-        if action is None:
-            return None
-        metric = self._metrics_stream_chunks.get(int(self._stream_request_id or -1))
-        if metric is not None:
-            self._record_chunk_action_execution(metric, self._stream_next_index)
-        self._stream_next_index += 1
-        return action
-
     def _record_chunk_action_execution(self, metric: Dict[str, Any], action_index: int) -> None:
         now = time.perf_counter()
         first_time = metric.get("first_action_applied_time_s")
@@ -794,17 +609,17 @@ class Pi05PolicyInference(PolicyInferenceManager):
             else 0.0
         )
         chunks = []
-        seen_stream_request_ids = set()
+        seen_request_ids = set()
         for chunk in self._metrics_chunks:
             request_id = chunk.get("request_id")
-            latest_stream_chunk = self._metrics_stream_chunks.get(int(request_id)) if request_id is not None else None
-            if latest_stream_chunk is not None:
-                chunks.append(dict(latest_stream_chunk))
-                seen_stream_request_ids.add(int(request_id))
+            latest_chunk = self._metrics_stream_chunks.get(int(request_id)) if request_id is not None else None
+            if latest_chunk is not None:
+                chunks.append(dict(latest_chunk))
+                seen_request_ids.add(int(request_id))
             else:
                 chunks.append(dict(chunk))
         for request_id, chunk in sorted(self._metrics_stream_chunks.items()):
-            if request_id not in seen_stream_request_ids:
+            if request_id not in seen_request_ids:
                 chunks.append(dict(chunk))
         request_latencies = [
             float(chunk["request_latency_s"])
@@ -840,7 +655,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "task": self.task,
             "transport": self.cfg.policy_transport,
             "schedule": self.cfg.faster_infer_time_schedule,
-            "faster_prefix_mode": self.cfg.faster_prefix_mode,
+            "faster_prefix_mode": "official_rtc" if self._streaming_policy is not None else "none",
             "fps": int(self.cfg.fps),
             "execution_horizon": int(self.cfg.execution_horizon),
             "gripper_open_confirm_steps": int(self.cfg.gripper_open_confirm_steps),
@@ -937,7 +752,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         config_parts = [
             f"transport={summary.get('transport')}",
             f"schedule={summary.get('schedule')}",
-            f"prefix_mode={summary.get('faster_prefix_mode', 'legacy')}",
+            f"prefix_mode={summary.get('faster_prefix_mode', 'official_rtc')}",
         ]
         if summary.get("schedule", "").upper() == "HAS":
             config_parts.extend(
@@ -1085,8 +900,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
         index_list = [int(idx) for idx in indices]
         for idx, action in zip(index_list, arr, strict=True):
-            if idx < self._stream_next_index:
-                continue
             if action.shape[0] > 7 and float(action[7]) < 0.5:
                 self._phase_fallback_open_detected = True
                 self._phase_fallback_replan_pending = True
