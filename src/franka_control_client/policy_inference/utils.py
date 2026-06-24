@@ -10,13 +10,17 @@ from typing import Callable, List
 
 class UIConsole:
     """
-    Manages terminal output by separating persistent logs from
-    transient interactive hints using ANSI escape sequences.
+    Manages terminal output by separating persistent logs from interactive hints.
+
+    In an interactive terminal, hints are kept on a transient bottom line. When
+    stdout is redirected to a file, hints are printed as normal lines so captured
+    logs do not contain half-overwritten prompts.
     """
 
     def __init__(self):
         self._current_hint = ""
         self._lock = threading.Lock()
+        self._interactive = sys.stdout.isatty()
 
     def update_hint(self, message: str):
         """
@@ -25,9 +29,11 @@ class UIConsole:
         """
         with self._lock:
             self._current_hint = message
-            # \r: Carriage return (to start of line)
-            # \033[K: Clear line from cursor to end
-            sys.stdout.write(f"\r\033[K{self._current_hint}")
+            if self._interactive:
+                # \r: carriage return. \033[K: clear line from cursor to end.
+                sys.stdout.write(f"\r\033[K{self._current_hint}")
+            else:
+                sys.stdout.write(f"{self._current_hint}\n")
             sys.stdout.flush()
 
     def log(self, message: str):
@@ -36,12 +42,12 @@ class UIConsole:
         Automatically restores the current hint at the bottom.
         """
         with self._lock:
-            # 1. Clear the current hint line
-            sys.stdout.write("\r\033[K")
-            # 2. Print the log message with a newline
-            sys.stdout.write(f"{message}\n")
-            # 3. Restore the hint at the bottom
-            sys.stdout.write(self._current_hint)
+            if self._interactive:
+                sys.stdout.write("\r\033[K")
+                sys.stdout.write(f"{message}\n")
+                sys.stdout.write(f"\r\033[K{self._current_hint}")
+            else:
+                sys.stdout.write(f"{message}\n")
             sys.stdout.flush()
 
 

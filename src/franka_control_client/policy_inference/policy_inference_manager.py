@@ -201,14 +201,14 @@ class PolicyInferenceManager(abc.ABC):
     def _on_state_enter(self, state: PolicyInferenceState) -> None:
         if state == PolicyInferenceState.WAITING:
             self._ui_console.update_hint(
-                "Press 'n' to start infering, 'r' to reset arm, 'o' to open gripper, or 'q' to quit"
+                "Press 'n' to start inferring, 'r' to reset arm, 'o' to open gripper, or 'q' to quit"
             )
         elif state == PolicyInferenceState.INFERING:
             self._ui_console.update_hint(
-                "Infering... Press 's' to save, 'd' to discard, 'o' to open gripper, or 'q' to quit"
+                "Inferring... Press 's' to save, 'd' to discard, 'o' to open gripper, or 'q' to quit"
             )
         elif state == PolicyInferenceState.STOPPED:
-            self._ui_console.update_hint("Infering stopped. Resetting...")
+            self._ui_console.update_hint("Inferring stopped. Resetting...")
         elif state == PolicyInferenceState.EXITING:
             self._ui_console.update_hint("Exiting policy inference")
 
@@ -218,7 +218,7 @@ class PolicyInferenceManager(abc.ABC):
 
     @abc.abstractmethod
     def _start_infering(self) -> None:
-        self._ui_console.update_hint("Starting policy infering...")
+        self._ui_console.update_hint("Starting policy inferring...")
         self._start_infering_event.emit()
 
     @abc.abstractmethod
@@ -254,4 +254,4 @@ class PolicyInferenceManager(abc.ABC):
         #todo:inferencer
         # for collector in self.data_collectors:
         #     collector.close()
-        self._ui_console.update_hint("Policy infering closed.")
+        self._ui_console.update_hint("Policy inferring closed.")
