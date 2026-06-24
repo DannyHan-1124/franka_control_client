@@ -379,8 +379,9 @@ class Pi05PolicyNode:
     def run_streaming_zmq(self) -> None:
         if self._streaming_socket is None:
             raise RuntimeError("Streaming ZMQ socket is not configured.")
-        if not hasattr(self.policy, "predict_action_stream"):
-            raise RuntimeError("Loaded policy does not implement predict_action_stream.")
+        if not hasattr(self.policy, "predict_action_chunk"):
+            raise RuntimeError("Loaded policy does not implement predict_action_chunk.")
+        print("Using full-chunk predict_action_chunk responses for DynamicVLA streaming.", flush=True)
 
         self._running = True
         while self._running:
@@ -411,33 +412,28 @@ class Pi05PolicyNode:
 
                 observation = self.preprocessor(self._build_observation(obs_msg))
                 policy_kwargs = self._policy_kwargs(obs_msg)
-                policy_kwargs.setdefault("infer_time_schedule", self.cfg.faster_infer_time_schedule)
                 self._attach_raw_action_prefix(policy_kwargs)
 
                 emitted_indices: set[int] = set()
                 latest_raw_actions = None
                 with torch.inference_mode():
-                    for newly_ready, action_tensor in self.policy.predict_action_stream(
-                        observation, **policy_kwargs
-                    ):
-                        latest_raw_actions = action_tensor.detach()
-                        ready_indices = torch.nonzero(newly_ready[0], as_tuple=False).flatten()
-                        if ready_indices.numel() == 0:
-                            continue
-                        indices = [int(i) for i in ready_indices.detach().cpu().tolist()]
-                        emitted_indices.update(indices)
-                        action_array = self._postprocess_action_chunk(action_tensor[:, ready_indices, :])
-                        self._streaming_socket.send_pyobj(
-                            {
-                                "type": "action_delta",
-                                "request_id": request_id,
-                                "timestamp": time.time(),
-                                "indices": indices,
-                                "actions": action_array.tolist(),
-                                "shape": list(action_array.shape),
-                                "final": False,
-                            }
-                        )
+                    action_tensor = self.policy.predict_action_chunk(observation, **policy_kwargs)
+                    latest_raw_actions = action_tensor.detach()
+                    ready_indices = torch.arange(action_tensor.shape[1], device=action_tensor.device)
+                    indices = [int(i) for i in ready_indices.detach().cpu().tolist()]
+                    emitted_indices.update(indices)
+                    action_array = self._postprocess_action_chunk(action_tensor)
+                    self._streaming_socket.send_pyobj(
+                        {
+                            "type": "action_delta",
+                            "request_id": request_id,
+                            "timestamp": time.time(),
+                            "indices": indices,
+                            "actions": action_array.tolist(),
+                            "shape": list(action_array.shape),
+                            "final": False,
+                        }
+                    )
 
                 if request_id is not None and latest_raw_actions is not None:
                     self._stream_raw_action_cache[int(request_id)] = latest_raw_actions.detach().cpu()

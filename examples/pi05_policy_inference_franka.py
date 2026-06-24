@@ -36,35 +36,8 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--pyzlc_host", default="192.168.0.109")
     parser.add_argument("--pyzlc_group_name", default="DroidGroup")
     parser.add_argument("--pyzlc_group_port", type=int, default=7730)
-    parser.add_argument(
-        "--policy_transport",
-        choices=("pyzlc", "zmq", "streaming_zmq"),
-        default="pyzlc",
-        help="Transport to the remote policy server; streaming_zmq enables FASTER action streaming.",
-    )
-    parser.add_argument("--policy_zmq_endpoint", default=None, help="ZMQ endpoint for zmq/streaming_zmq policy transport.")
+    parser.add_argument("--policy_zmq_endpoint", default=None, help="Streaming ZMQ endpoint for the policy server.")
     parser.add_argument("--policy_zmq_timeout_ms", type=int, default=30000, help="ZMQ send/receive timeout.")
-    parser.add_argument(
-        "--streaming_mode",
-        choices=("chunk_replan", "continuous"),
-        default="chunk_replan",
-        help="streaming_zmq mode: chunk_replan is the existing behavior; continuous replans as soon as each chunk finishes.",
-    )
-    parser.add_argument(
-        "--continuous_min_execute_steps",
-        type=int,
-        default=0,
-        help="For continuous streaming, execute at least this many actions from a request before sending the next one.",
-    )
-    parser.add_argument(
-        "--continuous_strategy",
-        choices=("min_window", "official_dynamicvla"),
-        default="min_window",
-        help=(
-            "Continuous scheduling: min_window is the existing mode; "
-            "official_dynamicvla uses a latest-observation mailbox."
-        ),
-    )
     parser.add_argument(
         "--max_position_step_m",
         type=float,
@@ -77,41 +50,9 @@ def _parse_args() -> argparse.Namespace:
         default=0.0,
         help="Inference-side max quaternion rotation step; disabled by default.",
     )
-    parser.add_argument(
-        "--chunk_replan_steps",
-        type=int,
-        default=50,
-        help="Number of actions to execute before requesting a new chunk.",
-    )
     parser.add_argument("--stop_after_first_release", action="store_true", help="Stop the episode after the first confirmed release.")
     parser.add_argument("--stop_after_release_steps", type=int, default=0, help="Extra policy steps to run after release before stopping.")
     parser.add_argument("--metrics_path", default=None, help="Append per-episode metrics as JSONL to this path.")
-    parser.add_argument(
-        "--faster_infer_time_schedule",
-        choices=("const", "HAS"),
-        default="const",
-        help="Denoising schedule: const is fully denoised baseline; HAS enables FASTER horizon-aware streaming.",
-    )
-    parser.add_argument("--faster_alpha", type=float, default=1.0, help="HAS horizon curve exponent; larger values change how speedup varies over the horizon.")
-    parser.add_argument("--faster_u0", type=float, default=0.9, help="HAS aggressiveness; lower values denoise early actions more and are usually smoother.")
-    parser.add_argument(
-        "--faster_delay_steps",
-        type=int,
-        default=0,
-        help="Number of old tail actions to preserve as prefix for chunk-to-chunk continuity.",
-    )
-    parser.add_argument(
-        "--phase_fallback_schedule",
-        choices=("none", "const", "HAS"),
-        default="none",
-        help="Optional schedule to use for a later task phase; const is safer for final placement.",
-    )
-    parser.add_argument(
-        "--phase_fallback_trigger",
-        choices=("after_gripper_close", "before_gripper_open"),
-        default="after_gripper_close",
-        help="When to switch to phase_fallback_schedule; before_gripper_open only switches near release.",
-    )
     parser.add_argument("--static_camera", default="static_cam", help="pyzlc static/base camera node name.")
     parser.add_argument("--wrist_camera", default="wrist_cam", help="pyzlc wrist camera node name.")
     return parser.parse_args()
@@ -153,24 +94,14 @@ def main() -> None:
     inference_cfg = Pi05PolicyInferenceConfig(
         task=args.task,
         fps=args.fps,
-        policy_transport=args.policy_transport,
+        policy_transport="streaming_zmq",
         policy_zmq_endpoint=args.policy_zmq_endpoint,
         policy_zmq_timeout_ms=args.policy_zmq_timeout_ms,
-        streaming_mode=args.streaming_mode,
-        continuous_strategy=args.continuous_strategy,
-        continuous_min_execute_steps=args.continuous_min_execute_steps,
         max_position_step_m=args.max_position_step_m,
         max_rotation_step_rad=args.max_rotation_step_rad,
-        chunk_replan_steps=args.chunk_replan_steps,
         stop_after_first_release=args.stop_after_first_release,
         stop_after_release_steps=args.stop_after_release_steps,
         metrics_path=args.metrics_path,
-        faster_infer_time_schedule=args.faster_infer_time_schedule,
-        faster_alpha=args.faster_alpha,
-        faster_u0=args.faster_u0,
-        faster_delay_steps=args.faster_delay_steps,
-        phase_fallback_schedule=args.phase_fallback_schedule,
-        phase_fallback_trigger=args.phase_fallback_trigger,
     )
     inference_manager = Pi05PolicyInference(
         data_collectors=data_collectors,
