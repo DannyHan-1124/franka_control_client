@@ -8,7 +8,7 @@ export PYTHONPATH="${REPO_ROOT}/src:${PYTHONPATH:-}"
 # pgrep -af 'ssh.*(-L)'
 
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
-    --task "put green cylinder on blue cube" \
+    --task "put red cylinder on red cube" \
     --stop_after_first_release \
     --robot_name FrankaPanda \
     --pyzlc_name policy_inference \

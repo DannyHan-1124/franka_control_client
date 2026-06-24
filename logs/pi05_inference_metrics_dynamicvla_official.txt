@@ -1,0 +1,435 @@
+
+=== Pi0.5 inference episode: 2026-06-24 14:37:56 ===
+task: put green cylinder on blue cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=0, chunk_replan_steps=50, fps=20
+summary: total_time=11.320s, inference_calls=48, observations_published=226, completed_chunks=48, prefix_chunks=0, actions_applied=220, empty_action_steps=6, stale_actions_dropped=274, actions_overwritten=1865
+latency: avg_first_action=0.286s, avg_final=0.286s, avg_chunk_duration=0.179s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       75     const       0       50         4        2           0.301    0.301       0.150
+       79     const       0       50         5        2           0.301    0.301       0.201
+       84     const       0       50         4        2           0.301    0.301       0.150
+       89     const       0       50         5        2           0.250    0.250       0.200
+       93     const       0       50         5        2           0.301    0.301       0.200
+       98     const       0       50         4        2           0.300    0.300       0.151
+      103     const       0       50         5        2           0.251    0.251       0.200
+      107     const       0       50         4        2           0.300    0.301       0.149
+      112     const       0       50         5        2           0.251    0.251       0.200
+      116     const       0       50         5        2           0.301    0.301       0.200
+      121     const       0       50         4        2           0.301    0.301       0.150
+      126     const       0       50         5        2           0.250    0.251       0.200
+      130     const       0       50         5        2           0.301    0.301       0.199
+      135     const       0       50         4        2           0.300    0.301       0.150
+      139     const       0       50         5        2           0.300    0.302       0.199
+      144     const       0       50         4        2           0.301    0.301       0.150
+      149     const       0       50         5        2           0.250    0.250       0.200
+      153     const       0       50         5        2           0.301    0.301       0.202
+      158     const       0       50         4        2           0.301    0.301       0.151
+      162     const       0       50         5        2           0.300    0.301       0.200
+      167     const       0       50         4        2           0.301    0.301       0.149
+      172     const       0       50         5        2           0.251    0.251       0.200
+      176     const       0       50         5        2           0.301    0.301       0.200
+      181     const       0       50         4        2           0.300    0.300       0.150
+      186     const       0       50         5        2           0.251    0.252       0.200
+      190     const       0       50         4        2           0.300    0.300       0.150
+      195     const       0       50         5        2           0.250    0.250       0.200
+      199     const       0       50         5        2           0.301    0.301       0.200
+      204     const       0       50         4        2           0.301    0.301       0.150
+      209     const       0       50         5        2           0.250    0.250       0.200
+      213     const       0       50         4        2           0.301    0.301       0.150
+      218     const       0       50         5        2           0.251    0.251       0.202
+      222     const       0       50         5        2           0.301    0.301       0.200
+      227     const       0       50         4        2           0.300    0.300       0.149
+      232     const       0       50         5        2           0.250    0.250       0.201
+      236     const       0       50         5        2           0.301    0.301       0.201
+      241     const       0       50         4        2           0.301    0.301       0.150
+      245     const       0       50         5        2           0.300    0.301       0.200
+      250     const       0       50         4        2           0.301    0.301       0.150
+      255     const       0       50         5        2           0.251    0.251       0.201
+      259     const       0       50         5        2           0.300    0.301       0.200
+      264     const       0       50         4        2           0.300    0.300       0.150
+      268     const       0       50         5        2           0.300    0.301       0.200
+      273     const       0       50         4        2           0.300    0.300       0.151
+      278     const       0       50         5        2           0.250    0.250       0.200
+      282     const       0       50         5        2           0.301    0.301       0.199
+      287     const       0       50         4        2           0.301    0.301       0.150
+      292     const       0       50         4        2           0.251    0.251       0.150
+
+=== Pi0.5 inference episode: 2026-06-24 14:38:18 ===
+task: put green cylinder on blue cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=0, chunk_replan_steps=50, fps=20
+summary: total_time=6.917s, inference_calls=29, observations_published=139, completed_chunks=29, prefix_chunks=0, actions_applied=133, empty_action_steps=6, stale_actions_dropped=168, actions_overwritten=1109
+latency: avg_first_action=0.290s, avg_final=0.290s, avg_chunk_duration=0.179s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+      301     const       0       50         4        2           0.301    0.301       0.150
+      305     const       0       50         5        2           0.301    0.301       0.200
+      310     const       0       50         4        2           0.302    0.302       0.148
+      315     const       0       50         5        2           0.251    0.251       0.200
+      319     const       0       50         5        2           0.301    0.301       0.200
+      324     const       0       50         4        2           0.301    0.301       0.150
+      329     const       0       50         5        2           0.251    0.251       0.201
+      333     const       0       50         5        2           0.301    0.301       0.200
+      338     const       0       50         4        2           0.300    0.300       0.151
+      342     const       0       50         5        2           0.301    0.301       0.200
+      347     const       0       50         4        2           0.301    0.301       0.150
+      352     const       0       50         5        2           0.250    0.250       0.201
+      356     const       0       50         5        2           0.301    0.301       0.200
+      361     const       0       50         4        2           0.301    0.301       0.152
+      365     const       0       50         5        2           0.300    0.300       0.200
+      370     const       0       50         4        2           0.299    0.299       0.150
+      375     const       0       50         5        2           0.252    0.252       0.200
+      379     const       0       50         5        2           0.300    0.300       0.200
+      384     const       0       50         4        2           0.301    0.301       0.149
+      388     const       0       50         5        2           0.300    0.300       0.201
+      393     const       0       50         4        2           0.301    0.301       0.150
+      398     const       0       50         5        2           0.250    0.250       0.200
+      402     const       0       50         5        2           0.300    0.301       0.200
+      407     const       0       50         4        2           0.300    0.300       0.151
+      411     const       0       50         5        2           0.301    0.301       0.200
+      416     const       0       50         4        2           0.301    0.301       0.150
+      421     const       0       50         5        2           0.251    0.251       0.200
+      425     const       0       50         5        2           0.302    0.302       0.199
+      430     const       0       50         4        2           0.302    0.302       0.149
+
+=== Pi0.5 inference episode: 2026-06-24 14:40:10 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=0, chunk_replan_steps=50, fps=20
+summary: total_time=8.166s, inference_calls=34, observations_published=163, completed_chunks=34, prefix_chunks=0, actions_applied=157, empty_action_steps=6, stale_actions_dropped=194, actions_overwritten=1309
+latency: avg_first_action=0.286s, avg_final=0.286s, avg_chunk_duration=0.181s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+        1     const       0       50         4        2           0.299    0.299       0.150
+        6     const       0       50         5        2           0.251    0.251       0.200
+       10     const       0       50         5        2           0.301    0.301       0.202
+       15     const       0       50         4        2           0.303    0.303       0.151
+       19     const       0       50         5        2           0.302    0.302       0.201
+       24     const       0       50         4        2           0.300    0.300       0.150
+       29     const       0       50         5        2           0.252    0.252       0.199
+       33     const       0       50         5        2           0.301    0.301       0.200
+       38     const       0       50         4        2           0.301    0.301       0.149
+       43     const       0       50         5        2           0.251    0.251       0.200
+       47     const       0       50         5        2           0.301    0.301       0.200
+       52     const       0       50         4        2           0.301    0.301       0.149
+       57     const       0       50         5        2           0.251    0.251       0.200
+       61     const       0       50         5        2           0.301    0.301       0.201
+       66     const       0       50         4        2           0.301    0.301       0.150
+       70     const       0       50         5        2           0.301    0.301       0.200
+       75     const       0       50         4        2           0.301    0.301       0.150
+       80     const       0       50         5        2           0.250    0.250       0.201
+       84     const       0       50         5        2           0.301    0.301       0.200
+       89     const       0       50         4        2           0.300    0.300       0.150
+       94     const       0       50         5        2           0.250    0.250       0.200
+       98     const       0       50         5        2           0.300    0.301       0.204
+      103     const       0       50         4        2           0.300    0.301       0.150
+      108     const       0       50         5        2           0.246    0.247       0.200
+      112     const       0       50         5        2           0.302    0.302       0.199
+      117     const       0       50         4        2           0.301    0.301       0.150
+      122     const       0       50         5        2           0.250    0.250       0.200
+      126     const       0       50         5        2           0.301    0.301       0.200
+      131     const       0       50         4        2           0.300    0.300       0.152
+      136     const       0       50         5        2           0.250    0.250       0.200
+      140     const       0       50         5        2           0.301    0.301       0.199
+      145     const       0       50         4        2           0.301    0.301       0.150
+      150     const       0       50         5        2           0.249    0.250       0.200
+      154     const       0       50         4        2           0.302    0.303       0.148
+
+=== Pi0.5 inference episode: 2026-06-24 14:40:26 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=0, chunk_replan_steps=50, fps=20
+summary: total_time=8.823s, inference_calls=37, observations_published=177, completed_chunks=37, prefix_chunks=0, actions_applied=171, empty_action_steps=6, stale_actions_dropped=213, actions_overwritten=1426
+latency: avg_first_action=0.289s, avg_final=0.289s, avg_chunk_duration=0.181s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+      164     const       0       50         4        2           0.301    0.301       0.149
+      168     const       0       50         5        2           0.301    0.301       0.200
+      173     const       0       50         5        2           0.301    0.301       0.200
+      178     const       0       50         4        2           0.301    0.301       0.150
+      182     const       0       50         5        2           0.301    0.301       0.200
+      187     const       0       50         4        2           0.300    0.300       0.150
+      192     const       0       50         5        2           0.250    0.250       0.199
+      196     const       0       50         5        2           0.303    0.303       0.199
+      201     const       0       50         4        2           0.301    0.301       0.150
+      206     const       0       50         5        2           0.249    0.250       0.201
+      210     const       0       50         5        2           0.301    0.301       0.200
+      215     const       0       50         4        2           0.300    0.300       0.151
+      219     const       0       50         5        2           0.301    0.301       0.201
+      224     const       0       50         4        2           0.301    0.301       0.150
+      229     const       0       50         5        2           0.250    0.250       0.201
+      233     const       0       50         5        2           0.300    0.301       0.200
+      238     const       0       50         4        2           0.300    0.300       0.151
+      243     const       0       50         5        2           0.251    0.251       0.200
+      247     const       0       50         5        2           0.300    0.300       0.202
+      252     const       0       50         4        2           0.302    0.302       0.152
+      257     const       0       50         5        2           0.252    0.252       0.200
+      261     const       0       50         5        2           0.300    0.300       0.200
+      266     const       0       50         4        2           0.300    0.300       0.150
+      270     const       0       50         5        2           0.301    0.301       0.201
+      275     const       0       50         4        2           0.301    0.301       0.150
+      280     const       0       50         5        2           0.250    0.250       0.200
+      284     const       0       50         5        2           0.301    0.301       0.200
+      289     const       0       50         4        2           0.301    0.301       0.150
+      294     const       0       50         5        2           0.251    0.251       0.200
+      298     const       0       50         5        2           0.301    0.301       0.200
+      303     const       0       50         4        2           0.301    0.301       0.150
+      307     const       0       50         5        2           0.301    0.301       0.200
+      312     const       0       50         4        2           0.301    0.301       0.151
+      317     const       0       50         5        2           0.251    0.251       0.199
+      321     const       0       50         5        2           0.300    0.300       0.200
+      326     const       0       50         4        2           0.301    0.301       0.150
+      331     const       0       50         5        2           0.250    0.250       0.200
+
+=== Pi0.5 inference episode: 2026-06-24 14:40:47 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=0, chunk_replan_steps=50, fps=20
+summary: total_time=9.723s, inference_calls=41, observations_published=195, completed_chunks=41, prefix_chunks=0, actions_applied=189, empty_action_steps=6, stale_actions_dropped=236, actions_overwritten=1585
+latency: avg_first_action=0.288s, avg_final=0.289s, avg_chunk_duration=0.181s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+      341     const       0       50         4        2           0.301    0.301       0.150
+      345     const       0       50         5        2           0.300    0.301       0.200
+      350     const       0       50         5        2           0.301    0.301       0.200
+      355     const       0       50         4        2           0.301    0.301       0.150
+      359     const       0       50         5        2           0.301    0.301       0.200
+      364     const       0       50         4        2           0.301    0.301       0.150
+      369     const       0       50         5        2           0.251    0.251       0.202
+      373     const       0       50         5        2           0.301    0.301       0.201
+      378     const       0       50         4        2           0.299    0.299       0.149
+      383     const       0       50         5        2           0.250    0.250       0.201
+      387     const       0       50         5        2           0.301    0.301       0.200
+      392     const       0       50         4        2           0.300    0.300       0.149
+      397     const       0       50         5        2           0.251    0.251       0.201
+      401     const       0       50         5        2           0.301    0.301       0.200
+      406     const       0       50         4        2           0.300    0.301       0.149
+      410     const       0       50         5        2           0.301    0.301       0.200
+      415     const       0       50         4        2           0.301    0.301       0.150
+      420     const       0       50         5        2           0.250    0.250       0.201
+      424     const       0       50         5        2           0.301    0.301       0.200
+      429     const       0       50         4        2           0.300    0.301       0.150
+      434     const       0       50         5        2           0.251    0.251       0.201
+      438     const       0       50         5        2           0.301    0.301       0.200
+      443     const       0       50         4        2           0.300    0.300       0.150
+      447     const       0       50         5        2           0.300    0.301       0.201
+      452     const       0       50         4        2           0.300    0.300       0.150
+      457     const       0       50         5        2           0.250    0.250       0.200
+      461     const       0       50         5        2           0.301    0.301       0.200
+      466     const       0       50         4        2           0.301    0.301       0.151
+      471     const       0       50         5        2           0.251    0.251       0.200
+      475     const       0       50         5        2           0.302    0.303       0.198
+      480     const       0       50         4        2           0.301    0.301       0.150
+      485     const       0       50         5        2           0.251    0.251       0.200
+      489     const       0       50         5        2           0.301    0.301       0.200
+      494     const       0       50         4        2           0.301    0.301       0.151
+      498     const       0       50         5        2           0.301    0.301       0.199
+      503     const       0       50         4        2           0.300    0.300       0.150
+      508     const       0       50         5        2           0.251    0.251       0.200
+      512     const       0       50         5        2           0.301    0.301       0.200
+      517     const       0       50         4        2           0.301    0.301       0.150
+      522     const       0       50         5        2           0.251    0.251       0.200
+      526     const       0       50         4        2           0.300    0.301       0.150
+
+=== Pi0.5 inference episode: 2026-06-24 14:41:13 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=0, chunk_replan_steps=50, fps=20
+summary: total_time=14.537s, inference_calls=62, observations_published=291, completed_chunks=62, prefix_chunks=0, actions_applied=285, empty_action_steps=6, stale_actions_dropped=359, actions_overwritten=2414
+latency: avg_first_action=0.290s, avg_final=0.290s, avg_chunk_duration=0.180s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+      536     const       0       50         4        2           0.301    0.301       0.149
+      541     const       0       50         5        2           0.252    0.252       0.200
+      545     const       0       50         5        2           0.301    0.302       0.200
+      550     const       0       50         4        2           0.301    0.301       0.151
+      555     const       0       50         5        2           0.252    0.252       0.200
+      559     const       0       50         5        2           0.300    0.300       0.200
+      564     const       0       50         4        2           0.301    0.301       0.153
+      569     const       0       50         5        2           0.251    0.251       0.200
+      573     const       0       50         5        2           0.298    0.298       0.200
+      578     const       0       50         4        2           0.300    0.300       0.150
+      582     const       0       50         5        2           0.300    0.300       0.200
+      587     const       0       50         4        2           0.301    0.301       0.150
+      592     const       0       50         5        2           0.251    0.251       0.200
+      596     const       0       50         5        2           0.300    0.300       0.200
+      601     const       0       50         4        2           0.300    0.300       0.150
+      606     const       0       50         5        2           0.251    0.252       0.200
+      610     const       0       50         5        2           0.302    0.302       0.200
+      615     const       0       50         4        2           0.300    0.301       0.150
+      619     const       0       50         5        2           0.301    0.301       0.201
+      624     const       0       50         4        2           0.301    0.301       0.150
+      629     const       0       50         5        2           0.250    0.250       0.200
+      633     const       0       50         5        2           0.301    0.301       0.200
+      638     const       0       50         4        2           0.301    0.301       0.150
+      643     const       0       50         5        2           0.250    0.251       0.200
+      647     const       0       50         5        2           0.300    0.301       0.200
+      652     const       0       50         4        2           0.300    0.301       0.151
+      656     const       0       50         5        2           0.300    0.300       0.200
+      661     const       0       50         4        2           0.301    0.302       0.148
+      666     const       0       50         5        2           0.251    0.251       0.200
+      670     const       0       50         5        2           0.301    0.301       0.200
+      675     const       0       50         4        2           0.302    0.302       0.149
+      680     const       0       50         5        2           0.252    0.252       0.199
+      684     const       0       50         5        2           0.300    0.300       0.200
+      689     const       0       50         4        2           0.301    0.301       0.150
+      694     const       0       50         5        2           0.251    0.251       0.200
+      698     const       0       50         5        2           0.300    0.301       0.201
+      703     const       0       50         4        2           0.301    0.301       0.149
+      708     const       0       50         5        2           0.250    0.251       0.200
+      712     const       0       50         5        2           0.301    0.301       0.200
+      717     const       0       50         4        2           0.300    0.300       0.150
+      721     const       0       50         5        2           0.299    0.299       0.201
+      726     const       0       50         5        2           0.302    0.302       0.201
+      731     const       0       50         4        2           0.301    0.302       0.150
+      735     const       0       50         5        2           0.301    0.301       0.200
+      740     const       0       50         5        2           0.300    0.300       0.201
+      745     const       0       50         4        2           0.300    0.300       0.151
+      749     const       0       50         5        2           0.301    0.301       0.200
+      754     const       0       50         5        2           0.301    0.301       0.200
+      759     const       0       50         4        2           0.301    0.301       0.150
+      763     const       0       50         5        2           0.301    0.301       0.200
+      768     const       0       50         5        2           0.302    0.302       0.198
+      773     const       0       50         4        2           0.300    0.300       0.151
+      777     const       0       50         5        2           0.301    0.301       0.200
+      782     const       0       50         4        2           0.301    0.301       0.150
+      787     const       0       50         5        2           0.251    0.251       0.200
+      791     const       0       50         5        2           0.301    0.301       0.200
+      796     const       0       50         5        2           0.302    0.302       0.199
+      801     const       0       50         4        2           0.300    0.300       0.150
+      805     const       0       50         5        2           0.299    0.299       0.200
+      810     const       0       50         4        2           0.301    0.301       0.150
+      815     const       0       50         5        2           0.251    0.252       0.200
+      819     const       0       50         2        2           0.301    0.301       0.051
+
+=== Pi0.5 inference episode: 2026-06-24 14:45:10 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=0, chunk_replan_steps=50, fps=20
+summary: total_time=14.131s, inference_calls=60, observations_published=283, completed_chunks=60, prefix_chunks=0, actions_applied=277, empty_action_steps=6, stale_actions_dropped=345, actions_overwritten=2338
+latency: avg_first_action=0.288s, avg_final=0.288s, avg_chunk_duration=0.181s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+      827     const       0       50         4        2           0.301    0.301       0.151
+      831     const       0       50         5        2           0.300    0.300       0.201
+      836     const       0       50         5        2           0.300    0.300       0.201
+      841     const       0       50         4        2           0.300    0.300       0.150
+      846     const       0       50         5        2           0.250    0.250       0.200
+      850     const       0       50         5        2           0.300    0.301       0.200
+      855     const       0       50         4        2           0.301    0.301       0.149
+      860     const       0       50         5        2           0.251    0.251       0.200
+      864     const       0       50         5        2           0.301    0.302       0.200
+      869     const       0       50         4        2           0.302    0.302       0.149
+      873     const       0       50         5        2           0.301    0.301       0.200
+      878     const       0       50         4        2           0.300    0.300       0.150
+      883     const       0       50         5        2           0.250    0.250       0.200
+      887     const       0       50         5        2           0.301    0.301       0.201
+      892     const       0       50         4        2           0.301    0.301       0.150
+      897     const       0       50         5        2           0.251    0.251       0.200
+      901     const       0       50         5        2           0.300    0.301       0.200
+      906     const       0       50         4        2           0.301    0.301       0.150
+      911     const       0       50         5        2           0.251    0.251       0.200
+      915     const       0       50         5        2           0.301    0.302       0.199
+      920     const       0       50         4        2           0.301    0.301       0.150
+      924     const       0       50         5        2           0.303    0.303       0.199
+      929     const       0       50         4        2           0.301    0.301       0.151
+      934     const       0       50         5        2           0.250    0.250       0.200
+      938     const       0       50         5        2           0.301    0.301       0.199
+      943     const       0       50         4        2           0.301    0.301       0.150
+      948     const       0       50         5        2           0.251    0.251       0.199
+      952     const       0       50         5        2           0.300    0.301       0.200
+      957     const       0       50         4        2           0.301    0.301       0.151
+      961     const       0       50         5        2           0.301    0.301       0.200
+      966     const       0       50         4        2           0.302    0.302       0.148
+      971     const       0       50         5        2           0.252    0.252       0.200
+      975     const       0       50         5        2           0.300    0.301       0.201
+      980     const       0       50         4        2           0.301    0.301       0.150
+      985     const       0       50         5        2           0.251    0.251       0.201
+      989     const       0       50         5        2           0.302    0.302       0.201
+      994     const       0       50         4        2           0.301    0.301       0.150
+      999     const       0       50         5        2           0.251    0.251       0.200
+     1003     const       0       50         5        2           0.301    0.301       0.199
+     1008     const       0       50         4        2           0.300    0.301       0.151
+     1012     const       0       50         5        2           0.301    0.301       0.200
+     1017     const       0       50         4        2           0.300    0.300       0.150
+     1022     const       0       50         5        2           0.252    0.252       0.199
+     1026     const       0       50         5        2           0.300    0.300       0.200
+     1031     const       0       50         4        2           0.300    0.300       0.151
+     1036     const       0       50         5        2           0.250    0.250       0.200
+     1040     const       0       50         5        2           0.300    0.300       0.200
+     1045     const       0       50         4        2           0.301    0.301       0.150
+     1050     const       0       50         5        2           0.251    0.251       0.200
+     1054     const       0       50         5        2           0.301    0.301       0.200
+     1059     const       0       50         4        2           0.301    0.301       0.150
+     1063     const       0       50         5        2           0.300    0.300       0.200
+     1068     const       0       50         4        2           0.300    0.300       0.150
+     1073     const       0       50         5        2           0.251    0.251       0.200
+     1077     const       0       50         5        2           0.302    0.302       0.199
+     1082     const       0       50         4        2           0.301    0.301       0.151
+     1087     const       0       50         5        2           0.250    0.250       0.200
+     1091     const       0       50         5        2           0.301    0.301       0.200
+     1096     const       0       50         4        2           0.301    0.301       0.150
+     1100     const       0       50         4        2           0.302    0.302       0.149
+
+=== Pi0.5 inference episode: 2026-06-24 14:47:05 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=0, chunk_replan_steps=50, fps=20
+summary: total_time=14.132s, inference_calls=60, observations_published=283, completed_chunks=60, prefix_chunks=0, actions_applied=277, empty_action_steps=6, stale_actions_dropped=343, actions_overwritten=2340
+latency: avg_first_action=0.286s, avg_final=0.287s, avg_chunk_duration=0.181s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+        1     const       0       50         4        2           0.300    0.300       0.154
+        6     const       0       50         5        2           0.250    0.250       0.200
+       10     const       0       50         5        2           0.298    0.298       0.200
+       15     const       0       50         4        2           0.301    0.301       0.151
+       20     const       0       50         5        2           0.250    0.250       0.200
+       24     const       0       50         5        2           0.301    0.301       0.200
+       29     const       0       50         4        2           0.301    0.301       0.150
+       33     const       0       50         5        2           0.301    0.301       0.201
+       38     const       0       50         4        2           0.301    0.301       0.150
+       43     const       0       50         5        2           0.250    0.250       0.200
+       47     const       0       50         5        2           0.300    0.301       0.200
+       52     const       0       50         4        2           0.302    0.302       0.149
+       57     const       0       50         5        2           0.252    0.252       0.200
+       61     const       0       50         5        2           0.301    0.301       0.200
+       66     const       0       50         4        2           0.301    0.301       0.149
+       70     const       0       50         5        2           0.301    0.301       0.200
+       75     const       0       50         4        2           0.301    0.301       0.151
+       80     const       0       50         5        2           0.251    0.251       0.200
+       84     const       0       50         5        2           0.300    0.300       0.200
+       89     const       0       50         4        2           0.300    0.300       0.150
+       94     const       0       50         5        2           0.251    0.251       0.201
+       98     const       0       50         5        2           0.301    0.301       0.201
+      103     const       0       50         4        2           0.300    0.301       0.150
+      107     const       0       50         5        2           0.301    0.301       0.200
+      112     const       0       50         4        2           0.301    0.301       0.150
+      117     const       0       50         5        2           0.250    0.250       0.200
+      121     const       0       50         5        2           0.300    0.300       0.201
+      126     const       0       50         4        2           0.301    0.301       0.150
+      131     const       0       50         5        2           0.250    0.250       0.201
+      135     const       0       50         5        2           0.301    0.301       0.201
+      140     const       0       50         4        2           0.301    0.301       0.151
+      144     const       0       50         5        2           0.301    0.301       0.200
+      149     const       0       50         4        2           0.299    0.299       0.150
+      154     const       0       50         5        2           0.251    0.251       0.200
+      158     const       0       50         5        2           0.300    0.300       0.201
+      163     const       0       50         4        2           0.303    0.303       0.148
+      168     const       0       50         5        2           0.251    0.251       0.200
+      172     const       0       50         5        2           0.300    0.301       0.201
+      177     const       0       50         4        2           0.300    0.300       0.150
+      182     const       0       50         5        2           0.251    0.251       0.200
+      186     const       0       50         4        2           0.301    0.301       0.151
+      191     const       0       50         5        2           0.250    0.250       0.200
+      195     const       0       50         5        2           0.302    0.302       0.198
+      200     const       0       50         4        2           0.301    0.301       0.151
+      205     const       0       50         5        2           0.250    0.250       0.200
+      209     const       0       50         5        2           0.300    0.300       0.201
+      214     const       0       50         4        2           0.301    0.301       0.150
+      218     const       0       50         5        2           0.301    0.301       0.201
+      223     const       0       50         4        2           0.300    0.300       0.150
+      228     const       0       50         5        2           0.251    0.251       0.200
+      232     const       0       50         5        2           0.301    0.301       0.200
+      237     const       0       50         4        2           0.301    0.301       0.150
+      242     const       0       50         5        2           0.250    0.250       0.200
+      246     const       0       50         4        2           0.301    0.301       0.150
+      251     const       0       50         5        2           0.251    0.251       0.200
+      255     const       0       50         5        2           0.300    0.300       0.201
+      260     const       0       50         4        2           0.300    0.301       0.151
+      265     const       0       50         5        2           0.250    0.251       0.200
+      269     const       0       50         5        2           0.300    0.300       0.201
+      274     const       0       50         4        2           0.301    0.301       0.150
