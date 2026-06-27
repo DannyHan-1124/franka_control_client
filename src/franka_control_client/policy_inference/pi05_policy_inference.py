@@ -301,13 +301,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
             time.sleep(sleep_time)
 
     def _infer_streaming_step(self, start: float) -> None:
-        self._infer_official_rtc_step(start)
-
-    def _infer_official_rtc_step(self, start: float) -> None:
         """Run the two-buffer RTC loop used by the official FASTER client."""
         self._drain_official_rtc_updates()
-        if self._should_request_official_rtc():
-            self._request_official_rtc()
+        if self._should_request_stream():
+            self._request_stream()
             self._drain_official_rtc_updates()
 
         action = self._pop_official_rtc_action()
@@ -325,7 +322,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if sleep_time > 0.001:
             time.sleep(sleep_time)
 
-    def _should_request_official_rtc(self) -> bool:
+    def _should_request_stream(self) -> bool:
         if self._streaming_policy is None or self._streaming_policy.active_request_id is not None:
             return False
         if self._official_current_request_id is None:
@@ -346,7 +343,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         launch_step = max(horizon - int(self.cfg.delay) - 1, 0)
         return self._official_current_step >= launch_step
 
-    def _request_official_rtc(self) -> None:
+    def _request_stream(self) -> None:
         if self._streaming_policy is None:
             return
 
