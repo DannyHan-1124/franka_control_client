@@ -180,7 +180,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._last_sanitized_action: Optional[np.ndarray] = None
         self._debug_image_step = 0
         self._release_pos: Optional[np.ndarray] = None
-        self._reset_official_rtc_state()
+        self._reset_stream_state()
         self._last_policy_schedule: Optional[str] = None
         self._phase_fallback_open_detected = False
         self._phase_fallback_replan_pending = False
@@ -201,7 +201,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._last_sanitized_action = None
         self._debug_image_step = 0
         self._release_pos = None
-        self._reset_official_rtc_state()
+        self._reset_stream_state()
         self._last_policy_schedule = None
         self._phase_fallback_open_detected = False
         self._phase_fallback_replan_pending = False
@@ -225,7 +225,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._metrics_start_perf = time.perf_counter()
         self._metrics_start_wall = time.time()
 
-    def _reset_official_rtc_state(self) -> None:
+    def _reset_stream_state(self) -> None:
         # The official RTC client keeps the executing and incoming chunks separate.
         self._current_actions: dict[int, np.ndarray] = {}
         self._current_request_id: Optional[int] = None
@@ -301,13 +301,18 @@ class Pi05PolicyInference(PolicyInferenceManager):
             time.sleep(sleep_time)
 
     def _infer_streaming_step(self, start: float) -> None:
-        """Run a two-buffer loop. The first buffer ..."""
+        """Run the two-buffer official RTC loop.
+
+        The current buffer is being executed by the robot while the next buffer
+        is filled by an in-flight policy request. Once execution_horizon actions
+        are applied, the next buffer becomes the current buffer.
+        """
         self._drain_streaming_updates()
         if self._should_request_stream():
             self._request_stream()
             self._drain_streaming_updates()
 
-        action = self._pop_official_rtc_action()
+        action = self._pop_next_stream_action()
         if action is not None:
             sanitized_action = self._sanitize_action(action)
             self._last_sanitized_action = sanitized_action.copy()
@@ -325,9 +330,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _should_request_stream(self) -> bool:
         if self._streaming_policy is None or self._streaming_policy.active_request_id is not None:
             return False
-        if self._official_current_request_id is None:
+        if self._current_request_id is None:
             return True
-        if self._official_next_request_id is not None:
+        if self._next_request_id is not None:
             return False
 
         horizon = int(self.cfg.execution_horizon)
@@ -339,9 +344,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if self._last_launch_source_request_id == self._current_request_id:
             return False
 
-        # Starts inference at step s - d - 1
+        # Launch the next request while the last delay actions of the current
+        # horizon are still being executed.
         launch_step = max(horizon - int(self.cfg.delay) - 1, 0)
-        return self._official_current_step >= launch_step
+        return self._current_step >= launch_step
 
     def _request_stream(self) -> None:
         if self._streaming_policy is None:
@@ -349,7 +355,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
         active_schedule = self._active_infer_time_schedule()
         obs = self._build_observation()
-        is_initial = self._official_current_request_id is None
+        is_initial = self._current_request_id is None
         prefix_request_id: Optional[int] = None
         prefix_start_index = 0
         prefix_steps = 0
@@ -385,6 +391,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
         request_start = time.perf_counter()
         request_id = self._streaming_policy.send_observation(obs)
+        # Count one policy-server request.
         self._metrics_inference_calls += 1
         self._metrics_stream_chunks[request_id] = {
             "request_id": int(request_id),
@@ -407,7 +414,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         }
 
         target = "current" if is_initial else "next"
-        self._official_request_targets[request_id] = target
+        self._request_targets[request_id] = target
         if is_initial:
             self._current_request_id = request_id
             self._current_model_offset = 0
@@ -445,9 +452,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
             )
             now = time.perf_counter()
             if metric is not None:
+                # Count each action_delta message received for this request.
                 metric["update_count"] += 1
+                # Count model indices emitted by the server before prefix/tail filtering.
                 metric["emitted_action_count"] += len(indices)
-                # First action latency = request time - ?
+                # Time from sending the request to receiving its first non-empty action_delta.
                 if indices and metric["first_action_latency_s"] is None:
                     metric["first_action_latency_s"] = now - float(metric["request_time_s"])
 
@@ -465,7 +474,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
             accepted_actions: list[np.ndarray] = []
             for model_idx, action in zip(indices, actions, strict=True):
                 executable_idx = model_idx - model_offset
-                # Discard conditioned prefix [0:d) and unused tail [d+s:H).
+                # Keep only actions in this request's execution window. For
+                # non-initial chunks, model_offset == delay, so this discards
+                # the conditioned prefix [0:d) and unused tail [d+s:H).
                 if executable_idx < 0 or executable_idx >= horizon:
                     continue
                 target_actions[executable_idx] = action
@@ -479,9 +490,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
             if msg.get("final"):
                 if target == "current":
-                    self._official_current_final = True
+                    self._current_final = True
                 else:
-                    self._official_next_final = True
+                    self._next_final = True
                 if metric is not None:
                     metric["final_latency_s"] = now - float(metric["request_time_s"])
                     self._metrics_chunks.append(dict(metric))
@@ -492,30 +503,30 @@ class Pi05PolicyInference(PolicyInferenceManager):
                     f"final={bool(msg.get('final'))}"
                 )
 
-    def _pop_official_rtc_action(self) -> Optional[np.ndarray]:
-        if self._official_current_request_id is None:
+    def _pop_next_stream_action(self) -> Optional[np.ndarray]:
+        if self._current_request_id is None:
             return None
         horizon = int(self.cfg.execution_horizon)
 
         # The first chunk is obtained synchronously before moving.
-        if self._official_current_step == 0 and self._metrics_actions_applied == 0:
-            if not self._official_current_final:
+        if self._current_step == 0 and self._metrics_actions_applied == 0:
+            if not self._current_final:
                 return None
-            if not all(idx in self._official_current_actions for idx in range(horizon)):
+            if not all(idx in self._current_actions for idx in range(horizon)):
                 return None
 
-        executable_idx = self._official_current_step
-        action = self._official_current_actions.get(executable_idx)
+        executable_idx = self._current_step
+        action = self._current_actions.get(executable_idx)
         if action is None:
             return None
 
-        metric = self._metrics_stream_chunks.get(int(self._official_current_request_id))
+        metric = self._metrics_stream_chunks.get(int(self._current_request_id))
         if metric is not None:
             self._record_chunk_action_execution(
                 metric,
-                self._official_current_model_offset + executable_idx,
+                self._current_model_offset + executable_idx,
             )
-        self._official_current_step += 1
+        self._current_step += 1
 
         if self._current_step == horizon:
             self._current_actions = self._next_actions
@@ -534,15 +545,18 @@ class Pi05PolicyInference(PolicyInferenceManager):
         now = time.perf_counter()
         first_time = metric.get("first_action_applied_time_s")
         if first_time is None:
+            # First control-loop time when an action from this request is applied.
             metric["first_action_applied_time_s"] = now
             metric["first_action_index"] = int(action_index)
             request_time = metric.get("request_time_s")
             if request_time is not None:
                 metric["first_action_applied_latency_s"] = now - float(request_time)
 
+        # Most recent control-loop time when an action from this request is applied.
         metric["last_action_applied_time_s"] = now
         metric["last_action_index"] = int(action_index)
         metric["executed_action_count"] = int(metric.get("executed_action_count") or 0) + 1
+        # Duration covered by actions from this request that were actually executed.
         metric["execution_duration_s"] = now - float(metric["first_action_applied_time_s"])
 
         request_id = metric.get("request_id")
