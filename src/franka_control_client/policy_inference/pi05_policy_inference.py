@@ -227,17 +227,17 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
     def _reset_official_rtc_state(self) -> None:
         # The official RTC client keeps the executing and incoming chunks separate.
-        self._official_current_actions: dict[int, np.ndarray] = {}
-        self._official_current_request_id: Optional[int] = None
-        self._official_current_model_offset = 0
-        self._official_current_step = 0
-        self._official_current_final = False
-        self._official_next_actions: dict[int, np.ndarray] = {}
-        self._official_next_request_id: Optional[int] = None
-        self._official_next_model_offset = 0
-        self._official_next_final = False
-        self._official_request_targets: dict[int, str] = {}
-        self._official_last_launch_source_request_id: Optional[int] = None
+        self._current_actions: dict[int, np.ndarray] = {}
+        self._current_request_id: Optional[int] = None
+        self._current_model_offset = 0
+        self._current_step = 0
+        self._current_final = False
+        self._next_actions: dict[int, np.ndarray] = {}
+        self._next_request_id: Optional[int] = None
+        self._next_model_offset = 0
+        self._next_final = False
+        self._request_targets: dict[int, str] = {}
+        self._last_launch_source_request_id: Optional[int] = None
 
     def _infer_step(self) -> None:
         start = time.perf_counter()
@@ -301,11 +301,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
             time.sleep(sleep_time)
 
     def _infer_streaming_step(self, start: float) -> None:
-        """Run the two-buffer RTC loop used by the official FASTER client."""
-        self._drain_official_rtc_updates()
+        """Run a two-buffer loop. The first buffer ..."""
+        self._drain_streaming_updates()
         if self._should_request_stream():
             self._request_stream()
-            self._drain_official_rtc_updates()
+            self._drain_streaming_updates()
 
         action = self._pop_official_rtc_action()
         if action is not None:
@@ -331,15 +331,15 @@ class Pi05PolicyInference(PolicyInferenceManager):
             return False
 
         horizon = int(self.cfg.execution_horizon)
-        current_is_full = all(idx in self._official_current_actions for idx in range(horizon))
+        current_is_full = all(idx in self._current_actions for idx in range(horizon))
         if not current_is_full:
             return False
         if self._phase_fallback_replan_pending:
             return True
-        if self._official_last_launch_source_request_id == self._official_current_request_id:
+        if self._last_launch_source_request_id == self._current_request_id:
             return False
 
-        # Matches StreamActionBuffer.mark_launch_if_ready() in piper-aio.
+        # Starts inference at step s - d - 1
         launch_step = max(horizon - int(self.cfg.delay) - 1, 0)
         return self._official_current_step >= launch_step
 
@@ -356,14 +356,14 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
         if not is_initial and self.cfg.delay > 0:
             previous_metric = self._metrics_stream_chunks.get(
-                int(self._official_current_request_id)
+                int(self._current_request_id)
             )
             previous_schedule = previous_metric.get("schedule") if previous_metric is not None else None
             if previous_schedule == active_schedule:
-                prefix_request_id = self._official_current_request_id
+                prefix_request_id = self._current_request_id
                 prefix_steps = int(self.cfg.delay)
                 prefix_start_index = (
-                    self._official_current_model_offset
+                    self._current_model_offset
                     + int(self.cfg.execution_horizon)
                     - prefix_steps
                 )
@@ -373,13 +373,13 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 policy_kwargs["prefix_start_index"] = prefix_start_index
             elif previous_schedule is not None:
                 pyzlc.info(
-                    "Dropping official RTC prefix across schedule change: "
+                    "Dropping prefix across schedule change: "
                     f"{previous_schedule} -> {active_schedule}"
                 )
 
         effective_early_stop_actions = 0
         if self.cfg.early_stop_actions > 0 and active_schedule.upper() == "HAS":
-            # Official FASTER counts only newly generated (non-prefix) actions.
+            # Only newly generated (non-prefix) actions are counted.
             effective_early_stop_actions = int(self.cfg.early_stop_actions)
             obs.setdefault("policy_kwargs", {})["early_stop_actions"] = effective_early_stop_actions
 
@@ -409,19 +409,19 @@ class Pi05PolicyInference(PolicyInferenceManager):
         target = "current" if is_initial else "next"
         self._official_request_targets[request_id] = target
         if is_initial:
-            self._official_current_request_id = request_id
-            self._official_current_model_offset = 0
-            self._official_current_actions = {}
-            self._official_current_final = False
+            self._current_request_id = request_id
+            self._current_model_offset = 0
+            self._current_actions = {}
+            self._current_final = False
         else:
-            self._official_next_request_id = request_id
-            self._official_next_model_offset = prefix_steps
-            self._official_next_actions = {}
-            self._official_next_final = False
-            self._official_last_launch_source_request_id = self._official_current_request_id
+            self._next_request_id = request_id
+            self._next_model_offset = prefix_steps
+            self._next_actions = {}
+            self._next_final = False
+            self._last_launch_source_request_id = self._current_request_id
         self._phase_fallback_replan_pending = False
 
-    def _drain_official_rtc_updates(self) -> None:
+    def _drain_streaming_updates(self) -> None:
         if self._streaming_policy is None:
             return
         horizon = int(self.cfg.execution_horizon)
@@ -430,9 +430,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
             # A request starts as "next", then becomes "current" after the buffer swap.
             # Route updates by the live request ids so late-arriving updates keep filling
             # the same logical chunk after it becomes the executing chunk.
-            if request_id == self._official_current_request_id:
+            if request_id == self._current_request_id:
                 target = "current"
-            elif request_id == self._official_next_request_id:
+            elif request_id == self._next_request_id:
                 target = "next"
             else:
                 continue
@@ -447,18 +447,19 @@ class Pi05PolicyInference(PolicyInferenceManager):
             if metric is not None:
                 metric["update_count"] += 1
                 metric["emitted_action_count"] += len(indices)
+                # First action latency = request time - ?
                 if indices and metric["first_action_latency_s"] is None:
                     metric["first_action_latency_s"] = now - float(metric["request_time_s"])
 
             model_offset = (
-                self._official_current_model_offset
+                self._current_model_offset
                 if target == "current"
-                else self._official_next_model_offset
+                else self._next_model_offset
             )
             target_actions = (
-                self._official_current_actions
+                self._current_actions
                 if target == "current"
-                else self._official_next_actions
+                else self._next_actions
             )
             accepted_indices: list[int] = []
             accepted_actions: list[np.ndarray] = []
@@ -486,7 +487,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
                     self._metrics_chunks.append(dict(metric))
             if indices:
                 pyzlc.info(
-                    "Received official RTC Pi0.5 actions: "
+                    "Received Pi0.5 actions: "
                     f"request_id={request_id}, target={target}, model_indices={indices}, "
                     f"final={bool(msg.get('final'))}"
                 )
@@ -496,7 +497,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             return None
         horizon = int(self.cfg.execution_horizon)
 
-        # Official piper-aio obtains the first chunk synchronously before moving.
+        # The first chunk is obtained synchronously before moving.
         if self._official_current_step == 0 and self._metrics_actions_applied == 0:
             if not self._official_current_final:
                 return None
@@ -516,16 +517,16 @@ class Pi05PolicyInference(PolicyInferenceManager):
             )
         self._official_current_step += 1
 
-        if self._official_current_step == horizon:
-            self._official_current_actions = self._official_next_actions
-            self._official_current_request_id = self._official_next_request_id
-            self._official_current_model_offset = self._official_next_model_offset
-            self._official_current_final = self._official_next_final
-            self._official_current_step = 0
-            self._official_next_actions = {}
-            self._official_next_request_id = None
-            self._official_next_model_offset = 0
-            self._official_next_final = False
+        if self._current_step == horizon:
+            self._current_actions = self._next_actions
+            self._current_request_id = self._next_request_id
+            self._current_model_offset = self._next_model_offset
+            self._current_final = self._next_final
+            self._current_step = 0
+            self._next_actions = {}
+            self._next_request_id = None
+            self._next_model_offset = 0
+            self._next_final = False
 
         return action
 
