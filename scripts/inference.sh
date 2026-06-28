@@ -9,7 +9,6 @@ export PYTHONPATH="${REPO_ROOT}/src:${PYTHONPATH:-}"
 
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --task "put red cylinder on red cube" \
-    --stop_after_first_release \
     --robot_name FrankaPanda \
     --pyzlc_name policy_inference \
     --pyzlc_host 141.3.53.25 \

@@ -1264,10 +1264,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._state_machine.trigger(PolicyInferenceEvent.DISCARD)
 
     def _force_final_open_command(self) -> None:
-        if self._last_sanitized_action is not None:
-            open_action = self._last_sanitized_action.copy()
-            open_action[7] = 0.0
-            self.control_pair.update_action(open_action)
         try:
             self.control_pair.gripper.send_grasp_command(
                 position=0.0,
