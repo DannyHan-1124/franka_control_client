@@ -150,3 +150,23 @@ profile by request:
         1       0.008        0.000         n/a            n/a           n/a             n/a            n/a            n/a           n/a
         2       0.005        0.000         n/a            n/a           n/a             n/a            n/a            n/a           n/a
         3       0.005        0.000         n/a            n/a           n/a             n/a            n/a            n/a           n/a
+
+=== Pi0.5 inference episode: 2026-06-28 15:38:42 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, prefix_mode=official_rtc, execution_horizon=50, fps=20
+summary: total_time=8.669s, inference_calls=4, completed_chunks=4, prefix_chunks=0, actions_applied=152, empty_action_steps=21
+latency: avg_first_action=0.294s, p95_first_action=0.295s, recommended_delay=6, avg_final=0.295s, avg_chunk_duration=1.858s
+profile: client_obs=0.006s, client_send=0.000s, server_preprocess=n/as, server_kwargs=n/as, server_first_delta=n/as, server_compute=n/as, server_postprocess=n/as, server_send=n/as, server_total=n/as
+high_level_profile: non_policy_overhead=0.006s, model_prefill=n/as, model_denoise=n/as, model_total=n/as, robot_chunk_execution=1.858s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1     const       0           0       50        50        2           0.293    0.293       2.463
+        2     const       0           0       50        50        2           0.295    0.295       2.458
+        3     const       0           0       50        50        2           0.296    0.296       2.462
+        4     const       0           0       50         2        2           0.294    0.294       0.050
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+        1       0.007        0.000         n/a            n/a           n/a             n/a            n/a            n/a           n/a
+        2       0.006        0.000         n/a            n/a           n/a             n/a            n/a            n/a           n/a
+        3       0.005        0.000         n/a            n/a           n/a             n/a            n/a            n/a           n/a
+        4       0.006        0.000         n/a            n/a           n/a             n/a            n/a            n/a           n/a
