@@ -2,7 +2,8 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-export PYTHONPATH="${REPO_ROOT}/src:${PYTHONPATH:-}"
+WORKSPACE_ROOT="$(cd "${REPO_ROOT}/.." && pwd)"
+export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot/src"
 
 # kill old connection
 # pgrep -af 'ssh.*(-L)'
