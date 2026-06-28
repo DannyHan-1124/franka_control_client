@@ -225,7 +225,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._metrics_start_perf = time.perf_counter()
         self._metrics_start_wall = time.time()
         self._last_observation_profile: dict[str, float] = {}
-        self._debug_applied_action_logs = 0
 
     def _reset_stream_state(self) -> None:
         # The official RTC client keeps the executing and incoming chunks separate.
@@ -289,7 +288,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._chunk_step += 1
             sanitized_action = self._sanitize_action(action)
             self._last_sanitized_action = sanitized_action.copy()
-            self._log_applied_action_debug(sanitized_action, "chunk")
             self.control_pair.update_action(sanitized_action)
             self._metrics_actions_applied += 1
             if self._metrics_chunks:
@@ -320,7 +318,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if action is not None:
             sanitized_action = self._sanitize_action(action)
             self._last_sanitized_action = sanitized_action.copy()
-            self._log_applied_action_debug(sanitized_action, "streaming")
             self.control_pair.update_action(sanitized_action)
             self._metrics_actions_applied += 1
             self._maybe_stop_after_release()
@@ -331,34 +328,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         sleep_time = max(0.0, (1.0 / self.fps) - elapsed)
         if sleep_time > 0.001:
             time.sleep(sleep_time)
-
-    def _log_applied_action_debug(self, sanitized_action: np.ndarray, source: str) -> None:
-        """Log the action target against the live robot pose before control applies it."""
-        current_pos = None
-        target_delta_m = None
-        try:
-            current_pose = _extract_ee_pose(self.arm_wrapper.capture_step())
-            current_pos = current_pose[:3]
-            target_delta_m = float(np.linalg.norm(sanitized_action[:3] - current_pos))
-        except Exception as exc:
-            pyzlc.warning(f"Failed to read EE pose for action debug: {exc}")
-
-        log_initial_action = self._debug_applied_action_logs < 12
-        log_large_jump = target_delta_m is not None and target_delta_m > 0.05
-        if not log_initial_action and not log_large_jump:
-            return
-
-        pyzlc.info(
-            "Applying Pi0.5 action debug: "
-            f"source={source}, "
-            f"count={self._metrics_actions_applied + 1}, "
-            f"current_pos={_format_vec(current_pos)}, "
-            f"target_pos={_format_vec(sanitized_action[:3])}, "
-            f"target_delta={_format_optional(target_delta_m)}m, "
-            f"quat={_format_vec(sanitized_action[3:7])}, "
-            f"gripper={float(sanitized_action[7]):.3f}"
-        )
-        self._debug_applied_action_logs += 1
 
     def _should_request_stream(self) -> bool:
         if self._streaming_policy is None or self._streaming_policy.active_request_id is not None:

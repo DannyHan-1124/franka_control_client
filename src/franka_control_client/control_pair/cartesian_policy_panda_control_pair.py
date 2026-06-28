@@ -44,7 +44,6 @@ class CartesianPolicyPandaRobotiqControlPair(ControlPair):
         self._latest_action: Optional[np.ndarray] = None
         self._last_gripper_cmd: Optional[float] = None
         self._last_sent_pos: Optional[np.ndarray] = None
-        self._debug_control_logs = 0
 
     def update_action(self, action: np.ndarray) -> None:
         arr = np.asarray(action, dtype=np.float64).reshape(-1)
@@ -58,7 +57,6 @@ class CartesianPolicyPandaRobotiqControlPair(ControlPair):
             self._latest_action = None
         self._last_gripper_cmd = None
         self._last_sent_pos = None
-        self._debug_control_logs = 0
 
     def _get_latest_action(self) -> Optional[np.ndarray]:
         with self._action_lock:
@@ -89,7 +87,6 @@ class CartesianPolicyPandaRobotiqControlPair(ControlPair):
 
         pos = self._limit_position_command(action[:3])
         self.panda_arm.send_cartesian_pose_command(pos, action[3:7])
-        self._log_cartesian_command_debug(pos, action[:3])
 
         gripper_cmd = 1.0 if float(action[7]) >= 0.5 else 0.0
         if (
@@ -135,29 +132,6 @@ class CartesianPolicyPandaRobotiqControlPair(ControlPair):
         self._last_sent_pos = target.copy()
         return target
 
-    def _log_cartesian_command_debug(
-        self,
-        sent_pos: np.ndarray,
-        target_pos: np.ndarray,
-    ) -> None:
-        if self._debug_control_logs >= 20:
-            return
-        state = self.panda_arm.current_state
-        actual_pos = None
-        if state is not None:
-            if "EE_pos" in state:
-                actual_pos = np.asarray(state["EE_pos"], dtype=np.float64).reshape(3)
-            elif "O_T_EE" in state:
-                transform = np.asarray(state["O_T_EE"], dtype=np.float64).reshape(4, 4).T
-                actual_pos = transform[:3, 3]
-        pyzlc.info(
-            "Cartesian command debug: "
-            f"actual_pos={_format_pos(actual_pos)}, "
-            f"sent_pos={_format_pos(sent_pos)}, "
-            f"policy_target={_format_pos(target_pos)}"
-        )
-        self._debug_control_logs += 1
-
     def _control_task(self) -> None:
         try:
             self.control_reset()
@@ -167,10 +141,3 @@ class CartesianPolicyPandaRobotiqControlPair(ControlPair):
         except Exception as exc:
             pyzlc.error(f"Cartesian control task encountered an error: {exc}")
             self.control_end()
-
-
-def _format_pos(pos: Optional[np.ndarray]) -> str:
-    if pos is None:
-        return "None"
-    arr = np.asarray(pos, dtype=np.float64).reshape(-1)
-    return "[" + ", ".join(f"{value:.4f}" for value in arr) + "]"
