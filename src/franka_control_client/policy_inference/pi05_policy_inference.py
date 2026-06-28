@@ -334,9 +334,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
     def _log_applied_action_debug(self, sanitized_action: np.ndarray, source: str) -> None:
         """Log the action target against the live robot pose before control applies it."""
-        if self._debug_applied_action_logs >= 12:
-            return
-
         current_pos = None
         target_delta_m = None
         try:
@@ -345,6 +342,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
             target_delta_m = float(np.linalg.norm(sanitized_action[:3] - current_pos))
         except Exception as exc:
             pyzlc.warning(f"Failed to read EE pose for action debug: {exc}")
+
+        log_initial_action = self._debug_applied_action_logs < 12
+        log_large_jump = target_delta_m is not None and target_delta_m > 0.05
+        if not log_initial_action and not log_large_jump:
+            return
 
         pyzlc.info(
             "Applying Pi0.5 action debug: "
