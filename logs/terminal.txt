@@ -1,72 +1,51 @@
-Starting policy infering...[2026-06-28 14:21:25,213] [INFO] Starting control
-[2026-06-28 14:21:25,213] [INFO] Started Control Pair
-Infering... Press 's' to save, 'd' to discard, or 'q' to quit[2026-06-28 14:21:25,222] [INFO] Using Pi0.5 inference schedule: const, phase_fallback_active=False
-[2026-06-28 14:21:25,222] [INFO] Pi0.5 streaming wait: waiting for first final chunk, request_id=1, current_actions=0, current_final=False, active_request_id=1
-[2026-06-28 14:21:25,234] [INFO] Set Franka arm control mode to CartesianImpedance
-[2026-06-28 14:21:25,514] [INFO] Received Pi0.5 actions: request_id=1, target=current, model_indices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], final=False
-[2026-06-28 14:21:25,514] [INFO] Applying Pi0.5 streaming action: count=1, pos=[0.5365, -0.0015, 0.2968], quat=[0.9236, 0.3833, -0.0006, -0.0002], gripper=0.000
-[2026-06-28 14:21:25,564] [INFO] Applying Pi0.5 streaming action: count=2, pos=[0.5360, -0.0004, 0.2959], quat=[0.9238, 0.3828, -0.0003, -0.0000], gripper=0.000
-[2026-06-28 14:21:25,614] [INFO] Applying Pi0.5 streaming action: count=3, pos=[0.5370, -0.0001, 0.2959], quat=[0.9237, 0.3830, 0.0003, -0.0001], gripper=0.000
-[2026-06-28 14:21:25,664] [INFO] Applying Pi0.5 streaming action: count=4, pos=[0.5360, -0.0006, 0.2963], quat=[0.9238, 0.3828, -0.0005, -0.0006], gripper=0.000
-[2026-06-28 14:21:25,714] [INFO] Applying Pi0.5 streaming action: count=5, pos=[0.5363, 0.0002, 0.2959], quat=[0.9236, 0.3833, -0.0005, 0.0001], gripper=0.000
-[2026-06-28 14:21:27,519] [INFO] Pi0.5 streaming wait: waiting for action index 0 in request 2, request_id=2, current_actions=0, current_final=False, active_request_id=2
-[2026-06-28 14:21:27,769] [INFO] Received Pi0.5 actions: request_id=2, target=current, model_indices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], final=False
-[2026-06-28 14:21:27,776] [WARNING] Limited large Cartesian command step in control loop: 0.1866m -> 0.0130m
-[2026-06-28 14:21:27,786] [WARNING] Limited large Cartesian command step in control loop: 0.1736m -> 0.0130m
-[2026-06-28 14:21:27,797] [WARNING] Limited large Cartesian command step in control loop: 0.1606m -> 0.0130m
-[2026-06-28 14:21:27,807] [WARNING] Limited large Cartesian command step in control loop: 0.1476m -> 0.0130m
-[2026-06-28 14:21:27,818] [WARNING] Limited large Cartesian command step in control loop: 0.1346m -> 0.0130m
-[2026-06-28 14:21:27,828] [WARNING] Limited large Cartesian command step in control loop: 0.1215m -> 0.0130m
-[2026-06-28 14:21:27,838] [WARNING] Limited large Cartesian command step in control loop: 0.1085m -> 0.0130m
-[2026-06-28 14:21:27,848] [WARNING] Limited large Cartesian command step in control loop: 0.0955m -> 0.0130m
-[2026-06-28 14:21:27,861] [WARNING] Limited large Cartesian command step in control loop: 0.0825m -> 0.0130m
-[2026-06-28 14:21:27,871] [WARNING] Limited large Cartesian command step in control loop: 0.0685m -> 0.0130m
-[2026-06-28 14:21:27,881] [WARNING] Limited large Cartesian command step in control loop: 0.0555m -> 0.0130m
-[2026-06-28 14:21:27,891] [WARNING] Limited large Cartesian command step in control loop: 0.0425m -> 0.0130m
-[2026-06-28 14:21:27,901] [WARNING] Limited large Cartesian command step in control loop: 0.0295m -> 0.0130m
-[2026-06-28 14:21:29,773] [INFO] Pi0.5 streaming wait: waiting for action index 0 in request 3, request_id=3, current_actions=0, current_final=False, active_request_id=3
-[2026-06-28 14:21:30,023] [INFO] Received Pi0.5 actions: request_id=3, target=current, model_indices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], final=False
-[2026-06-28 14:21:30,029] [WARNING] Limited large Cartesian command step in control loop: 0.1992m -> 0.0130m
-[2026-06-28 14:21:30,039] [WARNING] Limited large Cartesian command step in control loop: 0.1862m -> 0.0130m
-[2026-06-28 14:21:30,049] [WARNING] Limited large Cartesian command step in control loop: 0.1732m -> 0.0130m
-[2026-06-28 14:21:30,059] [WARNING] Limited large Cartesian command step in control loop: 0.1602m -> 0.0130m
-[2026-06-28 14:21:30,069] [WARNING] Limited large Cartesian command step in control loop: 0.1472m -> 0.0130m
-[2026-06-28 14:21:30,080] [WARNING] Limited large Cartesian command step in control loop: 0.1341m -> 0.0130m
-[2026-06-28 14:21:30,090] [WARNING] Limited large Cartesian command step in control loop: 0.1211m -> 0.0130m
-[2026-06-28 14:21:30,100] [WARNING] Limited large Cartesian command step in control loop: 0.1081m -> 0.0130m
-[2026-06-28 14:21:30,110] [WARNING] Limited large Cartesian command step in control loop: 0.0951m -> 0.0130m
-[2026-06-28 14:21:30,120] [WARNING] Limited large Cartesian command step in control loop: 0.0821m -> 0.0130m
-[2026-06-28 14:21:30,131] [WARNING] Limited large Cartesian command step in control loop: 0.0687m -> 0.0130m
-[2026-06-28 14:21:30,141] [WARNING] Limited large Cartesian command step in control loop: 0.0557m -> 0.0130m
-[2026-06-28 14:21:30,152] [WARNING] Limited large Cartesian command step in control loop: 0.0427m -> 0.0130m
-[2026-06-28 14:21:30,162] [WARNING] Limited large Cartesian command step in control loop: 0.0297m -> 0.0130m
-[2026-06-28 14:21:32,026] [INFO] Pi0.5 streaming wait: waiting for action index 0 in request 4, request_id=4, current_actions=0, current_final=False, active_request_id=4
-[2026-06-28 14:21:32,277] [INFO] Received Pi0.5 actions: request_id=4, target=current, model_indices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], final=False
-[2026-06-28 14:21:32,279] [WARNING] Limited large Cartesian command step in control loop: 0.2004m -> 0.0130m
-[2026-06-28 14:21:32,289] [WARNING] Limited large Cartesian command step in control loop: 0.1874m -> 0.0130m
-[2026-06-28 14:21:32,299] [WARNING] Limited large Cartesian command step in control loop: 0.1744m -> 0.0130m
-[2026-06-28 14:21:32,309] [WARNING] Limited large Cartesian command step in control loop: 0.1614m -> 0.0130m
-[2026-06-28 14:21:32,320] [WARNING] Limited large Cartesian command step in control loop: 0.1484m -> 0.0130m
-[2026-06-28 14:21:32,330] [WARNING] Limited large Cartesian command step in control loop: 0.1363m -> 0.0130m
-[2026-06-28 14:21:32,340] [WARNING] Limited large Cartesian command step in control loop: 0.1233m -> 0.0130m
-[2026-06-28 14:21:32,351] [WARNING] Limited large Cartesian command step in control loop: 0.1103m -> 0.0130m
-[2026-06-28 14:21:32,361] [WARNING] Limited large Cartesian command step in control loop: 0.0973m -> 0.0130m
-[2026-06-28 14:21:32,371] [WARNING] Limited large Cartesian command step in control loop: 0.0843m -> 0.0130m
-[2026-06-28 14:21:32,381] [WARNING] Limited large Cartesian command step in control loop: 0.0711m -> 0.0130m
-[2026-06-28 14:21:32,392] [WARNING] Limited large Cartesian command step in control loop: 0.0581m -> 0.0130m
-[2026-06-28 14:21:32,402] [WARNING] Limited large Cartesian command step in control loop: 0.0451m -> 0.0130m
-[2026-06-28 14:21:32,412] [WARNING] Limited large Cartesian command step in control loop: 0.0321m -> 0.0130m
-[2026-06-28 14:21:33,679] [INFO] Pi0.5 inference metrics: total_time=8.465s, inference_calls=4, completed_chunks=4, prefix_chunks=0, actions_applied=148, empty_action_steps=21, avg_first_action_latency=0.294s, p95_first_action_latency=0.295s, recommended_delay=6, avg_final_latency=0.295s, avg_chunk_duration=1.807s, avg_server_compute=0.243s
-[2026-06-28 14:21:33,679] [INFO] Pi0.5 chunk metrics: request_id=1, prefix_steps=0, first_action_latency=0.292s, final_latency=0.293s, chunk_duration=1.960s, executed_actions=40, emitted_actions=50
-[2026-06-28 14:21:33,679] [INFO] Pi0.5 chunk metrics: request_id=2, prefix_steps=0, first_action_latency=0.295s, final_latency=0.295s, chunk_duration=1.958s, executed_actions=40, emitted_actions=50
-[2026-06-28 14:21:33,679] [INFO] Pi0.5 chunk metrics: request_id=3, prefix_steps=0, first_action_latency=0.295s, final_latency=0.296s, chunk_duration=1.959s, executed_actions=40, emitted_actions=50
-[2026-06-28 14:21:33,679] [INFO] Pi0.5 chunk metrics: request_id=4, prefix_steps=0, first_action_latency=0.295s, final_latency=0.295s, chunk_duration=1.352s, executed_actions=28, emitted_actions=50
-[2026-06-28 14:21:33,680] [INFO] Wrote Pi0.5 inference metrics to /home/jjiang/utphd/franka_control_client/logs/pi05_inference_metrics_profiling.jsonl and /home/jjiang/utphd/franka_control_client/logs/pi05_inference_metrics_profiling.txt
-Stopping policy inference...[2026-06-28 14:21:33,680] [INFO] Resetting...
-[2026-06-28 14:21:33,941] [INFO] Set Franka arm control mode to CartesianImpedance
-[2026-06-28 14:21:35,660] [INFO] Set Franka arm control mode to Idle
-Episode discarded.
-Policy infering closed.[2026-06-28 14:21:36,582] [INFO] Subscriber FrankaPanda/franka_arm_state has been closed
-[2026-06-28 14:21:36,583] [INFO] Subscriber FrankaPanda/robotiq_gripper_state has been closed
-[2026-06-28 14:21:36,583] [INFO] Subscriber static_cam has been closed
-[2026-06-28 14:21:36,584] [INFO] Subscriber wrist_cam has been closed
+Starting policy infering...[2026-06-28 15:09:51,506] [INFO] Starting control
+[2026-06-28 15:09:51,506] [INFO] Started Control Pair
+Infering... Press 's' to save, 'd' to discard, or 'q' to quit[2026-06-28 15:09:51,513] [INFO] Using Pi0.5 inference schedule: const, phase_fallback_active=False
+[2026-06-28 15:09:51,513] [INFO] Pi0.5 streaming wait: waiting for first final chunk, request_id=1, current_actions=0, current_final=False, active_request_id=1
+[2026-06-28 15:09:51,523] [INFO] Set Franka arm control mode to CartesianImpedance
+[2026-06-28 15:09:52,157] [INFO] Received Pi0.5 actions: request_id=1, target=current, model_indices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], final=False
+[2026-06-28 15:09:52,158] [INFO] Applying Pi0.5 streaming action: count=1, pos=[0.5368, -0.0008, 0.2963], quat=[0.9236, 0.3833, -0.0003, -0.0007], gripper=0.000
+[2026-06-28 15:09:52,208] [INFO] Applying Pi0.5 streaming action: count=2, pos=[0.5361, -0.0007, 0.2958], quat=[0.9240, 0.3824, -0.0005, -0.0005], gripper=0.000
+[2026-06-28 15:09:52,258] [INFO] Applying Pi0.5 streaming action: count=3, pos=[0.5360, -0.0007, 0.2968], quat=[0.9235, 0.3836, -0.0003, -0.0001], gripper=0.000
+[2026-06-28 15:09:52,308] [INFO] Applying Pi0.5 streaming action: count=4, pos=[0.5364, -0.0009, 0.2965], quat=[0.9242, 0.3818, -0.0003, -0.0003], gripper=0.000
+[2026-06-28 15:09:52,358] [INFO] Applying Pi0.5 streaming action: count=5, pos=[0.5357, 0.0003, 0.2961], quat=[0.9235, 0.3835, -0.0003, -0.0000], gripper=0.000
+[2026-06-28 15:09:54,160] [INFO] Pi0.5 streaming wait: waiting for action index 0 in request 2, request_id=2, current_actions=0, current_final=False, active_request_id=2
+[2026-06-28 15:09:54,411] [INFO] Received Pi0.5 actions: request_id=2, target=current, model_indices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], final=False
+[2026-06-28 15:09:54,416] [WARNING] Limited large Cartesian command step in control loop: 0.1931m -> 0.0130m
+[2026-06-28 15:09:54,428] [WARNING] Limited large Cartesian command step in control loop: 0.1801m -> 0.0130m
+[2026-06-28 15:09:54,438] [WARNING] Limited large Cartesian command step in control loop: 0.1671m -> 0.0130m
+[2026-06-28 15:09:54,450] [WARNING] Limited large Cartesian command step in control loop: 0.1541m -> 0.0130m
+[2026-06-28 15:09:54,460] [WARNING] Limited large Cartesian command step in control loop: 0.1411m -> 0.0130m
+[2026-06-28 15:09:54,470] [WARNING] Limited large Cartesian command step in control loop: 0.1279m -> 0.0130m
+[2026-06-28 15:09:54,480] [WARNING] Limited large Cartesian command step in control loop: 0.1149m -> 0.0130m
+[2026-06-28 15:09:54,490] [WARNING] Limited large Cartesian command step in control loop: 0.1019m -> 0.0130m
+[2026-06-28 15:09:54,501] [WARNING] Limited large Cartesian command step in control loop: 0.0889m -> 0.0130m
+[2026-06-28 15:09:54,511] [WARNING] Limited large Cartesian command step in control loop: 0.0763m -> 0.0130m
+[2026-06-28 15:09:54,521] [WARNING] Limited large Cartesian command step in control loop: 0.0633m -> 0.0130m
+[2026-06-28 15:09:54,531] [WARNING] Limited large Cartesian command step in control loop: 0.0503m -> 0.0130m
+[2026-06-28 15:09:54,542] [WARNING] Limited large Cartesian command step in control loop: 0.0373m -> 0.0130m
+[2026-06-28 15:09:56,414] [INFO] Pi0.5 streaming wait: waiting for action index 0 in request 3, request_id=3, current_actions=0, current_final=False, active_request_id=3
+[2026-06-28 15:09:56,665] [INFO] Received Pi0.5 actions: request_id=3, target=current, model_indices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], final=False
+[2026-06-28 15:09:56,673] [WARNING] Limited large Cartesian command step in control loop: 0.2096m -> 0.0130m
+[2026-06-28 15:09:56,683] [WARNING] Limited large Cartesian command step in control loop: 0.1966m -> 0.0130m
+[2026-06-28 15:09:56,693] [WARNING] Limited large Cartesian command step in control loop: 0.1836m -> 0.0130m
+[2026-06-28 15:09:56,703] [WARNING] Limited large Cartesian command step in control loop: 0.1706m -> 0.0130m
+[2026-06-28 15:09:56,714] [WARNING] Limited large Cartesian command step in control loop: 0.1576m -> 0.0130m
+[2026-06-28 15:09:56,724] [WARNING] Limited large Cartesian command step in control loop: 0.1445m -> 0.0130m
+[2026-06-28 15:09:56,734] [WARNING] Limited large Cartesian command step in control loop: 0.1315m -> 0.0130m
+[2026-06-28 15:09:56,744] [WARNING] Limited large Cartesian command step in control loop: 0.1185m -> 0.0130m
+[2026-06-28 15:09:56,754] [WARNING] Limited large Cartesian command step in control loop: 0.1055m -> 0.0130m
+[2026-06-28 15:09:56,765] [WARNING] Limited large Cartesian command step in control loop: 0.0925m -> 0.0130m
+[2026-06-28 15:09:56,775] [WARNING] Limited large Cartesian command step in control loop: 0.0791m -> 0.0130m
+[2026-06-28 15:09:56,785] [WARNING] Limited large Cartesian command step in control loop: 0.0661m -> 0.0130m
+[2026-06-28 15:09:56,795] [WARNING] Limited large Cartesian command step in control loop: 0.0531m -> 0.0130m
+[2026-06-28 15:09:56,805] [WARNING] Limited large Cartesian command step in control loop: 0.0401m -> 0.0130m
+[2026-06-28 15:09:56,816] [WARNING] Limited large Cartesian command step in control loop: 0.0264m -> 0.0130m
+[2026-06-28 15:09:57,067] [INFO] Pi0.5 inference metrics: total_time=5.560s, inference_calls=3, completed_chunks=3, prefix_chunks=0, actions_applied=88, empty_action_steps=23, avg_first_action_latency=0.412s, p95_first_action_latency=0.610s, recommended_delay=13, avg_final_latency=0.412s, avg_chunk_duration=1.423s, avg_server_compute=0.362s
+[2026-06-28 15:09:57,067] [INFO] Pi0.5 chunk metrics: request_id=1, prefix_steps=0, first_action_latency=0.645s, final_latency=0.645s, chunk_duration=1.959s, executed_actions=40, emitted_actions=50
+[2026-06-28 15:09:57,067] [INFO] Pi0.5 chunk metrics: request_id=2, prefix_steps=0, first_action_latency=0.294s, final_latency=0.294s, chunk_duration=1.958s, executed_actions=40, emitted_actions=50
+[2026-06-28 15:09:57,067] [INFO] Pi0.5 chunk metrics: request_id=3, prefix_steps=0, first_action_latency=0.296s, final_latency=0.296s, chunk_duration=0.351s, executed_actions=8, emitted_actions=50
+[2026-06-28 15:09:57,067] [INFO] Wrote Pi0.5 inference metrics to /home/jjiang/utphd/franka_control_client/logs/pi05_inference_metrics_profiling.jsonl and /home/jjiang/utphd/franka_control_client/logs/pi05_inference_metrics_profiling.txt
+Stopping policy inference...[2026-06-28 15:09:57,067] [INFO] Resetting...
+[2026-06-28 15:09:57,283] [INFO] Set Franka arm control mode to CartesianImpedance
+[2026-06-28 15:09:59,000] [INFO] Set Franka arm control mode to Idle
