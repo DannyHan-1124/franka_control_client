@@ -74,3 +74,41 @@ profile by request:
         2       0.006        0.000       0.001          0.000         0.244           0.242          0.000          0.234         0.244
         3       0.005        0.000       0.002          0.000         0.244           0.242          0.000          0.234         0.244
         4       0.006        0.000       0.001          0.000         0.243           0.242          0.000          0.234         0.243
+
+=== Pi0.5 inference episode: 2026-06-28 14:51:20 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, prefix_mode=official_rtc, execution_horizon=40, fps=20
+summary: total_time=8.324s, inference_calls=4, completed_chunks=4, prefix_chunks=0, actions_applied=138, empty_action_steps=28
+latency: avg_first_action=0.382s, p95_first_action=0.593s, recommended_delay=12, avg_final=0.382s, avg_chunk_duration=1.685s
+profile: client_obs=0.006s, client_send=0.000s, server_preprocess=0.002s, server_kwargs=0.000s, server_first_delta=0.334s, server_compute=0.332s, server_postprocess=0.009s, server_send=0.000s, server_total=0.335s
+high_level_profile: non_policy_overhead=0.018s, model_prefill=0.000s, model_denoise=0.320s, model_total=0.320s, robot_chunk_execution=1.685s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1     const       0           0       50        40        2           0.646    0.646       1.962
+        2     const       0           0       50        40        2           0.295    0.295       1.959
+        3     const       0           0       50        40        2           0.295    0.295       1.962
+        4     const       0           0       50        18        2           0.293    0.293       0.856
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+        1       0.006        0.000       0.005          0.000         0.608           0.603          0.000          0.581         0.609
+        2       0.005        0.000       0.002          0.000         0.244           0.242          0.000          0.234         0.244
+        3       0.006        0.000       0.001          0.000         0.242           0.241          0.000          0.233         0.242
+        4       0.008        0.000       0.001          0.000         0.243           0.242          0.000          0.234         0.243
+
+=== Pi0.5 inference episode: 2026-06-28 15:09:51 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, prefix_mode=official_rtc, execution_horizon=40, fps=20
+summary: total_time=5.560s, inference_calls=3, completed_chunks=3, prefix_chunks=0, actions_applied=88, empty_action_steps=23
+latency: avg_first_action=0.412s, p95_first_action=0.610s, recommended_delay=13, avg_final=0.412s, avg_chunk_duration=1.423s
+profile: client_obs=0.006s, client_send=0.000s, server_preprocess=0.003s, server_kwargs=0.000s, server_first_delta=0.365s, server_compute=0.362s, server_postprocess=0.010s, server_send=0.000s, server_total=0.365s
+high_level_profile: non_policy_overhead=0.019s, model_prefill=0.000s, model_denoise=0.350s, model_total=0.350s, robot_chunk_execution=1.423s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1     const       0           0       50        40        2           0.645    0.645       1.959
+        2     const       0           0       50        40        2           0.294    0.294       1.958
+        3     const       0           0       50         8        2           0.296    0.296       0.351
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+        1       0.006        0.000       0.005          0.000         0.605           0.601          0.000          0.579         0.606
+        2       0.007        0.000       0.002          0.000         0.246           0.244          0.000          0.235         0.246
+        3       0.005        0.000       0.002          0.000         0.244           0.242          0.000          0.234         0.244
