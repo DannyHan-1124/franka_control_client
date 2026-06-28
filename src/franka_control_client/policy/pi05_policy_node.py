@@ -385,19 +385,28 @@ class Pi05PolicyNode:
         self._running = True
         while self._running:
             msg = self._streaming_socket.recv_pyobj()
+            server_start = time.perf_counter()
             request_id = msg.get("request_id") if isinstance(msg, dict) else None
             try:
                 obs_msg = msg.get("observation", msg) if isinstance(msg, dict) else msg
                 if not isinstance(obs_msg, dict):
                     raise ValueError(f"Expected observation dict, got {type(obs_msg)!r}")
 
+                preprocess_start = time.perf_counter()
                 observation = self.preprocessor(self._build_observation(obs_msg))
+                preprocess_s = time.perf_counter() - preprocess_start
+                kwargs_start = time.perf_counter()
                 policy_kwargs = self._policy_kwargs(obs_msg)
                 policy_kwargs.setdefault("infer_time_schedule", self.cfg.faster_infer_time_schedule)
                 self._attach_raw_action_prefix(policy_kwargs)
+                policy_kwargs_s = time.perf_counter() - kwargs_start
 
                 emitted_indices: set[int] = set()
                 latest_raw_actions = None
+                first_delta_s: Optional[float] = None
+                postprocess_s = 0.0
+                send_s = 0.0
+                stream_start = time.perf_counter()
                 with torch.inference_mode():
                     for newly_ready, action_tensor in self.policy.predict_action_stream(
                         observation, **policy_kwargs
@@ -408,7 +417,29 @@ class Pi05PolicyNode:
                             continue
                         indices = [int(i) for i in ready_indices.detach().cpu().tolist()]
                         emitted_indices.update(indices)
+                        postprocess_start = time.perf_counter()
                         action_array = self._postprocess_action_chunk(action_tensor[:, ready_indices, :])
+                        postprocess_s += time.perf_counter() - postprocess_start
+                        if first_delta_s is None:
+                            first_delta_s = time.perf_counter() - server_start
+                        model_profile = getattr(
+                            getattr(self.policy, "model", None),
+                            "last_stream_profile",
+                            None,
+                        )
+                        server_profile = {
+                            "preprocess_s": preprocess_s,
+                            "policy_kwargs_s": policy_kwargs_s,
+                            "time_to_first_delta_s": first_delta_s,
+                            "stream_compute_s": time.perf_counter() - stream_start,
+                            "postprocess_s": postprocess_s,
+                            "send_s": send_s,
+                            "server_total_s": time.perf_counter() - server_start,
+                            "model_profile": dict(model_profile)
+                            if isinstance(model_profile, dict)
+                            else None,
+                        }
+                        send_start = time.perf_counter()
                         self._streaming_socket.send_pyobj(
                             {
                                 "type": "action_delta",
@@ -418,8 +449,11 @@ class Pi05PolicyNode:
                                 "actions": action_array.tolist(),
                                 "shape": list(action_array.shape),
                                 "final": False,
+                                "server_profile": server_profile,
                             }
                         )
+                        send_s += time.perf_counter() - send_start
+                stream_compute_s = time.perf_counter() - stream_start
 
                 if request_id is not None and latest_raw_actions is not None:
                     self._stream_raw_action_cache[int(request_id)] = latest_raw_actions.detach().cpu()
@@ -427,6 +461,23 @@ class Pi05PolicyNode:
                         if old_request_id < int(request_id) - 4:
                             del self._stream_raw_action_cache[old_request_id]
 
+                model_profile = getattr(
+                    getattr(self.policy, "model", None),
+                    "last_stream_profile",
+                    None,
+                )
+                server_profile = {
+                    "preprocess_s": preprocess_s,
+                    "policy_kwargs_s": policy_kwargs_s,
+                    "time_to_first_delta_s": first_delta_s,
+                    "stream_compute_s": stream_compute_s,
+                    "postprocess_s": postprocess_s,
+                    "send_s": send_s,
+                    "server_total_s": time.perf_counter() - server_start,
+                    "model_profile": dict(model_profile)
+                    if isinstance(model_profile, dict)
+                    else None,
+                }
                 self._streaming_socket.send_pyobj(
                     {
                         "type": "action_delta",
@@ -437,6 +488,7 @@ class Pi05PolicyNode:
                         "shape": [0, 8],
                         "final": True,
                         "emitted_indices": sorted(emitted_indices),
+                        "server_profile": server_profile,
                     }
                 )
             except Exception as exc:

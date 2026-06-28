@@ -224,6 +224,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._metrics_stream_chunks: dict[int, dict[str, Any]] = {}
         self._metrics_start_perf = time.perf_counter()
         self._metrics_start_wall = time.time()
+        self._last_observation_profile: dict[str, float] = {}
 
     def _reset_stream_state(self) -> None:
         # The official RTC client keeps the executing and incoming chunks separate.
@@ -354,7 +355,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
             return
 
         active_schedule = self._active_infer_time_schedule()
+        obs_start = time.perf_counter()
         obs = self._build_observation()
+        client_observation_build_s = time.perf_counter() - obs_start
+        client_observation_profile = dict(self._last_observation_profile)
         is_initial = self._current_request_id is None
         prefix_request_id: Optional[int] = None
         prefix_start_index = 0
@@ -391,6 +395,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
         request_start = time.perf_counter()
         request_id = self._streaming_policy.send_observation(obs)
+        client_send_s = time.perf_counter() - request_start
         # Count one policy-server request.
         self._metrics_inference_calls += 1
         self._metrics_stream_chunks[request_id] = {
@@ -402,8 +407,13 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "prefix_request_id": int(prefix_request_id) if prefix_request_id is not None else None,
             "prefix_start_index": prefix_start_index,
             "early_stop_actions": effective_early_stop_actions,
+            "client_observation_build_s": client_observation_build_s,
+            "client_observation_profile": client_observation_profile,
+            "client_send_s": client_send_s,
             "first_action_latency_s": None,
             "final_latency_s": None,
+            "server_profile": None,
+            "server_time_to_first_delta_s": None,
             "emitted_action_count": 0,
             "executed_action_count": 0,
             "first_action_index": None,
@@ -452,6 +462,12 @@ class Pi05PolicyInference(PolicyInferenceManager):
             )
             now = time.perf_counter()
             if metric is not None:
+                server_profile = msg.get("server_profile")
+                if isinstance(server_profile, dict):
+                    metric["server_profile"] = server_profile
+                    first_delta = server_profile.get("time_to_first_delta_s")
+                    if first_delta is not None:
+                        metric["server_time_to_first_delta_s"] = float(first_delta)
                 # Count each action_delta message received for this request.
                 metric["update_count"] += 1
                 # Count model indices emitted by the server before prefix/tail filtering.
@@ -653,6 +669,28 @@ class Pi05PolicyInference(PolicyInferenceManager):
             for chunk in chunks
             if chunk.get("execution_duration_s") is not None
         ]
+        client_observation_build_times = [
+            float(chunk["client_observation_build_s"])
+            for chunk in chunks
+            if chunk.get("client_observation_build_s") is not None
+        ]
+        client_send_times = [
+            float(chunk["client_send_s"])
+            for chunk in chunks
+            if chunk.get("client_send_s") is not None
+        ]
+        server_preprocess_times = _server_profile_values(chunks, "preprocess_s")
+        server_policy_kwargs_times = _server_profile_values(chunks, "policy_kwargs_s")
+        server_first_delta_times = _server_profile_values(chunks, "time_to_first_delta_s")
+        server_stream_compute_times = _server_profile_values(chunks, "stream_compute_s")
+        server_postprocess_times = _server_profile_values(chunks, "postprocess_s")
+        server_send_times = _server_profile_values(chunks, "send_s")
+        server_total_times = _server_profile_values(chunks, "server_total_s")
+        model_prefix_embed_times = _server_model_profile_values(chunks, "prefix_embed_s")
+        model_prefix_forward_times = _server_model_profile_values(chunks, "prefix_forward_s")
+        model_schedule_times = _server_model_profile_values(chunks, "schedule_s")
+        model_denoise_times = _server_model_profile_values(chunks, "denoise_s")
+        model_total_times = _server_model_profile_values(chunks, "total_s")
         prefix_chunks = sum(1 for chunk in chunks if int(chunk.get("prefix_steps") or 0) > 0)
         p95_first_action_latency_s = (
             float(np.percentile(first_action_latencies, 95)) if first_action_latencies else None
@@ -684,7 +722,43 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "recommended_delay": recommended_delay,
             "avg_final_latency_s": _mean(final_latencies),
             "avg_chunk_execution_duration_s": _mean(execution_durations),
+            "avg_client_observation_build_s": _mean(client_observation_build_times),
+            "avg_client_send_s": _mean(client_send_times),
+            "avg_server_preprocess_s": _mean(server_preprocess_times),
+            "avg_server_policy_kwargs_s": _mean(server_policy_kwargs_times),
+            "avg_server_time_to_first_delta_s": _mean(server_first_delta_times),
+            "avg_server_stream_compute_s": _mean(server_stream_compute_times),
+            "avg_server_postprocess_s": _mean(server_postprocess_times),
+            "avg_server_send_s": _mean(server_send_times),
+            "avg_server_total_s": _mean(server_total_times),
+            "avg_model_prefix_embed_s": _mean(model_prefix_embed_times),
+            "avg_model_prefix_forward_s": _mean(model_prefix_forward_times),
+            "avg_model_schedule_s": _mean(model_schedule_times),
+            "avg_model_denoise_s": _mean(model_denoise_times),
+            "avg_model_total_s": _mean(model_total_times),
         }
+        model_prefill_parts = [
+            summary.get("avg_model_prefix_embed_s"),
+            summary.get("avg_model_prefix_forward_s"),
+        ]
+        summary["avg_model_prefill_s"] = (
+            float(sum(value for value in model_prefill_parts if value is not None))
+            if any(value is not None for value in model_prefill_parts)
+            else None
+        )
+        non_policy_parts = [
+            summary.get("avg_client_observation_build_s"),
+            summary.get("avg_client_send_s"),
+            summary.get("avg_server_preprocess_s"),
+            summary.get("avg_server_policy_kwargs_s"),
+            summary.get("avg_server_postprocess_s"),
+            summary.get("avg_server_send_s"),
+        ]
+        summary["avg_non_policy_overhead_s"] = (
+            float(sum(value for value in non_policy_parts if value is not None))
+            if any(value is not None for value in non_policy_parts)
+            else None
+        )
         if self.cfg.faster_infer_time_schedule.upper() == "HAS":
             summary["faster_alpha"] = float(self.cfg.faster_alpha)
             summary["faster_u0"] = float(self.cfg.faster_u0)
@@ -708,7 +782,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
             f"p95_first_action_latency={_format_optional(summary['p95_first_action_latency_s'])}s, "
             f"recommended_delay={summary['recommended_delay']}, "
             f"avg_final_latency={_format_optional(summary['avg_final_latency_s'])}s, "
-            f"avg_chunk_duration={_format_optional(summary['avg_chunk_execution_duration_s'])}s"
+            f"avg_chunk_duration={_format_optional(summary['avg_chunk_execution_duration_s'])}s, "
+            f"avg_server_compute={_format_optional(summary['avg_server_stream_compute_s'])}s"
         )
 
         for chunk in chunks:
@@ -811,6 +886,26 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 f"avg_final={_format_optional(summary.get('avg_final_latency_s'))}s, "
                 f"avg_chunk_duration={_format_optional(summary.get('avg_chunk_execution_duration_s'))}s"
             ),
+            (
+                "profile: "
+                f"client_obs={_format_optional(summary.get('avg_client_observation_build_s'))}s, "
+                f"client_send={_format_optional(summary.get('avg_client_send_s'))}s, "
+                f"server_preprocess={_format_optional(summary.get('avg_server_preprocess_s'))}s, "
+                f"server_kwargs={_format_optional(summary.get('avg_server_policy_kwargs_s'))}s, "
+                f"server_first_delta={_format_optional(summary.get('avg_server_time_to_first_delta_s'))}s, "
+                f"server_compute={_format_optional(summary.get('avg_server_stream_compute_s'))}s, "
+                f"server_postprocess={_format_optional(summary.get('avg_server_postprocess_s'))}s, "
+                f"server_send={_format_optional(summary.get('avg_server_send_s'))}s, "
+                f"server_total={_format_optional(summary.get('avg_server_total_s'))}s"
+            ),
+            (
+                "high_level_profile: "
+                f"non_policy_overhead={_format_optional(summary.get('avg_non_policy_overhead_s'))}s, "
+                f"model_prefill={_format_optional(summary.get('avg_model_prefill_s'))}s, "
+                f"model_denoise={_format_optional(summary.get('avg_model_denoise_s'))}s, "
+                f"model_total={_format_optional(summary.get('avg_model_total_s'))}s, "
+                f"robot_chunk_execution={_format_optional(summary.get('avg_chunk_execution_duration_s'))}s"
+            ),
             "chunks:",
             (
                 "  request  schedule  prefix  early_stop  emitted  executed  updates  "
@@ -833,6 +928,37 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 f"{_format_optional(chunk.get('execution_duration_s')):>10}"
             )
 
+        if any(chunk.get("client_observation_build_s") is not None for chunk in chunks):
+            lines.extend(
+                [
+                    "profile by request:",
+                    (
+                        "  request  client_obs  client_send  server_pre  server_kwargs  "
+                        "server_first  server_compute  model_prefill  model_denoise  server_total"
+                    ),
+                ]
+            )
+            for chunk in chunks:
+                server_profile = chunk.get("server_profile")
+                if not isinstance(server_profile, dict):
+                    server_profile = {}
+                model_profile = server_profile.get("model_profile")
+                if not isinstance(model_profile, dict):
+                    model_profile = {}
+                lines.append(
+                    "  "
+                    f"{str(chunk.get('request_id')):>7}  "
+                    f"{_format_optional(chunk.get('client_observation_build_s')):>10}  "
+                    f"{_format_optional(chunk.get('client_send_s')):>11}  "
+                    f"{_format_optional(server_profile.get('preprocess_s')):>10}  "
+                    f"{_format_optional(server_profile.get('policy_kwargs_s')):>13}  "
+                    f"{_format_optional(server_profile.get('time_to_first_delta_s')):>12}  "
+                    f"{_format_optional(server_profile.get('stream_compute_s')):>14}  "
+                    f"{_format_optional(model_profile.get('prefix_forward_s')):>13}  "
+                    f"{_format_optional(model_profile.get('denoise_s')):>13}  "
+                    f"{_format_optional(server_profile.get('server_total_s')):>12}"
+                )
+
         with path.open("a", encoding="utf-8") as f:
             f.write("\n".join(lines) + "\n")
 
@@ -847,18 +973,40 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._ui_console.log(f"Failed to reset arm: {exc}")
 
     def _build_observation(self) -> Dict[str, Any]:
+        profile_start = time.perf_counter()
+        static_start = time.perf_counter()
         static_rgb = self._capture_rgb(self.static_cam)
+        static_camera_s = time.perf_counter() - static_start
+        wrist_start = time.perf_counter()
         wrist_rgb = self._capture_rgb(self.wrist_cam)
+        wrist_camera_s = time.perf_counter() - wrist_start
         self._maybe_save_debug_images(static_rgb, wrist_rgb)
+        encode_start = time.perf_counter()
+        static_encoded = _encode_rgb_image(static_rgb)
+        wrist_encoded = _encode_rgb_image(wrist_rgb)
+        image_encode_s = time.perf_counter() - encode_start
+        state_start = time.perf_counter()
+        state_vector = self._build_state_vector().tolist()
+        state_s = time.perf_counter() - state_start
         obs = {
-            "observation.images.base_0_rgb": _encode_rgb_image(static_rgb),
-            "observation.images.left_wrist_0_rgb": _encode_rgb_image(wrist_rgb),
-            "observation.state": self._build_state_vector().tolist(),
+            "observation.images.base_0_rgb": static_encoded,
+            "observation.images.left_wrist_0_rgb": wrist_encoded,
+            "observation.state": state_vector,
             "task": self.task,
         }
+        kwargs_start = time.perf_counter()
         policy_kwargs = self._build_policy_kwargs()
+        policy_kwargs_s = time.perf_counter() - kwargs_start
         if policy_kwargs:
             obs["policy_kwargs"] = policy_kwargs
+        self._last_observation_profile = {
+            "total_s": time.perf_counter() - profile_start,
+            "static_camera_s": static_camera_s,
+            "wrist_camera_s": wrist_camera_s,
+            "image_encode_s": image_encode_s,
+            "state_s": state_s,
+            "policy_kwargs_s": policy_kwargs_s,
+        }
         return obs
 
     def _build_policy_kwargs(self) -> Dict[str, Any]:
@@ -1189,6 +1337,33 @@ def _mean(values: List[float]) -> Optional[float]:
     if not values:
         return None
     return float(sum(values) / len(values))
+
+
+def _server_profile_values(chunks: List[Dict[str, Any]], key: str) -> List[float]:
+    values: List[float] = []
+    for chunk in chunks:
+        profile = chunk.get("server_profile")
+        if not isinstance(profile, dict):
+            continue
+        value = profile.get(key)
+        if value is not None:
+            values.append(float(value))
+    return values
+
+
+def _server_model_profile_values(chunks: List[Dict[str, Any]], key: str) -> List[float]:
+    values: List[float] = []
+    for chunk in chunks:
+        profile = chunk.get("server_profile")
+        if not isinstance(profile, dict):
+            continue
+        model_profile = profile.get("model_profile")
+        if not isinstance(model_profile, dict):
+            continue
+        value = model_profile.get(key)
+        if value is not None:
+            values.append(float(value))
+    return values
 
 
 def _format_optional(value: Any) -> str:
