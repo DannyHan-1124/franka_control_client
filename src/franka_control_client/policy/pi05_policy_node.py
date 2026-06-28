@@ -260,7 +260,7 @@ class Pi05PolicyNode:
             kwargs["alpha"] = self.cfg.faster_alpha
         if self.cfg.faster_u0 != 0.9:
             kwargs["u0"] = self.cfg.faster_u0
-        if self.cfg.faster_delay_steps > 0:
+        if self.cfg.faster_delay_steps > 0 and not self.cfg.streaming_zmq_bind:
             kwargs["delay"] = self.cfg.faster_delay_steps
 
         msg_kwargs = obs_msg.get("policy_kwargs")

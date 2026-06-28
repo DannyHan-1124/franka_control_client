@@ -14,7 +14,7 @@ python -m franka_control_client.policy.pi05_policy_node \
     --action_topic pi05/action \
     --fps 20 \
     --default_task "put green cylinder on blue cube" \
-    --faster_infer_time_schedule HAS \
+    --faster_infer_time_schedule const \
     --faster_alpha 1.0 \
     --faster_u0 0.9 \
     --streaming_zmq_bind tcp://0.0.0.0:40024

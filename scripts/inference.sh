@@ -18,11 +18,11 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --policy_transport streaming_zmq \
     --policy_zmq_endpoint tcp://127.0.0.1:17726 \
     --metrics_path "${REPO_ROOT}/logs/pi05_inference_metrics_profiling.jsonl" \
-    --execution_horizon 50 \
+    --execution_horizon 40 \
     --faster_infer_time_schedule const \
     --faster_alpha 0.6 \
     --faster_u0 0.9 \
-    --delay 10 \
+    --delay 0 \
     --early_stop_actions 0 \
     --phase_fallback_schedule none \
     --phase_fallback_trigger before_gripper_open \

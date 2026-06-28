@@ -225,6 +225,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._metrics_start_perf = time.perf_counter()
         self._metrics_start_wall = time.time()
         self._last_observation_profile: dict[str, float] = {}
+        self._debug_applied_action_logs = 0
 
     def _reset_stream_state(self) -> None:
         # The official RTC client keeps the executing and incoming chunks separate.
@@ -239,6 +240,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._next_final = False
         self._request_targets: dict[int, str] = {}
         self._last_launch_source_request_id: Optional[int] = None
+        self._last_stream_wait_log_s = 0.0
 
     def _infer_step(self) -> None:
         start = time.perf_counter()
@@ -317,6 +319,15 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if action is not None:
             sanitized_action = self._sanitize_action(action)
             self._last_sanitized_action = sanitized_action.copy()
+            if self._debug_applied_action_logs < 5:
+                pyzlc.info(
+                    "Applying Pi0.5 streaming action: "
+                    f"count={self._metrics_actions_applied + 1}, "
+                    f"pos={_format_vec(sanitized_action[:3])}, "
+                    f"quat={_format_vec(sanitized_action[3:7])}, "
+                    f"gripper={float(sanitized_action[7]):.3f}"
+                )
+                self._debug_applied_action_logs += 1
             self.control_pair.update_action(sanitized_action)
             self._metrics_actions_applied += 1
             self._maybe_stop_after_release()
@@ -527,13 +538,22 @@ class Pi05PolicyInference(PolicyInferenceManager):
         # The first chunk is obtained synchronously before moving.
         if self._current_step == 0 and self._metrics_actions_applied == 0:
             if not self._current_final:
+                self._log_stream_wait_state("waiting for first final chunk")
                 return None
-            if not all(idx in self._current_actions for idx in range(horizon)):
+            missing = [idx for idx in range(horizon) if idx not in self._current_actions]
+            if missing:
+                self._log_stream_wait_state(
+                    "waiting for first executable actions "
+                    f"missing={missing[:8]} total_missing={len(missing)}"
+                )
                 return None
 
         executable_idx = self._current_step
         action = self._current_actions.get(executable_idx)
         if action is None:
+            self._log_stream_wait_state(
+                f"waiting for action index {executable_idx} in request {self._current_request_id}"
+            )
             return None
 
         metric = self._metrics_stream_chunks.get(int(self._current_request_id))
@@ -556,6 +576,18 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._next_final = False
 
         return action
+
+    def _log_stream_wait_state(self, reason: str) -> None:
+        now = time.perf_counter()
+        if now - self._last_stream_wait_log_s < 1.0:
+            return
+        self._last_stream_wait_log_s = now
+        pyzlc.info(
+            "Pi0.5 streaming wait: "
+            f"{reason}, request_id={self._current_request_id}, "
+            f"current_actions={len(self._current_actions)}, current_final={self._current_final}, "
+            f"active_request_id={self._streaming_policy.active_request_id if self._streaming_policy else None}"
+        )
 
     def _record_chunk_action_execution(self, metric: Dict[str, Any], action_index: int) -> None:
         now = time.perf_counter()
