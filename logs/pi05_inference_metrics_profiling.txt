@@ -1,0 +1,22 @@
+
+=== Pi0.5 inference episode: 2026-06-28 13:58:56 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=10, execution_horizon=40, fps=20
+summary: total_time=11.528s, inference_calls=5, completed_chunks=5, prefix_chunks=4, actions_applied=179, empty_action_steps=49
+latency: avg_first_action=0.557s, p95_first_action=1.793s, recommended_delay=36, avg_final=0.717s, avg_chunk_duration=1.743s
+profile: client_obs=0.036s, client_send=0.000s, server_preprocess=0.021s, server_kwargs=0.000s, server_first_delta=0.492s, server_compute=0.634s, server_postprocess=0.009s, server_send=0.000s, server_total=0.655s
+high_level_profile: non_policy_overhead=0.066s, model_prefill=0.301s, model_denoise=0.229s, model_total=0.571s, robot_chunk_execution=1.743s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0           0       50        40       11           2.205    2.406       1.953
+        2       HAS      10           0       40        40       11           0.144    0.295       1.953
+        3       HAS      10           0       40        40       11           0.144    0.295       1.955
+        4       HAS      10           0       40        40       11           0.145    0.296       1.953
+        5       HAS      10           0       40        19       11           0.145    0.295       0.901
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+        1       0.156        0.000       0.099          0.000         2.135           2.203          0.456          0.373         2.301
+        2       0.006        0.000       0.001          0.000         0.085           0.246          0.013          0.194         0.248
+        3       0.006        0.000       0.001          0.000         0.082           0.244          0.013          0.195         0.245
+        4       0.005        0.000       0.001          0.000         0.079           0.240          0.013          0.193         0.242
+        5       0.005        0.000       0.002          0.000         0.076           0.237          0.013          0.190         0.239

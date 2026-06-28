@@ -1,0 +1,152 @@
+
+=== Pi0.5 inference episode: 2026-06-25 14:35:05 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=const, delay=3, execution_horizon=50, fps=20
+summary: total_time=11.770s, inference_calls=4, completed_chunks=4, prefix_chunks=0, actions_applied=173, empty_action_steps=63
+latency: avg_first_action=0.784s, p95_first_action=1.955s, recommended_delay=40, avg_final=0.784s, avg_chunk_duration=2.116s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1     const       0           0       50        50        2           2.248    2.248       2.454
+        2     const       0           0       50        50        2           0.296    0.296       2.454
+        3     const       0           0       50        50        2           0.296    0.296       2.454
+        4     const       0           0       50        23        2           0.296    0.296       1.102
+
+=== Pi0.5 inference episode: 2026-06-25 14:35:43 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=const, delay=3, execution_horizon=50, fps=20
+summary: total_time=9.916s, inference_calls=4, completed_chunks=4, prefix_chunks=0, actions_applied=175, empty_action_steps=24
+latency: avg_first_action=0.296s, p95_first_action=0.296s, recommended_delay=6, avg_final=0.296s, avg_chunk_duration=2.141s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        5     const       0           0       50        50        2           0.296    0.296       2.453
+        6     const       0           0       50        50        2           0.296    0.296       2.454
+        7     const       0           0       50        50        2           0.296    0.296       2.453
+        8     const       0           0       50        25        2           0.296    0.296       1.202
+
+=== Pi0.5 inference episode: 2026-06-25 14:36:17 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=const, delay=3, execution_horizon=50, fps=20
+summary: total_time=10.167s, inference_calls=4, completed_chunks=4, prefix_chunks=0, actions_applied=180, empty_action_steps=24
+latency: avg_first_action=0.296s, p95_first_action=0.296s, recommended_delay=6, avg_final=0.296s, avg_chunk_duration=2.203s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        9     const       0           0       50        50        2           0.296    0.296       2.453
+       10     const       0           0       50        50        2           0.296    0.296       2.454
+       11     const       0           0       50        50        2           0.296    0.296       2.454
+       12     const       0           0       50        30        2           0.296    0.296       1.452
+
+=== Pi0.5 inference episode: 2026-06-25 14:36:50 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=const, delay=3, execution_horizon=50, fps=20
+summary: total_time=10.419s, inference_calls=4, completed_chunks=4, prefix_chunks=0, actions_applied=185, empty_action_steps=24
+latency: avg_first_action=0.296s, p95_first_action=0.296s, recommended_delay=6, avg_final=0.296s, avg_chunk_duration=2.266s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       13     const       0           0       50        50        2           0.296    0.296       2.455
+       14     const       0           0       50        50        2           0.296    0.296       2.454
+       15     const       0           0       50        50        2           0.296    0.296       2.454
+       16     const       0           0       50        35        2           0.296    0.296       1.702
+
+=== Pi0.5 inference episode: 2026-06-25 14:37:18 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=const, delay=3, execution_horizon=50, fps=20
+summary: total_time=9.715s, inference_calls=4, completed_chunks=4, prefix_chunks=0, actions_applied=171, empty_action_steps=24
+latency: avg_first_action=0.295s, p95_first_action=0.296s, recommended_delay=6, avg_final=0.296s, avg_chunk_duration=2.090s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       17     const       0           0       50        50        2           0.295    0.296       2.454
+       18     const       0           0       50        50        2           0.295    0.295       2.454
+       19     const       0           0       50        50        2           0.296    0.296       2.453
+       20     const       0           0       50        21        2           0.296    0.296       1.001
+
+=== Pi0.5 inference episode: 2026-06-25 14:38:14 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=const, delay=3, execution_horizon=50, fps=20
+summary: total_time=9.765s, inference_calls=4, completed_chunks=4, prefix_chunks=0, actions_applied=172, empty_action_steps=24
+latency: avg_first_action=0.295s, p95_first_action=0.296s, recommended_delay=6, avg_final=0.295s, avg_chunk_duration=2.103s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       21     const       0           0       50        50        2           0.296    0.296       2.453
+       22     const       0           0       50        50        2           0.295    0.295       2.453
+       23     const       0           0       50        50        2           0.295    0.295       2.453
+       24     const       0           0       50        22        2           0.296    0.296       1.051
+
+=== Pi0.5 inference episode: 2026-06-25 14:38:49 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=const, delay=3, execution_horizon=50, fps=20
+summary: total_time=10.066s, inference_calls=4, completed_chunks=4, prefix_chunks=0, actions_applied=178, empty_action_steps=24
+latency: avg_first_action=0.296s, p95_first_action=0.296s, recommended_delay=6, avg_final=0.296s, avg_chunk_duration=2.178s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       25     const       0           0       50        50        2           0.296    0.296       2.454
+       26     const       0           0       50        50        2           0.296    0.296       2.454
+       27     const       0           0       50        50        2           0.296    0.296       2.453
+       28     const       0           0       50        28        2           0.296    0.296       1.352
+
+=== Pi0.5 inference episode: 2026-06-25 14:39:29 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=const, delay=3, execution_horizon=50, fps=20
+summary: total_time=2.654s, inference_calls=1, completed_chunks=1, prefix_chunks=0, actions_applied=47, empty_action_steps=6
+latency: avg_first_action=0.296s, p95_first_action=0.296s, recommended_delay=6, avg_final=0.296s, avg_chunk_duration=2.303s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       29     const       0           0       50        47        2           0.296    0.296       2.303
+
+=== Pi0.5 inference episode: 2026-06-25 14:39:47 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=const, delay=3, execution_horizon=50, fps=20
+summary: total_time=9.866s, inference_calls=4, completed_chunks=4, prefix_chunks=0, actions_applied=174, empty_action_steps=24
+latency: avg_first_action=0.295s, p95_first_action=0.296s, recommended_delay=6, avg_final=0.296s, avg_chunk_duration=2.128s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       30     const       0           0       50        50        2           0.296    0.296       2.454
+       31     const       0           0       50        50        2           0.295    0.296       2.453
+       32     const       0           0       50        50        2           0.295    0.296       2.454
+       33     const       0           0       50        24        2           0.295    0.296       1.152
+
+=== Pi0.5 inference episode: 2026-06-25 14:40:22 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=const, delay=3, execution_horizon=50, fps=20
+summary: total_time=10.417s, inference_calls=4, completed_chunks=4, prefix_chunks=0, actions_applied=185, empty_action_steps=24
+latency: avg_first_action=0.296s, p95_first_action=0.296s, recommended_delay=6, avg_final=0.296s, avg_chunk_duration=2.266s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       34     const       0           0       50        50        2           0.295    0.295       2.453
+       35     const       0           0       50        50        2           0.295    0.296       2.454
+       36     const       0           0       50        50        2           0.296    0.296       2.454
+       37     const       0           0       50        35        2           0.296    0.296       1.702
+
+=== Pi0.5 inference episode: 2026-06-25 14:41:06 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=const, delay=3, execution_horizon=50, fps=20
+summary: total_time=9.866s, inference_calls=4, completed_chunks=4, prefix_chunks=0, actions_applied=174, empty_action_steps=24
+latency: avg_first_action=0.296s, p95_first_action=0.296s, recommended_delay=6, avg_final=0.296s, avg_chunk_duration=2.128s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       38     const       0           0       50        50        2           0.296    0.296       2.454
+       39     const       0           0       50        50        2           0.296    0.296       2.454
+       40     const       0           0       50        50        2           0.296    0.296       2.454
+       41     const       0           0       50        24        2           0.295    0.296       1.152
+
+=== Pi0.5 inference episode: 2026-06-25 14:46:49 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=const, delay=3, execution_horizon=50, fps=20
+summary: total_time=5.910s, inference_calls=3, completed_chunks=3, prefix_chunks=0, actions_applied=101, empty_action_steps=18
+latency: avg_first_action=0.296s, p95_first_action=0.296s, recommended_delay=6, avg_final=0.296s, avg_chunk_duration=1.636s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       42     const       0           0       50        50        2           0.296    0.296       2.454
+       43     const       0           0       50        50        2           0.295    0.295       2.454
+       44     const       0           0       50         1        2           0.296    0.296       0.000
+
+=== Pi0.5 inference episode: 2026-06-25 14:47:06 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=const, delay=3, execution_horizon=50, fps=20
+summary: total_time=9.965s, inference_calls=4, completed_chunks=4, prefix_chunks=0, actions_applied=176, empty_action_steps=24
+latency: avg_first_action=0.296s, p95_first_action=0.296s, recommended_delay=6, avg_final=0.296s, avg_chunk_duration=2.153s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       45     const       0           0       50        50        2           0.296    0.296       2.453
+       46     const       0           0       50        50        2           0.296    0.296       2.453
+       47     const       0           0       50        50        2           0.295    0.295       2.453
+       48     const       0           0       50        26        2           0.295    0.296       1.252
