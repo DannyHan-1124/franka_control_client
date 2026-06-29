@@ -9,7 +9,7 @@ export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot/src"
 # pgrep -af 'ssh.*(-L)'
 
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
-    --task "put red cylinder on red cube" \
+    --task "put cylinder in moving cup" \
     --fps 35 \
     --stop_after_first_release \
     --robot_name FrankaPanda \
@@ -30,3 +30,7 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --phase_fallback_trigger before_gripper_open \
     --static_camera static_cam \
     --wrist_camera wrist_cam
+
+
+# --stop_after_first_release \
+# --metrics_path "${REPO_ROOT}/logs/pi05_inference_metrics_dynamic.jsonl" \

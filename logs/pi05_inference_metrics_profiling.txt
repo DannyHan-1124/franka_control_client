@@ -1300,3 +1300,427 @@ profile by request:
        49       0.005        0.000       0.001          0.000         0.072           0.195          0.013          0.150         0.196
        50       0.005        0.000       0.001          0.000         0.072           0.195          0.013          0.150         0.196
        51       0.005        0.000       0.001          0.000         0.072           0.195          0.013          0.150         0.196
+
+=== Pi0.5 inference episode: 2026-06-29 17:26:11 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, execution_horizon=47, fps=20
+summary: total_time=7.014s, inference_calls=3, completed_chunks=3, prefix_chunks=2, actions_applied=135, empty_action_steps=6
+latency: avg_first_action=0.145s, p95_first_action=0.146s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=2.203s
+profile: client_obs=0.005s, client_send=0.000s, server_preprocess=0.002s, server_kwargs=0.000s, server_first_delta=0.085s, server_compute=0.241s, server_postprocess=0.007s, server_send=0.000s, server_total=0.243s
+high_level_profile: non_policy_overhead=0.014s, model_prefill=0.040s, model_denoise=0.189s, model_total=0.239s, robot_chunk_execution=2.203s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0           0       50        47       11           0.145    0.297       2.304
+        2       HAS       3           0       47        47       11           0.146    0.296       2.304
+        3       HAS       3           0       47        41       11           0.145    0.296       2.003
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+        1       0.006        0.000       0.002          0.000         0.085           0.243          0.013          0.190         0.245
+        2       0.005        0.000       0.002          0.000         0.085           0.241          0.013          0.189         0.243
+        3       0.005        0.000       0.002          0.000         0.084           0.240          0.013          0.189         0.242
+
+=== Pi0.5 inference episode: 2026-06-29 17:26:28 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, execution_horizon=47, fps=20
+summary: total_time=7.262s, inference_calls=4, completed_chunks=4, prefix_chunks=3, actions_applied=140, empty_action_steps=6
+latency: avg_first_action=0.145s, p95_first_action=0.146s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=2.287s
+profile: client_obs=0.005s, client_send=0.000s, server_preprocess=0.002s, server_kwargs=0.000s, server_first_delta=0.084s, server_compute=0.241s, server_postprocess=0.007s, server_send=0.000s, server_total=0.243s
+high_level_profile: non_policy_overhead=0.014s, model_prefill=0.040s, model_denoise=0.189s, model_total=0.239s, robot_chunk_execution=2.287s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        4       HAS       0           0       50        47       11           0.145    0.295       2.304
+        5       HAS       3           0       47        47       11           0.146    0.296       2.304
+        6       HAS       3           0       47        46       11           0.145    0.295       2.253
+        7       HAS       3           0        0         0        0             n/a      n/a         n/a
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+        4       0.005        0.000       0.002          0.000         0.085           0.242          0.013          0.189         0.244
+        5       0.005        0.000       0.001          0.000         0.083           0.240          0.013          0.189         0.242
+        6       0.005        0.000       0.002          0.000         0.084           0.241          0.013          0.189         0.243
+        7       0.004        0.000         n/a            n/a           n/a             n/a            n/a            n/a           n/a
+
+=== Pi0.5 inference episode: 2026-06-29 17:26:46 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, execution_horizon=47, fps=20
+summary: total_time=7.012s, inference_calls=3, completed_chunks=3, prefix_chunks=2, actions_applied=135, empty_action_steps=6
+latency: avg_first_action=0.146s, p95_first_action=0.146s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=2.203s
+profile: client_obs=0.005s, client_send=0.000s, server_preprocess=0.002s, server_kwargs=0.000s, server_first_delta=0.085s, server_compute=0.241s, server_postprocess=0.007s, server_send=0.000s, server_total=0.243s
+high_level_profile: non_policy_overhead=0.014s, model_prefill=0.040s, model_denoise=0.189s, model_total=0.239s, robot_chunk_execution=2.203s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        8       HAS       0           0       50        47       11           0.146    0.296       2.303
+        9       HAS       3           0       47        47       11           0.145    0.296       2.303
+       10       HAS       3           0       47        41       11           0.146    0.296       2.003
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+        8       0.004        0.000       0.002          0.000         0.085           0.242          0.013          0.190         0.244
+        9       0.005        0.000       0.002          0.000         0.085           0.241          0.013          0.189         0.243
+       10       0.005        0.000       0.002          0.000         0.085           0.241          0.013          0.189         0.243
+
+=== Pi0.5 inference episode: 2026-06-29 17:27:02 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, execution_horizon=47, fps=20
+summary: total_time=7.214s, inference_calls=4, completed_chunks=4, prefix_chunks=3, actions_applied=139, empty_action_steps=6
+latency: avg_first_action=0.112s, p95_first_action=0.141s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=2.271s
+profile: client_obs=0.004s, client_send=0.000s, server_preprocess=0.002s, server_kwargs=0.000s, server_first_delta=0.084s, server_compute=0.241s, server_postprocess=0.007s, server_send=0.000s, server_total=0.243s
+high_level_profile: non_policy_overhead=0.013s, model_prefill=0.040s, model_denoise=0.189s, model_total=0.239s, robot_chunk_execution=2.271s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       11       HAS       0           0       50        47       11           0.146    0.297       2.305
+       12       HAS       3           0       47        47       11           0.096    0.296       2.304
+       13       HAS       3           0       47        45       11           0.096    0.296       2.204
+       14       HAS       3           0        0         0        0             n/a      n/a         n/a
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+       11       0.004        0.000       0.002          0.000         0.085           0.242          0.013          0.189         0.244
+       12       0.004        0.000       0.002          0.000         0.084           0.241          0.013          0.189         0.243
+       13       0.004        0.000       0.001          0.000         0.084           0.241          0.013          0.189         0.243
+       14       0.004        0.000         n/a            n/a           n/a             n/a            n/a            n/a           n/a
+
+=== Pi0.5 inference episode: 2026-06-29 17:27:19 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, execution_horizon=47, fps=20
+summary: total_time=7.362s, inference_calls=4, completed_chunks=4, prefix_chunks=3, actions_applied=142, empty_action_steps=6
+latency: avg_first_action=0.133s, p95_first_action=0.146s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=1.728s
+profile: client_obs=0.005s, client_send=0.000s, server_preprocess=0.002s, server_kwargs=0.000s, server_first_delta=0.084s, server_compute=0.223s, server_postprocess=0.006s, server_send=0.000s, server_total=0.225s
+high_level_profile: non_policy_overhead=0.013s, model_prefill=0.040s, model_denoise=0.172s, model_total=0.220s, robot_chunk_execution=1.728s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       15       HAS       0           0       50        47       11           0.145    0.296       2.303
+       16       HAS       3           0       47        47       11           0.096    0.296       2.303
+       17       HAS       3           0       47        47       11           0.145    0.296       2.303
+       18       HAS       3           0       18         1        6           0.146      n/a       0.000
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+       15       0.005        0.000       0.002          0.000         0.084           0.241          0.013          0.189         0.243
+       16       0.004        0.000       0.002          0.000         0.085           0.241          0.013          0.189         0.243
+       17       0.005        0.000       0.002          0.000         0.084           0.241          0.013          0.189         0.243
+       18       0.004        0.000       0.002          0.000         0.084           0.169          0.013          0.122         0.171
+
+=== Pi0.5 inference episode: 2026-06-29 17:27:35 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, execution_horizon=47, fps=20
+summary: total_time=6.761s, inference_calls=3, completed_chunks=3, prefix_chunks=2, actions_applied=130, empty_action_steps=6
+latency: avg_first_action=0.112s, p95_first_action=0.141s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=2.120s
+profile: client_obs=0.005s, client_send=0.000s, server_preprocess=0.002s, server_kwargs=0.000s, server_first_delta=0.084s, server_compute=0.241s, server_postprocess=0.007s, server_send=0.000s, server_total=0.242s
+high_level_profile: non_policy_overhead=0.013s, model_prefill=0.040s, model_denoise=0.189s, model_total=0.238s, robot_chunk_execution=2.120s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       19       HAS       0           0       50        47       11           0.096    0.296       2.303
+       20       HAS       3           0       47        47       11           0.096    0.296       2.303
+       21       HAS       3           0       47        36       11           0.146    0.296       1.752
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+       19       0.004        0.000       0.002          0.000         0.084           0.241          0.013          0.189         0.243
+       20       0.004        0.000       0.001          0.000         0.084           0.240          0.013          0.189         0.242
+       21       0.005        0.000       0.002          0.000         0.084           0.241          0.013          0.189         0.242
+
+=== Pi0.5 inference episode: 2026-06-29 17:28:05 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, execution_horizon=47, fps=20
+summary: total_time=7.362s, inference_calls=4, completed_chunks=4, prefix_chunks=3, actions_applied=142, empty_action_steps=6
+latency: avg_first_action=0.108s, p95_first_action=0.138s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=1.728s
+profile: client_obs=0.004s, client_send=0.000s, server_preprocess=0.002s, server_kwargs=0.000s, server_first_delta=0.084s, server_compute=0.223s, server_postprocess=0.006s, server_send=0.000s, server_total=0.225s
+high_level_profile: non_policy_overhead=0.012s, model_prefill=0.040s, model_denoise=0.172s, model_total=0.220s, robot_chunk_execution=1.728s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       22       HAS       0           0       50        47       11           0.096    0.296       2.303
+       23       HAS       3           0       47        47       11           0.096    0.296       2.303
+       24       HAS       3           0       47        47       11           0.096    0.296       2.303
+       25       HAS       3           0       18         1        6           0.146      n/a       0.000
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+       22       0.004        0.000       0.002          0.000         0.085           0.242          0.013          0.189         0.243
+       23       0.004        0.000       0.002          0.000         0.084           0.240          0.013          0.189         0.242
+       24       0.004        0.000       0.001          0.000         0.083           0.240          0.013          0.189         0.242
+       25       0.004        0.000       0.002          0.000         0.084           0.169          0.013          0.123         0.171
+
+=== Pi0.5 inference episode: 2026-06-29 17:28:22 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, execution_horizon=47, fps=20
+summary: total_time=6.861s, inference_calls=3, completed_chunks=3, prefix_chunks=2, actions_applied=132, empty_action_steps=6
+latency: avg_first_action=0.129s, p95_first_action=0.146s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=2.153s
+profile: client_obs=0.005s, client_send=0.000s, server_preprocess=0.002s, server_kwargs=0.000s, server_first_delta=0.084s, server_compute=0.241s, server_postprocess=0.007s, server_send=0.000s, server_total=0.243s
+high_level_profile: non_policy_overhead=0.013s, model_prefill=0.040s, model_denoise=0.189s, model_total=0.239s, robot_chunk_execution=2.153s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       26       HAS       0           0       50        47       11           0.146    0.296       2.304
+       27       HAS       3           0       47        47       11           0.096    0.296       2.304
+       28       HAS       3           0       47        38       11           0.145    0.296       1.853
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+       26       0.004        0.000       0.002          0.000         0.085           0.242          0.013          0.189         0.244
+       27       0.005        0.000       0.002          0.000         0.084           0.241          0.013          0.189         0.242
+       28       0.005        0.000       0.001          0.000         0.084           0.241          0.013          0.190         0.243
+
+=== Pi0.5 inference episode: 2026-06-29 17:29:24 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, execution_horizon=47, fps=20
+summary: total_time=6.861s, inference_calls=3, completed_chunks=3, prefix_chunks=2, actions_applied=132, empty_action_steps=6
+latency: avg_first_action=0.129s, p95_first_action=0.146s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=2.153s
+profile: client_obs=0.005s, client_send=0.000s, server_preprocess=0.002s, server_kwargs=0.000s, server_first_delta=0.084s, server_compute=0.242s, server_postprocess=0.007s, server_send=0.000s, server_total=0.243s
+high_level_profile: non_policy_overhead=0.013s, model_prefill=0.040s, model_denoise=0.189s, model_total=0.239s, robot_chunk_execution=2.153s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       29       HAS       0           0       50        47       11           0.146    0.296       2.303
+       30       HAS       3           0       47        47       11           0.146    0.296       2.303
+       31       HAS       3           0       47        38       11           0.096    0.296       1.853
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+       29       0.004        0.000       0.002          0.000         0.085           0.243          0.013          0.190         0.245
+       30       0.005        0.000       0.001          0.000         0.084           0.241          0.013          0.189         0.243
+       31       0.004        0.000       0.001          0.000         0.084           0.241          0.013          0.190         0.243
+
+=== Pi0.5 inference episode: 2026-06-29 17:30:41 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, early_stop_actions=25, execution_horizon=25, fps=30
+summary: total_time=3.576s, inference_calls=5, completed_chunks=5, prefix_chunks=4, actions_applied=101, empty_action_steps=7
+latency: avg_first_action=0.102s, p95_first_action=0.122s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.641s
+profile: client_obs=0.005s, client_send=0.000s, server_preprocess=0.001s, server_kwargs=0.000s, server_first_delta=0.077s, server_compute=0.184s, server_postprocess=0.003s, server_send=0.000s, server_total=0.185s
+high_level_profile: non_policy_overhead=0.010s, model_prefill=0.037s, model_denoise=0.138s, model_total=0.181s, robot_chunk_execution=0.641s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0          25       25        25        8           0.128    0.229       0.802
+        2       HAS       4          25       25        25        9           0.096    0.230       0.802
+        3       HAS       4          25       25        25        9           0.096    0.229       0.802
+        4       HAS       4          25       25        25        9           0.096    0.230       0.802
+        5       HAS       4          25       12         1        5           0.096      n/a       0.000
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+        1       0.005        0.000       0.002          0.000         0.085           0.189          0.013          0.139         0.190
+        2       0.005        0.000       0.001          0.000         0.083           0.204          0.013          0.155         0.206
+        3       0.005        0.000       0.001          0.000         0.072           0.193          0.013          0.149         0.194
+        4       0.004        0.000       0.001          0.000         0.072           0.193          0.013          0.149         0.195
+        5       0.004        0.000       0.001          0.000         0.072           0.140          0.013          0.099         0.141
+
+=== Pi0.5 inference episode: 2026-06-29 17:30:59 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, early_stop_actions=25, execution_horizon=25, fps=30
+summary: total_time=4.845s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=139, empty_action_steps=7
+latency: avg_first_action=0.101s, p95_first_action=0.121s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.741s
+profile: client_obs=0.005s, client_send=0.000s, server_preprocess=0.002s, server_kwargs=0.000s, server_first_delta=0.075s, server_compute=0.193s, server_postprocess=0.004s, server_send=0.000s, server_total=0.195s
+high_level_profile: non_policy_overhead=0.010s, model_prefill=0.036s, model_denoise=0.148s, model_total=0.191s, robot_chunk_execution=0.741s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        6       HAS       0          25       25        25        8           0.129    0.229       0.802
+        7       HAS       4          25       25        25        9           0.096    0.230       0.802
+        8       HAS       4          25       25        25        9           0.096    0.229       0.802
+        9       HAS       4          25       25        25        9           0.096    0.229       0.802
+       10       HAS       4          25       25        25        9           0.096    0.230       0.802
+       11       HAS       4          25       25        14        9           0.096    0.229       0.434
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+        6       0.004        0.000       0.002          0.000         0.085           0.189          0.013          0.139         0.191
+        7       0.004        0.000       0.001          0.000         0.075           0.196          0.013          0.151         0.197
+        8       0.005        0.000       0.002          0.000         0.073           0.193          0.013          0.149         0.195
+        9       0.005        0.000       0.002          0.000         0.072           0.193          0.013          0.149         0.195
+       10       0.004        0.000       0.002          0.000         0.072           0.193          0.013          0.149         0.194
+       11       0.005        0.000       0.002          0.000         0.072           0.193          0.013          0.149         0.194
+
+=== Pi0.5 inference episode: 2026-06-29 17:31:13 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, early_stop_actions=25, execution_horizon=25, fps=30
+summary: total_time=4.844s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=139, empty_action_steps=7
+latency: avg_first_action=0.101s, p95_first_action=0.120s, recommended_delay=4, avg_final=0.235s, avg_chunk_duration=0.740s
+profile: client_obs=0.005s, client_send=0.000s, server_preprocess=0.001s, server_kwargs=0.000s, server_first_delta=0.076s, server_compute=0.194s, server_postprocess=0.004s, server_send=0.000s, server_total=0.196s
+high_level_profile: non_policy_overhead=0.010s, model_prefill=0.037s, model_denoise=0.149s, model_total=0.192s, robot_chunk_execution=0.740s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       12       HAS       0          25       25        25        8           0.129    0.229       0.802
+       13       HAS       4          25       25        25        9           0.096    0.229       0.802
+       14       HAS       4          25       25        25        9           0.096    0.230       0.802
+       15       HAS       4          25       25        25        9           0.096    0.263       0.802
+       16       HAS       4          25       25        25        9           0.096    0.230       0.802
+       17       HAS       4          25       25        14        9           0.096    0.230       0.434
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+       12       0.005        0.000       0.002          0.000         0.084           0.188          0.013          0.140         0.190
+       13       0.004        0.000       0.002          0.000         0.072           0.193          0.013          0.149         0.194
+       14       0.004        0.000       0.002          0.000         0.072           0.194          0.013          0.150         0.196
+       15       0.005        0.000       0.002          0.000         0.084           0.204          0.013          0.156         0.206
+       16       0.004        0.000       0.001          0.000         0.074           0.195          0.013          0.151         0.196
+       17       0.004        0.000       0.001          0.000         0.072           0.193          0.013          0.149         0.194
+
+=== Pi0.5 inference episode: 2026-06-29 17:32:28 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, early_stop_actions=20, execution_horizon=20, fps=30
+summary: total_time=5.213s, inference_calls=8, completed_chunks=8, prefix_chunks=7, actions_applied=150, empty_action_steps=7
+latency: avg_first_action=0.099s, p95_first_action=0.116s, recommended_delay=4, avg_final=0.200s, avg_chunk_duration=0.593s
+profile: client_obs=0.005s, client_send=0.000s, server_preprocess=0.001s, server_kwargs=0.000s, server_first_delta=0.074s, server_compute=0.177s, server_postprocess=0.003s, server_send=0.000s, server_total=0.178s
+high_level_profile: non_policy_overhead=0.010s, model_prefill=0.036s, model_denoise=0.133s, model_total=0.175s, robot_chunk_execution=0.593s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0          20       20        20        8           0.128    0.228       0.635
+        2       HAS       4          20       20        20        8           0.096    0.196       0.635
+        3       HAS       4          20       20        20        8           0.094    0.195       0.635
+        4       HAS       4          20       20        20        8           0.095    0.196       0.635
+        5       HAS       4          20       20        20        8           0.095    0.196       0.635
+        6       HAS       4          20       20        20        8           0.095    0.195       0.635
+        7       HAS       4          20       20        20        8           0.095    0.196       0.635
+        8       HAS       4          20       20        10        8           0.095    0.196       0.300
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+        1       0.006        0.000       0.002          0.000         0.085           0.188          0.013          0.140         0.190
+        2       0.005        0.000       0.002          0.000         0.072           0.175          0.013          0.132         0.177
+        3       0.006        0.000       0.001          0.000         0.072           0.175          0.013          0.131         0.176
+        4       0.005        0.000       0.001          0.000         0.072           0.175          0.013          0.132         0.176
+        5       0.005        0.000       0.002          0.000         0.072           0.175          0.013          0.132         0.177
+        6       0.005        0.000       0.001          0.000         0.072           0.175          0.013          0.132         0.177
+        7       0.005        0.000       0.001          0.000         0.072           0.175          0.013          0.132         0.177
+        8       0.005        0.000       0.002          0.000         0.072           0.175          0.013          0.132         0.177
+
+=== Pi0.5 inference episode: 2026-06-29 17:32:43 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, early_stop_actions=20, execution_horizon=20, fps=30
+summary: total_time=5.418s, inference_calls=9, completed_chunks=9, prefix_chunks=8, actions_applied=156, empty_action_steps=7
+latency: avg_first_action=0.095s, p95_first_action=0.096s, recommended_delay=3, avg_final=0.200s, avg_chunk_duration=0.619s
+profile: client_obs=0.005s, client_send=0.000s, server_preprocess=0.001s, server_kwargs=0.000s, server_first_delta=0.074s, server_compute=0.177s, server_postprocess=0.003s, server_send=0.000s, server_total=0.178s
+high_level_profile: non_policy_overhead=0.010s, model_prefill=0.036s, model_denoise=0.133s, model_total=0.175s, robot_chunk_execution=0.619s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        9       HAS       0          20       20        20        8           0.095    0.229       0.635
+       10       HAS       4          20       20        20        8           0.096    0.196       0.635
+       11       HAS       4          20       20        20        8           0.096    0.196       0.635
+       12       HAS       4          20       20        20        8           0.096    0.196       0.635
+       13       HAS       4          20       20        20        8           0.095    0.196       0.635
+       14       HAS       4          20       20        20        8           0.096    0.196       0.635
+       15       HAS       4          20       20        20        8           0.095    0.196       0.635
+       16       HAS       4          20       20        16        8           0.095    0.196       0.506
+       17       HAS       4          20        0         0        0             n/a      n/a         n/a
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+        9       0.005        0.000       0.001          0.000         0.084           0.187          0.013          0.139         0.189
+       10       0.004        0.000       0.001          0.000         0.074           0.177          0.013          0.134         0.179
+       11       0.005        0.000       0.001          0.000         0.072           0.175          0.013          0.132         0.176
+       12       0.005        0.000       0.001          0.000         0.072           0.175          0.013          0.132         0.177
+       13       0.005        0.000       0.001          0.000         0.072           0.175          0.013          0.132         0.177
+       14       0.005        0.000       0.002          0.000         0.072           0.175          0.013          0.132         0.177
+       15       0.005        0.000       0.002          0.000         0.072           0.175          0.013          0.132         0.177
+       16       0.005        0.000       0.002          0.000         0.073           0.175          0.013          0.132         0.177
+       17       0.005        0.000         n/a            n/a           n/a             n/a            n/a            n/a           n/a
+
+=== Pi0.5 inference episode: 2026-06-29 17:38:22 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, early_stop_actions=25, execution_horizon=25, fps=35
+summary: total_time=3.037s, inference_calls=4, completed_chunks=4, prefix_chunks=3, actions_applied=76, empty_action_steps=31
+latency: avg_first_action=0.296s, p95_first_action=0.742s, recommended_delay=26, avg_final=0.444s, avg_chunk_duration=0.516s
+profile: client_obs=0.005s, client_send=0.000s, server_preprocess=0.002s, server_kwargs=0.000s, server_first_delta=0.170s, server_compute=0.271s, server_postprocess=0.006s, server_send=0.000s, server_total=0.274s
+high_level_profile: non_policy_overhead=0.014s, model_prefill=0.108s, model_denoise=0.137s, model_total=0.263s, robot_chunk_execution=0.516s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0          25       25        25        8           0.854    0.883       0.687
+        2       HAS       4          25       25        25        9           0.110    0.225       0.687
+        3       HAS       4          25       25        25        9           0.110    0.225       0.688
+        4       HAS       4          25        8         1        4           0.110      n/a       0.000
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+        1       0.006        0.000       0.004          0.000         0.448           0.554          0.110          0.150         0.558
+        2       0.005        0.000       0.002          0.000         0.081           0.205          0.013          0.157         0.207
+        3       0.005        0.000       0.002          0.000         0.077           0.201          0.013          0.156         0.203
+        4       0.005        0.000       0.001          0.000         0.073           0.125          0.013          0.084         0.126
+
+=== Pi0.5 inference episode: 2026-06-29 17:38:47 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, early_stop_actions=25, execution_horizon=25, fps=35
+summary: total_time=4.814s, inference_calls=7, completed_chunks=7, prefix_chunks=6, actions_applied=161, empty_action_steps=8
+latency: avg_first_action=0.110s, p95_first_action=0.110s, recommended_delay=4, avg_final=0.225s, avg_chunk_duration=0.630s
+profile: client_obs=0.005s, client_send=0.000s, server_preprocess=0.002s, server_kwargs=0.000s, server_first_delta=0.075s, server_compute=0.197s, server_postprocess=0.004s, server_send=0.000s, server_total=0.198s
+high_level_profile: non_policy_overhead=0.010s, model_prefill=0.037s, model_denoise=0.151s, model_total=0.194s, robot_chunk_execution=0.630s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        5       HAS       0          25       25        25        8           0.110    0.225       0.688
+        6       HAS       4          25       25        25        9           0.110    0.224       0.688
+        7       HAS       4          25       25        25        9           0.110    0.224       0.687
+        8       HAS       4          25       25        25        9           0.110    0.225       0.688
+        9       HAS       4          25       25        25        9           0.109    0.224       0.688
+       10       HAS       4          25       25        25        9           0.110    0.225       0.687
+       11       HAS       4          25       25        11        9           0.110    0.224       0.286
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+        5       0.004        0.000       0.002          0.000         0.086           0.192          0.013          0.143         0.194
+        6       0.005        0.000       0.001          0.000         0.073           0.197          0.013          0.152         0.199
+        7       0.005        0.000       0.001          0.000         0.073           0.197          0.013          0.152         0.199
+        8       0.004        0.000       0.002          0.000         0.073           0.197          0.013          0.152         0.199
+        9       0.005        0.000       0.002          0.000         0.075           0.198          0.013          0.152         0.200
+       10       0.004        0.000       0.001          0.000         0.073           0.197          0.013          0.152         0.199
+       11       0.005        0.000       0.002          0.000         0.073           0.197          0.013          0.151         0.198
+
+=== Pi0.5 inference episode: 2026-06-29 17:39:06 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, early_stop_actions=25, execution_horizon=25, fps=35
+summary: total_time=2.379s, inference_calls=4, completed_chunks=4, prefix_chunks=3, actions_applied=76, empty_action_steps=8
+latency: avg_first_action=0.110s, p95_first_action=0.110s, recommended_delay=4, avg_final=0.225s, avg_chunk_duration=0.516s
+profile: client_obs=0.005s, client_send=0.000s, server_preprocess=0.002s, server_kwargs=0.000s, server_first_delta=0.081s, server_compute=0.183s, server_postprocess=0.003s, server_send=0.000s, server_total=0.185s
+high_level_profile: non_policy_overhead=0.010s, model_prefill=0.039s, model_denoise=0.136s, model_total=0.181s, robot_chunk_execution=0.516s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       12       HAS       0          25       25        25        8           0.110    0.225       0.688
+       13       HAS       4          25       25        25        9           0.110    0.225       0.687
+       14       HAS       4          25       25        25        9           0.110    0.224       0.687
+       15       HAS       4          25        8         1        4           0.110      n/a       0.000
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+       12       0.005        0.000       0.002          0.000         0.085           0.192          0.013          0.143         0.194
+       13       0.004        0.000       0.002          0.000         0.084           0.209          0.013          0.160         0.211
+       14       0.005        0.000       0.002          0.000         0.084           0.208          0.013          0.159         0.210
+       15       0.005        0.000       0.001          0.000         0.073           0.125          0.013          0.084         0.126
+
+=== Pi0.5 inference episode: 2026-06-29 17:39:18 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, early_stop_actions=25, execution_horizon=25, fps=35
+summary: total_time=2.379s, inference_calls=4, completed_chunks=4, prefix_chunks=3, actions_applied=76, empty_action_steps=8
+latency: avg_first_action=0.110s, p95_first_action=0.110s, recommended_delay=4, avg_final=0.225s, avg_chunk_duration=0.516s
+profile: client_obs=0.005s, client_send=0.000s, server_preprocess=0.002s, server_kwargs=0.000s, server_first_delta=0.076s, server_compute=0.178s, server_postprocess=0.003s, server_send=0.000s, server_total=0.180s
+high_level_profile: non_policy_overhead=0.010s, model_prefill=0.037s, model_denoise=0.133s, model_total=0.176s, robot_chunk_execution=0.516s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       16       HAS       0          25       25        25        8           0.110    0.224       0.688
+       17       HAS       4          25       25        25        9           0.110    0.225       0.688
+       18       HAS       4          25       25        25        9           0.110    0.225       0.688
+       19       HAS       4          25        8         1        4           0.109      n/a       0.000
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+       16       0.005        0.000       0.001          0.000         0.084           0.191          0.013          0.143         0.193
+       17       0.005        0.000       0.002          0.000         0.073           0.198          0.013          0.152         0.199
+       18       0.005        0.000       0.002          0.000         0.074           0.198          0.013          0.152         0.200
+       19       0.005        0.000       0.002          0.000         0.074           0.125          0.013          0.084         0.127
+
+=== Pi0.5 inference episode: 2026-06-29 17:39:32 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, early_stop_actions=25, execution_horizon=25, fps=35
+summary: total_time=1.319s, inference_calls=2, completed_chunks=2, prefix_chunks=1, actions_applied=38, empty_action_steps=8
+latency: avg_first_action=0.110s, p95_first_action=0.110s, recommended_delay=4, avg_final=0.225s, avg_chunk_duration=0.516s
+profile: client_obs=0.005s, client_send=0.000s, server_preprocess=0.001s, server_kwargs=0.000s, server_first_delta=0.079s, server_compute=0.194s, server_postprocess=0.004s, server_send=0.000s, server_total=0.196s
+high_level_profile: non_policy_overhead=0.010s, model_prefill=0.038s, model_denoise=0.147s, model_total=0.192s, robot_chunk_execution=0.516s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       20       HAS       0          25       25        25        8           0.109    0.225       0.688
+       21       HAS       4          25       25        13        9           0.110    0.225       0.344
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+       20       0.005        0.000       0.002          0.000         0.084           0.191          0.013          0.142         0.193
+       21       0.004        0.000       0.001          0.000         0.073           0.197          0.013          0.152         0.199
+
+=== Pi0.5 inference episode: 2026-06-29 17:39:46 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, early_stop_actions=25, execution_horizon=25, fps=35
+summary: total_time=3.812s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=126, empty_action_steps=8
+latency: avg_first_action=0.110s, p95_first_action=0.110s, recommended_delay=4, avg_final=0.225s, avg_chunk_duration=0.573s
+profile: client_obs=0.005s, client_send=0.000s, server_preprocess=0.002s, server_kwargs=0.000s, server_first_delta=0.075s, server_compute=0.185s, server_postprocess=0.003s, server_send=0.000s, server_total=0.187s
+high_level_profile: non_policy_overhead=0.010s, model_prefill=0.037s, model_denoise=0.139s, model_total=0.183s, robot_chunk_execution=0.573s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       22       HAS       0          25       25        25        8           0.110    0.225       0.688
+       23       HAS       4          25       25        25        9           0.110    0.224       0.687
+       24       HAS       4          25       25        25        9           0.109    0.224       0.688
+       25       HAS       4          25       25        25        9           0.110    0.225       0.688
+       26       HAS       4          25       25        25        9           0.110    0.225       0.688
+       27       HAS       4          25        8         1        4           0.110      n/a       0.000
+profile by request:
+  request  client_obs  client_send  server_pre  server_kwargs  server_first  server_compute  model_prefill  model_denoise  server_total
+       22       0.004        0.000       0.002          0.000         0.085           0.192          0.013          0.143         0.194
+       23       0.005        0.000       0.001          0.000         0.073           0.198          0.013          0.152         0.199
+       24       0.005        0.000       0.002          0.000         0.073           0.198          0.013          0.152         0.199
+       25       0.004        0.000       0.002          0.000         0.073           0.197          0.013          0.152         0.199
+       26       0.005        0.000       0.001          0.000         0.073           0.198          0.013          0.152         0.199
+       27       0.004        0.000       0.001          0.000         0.074           0.127          0.013          0.085         0.129
