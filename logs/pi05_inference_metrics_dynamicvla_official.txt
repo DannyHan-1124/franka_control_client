@@ -433,3 +433,88 @@ chunks:
       265     const       0       50         5        2           0.250    0.251       0.200
       269     const       0       50         5        2           0.300    0.300       0.201
       274     const       0       50         4        2           0.301    0.301       0.150
+
+=== Pi0.5 inference episode: 2026-06-29 18:08:47 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, fps=20
+summary: total_time=4.808s, inference_calls=18, observations_published=96, completed_chunks=18, prefix_chunks=0, actions_applied=83, empty_action_steps=13, stale_actions_dropped=110, actions_overwritten=667
+latency: avg_first_action=0.306s, avg_final=0.306s, avg_chunk_duration=0.181s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+        1     const       0       50         5        2           0.650    0.650       0.200
+       13     const       0       50         4        2           0.301    0.301       0.150
+       18     const       0       50         5        2           0.251    0.251       0.200
+       22     const       0       50         5        2           0.300    0.301       0.200
+       27     const       0       50         4        2           0.301    0.301       0.150
+       32     const       0       50         5        2           0.251    0.251       0.200
+       36     const       0       50         5        2           0.300    0.301       0.200
+       41     const       0       50         4        2           0.300    0.300       0.150
+       45     const       0       50         5        2           0.300    0.300       0.200
+       50     const       0       50         4        2           0.300    0.300       0.150
+       55     const       0       50         5        2           0.250    0.250       0.200
+       59     const       0       50         5        2           0.301    0.301       0.200
+       64     const       0       50         4        2           0.301    0.301       0.151
+       69     const       0       50         5        2           0.251    0.251       0.200
+       73     const       0       50         5        2           0.301    0.301       0.200
+       78     const       0       50         4        2           0.300    0.301       0.151
+       83     const       0       50         5        2           0.251    0.251       0.200
+       87     const       0       50         4        2           0.300    0.300       0.150
+
+=== Pi0.5 inference episode: 2026-06-29 18:09:00 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, fps=20
+summary: total_time=5.759s, inference_calls=24, observations_published=115, completed_chunks=24, prefix_chunks=0, actions_applied=109, empty_action_steps=6, stale_actions_dropped=139, actions_overwritten=909
+latency: avg_first_action=0.290s, avg_final=0.290s, avg_chunk_duration=0.177s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       97     const       0       50         4        2           0.301    0.301       0.151
+      102     const       0       50         5        2           0.250    0.250       0.200
+      106     const       0       50         5        2           0.300    0.300       0.200
+      111     const       0       50         4        2           0.301    0.301       0.150
+      116     const       0       50         5        2           0.250    0.250       0.200
+      120     const       0       50         5        2           0.300    0.301       0.200
+      125     const       0       50         4        2           0.301    0.301       0.150
+      130     const       0       50         5        2           0.250    0.250       0.200
+      134     const       0       50         5        2           0.301    0.301       0.200
+      139     const       0       50         5        2           0.300    0.301       0.200
+      144     const       0       50         4        2           0.301    0.301       0.150
+      148     const       0       50         5        2           0.301    0.301       0.199
+      153     const       0       50         5        2           0.301    0.301       0.200
+      158     const       0       50         4        2           0.301    0.301       0.150
+      162     const       0       50         5        2           0.300    0.301       0.200
+      167     const       0       50         5        2           0.300    0.301       0.200
+      172     const       0       50         4        2           0.300    0.301       0.150
+      177     const       0       50         5        2           0.251    0.251       0.200
+      181     const       0       50         5        2           0.301    0.301       0.200
+      186     const       0       50         4        2           0.302    0.302       0.149
+      191     const       0       50         5        2           0.251    0.251       0.200
+      195     const       0       50         5        2           0.301    0.301       0.200
+      200     const       0       50         5        2           0.301    0.301       0.200
+      205     const       0       50         1        2           0.301    0.301       0.000
+
+=== Pi0.5 inference episode: 2026-06-29 18:09:14 ===
+task: put cylinder in moving cup
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, fps=20
+summary: total_time=4.557s, inference_calls=19, observations_published=91, completed_chunks=19, prefix_chunks=0, actions_applied=85, empty_action_steps=6, stale_actions_dropped=109, actions_overwritten=713
+latency: avg_first_action=0.287s, avg_final=0.287s, avg_chunk_duration=0.174s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+      212     const       0       50         4        2           0.300    0.300       0.150
+      217     const       0       50         5        2           0.249    0.249       0.201
+      221     const       0       50         5        2           0.301    0.301       0.200
+      226     const       0       50         4        2           0.301    0.301       0.150
+      231     const       0       50         5        2           0.252    0.252       0.198
+      235     const       0       50         5        2           0.301    0.301       0.200
+      240     const       0       50         4        2           0.301    0.301       0.150
+      245     const       0       50         5        2           0.250    0.251       0.200
+      249     const       0       50         5        2           0.301    0.301       0.200
+      254     const       0       50         4        2           0.300    0.300       0.151
+      259     const       0       50         5        2           0.250    0.250       0.201
+      263     const       0       50         5        2           0.300    0.300       0.200
+      268     const       0       50         4        2           0.300    0.300       0.151
+      273     const       0       50         5        2           0.250    0.250       0.200
+      277     const       0       50         5        2           0.301    0.301       0.200
+      282     const       0       50         4        2           0.301    0.301       0.150
+      286     const       0       50         5        2           0.301    0.301       0.200
+      291     const       0       50         5        2           0.300    0.301       0.200
+      296     const       0       50         1        2           0.301    0.301       0.000
