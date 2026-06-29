@@ -220,7 +220,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
             if old_request_id < cutoff and old_request_id not in self._stream_inferred_request_ids:
                 self._stream_request_start_steps.pop(old_request_id, None)
                 self._stream_request_times.pop(old_request_id, None)
-                self._stream_request_schedules.pop(old_request_id, None)
 
     def _ensure_official_dynamicvla_metric(self, request_id: int) -> dict[str, Any]:
         metric = self._metrics_stream_chunks.get(request_id)
