@@ -9,7 +9,9 @@ export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot/src"
 # pgrep -af 'ssh.*(-L)'
 
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
-    --task "put cylinder in moving cup" \
+    --task "put red cylinder on red cube" \
+    --fps 20 \
+    --stop_after_first_release \
     --robot_name FrankaPanda \
     --pyzlc_name policy_inference \
     --pyzlc_host 141.3.53.25 \
@@ -20,7 +22,7 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --metrics_path "${REPO_ROOT}/logs/pi05_inference_metrics_profiling.jsonl" \
     --execution_horizon 25 \
     --faster_infer_time_schedule HAS \
-    --faster_alpha 0.6 \
+    --faster_alpha 1.0 \
     --faster_u0 0.9 \
     --delay 3 \
     --early_stop_actions 25 \
