@@ -14,4 +14,4 @@ python -m franka_control_client.policy.pi05_policy_node \
     --action_topic pi05/action \
     --fps 20 \
     --default_task "put green cylinder on blue cube" \
-    --streaming_zmq_bind tcp://0.0.0.0:40024
+    --streaming_zmq_bind tcp://0.0.0.0:40124
