@@ -1,0 +1,32 @@
+(pi05_franka) jjiang@irl-220:~/utphd/franka_control_client$ bash scripts/inference.sh
+[2026-06-30 18:29:01,056] [INFO] ServiceManager REP socket bound to tcp://141.3.53.25:41131
+[2026-06-30 18:29:01,107] [INFO] Waiting for first message on topic 'FrankaPanda/franka_arm_state'...
+[2026-06-30 18:29:01,283] [INFO] Node policy_inference has been updated
+[2026-06-30 18:29:01,496] [INFO] Node static_cam has been updated
+[2026-06-30 18:29:01,539] [INFO] Node wrist_cam has been updated
+[2026-06-30 18:29:01,984] [INFO] Node robot_lab_robotiq_202 has been updated
+[2026-06-30 18:29:01,985] [INFO] Subscriber FrankaPanda/franka_arm_state is connected to tcp://141.3.53.63:42935
+[2026-06-30 18:29:01,985] [INFO] Subscriber FrankaPanda/franka_arm_state is subscribing ...
+[2026-06-30 18:29:02,018] [INFO] Subscriber FrankaPanda/robotiq_gripper_state is connected to tcp://141.3.53.63:34683
+[2026-06-30 18:29:02,018] [INFO] Subscriber FrankaPanda/robotiq_gripper_state is subscribing ...
+[2026-06-30 18:29:02,068] [INFO] Waiting for first message on topic 'FrankaPanda/robotiq_gripper_state'...
+[2026-06-30 18:29:02,319] [INFO] Subscriber static_cam is connected to ipc:///tmp/zlc/robot_lab_robotiq_202/static_cam/topic.sock
+[2026-06-30 18:29:02,319] [INFO] Subscriber static_cam is subscribing ...
+[2026-06-30 18:29:02,369] [INFO] Waiting for first message on topic 'static_cam'...
+[2026-06-30 18:29:02,369] [INFO] Subscriber wrist_cam is connected to ipc:///tmp/zlc/robot_lab_robotiq_202/wrist_cam/topic.sock
+[2026-06-30 18:29:02,369] [INFO] Subscriber wrist_cam is subscribing ...
+[2026-06-30 18:29:02,419] [INFO] Waiting for first message on topic 'wrist_cam'...
+Starting policy infering...[2026-06-30 18:29:15,021] [INFO] Starting control
+[2026-06-30 18:29:15,022] [INFO] Started Control Pair
+Infering... Press 's' to save, 'd' to discard, or 'q' to quit[2026-06-30 18:29:15,027] [INFO] Using Pi0.5 inference schedule: const, phase_fallback_active=False
+[2026-06-30 18:29:15,090] [INFO] Set Franka arm control mode to CartesianImpedance
+[2026-06-30 18:29:25,237] [INFO] Pi0.5 inference metrics: total_time=10.216s, inference_calls=1, completed_chunks=1, prefix_chunks=0, actions_applied=0, empty_action_steps=204, avg_first_action_latency=n/as, p95_first_action_latency=n/as, recommended_delay=None, avg_final_latency=n/as, avg_chunk_duration=n/as
+[2026-06-30 18:29:25,237] [INFO] Pi0.5 chunk metrics: request_id=1, request_latency=n/as, chunk_duration=n/as, executed_actions=0, action_count=None
+Stopping policy inference...[2026-06-30 18:29:25,237] [INFO] Resetting...
+[2026-06-30 18:29:25,445] [INFO] Set Franka arm control mode to CartesianImpedance
+[2026-06-30 18:29:27,155] [INFO] Set Franka arm control mode to Idle
+Episode discarded.
+Policy infering closed.[2026-06-30 18:29:27,694] [INFO] Subscriber FrankaPanda/franka_arm_state has been closed
+[2026-06-30 18:29:27,694] [INFO] Subscriber FrankaPanda/robotiq_gripper_state has been closed
+[2026-06-30 18:29:27,694] [INFO] Subscriber static_cam has been closed
+[2026-06-30 18:29:27,694] [INFO] Subscriber wrist_cam has been closed

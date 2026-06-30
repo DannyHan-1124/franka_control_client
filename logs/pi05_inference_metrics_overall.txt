@@ -132,3 +132,38 @@ chunks:
        10       HAS       3           0       47        40       11           0.095    0.196       1.948
        11       HAS       3           0       47        40       11           0.095    0.195       1.948
        12       HAS       3           0       47        16       11           0.095    0.246       0.746
+
+=== Pi0.5 inference episode: 2026-06-30 17:58:39 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, u0=0.900, alpha=1.000, delay=3, execution_horizon=40, fps=20
+summary: total_time=7.211s, inference_calls=1, completed_chunks=1, prefix_chunks=0, actions_applied=0, empty_action_steps=144
+latency: avg_first_action=n/as, p95_first_action=n/as, recommended_delay=None, avg_final=n/as, avg_chunk_duration=n/as
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0           0        0         0        0             n/a      n/a         n/a
+
+=== Pi0.5 inference episode: 2026-06-30 17:59:23 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, u0=0.900, alpha=1.000, delay=3, execution_horizon=40, fps=20
+summary: total_time=4.757s, inference_calls=0, completed_chunks=0, prefix_chunks=0, actions_applied=0, empty_action_steps=95
+latency: avg_first_action=n/as, p95_first_action=n/as, recommended_delay=None, avg_final=n/as, avg_chunk_duration=n/as
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+
+=== Pi0.5 inference episode: 2026-06-30 18:01:12 ===
+task: put red cylinder on blue cube and put green cylinder on yellow cube
+config: transport=streaming_zmq, schedule=const, execution_horizon=50, fps=20
+summary: total_time=16.424s, inference_calls=1, completed_chunks=1, prefix_chunks=0, actions_applied=0, empty_action_steps=328
+latency: avg_first_action=n/as, p95_first_action=n/as, recommended_delay=None, avg_final=n/as, avg_chunk_duration=n/as
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1     const       0           0        0         0        0             n/a      n/a         n/a
+
+=== Pi0.5 inference episode: 2026-06-30 18:05:48 ===
+task: put red cylinder on blue cube and put green cylinder on yellow cube
+config: transport=streaming_zmq, schedule=const, execution_horizon=50, fps=20
+summary: total_time=6.209s, inference_calls=1, completed_chunks=1, prefix_chunks=0, actions_applied=0, empty_action_steps=124
+latency: avg_first_action=n/as, p95_first_action=n/as, recommended_delay=None, avg_final=n/as, avg_chunk_duration=n/as
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1     const       0           0        0         0        0             n/a      n/a         n/a
