@@ -1,0 +1,23 @@
+python - <<'PY'
+import zmq
+
+ctx = zmq.Context.instance()
+sock = ctx.socket(zmq.PAIR)
+sock.setsockopt(zmq.LINGER, 0)
+sock.setsockopt(zmq.RCVTIMEO, 5000)
+sock.setsockopt(zmq.SNDTIMEO, 5000)
+sock.connect("tcp://127.0.0.1:17726")
+
+print("sending healthcheck...")
+sock.send_pyobj({
+    "type": "healthcheck",
+    "request_id": 999,
+    "observation": {},
+})
+
+try:
+    msg = sock.recv_pyobj()
+    print("received:", msg)
+except Exception as exc:
+    print("NO REPLY:", repr(exc))
+PY
