@@ -21,3 +21,6 @@ try:
 except Exception as exc:
     print("NO REPLY:", repr(exc))
 PY
+
+sending healthcheck...
+NO REPLY: Again('Resource temporarily unavailable')
