@@ -4,7 +4,6 @@ import threading
 import time
 from collections import deque
 from dataclasses import dataclass
-from pathlib import Path
 from typing import Any, Deque, Dict, List, Optional
 
 import cv2
@@ -28,19 +27,6 @@ IMAGE_SIZE = (224, 224)
 STATE_DIM = 8
 ACTION_DIM = 8
 
-# Conservative bounds from the provided dataset stats. They catch obvious
-# malformed actions before a command reaches the robot.
-ACTION_MIN = np.asarray(
-    [0.3190808892, -0.2152197808, 0.0648892596, 0.6027086973,
-     0.0071996935, -0.0767344609, -0.2188671827, 0.0],
-    dtype=np.float64,
-)
-ACTION_MAX = np.asarray(
-    [0.6499189734, 0.2323044389, 0.3287435770, 0.9907264709,
-     0.7829164267, 0.3113254011, 0.2575095892, 1.0],
-    dtype=np.float64,
-)
-
 
 @dataclass
 class Pi05PolicyInferenceConfig:
@@ -49,18 +35,13 @@ class Pi05PolicyInferenceConfig:
     fps: int = 20
     obs_topic: Optional[str] = None
     action_topic: Optional[str] = None
-    clamp_actions: bool = True
     policy_transport: str = "pyzlc"
     policy_zmq_endpoint: Optional[str] = None
     policy_zmq_timeout_ms: int = 30000
-    max_position_step_m: float = 0.005
-    max_rotation_step_rad: float = 0.05
     chunk_replan_steps: int = 50
     gripper_open_confirm_steps: int = 1
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
-    debug_image_dir: Optional[str] = None
-    debug_image_interval: int = 25
     reclose_after_release_min_motion_m: float = 0.08
     task_after_first_release: Optional[str] = None
     rtc_enabled: bool = False
@@ -140,7 +121,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._release_armed = False
         self._stop_after_release_countdown: Optional[int] = None
         self._last_sanitized_action: Optional[np.ndarray] = None
-        self._debug_image_step = 0
         self._release_pos: Optional[np.ndarray] = None
         self._rtc_lock = threading.Lock()
         self._rtc_inflight = False
@@ -165,7 +145,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._release_armed = False
         self._stop_after_release_countdown = None
         self._last_sanitized_action = None
-        self._debug_image_step = 0
         self._release_pos = None
         self._reset_rtc_state()
         self.task = self._initial_task
@@ -443,7 +422,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _build_observation(self, policy_kwargs: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         static_rgb = self._capture_rgb(self.static_cam)
         wrist_rgb = self._capture_rgb(self.wrist_cam)
-        self._maybe_save_debug_images(static_rgb, wrist_rgb)
         obs = {
             "observation.images.base_0_rgb": _encode_rgb_image(static_rgb),
             "observation.images.left_wrist_0_rgb": _encode_rgb_image(wrist_rgb),
@@ -453,22 +431,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if policy_kwargs:
             obs["policy_kwargs"] = policy_kwargs
         return obs
-
-    def _maybe_save_debug_images(self, static_rgb: np.ndarray, wrist_rgb: np.ndarray) -> None:
-        if not self.cfg.debug_image_dir:
-            return
-        interval = max(1, int(self.cfg.debug_image_interval))
-        if self._debug_image_step % interval != 0:
-            self._debug_image_step += 1
-            return
-
-        out_dir = Path(self.cfg.debug_image_dir)
-        out_dir.mkdir(parents=True, exist_ok=True)
-        for name, image_rgb in (("static", static_rgb), ("wrist", wrist_rgb)):
-            path = out_dir / f"{self._debug_image_step:06d}_{name}_rgb.png"
-            cv2.imwrite(str(path), cv2.cvtColor(image_rgb, cv2.COLOR_RGB2BGR))
-        pyzlc.info(f"Saved RGB debug images to {out_dir} at step {self._debug_image_step}.")
-        self._debug_image_step += 1
 
     def _capture_rgb(self, cam: ImageDataWrapper) -> np.ndarray:
         frame = cam.capture_step()
@@ -503,16 +465,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
     def _sanitize_action(self, action: np.ndarray) -> np.ndarray:
         arr = np.asarray(action, dtype=np.float64).reshape(-1)[:ACTION_DIM]
-        if self.cfg.clamp_actions:
-            clipped = np.clip(arr, ACTION_MIN, ACTION_MAX)
-            if self._has_significant_clip(arr, clipped):
-                pyzlc.warning(f"Clipped out-of-range Pi0.5 action: raw={arr}, clipped={clipped}")
-            arr = clipped
         quat = arr[3:7]
         quat_norm = np.linalg.norm(quat)
         if quat_norm > 1e-6:
             arr[3:7] = quat / quat_norm
-        arr = self._limit_cartesian_step(arr)
         arr[7] = self._stabilize_gripper_command(1.0 if arr[7] >= 0.5 else 0.0)
         return arr
 
@@ -623,33 +579,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         except Exception as exc:
             pyzlc.warning(f"Failed to send final open gripper command: {exc}")
 
-    def _has_significant_clip(self, raw: np.ndarray, clipped: np.ndarray) -> bool:
-        delta = np.abs(clipped - raw)
-        if np.any(delta[:7] > 1e-4):
-            return True
-        return bool(delta[7] > 0.05)
-
-    def _limit_cartesian_step(self, action: np.ndarray) -> np.ndarray:
-        current_state = self.arm_wrapper.capture_step()
-        current_pose = _extract_ee_pose(current_state).astype(np.float64)
-        limited = action.copy()
-
-        pos_delta = limited[:3] - current_pose[:3]
-        pos_dist = float(np.linalg.norm(pos_delta))
-        max_pos_step = float(self.cfg.max_position_step_m)
-        if max_pos_step > 0.0 and pos_dist > max_pos_step:
-            limited[:3] = current_pose[:3] + pos_delta * (max_pos_step / pos_dist)
-            pyzlc.warning(
-                "Limited Cartesian position step: "
-                f"{pos_dist:.4f}m -> {max_pos_step:.4f}m"
-            )
-
-        max_rot_step = float(self.cfg.max_rotation_step_rad)
-        if max_rot_step > 0.0:
-            limited[3:7] = _limit_quat_step(current_pose[3:7], limited[3:7], max_rot_step)
-
-        return limited
-
 
 def _extract_ee_pose(arm_state: Dict[str, Any]) -> np.ndarray:
     if "EE_pos" in arm_state and "EE_quat" in arm_state:
@@ -729,45 +658,3 @@ def _rotation_matrix_to_quat_xyzw(matrix: np.ndarray) -> np.ndarray:
             qz = 0.25 * s
     quat = np.asarray([qx, qy, qz, qw], dtype=np.float64)
     return quat / max(np.linalg.norm(quat), 1e-12)
-
-
-def _limit_quat_step(current: np.ndarray, target: np.ndarray, max_angle_rad: float) -> np.ndarray:
-    current_q = _normalize_quat(current)
-    target_q = _normalize_quat(target)
-    dot = float(np.dot(current_q, target_q))
-    if dot < 0.0:
-        target_q = -target_q
-        dot = -dot
-    dot = float(np.clip(dot, -1.0, 1.0))
-    angle = 2.0 * np.arccos(dot)
-    if angle <= max_angle_rad:
-        return target_q
-
-    t = max_angle_rad / max(angle, 1e-12)
-    limited = _slerp_quat(current_q, target_q, t)
-    pyzlc.warning(
-        "Limited Cartesian rotation step: "
-        f"{angle:.4f}rad -> {max_angle_rad:.4f}rad"
-    )
-    return limited
-
-
-def _slerp_quat(q0: np.ndarray, q1: np.ndarray, t: float) -> np.ndarray:
-    dot = float(np.clip(np.dot(q0, q1), -1.0, 1.0))
-    if dot > 0.9995:
-        return _normalize_quat(q0 + t * (q1 - q0))
-
-    theta_0 = np.arccos(dot)
-    sin_theta_0 = np.sin(theta_0)
-    theta = theta_0 * t
-    s0 = np.sin(theta_0 - theta) / sin_theta_0
-    s1 = np.sin(theta) / sin_theta_0
-    return _normalize_quat((s0 * q0) + (s1 * q1))
-
-
-def _normalize_quat(quat: np.ndarray) -> np.ndarray:
-    q = np.asarray(quat, dtype=np.float64).reshape(4)
-    norm = float(np.linalg.norm(q))
-    if norm <= 1e-12:
-        return np.asarray([0.0, 0.0, 0.0, 1.0], dtype=np.float64)
-    return q / norm
