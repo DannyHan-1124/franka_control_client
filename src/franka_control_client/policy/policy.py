@@ -119,3 +119,6 @@ class DirectZmqPolicy(RemoteDevice):
         self._socket.setsockopt(zmq.RCVTIMEO, self.timeout_ms)
         self._socket.setsockopt(zmq.SNDTIMEO, self.timeout_ms)
         self._socket.connect(self.endpoint)
+
+    def close(self) -> None:
+        self._socket.close(linger=0)

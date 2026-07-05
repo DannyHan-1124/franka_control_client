@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import threading
 import time
+from collections import deque
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Deque, Dict, List, Optional
 
 import cv2
 import numpy as np
@@ -61,6 +63,10 @@ class Pi05PolicyInferenceConfig:
     debug_image_interval: int = 25
     reclose_after_release_min_motion_m: float = 0.08
     task_after_first_release: Optional[str] = None
+    rtc_enabled: bool = False
+    rtc_execution_horizon: int = 25
+    rtc_delay_steps: int = 0
+    rtc_delay_buffer_size: int = 8
 
 
 class Pi05PolicyInference(PolicyInferenceManager):
@@ -136,6 +142,16 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._last_sanitized_action: Optional[np.ndarray] = None
         self._debug_image_step = 0
         self._release_pos: Optional[np.ndarray] = None
+        self._rtc_lock = threading.Lock()
+        self._rtc_inflight = False
+        self._rtc_next_chunk: Optional[np.ndarray] = None
+        self._rtc_next_launch_step = 0
+        self._rtc_pending_error: Optional[BaseException] = None
+        self._rtc_generation = 0
+        self._rtc_delay_history: Deque[int] = deque(
+            maxlen=max(1, int(cfg.rtc_delay_buffer_size))
+        )
+        self._rtc_delay_history.append(max(0, int(cfg.rtc_delay_steps)))
 
         self.register_start_infering_event(self.control_pair.start_control_pair)
         self.register_stop_infering_event(self.control_pair.stop_control_pair)
@@ -151,6 +167,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._last_sanitized_action = None
         self._debug_image_step = 0
         self._release_pos = None
+        self._reset_rtc_state()
         self.task = self._initial_task
         current_action = self.policy.current_action
         self._last_action_timestamp = (
@@ -161,6 +178,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
     def _infer_step(self) -> None:
         start = time.perf_counter()
+        if self.cfg.rtc_enabled:
+            self._infer_rtc_step()
+            self._sleep_remaining_control_period(start)
+            return
+
         if self._should_request_action_chunk():
             self.policy.send_observation(self._build_observation())
 
@@ -181,6 +203,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self.control_pair.update_action(sanitized_action)
             self._maybe_stop_after_release()
 
+        self._sleep_remaining_control_period(start)
+
+    def _sleep_remaining_control_period(self, start: float) -> None:
         elapsed = time.perf_counter() - start
         sleep_time = max(0.0, (1.0 / self.fps) - elapsed)
         if sleep_time > 0.001:
@@ -192,6 +217,184 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if self._chunk_step >= len(self._action_chunk):
             return True
         return self._chunk_step >= max(1, int(self.cfg.chunk_replan_steps))
+
+    def _infer_rtc_step(self) -> None:
+        if self.cfg.policy_transport != "zmq":
+            raise ValueError("RTC mode currently requires --policy_transport zmq.")
+
+        self._raise_pending_rtc_error()
+
+        if self._action_chunk is None:
+            self._request_initial_rtc_chunk()
+
+        if self._action_chunk is None:
+            return
+
+        self._maybe_launch_rtc_request()
+        self._maybe_swap_to_rtc_chunk()
+
+        if self._chunk_step < len(self._action_chunk):
+            action = self._action_chunk[self._chunk_step]
+            self._chunk_step += 1
+            sanitized_action = self._sanitize_action(action)
+            self._last_sanitized_action = sanitized_action.copy()
+            self.control_pair.update_action(sanitized_action)
+            self._maybe_stop_after_release()
+
+        self._maybe_swap_to_rtc_chunk()
+
+    def _request_initial_rtc_chunk(self) -> None:
+        self.policy.send_observation(self._build_observation())
+        action_msg = self.policy.current_action
+        if action_msg is None:
+            return
+
+        timestamp = float(action_msg["timestamp"])
+        if timestamp == self._last_action_timestamp:
+            return
+
+        self._action_chunk = self._parse_action_payload(action_msg["action"])
+        self._chunk_step = 0
+        self._last_action_timestamp = timestamp
+        self._log_action_chunk_debug(self._action_chunk)
+
+    def _maybe_launch_rtc_request(self) -> None:
+        if self._action_chunk is None:
+            return
+        with self._rtc_lock:
+            if self._rtc_inflight or self._rtc_next_chunk is not None:
+                return
+
+        chunk_len = len(self._action_chunk)
+        delay_estimate = self._rtc_delay_estimate(chunk_len)
+        launch_step = max(self._rtc_min_execution_horizon(chunk_len), delay_estimate)
+        self._validate_rtc_schedule(chunk_len, launch_step, delay_estimate)
+        if self._chunk_step < launch_step:
+            return
+        if self._chunk_step >= len(self._action_chunk):
+            return
+
+        s = self._chunk_step
+        self._validate_rtc_schedule(chunk_len, s, delay_estimate)
+        prev_chunk_left_over = self._action_chunk[s:].copy()
+        guided_overlap = len(prev_chunk_left_over)
+        obs = self._build_observation(
+            policy_kwargs={
+                "prev_chunk_left_over": prev_chunk_left_over.tolist(),
+                "inference_delay": delay_estimate,
+                "execution_horizon": guided_overlap,
+            }
+        )
+
+        with self._rtc_lock:
+            self._rtc_inflight = True
+            self._rtc_next_launch_step = s
+            generation = self._rtc_generation
+
+        thread = threading.Thread(
+            target=self._rtc_request_worker,
+            args=(obs, s, generation),
+            daemon=True,
+        )
+        thread.start()
+
+    def _rtc_request_worker(
+        self,
+        obs: Dict[str, Any],
+        launch_step: int,
+        generation: int,
+    ) -> None:
+        policy = DirectZmqPolicy(
+            self.cfg.policy_name,
+            endpoint=self.cfg.policy_zmq_endpoint or "",
+            timeout_ms=self.cfg.policy_zmq_timeout_ms,
+        )
+        try:
+            policy.send_observation(obs)
+            action_msg = policy.current_action
+            if action_msg is None:
+                raise RuntimeError("RTC policy request returned no action message.")
+            chunk = self._parse_action_payload(action_msg["action"])
+            timestamp = float(action_msg["timestamp"])
+            with self._rtc_lock:
+                if generation == self._rtc_generation and timestamp != self._last_action_timestamp:
+                    self._rtc_next_chunk = chunk
+                    self._last_action_timestamp = timestamp
+                    self._rtc_next_launch_step = launch_step
+        except BaseException as exc:
+            with self._rtc_lock:
+                if generation == self._rtc_generation:
+                    self._rtc_pending_error = exc
+        finally:
+            policy.close()
+            with self._rtc_lock:
+                if generation == self._rtc_generation:
+                    self._rtc_inflight = False
+
+    def _maybe_swap_to_rtc_chunk(self) -> None:
+        if self._action_chunk is None:
+            return
+
+        with self._rtc_lock:
+            next_chunk = self._rtc_next_chunk
+            launch_step = self._rtc_next_launch_step
+            if next_chunk is None:
+                return
+            self._rtc_next_chunk = None
+
+        observed_delay = max(0, self._chunk_step - launch_step)
+        start_step = min(len(next_chunk), observed_delay)
+        self._action_chunk = next_chunk
+        self._chunk_step = start_step
+        self._record_rtc_delay(observed_delay)
+        self._log_action_chunk_debug(self._action_chunk)
+
+    def _rtc_min_execution_horizon(self, chunk_len: int) -> int:
+        return max(1, min(int(self.cfg.rtc_execution_horizon), chunk_len))
+
+    def _rtc_delay_estimate(self, chunk_len: int) -> int:
+        with self._rtc_lock:
+            delay = max(self._rtc_delay_history) if self._rtc_delay_history else 0
+        return max(0, min(delay, chunk_len))
+
+    def _record_rtc_delay(self, delay: int) -> None:
+        with self._rtc_lock:
+            self._rtc_delay_history.append(max(0, int(delay)))
+
+    def _validate_rtc_schedule(self, chunk_len: int, launch_step: int, delay_estimate: int) -> None:
+        if launch_step >= chunk_len:
+            raise RuntimeError(
+                "Invalid RTC schedule: execution horizon reaches the end of the chunk "
+                f"(H={chunk_len}, s={launch_step}, d={delay_estimate})."
+            )
+        if delay_estimate > launch_step:
+            raise RuntimeError(
+                "Invalid RTC schedule: inference delay estimate exceeds execution horizon "
+                f"(d={delay_estimate}, s={launch_step})."
+            )
+        if delay_estimate > chunk_len - launch_step:
+            raise RuntimeError(
+                "Invalid RTC schedule: inference delay estimate is larger than the guided "
+                f"overlap left in the current chunk (H={chunk_len}, s={launch_step}, "
+                f"d={delay_estimate}). The paper requires d <= s <= H - d."
+            )
+
+    def _raise_pending_rtc_error(self) -> None:
+        with self._rtc_lock:
+            error = self._rtc_pending_error
+            self._rtc_pending_error = None
+        if error is not None:
+            raise RuntimeError(f"RTC policy request failed: {error}") from error
+
+    def _reset_rtc_state(self) -> None:
+        with self._rtc_lock:
+            self._rtc_generation += 1
+            self._rtc_inflight = False
+            self._rtc_next_chunk = None
+            self._rtc_next_launch_step = 0
+            self._rtc_pending_error = None
+            self._rtc_delay_history.clear()
+            self._rtc_delay_history.append(max(0, int(self.cfg.rtc_delay_steps)))
 
     def _log_action_chunk_debug(self, action_chunk: np.ndarray) -> None:
         gripper = np.asarray(action_chunk[:, 7], dtype=np.float64)
@@ -237,16 +440,19 @@ class Pi05PolicyInference(PolicyInferenceManager):
         except Exception as exc:
             self._ui_console.log(f"Failed to reset arm: {exc}")
 
-    def _build_observation(self) -> Dict[str, Any]:
+    def _build_observation(self, policy_kwargs: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         static_rgb = self._capture_rgb(self.static_cam)
         wrist_rgb = self._capture_rgb(self.wrist_cam)
         self._maybe_save_debug_images(static_rgb, wrist_rgb)
-        return {
+        obs = {
             "observation.images.base_0_rgb": _encode_rgb_image(static_rgb),
             "observation.images.left_wrist_0_rgb": _encode_rgb_image(wrist_rgb),
             "observation.state": self._build_state_vector().tolist(),
             "task": self.task,
         }
+        if policy_kwargs:
+            obs["policy_kwargs"] = policy_kwargs
+        return obs
 
     def _maybe_save_debug_images(self, static_rgb: np.ndarray, wrist_rgb: np.ndarray) -> None:
         if not self.cfg.debug_image_dir:
@@ -357,6 +563,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self.task = self.cfg.task_after_first_release
             self._action_chunk = None
             self._chunk_step = 0
+            self._reset_rtc_state()
             pyzlc.info(f"Switching task after first release: {self.task}")
 
     def _should_suppress_post_release_close(self, gripper_cmd: float) -> bool:

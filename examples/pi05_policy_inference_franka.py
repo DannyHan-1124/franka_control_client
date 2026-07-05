@@ -45,6 +45,29 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--max_position_step_m", type=float, default=0.005)
     parser.add_argument("--max_rotation_step_rad", type=float, default=0.05)
     parser.add_argument("--chunk_replan_steps", type=int, default=50)
+    parser.add_argument(
+        "--rtc_enabled",
+        action="store_true",
+        help="Enable async Real-Time Chunking client execution. Requires --policy_transport zmq.",
+    )
+    parser.add_argument(
+        "--rtc_execution_horizon",
+        type=int,
+        default=25,
+        help="RTC minimum execution horizon s_min before starting the next async inference.",
+    )
+    parser.add_argument(
+        "--rtc_delay_steps",
+        type=int,
+        default=0,
+        help="RTC initial delay estimate d_init; observed request delays update this automatically.",
+    )
+    parser.add_argument(
+        "--rtc_delay_buffer_size",
+        type=int,
+        default=8,
+        help="Number of observed RTC inference delays used for the conservative max(Q) estimate.",
+    )
     parser.add_argument("--gripper_open_confirm_steps", type=int, default=1)
     parser.add_argument("--stop_after_first_release", action="store_true")
     parser.add_argument("--stop_after_release_steps", type=int, default=0)
@@ -105,6 +128,10 @@ def main() -> None:
         max_position_step_m=args.max_position_step_m,
         max_rotation_step_rad=args.max_rotation_step_rad,
         chunk_replan_steps=args.chunk_replan_steps,
+        rtc_enabled=args.rtc_enabled,
+        rtc_execution_horizon=args.rtc_execution_horizon,
+        rtc_delay_steps=args.rtc_delay_steps,
+        rtc_delay_buffer_size=args.rtc_delay_buffer_size,
         gripper_open_confirm_steps=args.gripper_open_confirm_steps,
         stop_after_first_release=args.stop_after_first_release,
         stop_after_release_steps=args.stop_after_release_steps,

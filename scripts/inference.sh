@@ -13,4 +13,7 @@ python examples/pi05_policy_inference_franka.py \
     --max_position_step_m 0.0 \
     --max_rotation_step_rad 0.0 \
     --static_camera static_cam \
-    --wrist_camera wrist_cam
+    --wrist_camera wrist_cam \
+    --rtc_enabled \
+    --rtc_execution_horizon 25 \
+    --rtc_delay_steps 4

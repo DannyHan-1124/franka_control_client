@@ -7,4 +7,8 @@ python -m franka_control_client.policy.pi05_policy_node \
     --action_topic pi05/action \
     --fps 20 \
     --default_task "put green cylinder on blue cube" \
-    --direct_zmq_bind tcp://0.0.0.0:40023
+    --direct_zmq_bind tcp://0.0.0.0:40023 \
+    --rtc_enabled \
+    --rtc_execution_horizon 25 \
+    --rtc_max_guidance_weight 5.0 \
+    --rtc_prefix_attention_schedule exp
