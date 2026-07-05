@@ -29,7 +29,6 @@ def _parse_args() -> argparse.Namespace:
         description="Run Franka Pi0.5 policy inference against a remote pyzlc policy node."
     )
     parser.add_argument("--task", required=True)
-    parser.add_argument("--task_after_first_release", default=None)
     parser.add_argument("--fps", type=int, default=20)
     parser.add_argument("--control_hz", type=float, default=100.0)
     parser.add_argument("--pyzlc_name", default="pi05_franka_client")
@@ -69,7 +68,6 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--gripper_open_confirm_steps", type=int, default=1)
     parser.add_argument("--stop_after_first_release", action="store_true")
     parser.add_argument("--stop_after_release_steps", type=int, default=0)
-    parser.add_argument("--reclose_after_release_min_motion_m", type=float, default=0.08)
     parser.add_argument("--robot_name", default="FrankaPanda")
     parser.add_argument("--static_camera", default="static_cam")
     parser.add_argument("--wrist_camera", default="wrist_cam")
@@ -112,7 +110,6 @@ def main() -> None:
     inference_cfg = Pi05PolicyInferenceConfig(
         policy_name=args.policy_name,
         task=args.task,
-        task_after_first_release=args.task_after_first_release,
         fps=args.fps,
         obs_topic=args.obs_topic,
         action_topic=args.action_topic,
@@ -127,7 +124,6 @@ def main() -> None:
         gripper_open_confirm_steps=args.gripper_open_confirm_steps,
         stop_after_first_release=args.stop_after_first_release,
         stop_after_release_steps=args.stop_after_release_steps,
-        reclose_after_release_min_motion_m=args.reclose_after_release_min_motion_m,
     )
     inference_manager = Pi05PolicyInference(
         data_collectors=data_collectors,

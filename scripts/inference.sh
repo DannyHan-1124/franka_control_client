@@ -3,7 +3,6 @@
 
 python examples/pi05_policy_inference_franka.py \
     --task "put red cylinder on yellow cube and put green cylinder on blue cube" \
-    --task_after_first_release "put green cylinder on blue cube" \
     --pyzlc_name policy_inference \
     --pyzlc_host 141.3.53.25 \
     --pyzlc_group_name robot_lab_robotiq_202 \

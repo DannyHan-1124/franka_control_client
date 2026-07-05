@@ -42,8 +42,6 @@ class Pi05PolicyInferenceConfig:
     gripper_open_confirm_steps: int = 1
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
-    reclose_after_release_min_motion_m: float = 0.08
-    task_after_first_release: Optional[str] = None
     rtc_enabled: bool = False
     rtc_execution_horizon: int = 25
     rtc_delay_steps: int = 0
@@ -69,7 +67,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.data_collectors = data_collectors
         self.control_pair = control_pair
         self.cfg = cfg
-        self._initial_task = cfg.task
         if cfg.policy_transport == "zmq":
             if not cfg.policy_zmq_endpoint:
                 raise ValueError("policy_zmq_endpoint is required for ZMQ policy transport.")
@@ -121,7 +118,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._release_armed = False
         self._stop_after_release_countdown: Optional[int] = None
         self._last_sanitized_action: Optional[np.ndarray] = None
-        self._release_pos: Optional[np.ndarray] = None
         self._rtc_lock = threading.Lock()
         self._rtc_inflight = False
         self._rtc_next_chunk: Optional[np.ndarray] = None
@@ -145,9 +141,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._release_armed = False
         self._stop_after_release_countdown = None
         self._last_sanitized_action = None
-        self._release_pos = None
         self._reset_rtc_state()
-        self.task = self._initial_task
         current_action = self.policy.current_action
         self._last_action_timestamp = (
             float(current_action["timestamp"]) if current_action is not None else None
@@ -481,9 +475,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._last_gripper_cmd = gripper_cmd
             return gripper_cmd
 
-        if self._should_suppress_post_release_close(gripper_cmd):
-            return 0.0
-
         if self._last_gripper_cmd >= 0.5 and gripper_cmd < 0.5:
             self._pending_open_steps += 1
             if not self._release_armed:
@@ -509,48 +500,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
         target_pos = None
         if self._last_sanitized_action is not None:
             target_pos = self._last_sanitized_action[:3]
-        if current_pos is not None:
-            self._release_pos = np.asarray(current_pos, dtype=np.float64).reshape(3)
         pyzlc.info(
             "Confirmed first gripper release: "
             f"current_pos={_format_vec(current_pos)}, target_pos={_format_vec(target_pos)}"
         )
-        if self.cfg.task_after_first_release:
-            self.task = self.cfg.task_after_first_release
-            self._action_chunk = None
-            self._chunk_step = 0
-            self._reset_rtc_state()
-            pyzlc.info(f"Switching task after first release: {self.task}")
-
-    def _should_suppress_post_release_close(self, gripper_cmd: float) -> bool:
-        if not self._release_confirmed:
-            return False
-        if self._last_gripper_cmd is None or self._last_gripper_cmd >= 0.5:
-            return False
-        if gripper_cmd < 0.5:
-            return False
-        if self._release_pos is None:
-            return False
-
-        min_motion = float(self.cfg.reclose_after_release_min_motion_m)
-        if min_motion <= 0.0:
-            return False
-
-        try:
-            current_pose = _extract_ee_pose(self.arm_wrapper.capture_step())
-            current_pos = current_pose[:3].astype(np.float64)
-        except Exception:
-            return False
-
-        dist = float(np.linalg.norm(current_pos - self._release_pos))
-        if dist < min_motion:
-            pyzlc.info(
-                "Suppressing close command near first release pose: "
-                f"motion={dist:.4f}m < {min_motion:.4f}m"
-            )
-            return True
-        pyzlc.info(f"Allowing post-release close after moving {dist:.4f}m.")
-        return False
 
     def _maybe_stop_after_release(self) -> None:
         if not self.cfg.stop_after_first_release:
