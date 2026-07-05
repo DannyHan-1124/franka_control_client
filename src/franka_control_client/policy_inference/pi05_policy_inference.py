@@ -52,7 +52,7 @@ class Pi05PolicyInferenceConfig:
     fps: int = 20
     obs_topic: Optional[str] = None
     action_topic: Optional[str] = None
-    clamp_actions: bool = True
+    clamp_actions: bool = False
     policy_transport: str = "pyzlc"
     policy_zmq_endpoint: Optional[str] = None
     policy_zmq_timeout_ms: int = 30000
