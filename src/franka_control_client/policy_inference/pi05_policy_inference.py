@@ -113,6 +113,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             raise ValueError("Missing RobotiqGripperDataWrapper.")
 
         self._action_chunk: Optional[np.ndarray] = None
+        self._raw_action_chunk: Optional[np.ndarray] = None
         self._chunk_step = 0
         self._last_action_timestamp: Optional[float] = None
         self._last_gripper_cmd: Optional[float] = None
@@ -124,6 +125,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._rtc_lock = threading.Lock()
         self._rtc_inflight = False
         self._rtc_next_chunk: Optional[np.ndarray] = None
+        self._rtc_next_raw_chunk: Optional[np.ndarray] = None
         self._rtc_next_launch_step = 0
         self._rtc_next_metric_id: Optional[int] = None
         self._rtc_pending_error: Optional[BaseException] = None
@@ -141,6 +143,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _start_infering(self) -> None:
         self._reset_metrics()
         self._action_chunk = None
+        self._raw_action_chunk = None
         self._chunk_step = 0
         self._last_gripper_cmd = None
         self._pending_open_steps = 0
@@ -276,6 +279,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 timestamp = float(action_msg["timestamp"])
                 if timestamp != self._last_action_timestamp:
                     self._action_chunk = self._parse_action_payload(action_msg["action"])
+                    self._raw_action_chunk = (
+                        self._parse_raw_action_payload(action_msg)
+                        if action_msg.get("action_raw") is not None
+                        else None
+                    )
                     self._chunk_step = 0
                     self._last_action_timestamp = timestamp
                     self._finish_chunk_metric(
@@ -363,6 +371,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             return
 
         self._action_chunk = self._parse_action_payload(action_msg["action"])
+        self._raw_action_chunk = self._parse_raw_action_payload(action_msg)
         self._chunk_step = 0
         self._last_action_timestamp = timestamp
         self._finish_chunk_metric(
@@ -391,7 +400,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
         s = self._chunk_step
         self._validate_rtc_schedule(chunk_len, s, delay_estimate)
-        prev_chunk_left_over = self._action_chunk[s:].copy()
+        if self._raw_action_chunk is None or len(self._raw_action_chunk) != chunk_len:
+            raise RuntimeError(
+                "RTC conditioning requires the raw policy action chunk returned by the policy node."
+            )
+        prev_chunk_left_over = self._raw_action_chunk[s:].copy()
         guided_overlap = len(prev_chunk_left_over)
         obs_start = time.perf_counter()
         obs = self._build_observation(
@@ -444,11 +457,13 @@ class Pi05PolicyInference(PolicyInferenceManager):
             if action_msg is None:
                 raise RuntimeError("RTC policy request returned no action message.")
             chunk = self._parse_action_payload(action_msg["action"])
+            raw_chunk = self._parse_raw_action_payload(action_msg)
             timestamp = float(action_msg["timestamp"])
             request_latency_s = time.perf_counter() - request_start
             with self._rtc_lock:
                 if generation == self._rtc_generation and timestamp != self._last_action_timestamp:
                     self._rtc_next_chunk = chunk
+                    self._rtc_next_raw_chunk = raw_chunk
                     self._last_action_timestamp = timestamp
                     self._rtc_next_launch_step = launch_step
                     self._rtc_next_metric_id = request_id
@@ -474,16 +489,19 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
         with self._rtc_lock:
             next_chunk = self._rtc_next_chunk
+            next_raw_chunk = self._rtc_next_raw_chunk
             launch_step = self._rtc_next_launch_step
             metric_id = self._rtc_next_metric_id
-            if next_chunk is None:
+            if next_chunk is None or next_raw_chunk is None:
                 return
             self._rtc_next_chunk = None
+            self._rtc_next_raw_chunk = None
             self._rtc_next_metric_id = None
 
         observed_delay = max(0, self._chunk_step - launch_step)
         start_step = min(len(next_chunk), observed_delay)
         self._action_chunk = next_chunk
+        self._raw_action_chunk = next_raw_chunk
         self._chunk_step = start_step
         self._record_rtc_delay(observed_delay)
         self._active_chunk_metric_id = metric_id
@@ -537,6 +555,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._rtc_generation += 1
             self._rtc_inflight = False
             self._rtc_next_chunk = None
+            self._rtc_next_raw_chunk = None
             self._rtc_next_launch_step = 0
             self._rtc_next_metric_id = None
             self._rtc_pending_error = None
@@ -787,6 +806,30 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if arr.shape[-1] < ACTION_DIM:
             raise ValueError(f"Expected action dim >= {ACTION_DIM}, got {arr.shape[-1]}")
         return arr[:, :ACTION_DIM]
+
+    def _parse_raw_action_payload(self, action_msg: Dict[str, Any]) -> np.ndarray:
+        payload = action_msg.get("action_raw")
+        if payload is None:
+            raise ValueError(
+                "Policy response is missing action_raw; restart the policy node from this branch "
+                "so RTC can condition on raw normalized actions."
+            )
+
+        arr = np.asarray(payload, dtype=np.float32)
+        if arr.ndim == 3:
+            if arr.shape[0] != 1:
+                raise ValueError(f"Expected one raw action batch, got shape {arr.shape}")
+            arr = arr[0]
+        elif arr.ndim == 1:
+            arr = arr.reshape(1, -1)
+        elif arr.ndim > 3:
+            arr = arr.reshape(-1, arr.shape[-1])
+
+        if arr.ndim != 2:
+            raise ValueError(f"Expected raw action chunk with shape (T, A), got {arr.shape}")
+        if arr.shape[-1] < ACTION_DIM:
+            raise ValueError(f"Expected raw action dim >= {ACTION_DIM}, got {arr.shape[-1]}")
+        return arr
 
     def _sanitize_action(self, action: np.ndarray) -> np.ndarray:
         arr = np.asarray(action, dtype=np.float64).reshape(-1)[:ACTION_DIM]

@@ -307,6 +307,7 @@ class Pi05PolicyNode:
         if action_chunk.ndim != 3:
             raise RuntimeError(f"Unexpected action shape: {tuple(action_chunk.shape)}")
 
+        raw_actions = action_chunk.detach().float().cpu().numpy()
         processed_actions = []
         for idx in range(action_chunk.shape[1]):
             single = action_chunk[:, idx, :]
@@ -323,6 +324,8 @@ class Pi05PolicyNode:
             "timestamp": time.time(),
             "action": action_array.tolist(),
             "shape": list(action_array.shape),
+            "action_raw": raw_actions.tolist(),
+            "raw_shape": list(raw_actions.shape),
         }
 
     def step(self) -> None:

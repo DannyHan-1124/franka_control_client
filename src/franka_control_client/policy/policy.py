@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import time
-from typing import TypedDict, Optional, Dict, Any
+from typing import NotRequired, TypedDict, Optional, Dict, Any
 import pyzlc
 import zmq
 
@@ -16,6 +16,8 @@ class PolicyActionMsg(TypedDict, total=True):
     timestamp: float
     action: list[float]
     shape: list[int]
+    action_raw: NotRequired[list[float]]
+    raw_shape: NotRequired[list[int]]
 
 
 class PolicyObservationMsg(TypedDict, total=True):
@@ -60,6 +62,8 @@ class RemotePolicy(RemoteDevice):
             timestamp=msg["timestamp"],
             action=msg["action"],
             shape=msg["shape"],
+            action_raw=msg.get("action_raw"),
+            raw_shape=msg.get("raw_shape"),
         )
     #if put this in policy node, directly get observations,policy part need few of subscriber, if put here just need one subscriber，maybe save time fore policy_node
     def send_observation(self, obs: PolicyObservationMsg) -> None:
@@ -110,6 +114,8 @@ class DirectZmqPolicy(RemoteDevice):
             timestamp=msg["timestamp"],
             action=msg["action"],
             shape=msg["shape"],
+            action_raw=msg.get("action_raw"),
+            raw_shape=msg.get("raw_shape"),
         )
 
     def _reset_socket(self) -> None:
