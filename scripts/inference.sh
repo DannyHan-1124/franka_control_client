@@ -20,6 +20,6 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --metrics_path "${REPO_ROOT}/logs/pi05_inference_metrics.jsonl" \
     --static_camera static_cam \
     --wrist_camera wrist_cam \
-    --rtc_enabled \
-    --rtc_execution_horizon 40 \
-    --rtc_delay_steps 4
+#    --rtc_enabled \
+#    --rtc_execution_horizon 40 \
+#    --rtc_delay_steps 4

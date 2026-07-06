@@ -1,0 +1,28 @@
+Starting policy infering...[2026-07-06 17:31:03,347] [INFO] Starting control
+[2026-07-06 17:31:03,347] [INFO] Started Control Pair
+Infering... Press 's' to save, 'd' to discard, or 'q' to quit[2026-07-06 17:31:03,431] [INFO] Set Franka arm control mode to CartesianImpedance
+[2026-07-06 17:31:03,619] [INFO] Received Pi0.5 action chunk: len=50, gripper_min=-0.006, gripper_max=0.006, first_close_step=None, first_open_step=0, longest_open_run=50, pos_start=[0.5363, 0.0001, 0.2955], pos_end=[0.4814, 0.0744, 0.0977], pos_min=[0.4814, -0.0011, 0.0977], pos_max=[0.5365, 0.0754, 0.2959]
+[2026-07-06 17:31:04,529] [WARNING] Limited Cartesian command step in control loop: 0.0100m -> 0.0100m
+[2026-07-06 17:31:04,671] [WARNING] Limited Cartesian command step in control loop: 0.0102m -> 0.0100m
+[2026-07-06 17:31:04,772] [WARNING] Limited Cartesian command step in control loop: 0.0128m -> 0.0100m
+[2026-07-06 17:31:04,823] [WARNING] Limited Cartesian command step in control loop: 0.0102m -> 0.0100m
+[2026-07-06 17:31:04,924] [WARNING] Limited Cartesian command step in control loop: 0.0107m -> 0.0100m
+[2026-07-06 17:31:06,339] [INFO] Received Pi0.5 action chunk: len=50, gripper_min=-0.009, gripper_max=1.004, first_close_step=8, first_open_step=0, longest_open_run=8, pos_start=[0.4774, 0.0733, 0.0951], pos_end=[0.6198, 0.1372, 0.1569], pos_min=[0.4747, 0.0621, 0.0913], pos_max=[0.6198, 0.1372, 0.1768]
+[2026-07-06 17:31:07,893] [WARNING] Limited Cartesian command step in control loop: 0.0106m -> 0.0100m
+[2026-07-06 17:31:07,995] [WARNING] Limited Cartesian command step in control loop: 0.0102m -> 0.0100m
+[2026-07-06 17:31:08,045] [WARNING] Limited Cartesian command step in control loop: 0.0102m -> 0.0100m
+[2026-07-06 17:31:08,096] [WARNING] Limited Cartesian command step in control loop: 0.0101m -> 0.0100m
+[2026-07-06 17:31:08,147] [WARNING] Limited Cartesian command step in control loop: 0.0121m -> 0.0100m
+[2026-07-06 17:31:08,248] [WARNING] Limited Cartesian command step in control loop: 0.0108m -> 0.0100m
+[2026-07-06 17:31:08,401] [WARNING] Limited Cartesian command step in control loop: 0.0106m -> 0.0100m
+[2026-07-06 17:31:09,058] [INFO] Received Pi0.5 action chunk: len=50, gripper_min=-0.008, gripper_max=1.005, first_close_step=0, first_open_step=27, longest_open_run=23, pos_start=[0.6275, 0.1499, 0.1516], pos_end=[0.6239, 0.1795, 0.1235], pos_min=[0.6213, 0.1499, 0.1217], pos_max=[0.6275, 0.1891, 0.1516]
+[2026-07-06 17:31:09,062] [WARNING] Limited Cartesian command step in control loop: 0.0168m -> 0.0100m
+[2026-07-06 17:31:11,776] [INFO] Received Pi0.5 action chunk: len=50, gripper_min=-0.009, gripper_max=0.004, first_close_step=None, first_open_step=0, longest_open_run=50, pos_start=[0.6240, 0.1834, 0.1206], pos_end=[0.6256, 0.1734, 0.1218], pos_min=[0.6221, 0.1695, 0.1200], pos_max=[0.6256, 0.1841, 0.1234]
+[2026-07-06 17:31:14,496] [INFO] Received Pi0.5 action chunk: len=50, gripper_min=-0.005, gripper_max=0.999, first_close_step=0, first_open_step=2, longest_open_run=48, pos_start=[0.6224, 0.1735, 0.1212], pos_end=[0.6232, 0.1695, 0.1214], pos_min=[0.6211, 0.1679, 0.1196], pos_max=[0.6251, 0.1773, 0.1223]
+[2026-07-06 17:31:16,499] [INFO] Pi0.5 inference metrics: total_time=13.152s, inference_calls=5, completed_chunks=5, actions_applied=241, empty_action_steps=0, avg_request_latency=0.261s, avg_first_action_latency=0.262s, avg_chunk_duration=2.314s, recommended_delay=0
+[2026-07-06 17:31:16,499] [INFO] Pi0.5 chunk metrics: request_id=1, kind=sync, request_latency=0.265s, first_action_latency=0.265s, chunk_duration=2.404s, executed_actions=50, action_count=50, predicted_delay=None, observed_delay=None
+[2026-07-06 17:31:16,499] [INFO] Pi0.5 chunk metrics: request_id=2, kind=sync, request_latency=0.262s, first_action_latency=0.262s, chunk_duration=2.405s, executed_actions=50, action_count=50, predicted_delay=None, observed_delay=None
+[2026-07-06 17:31:16,499] [INFO] Pi0.5 chunk metrics: request_id=3, kind=sync, request_latency=0.259s, first_action_latency=0.260s, chunk_duration=2.404s, executed_actions=50, action_count=50, predicted_delay=None, observed_delay=None
+[2026-07-06 17:31:16,499] [INFO] Pi0.5 chunk metrics: request_id=4, kind=sync, request_latency=0.259s, first_action_latency=0.259s, chunk_duration=2.404s, executed_actions=50, action_count=50, predicted_delay=None, observed_delay=None
+[2026-07-06 17:31:16,499] [INFO] Pi0.5 chunk metrics: request_id=5, kind=sync, request_latency=0.262s, first_action_latency=0.262s, chunk_duration=1.953s, executed_actions=41, action_count=50, predicted_delay=None, observed_delay=None
+[2026-07-06 17:31:16,499] [INFO] Wrote Pi0.5 inference metrics to /home/jjiang/utphd/franka_control_client/logs/pi05_inference_metrics.jsonl and /home/jjiang/utphd/franka_control_client/logs/pi05_inference_metrics.txt
