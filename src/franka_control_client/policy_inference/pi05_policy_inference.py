@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import json
 import threading
 import time
 from collections import deque
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Deque, Dict, List, Optional
 
 import cv2
@@ -42,6 +44,7 @@ class Pi05PolicyInferenceConfig:
     gripper_open_confirm_steps: int = 1
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
+    metrics_path: Optional[str] = None
     rtc_enabled: bool = False
     rtc_execution_horizon: int = 25
     rtc_delay_steps: int = 0
@@ -122,17 +125,21 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._rtc_inflight = False
         self._rtc_next_chunk: Optional[np.ndarray] = None
         self._rtc_next_launch_step = 0
+        self._rtc_next_metric_id: Optional[int] = None
         self._rtc_pending_error: Optional[BaseException] = None
         self._rtc_generation = 0
         self._rtc_delay_history: Deque[int] = deque(
             maxlen=max(1, int(cfg.rtc_delay_buffer_size))
         )
         self._rtc_delay_history.append(max(0, int(cfg.rtc_delay_steps)))
+        self._metrics_lock = threading.Lock()
+        self._reset_metrics()
 
         self.register_start_infering_event(self.control_pair.start_control_pair)
         self.register_stop_infering_event(self.control_pair.stop_control_pair)
 
     def _start_infering(self) -> None:
+        self._reset_metrics()
         self._action_chunk = None
         self._chunk_step = 0
         self._last_gripper_cmd = None
@@ -149,6 +156,101 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.control_pair.reset_action()
         super()._start_infering()
 
+    def _reset_metrics(self) -> None:
+        self._metrics_start_perf: Optional[float] = time.perf_counter()
+        self._metrics_start_wall: Optional[float] = time.time()
+        self._metrics_reported = False
+        self._metrics_inference_calls = 0
+        self._metrics_actions_applied = 0
+        self._metrics_empty_action_steps = 0
+        self._metrics_chunks: list[dict[str, Any]] = []
+        self._active_chunk_metric_id: Optional[int] = None
+
+    def _start_chunk_metric(
+        self,
+        *,
+        transport: str,
+        request_time_s: float,
+        client_observation_build_s: float,
+        kind: str,
+        **extra: Any,
+    ) -> int:
+        with self._metrics_lock:
+            self._metrics_inference_calls += 1
+            request_id = self._metrics_inference_calls
+            metric = {
+                "request_id": request_id,
+                "kind": kind,
+                "transport": transport,
+                "request_time_s": request_time_s,
+                "client_observation_build_s": client_observation_build_s,
+                "request_latency_s": None,
+                "action_count": None,
+                "executed_action_count": 0,
+                "first_action_index": None,
+                "last_action_index": None,
+                "first_action_latency_s": None,
+                "first_action_applied_time_s": None,
+                "last_action_applied_time_s": None,
+                "execution_duration_s": None,
+                "error": None,
+            }
+            metric.update(extra)
+            self._metrics_chunks.append(metric)
+            return request_id
+
+    def _update_chunk_metric(self, request_id: int, **updates: Any) -> None:
+        with self._metrics_lock:
+            metric = self._chunk_metric_unlocked(request_id)
+            if metric is not None:
+                metric.update(updates)
+
+    def _finish_chunk_metric(
+        self,
+        request_id: int,
+        *,
+        request_latency_s: float,
+        action_count: int,
+    ) -> None:
+        self._update_chunk_metric(
+            request_id,
+            request_latency_s=request_latency_s,
+            final_latency_s=request_latency_s,
+            action_count=int(action_count),
+        )
+
+    def _mark_chunk_metric_error(self, request_id: int, error: str) -> None:
+        self._update_chunk_metric(request_id, error=error)
+
+    def _record_active_chunk_action_execution(self, action_index: int) -> None:
+        request_id = self._active_chunk_metric_id
+        if request_id is None:
+            return
+
+        now = time.perf_counter()
+        with self._metrics_lock:
+            metric = self._chunk_metric_unlocked(request_id)
+            if metric is None:
+                return
+            first_time = metric.get("first_action_applied_time_s")
+            if first_time is None:
+                metric["first_action_applied_time_s"] = now
+                metric["first_action_index"] = int(action_index)
+                request_time = metric.get("request_time_s")
+                if request_time is not None:
+                    metric["first_action_latency_s"] = now - float(request_time)
+                first_time = now
+            metric["last_action_applied_time_s"] = now
+            metric["last_action_index"] = int(action_index)
+            metric["executed_action_count"] = int(metric.get("executed_action_count") or 0) + 1
+            metric["execution_duration_s"] = now - float(first_time)
+
+    def _chunk_metric_unlocked(self, request_id: int) -> Optional[dict[str, Any]]:
+        for metric in self._metrics_chunks:
+            if metric.get("request_id") == request_id:
+                return metric
+        return None
+
     def _infer_step(self) -> None:
         start = time.perf_counter()
         if self.cfg.rtc_enabled:
@@ -157,7 +259,17 @@ class Pi05PolicyInference(PolicyInferenceManager):
             return
 
         if self._should_request_action_chunk():
-            self.policy.send_observation(self._build_observation())
+            obs_start = time.perf_counter()
+            observation = self._build_observation()
+            observation_build_s = time.perf_counter() - obs_start
+            request_start = time.perf_counter()
+            request_id = self._start_chunk_metric(
+                transport=self.cfg.policy_transport,
+                request_time_s=request_start,
+                client_observation_build_s=observation_build_s,
+                kind="sync",
+            )
+            self.policy.send_observation(observation)
 
             action_msg = self.policy.current_action
             if action_msg is not None:
@@ -166,6 +278,12 @@ class Pi05PolicyInference(PolicyInferenceManager):
                     self._action_chunk = self._parse_action_payload(action_msg["action"])
                     self._chunk_step = 0
                     self._last_action_timestamp = timestamp
+                    self._finish_chunk_metric(
+                        request_id,
+                        request_latency_s=time.perf_counter() - request_start,
+                        action_count=len(self._action_chunk),
+                    )
+                    self._active_chunk_metric_id = request_id
                     self._log_action_chunk_debug(self._action_chunk)
 
         if self._action_chunk is not None and self._chunk_step < len(self._action_chunk):
@@ -174,7 +292,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
             sanitized_action = self._sanitize_action(action)
             self._last_sanitized_action = sanitized_action.copy()
             self.control_pair.update_action(sanitized_action)
+            self._metrics_actions_applied += 1
+            self._record_active_chunk_action_execution(self._chunk_step - 1)
             self._maybe_stop_after_release()
+        else:
+            self._metrics_empty_action_steps += 1
 
         self._sleep_remaining_control_period(start)
 
@@ -212,12 +334,26 @@ class Pi05PolicyInference(PolicyInferenceManager):
             sanitized_action = self._sanitize_action(action)
             self._last_sanitized_action = sanitized_action.copy()
             self.control_pair.update_action(sanitized_action)
+            self._metrics_actions_applied += 1
+            self._record_active_chunk_action_execution(self._chunk_step - 1)
             self._maybe_stop_after_release()
+        else:
+            self._metrics_empty_action_steps += 1
 
         self._maybe_swap_to_rtc_chunk()
 
     def _request_initial_rtc_chunk(self) -> None:
-        self.policy.send_observation(self._build_observation())
+        obs_start = time.perf_counter()
+        observation = self._build_observation()
+        observation_build_s = time.perf_counter() - obs_start
+        request_start = time.perf_counter()
+        request_id = self._start_chunk_metric(
+            transport=self.cfg.policy_transport,
+            request_time_s=request_start,
+            client_observation_build_s=observation_build_s,
+            kind="rtc_initial",
+        )
+        self.policy.send_observation(observation)
         action_msg = self.policy.current_action
         if action_msg is None:
             return
@@ -229,6 +365,12 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._action_chunk = self._parse_action_payload(action_msg["action"])
         self._chunk_step = 0
         self._last_action_timestamp = timestamp
+        self._finish_chunk_metric(
+            request_id,
+            request_latency_s=time.perf_counter() - request_start,
+            action_count=len(self._action_chunk),
+        )
+        self._active_chunk_metric_id = request_id
         self._log_action_chunk_debug(self._action_chunk)
 
     def _maybe_launch_rtc_request(self) -> None:
@@ -251,6 +393,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._validate_rtc_schedule(chunk_len, s, delay_estimate)
         prev_chunk_left_over = self._action_chunk[s:].copy()
         guided_overlap = len(prev_chunk_left_over)
+        obs_start = time.perf_counter()
         obs = self._build_observation(
             policy_kwargs={
                 "prev_chunk_left_over": prev_chunk_left_over.tolist(),
@@ -258,15 +401,26 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 "execution_horizon": guided_overlap,
             }
         )
+        observation_build_s = time.perf_counter() - obs_start
 
         with self._rtc_lock:
             self._rtc_inflight = True
             self._rtc_next_launch_step = s
             generation = self._rtc_generation
 
+        request_start = time.perf_counter()
+        request_id = self._start_chunk_metric(
+            transport=self.cfg.policy_transport,
+            request_time_s=request_start,
+            client_observation_build_s=observation_build_s,
+            kind="rtc_async",
+            launch_step=s,
+            predicted_delay_steps=delay_estimate,
+            leftover_action_count=guided_overlap,
+        )
         thread = threading.Thread(
             target=self._rtc_request_worker,
-            args=(obs, s, generation),
+            args=(obs, s, generation, request_id, request_start),
             daemon=True,
         )
         thread.start()
@@ -276,6 +430,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
         obs: Dict[str, Any],
         launch_step: int,
         generation: int,
+        request_id: int,
+        request_start: float,
     ) -> None:
         policy = DirectZmqPolicy(
             self.cfg.policy_name,
@@ -289,15 +445,23 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 raise RuntimeError("RTC policy request returned no action message.")
             chunk = self._parse_action_payload(action_msg["action"])
             timestamp = float(action_msg["timestamp"])
+            request_latency_s = time.perf_counter() - request_start
             with self._rtc_lock:
                 if generation == self._rtc_generation and timestamp != self._last_action_timestamp:
                     self._rtc_next_chunk = chunk
                     self._last_action_timestamp = timestamp
                     self._rtc_next_launch_step = launch_step
+                    self._rtc_next_metric_id = request_id
+                    self._finish_chunk_metric(
+                        request_id,
+                        request_latency_s=request_latency_s,
+                        action_count=len(chunk),
+                    )
         except BaseException as exc:
             with self._rtc_lock:
                 if generation == self._rtc_generation:
                     self._rtc_pending_error = exc
+                    self._mark_chunk_metric_error(request_id, str(exc))
         finally:
             policy.close()
             with self._rtc_lock:
@@ -311,15 +475,24 @@ class Pi05PolicyInference(PolicyInferenceManager):
         with self._rtc_lock:
             next_chunk = self._rtc_next_chunk
             launch_step = self._rtc_next_launch_step
+            metric_id = self._rtc_next_metric_id
             if next_chunk is None:
                 return
             self._rtc_next_chunk = None
+            self._rtc_next_metric_id = None
 
         observed_delay = max(0, self._chunk_step - launch_step)
         start_step = min(len(next_chunk), observed_delay)
         self._action_chunk = next_chunk
         self._chunk_step = start_step
         self._record_rtc_delay(observed_delay)
+        self._active_chunk_metric_id = metric_id
+        if self._active_chunk_metric_id is not None:
+            self._update_chunk_metric(
+                self._active_chunk_metric_id,
+                observed_delay_steps=observed_delay,
+                start_step=start_step,
+            )
         self._log_action_chunk_debug(self._action_chunk)
 
     def _rtc_min_execution_horizon(self, chunk_len: int) -> int:
@@ -365,6 +538,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._rtc_inflight = False
             self._rtc_next_chunk = None
             self._rtc_next_launch_step = 0
+            self._rtc_next_metric_id = None
             self._rtc_pending_error = None
             self._rtc_delay_history.clear()
             self._rtc_delay_history.append(max(0, int(self.cfg.rtc_delay_steps)))
@@ -401,7 +575,164 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._ui_console.log("Episode discarded.")
 
     def _stop_infering(self) -> None:
+        self._report_metrics()
         super()._stop_infering()
+
+    def _report_metrics(self) -> None:
+        if self._metrics_reported:
+            return
+        self._metrics_reported = True
+
+        end_perf = time.perf_counter()
+        total_time_s = (
+            end_perf - self._metrics_start_perf
+            if self._metrics_start_perf is not None
+            else 0.0
+        )
+        with self._metrics_lock:
+            chunks = [dict(chunk) for chunk in self._metrics_chunks]
+            inference_calls = int(self._metrics_inference_calls)
+            actions_applied = int(self._metrics_actions_applied)
+            empty_action_steps = int(self._metrics_empty_action_steps)
+
+        request_latencies = [
+            float(chunk["request_latency_s"])
+            for chunk in chunks
+            if chunk.get("request_latency_s") is not None
+        ]
+        first_action_latencies = [
+            float(chunk["first_action_latency_s"])
+            for chunk in chunks
+            if chunk.get("first_action_latency_s") is not None
+        ]
+        execution_durations = [
+            float(chunk["execution_duration_s"])
+            for chunk in chunks
+            if chunk.get("execution_duration_s") is not None
+        ]
+        observation_build_times = [
+            float(chunk["client_observation_build_s"])
+            for chunk in chunks
+            if chunk.get("client_observation_build_s") is not None
+        ]
+        observed_delays = [
+            int(chunk["observed_delay_steps"])
+            for chunk in chunks
+            if chunk.get("observed_delay_steps") is not None
+        ]
+        recommended_delay = max(observed_delays) if observed_delays else self._rtc_delay_estimate(10**9)
+
+        summary = {
+            "policy_transport": self.cfg.policy_transport,
+            "fps": int(self.fps),
+            "rtc_enabled": bool(self.cfg.rtc_enabled),
+            "rtc_execution_horizon": int(self.cfg.rtc_execution_horizon),
+            "rtc_delay_steps": int(self.cfg.rtc_delay_steps),
+            "rtc_delay_buffer_size": int(self.cfg.rtc_delay_buffer_size),
+            "gripper_open_confirm_steps": int(self.cfg.gripper_open_confirm_steps),
+            "stop_after_first_release": bool(self.cfg.stop_after_first_release),
+            "total_time_s": total_time_s,
+            "inference_calls": inference_calls,
+            "completed_chunks": len(chunks),
+            "actions_applied": actions_applied,
+            "empty_action_steps": empty_action_steps,
+            "avg_request_latency_s": _mean(request_latencies),
+            "avg_first_action_latency_s": _mean(first_action_latencies),
+            "avg_chunk_execution_duration_s": _mean(execution_durations),
+            "avg_client_observation_build_s": _mean(observation_build_times),
+            "avg_observed_delay_steps": _mean([float(delay) for delay in observed_delays]),
+            "max_observed_delay_steps": max(observed_delays) if observed_delays else None,
+            "recommended_delay_steps": recommended_delay,
+        }
+
+        pyzlc.info(
+            "Pi0.5 inference metrics: "
+            f"total_time={summary['total_time_s']:.3f}s, "
+            f"inference_calls={summary['inference_calls']}, "
+            f"completed_chunks={summary['completed_chunks']}, "
+            f"actions_applied={summary['actions_applied']}, "
+            f"empty_action_steps={summary['empty_action_steps']}, "
+            f"avg_request_latency={_format_optional(summary['avg_request_latency_s'])}s, "
+            f"avg_first_action_latency={_format_optional(summary['avg_first_action_latency_s'])}s, "
+            f"avg_chunk_duration={_format_optional(summary['avg_chunk_execution_duration_s'])}s, "
+            f"recommended_delay={summary['recommended_delay_steps']}"
+        )
+        for chunk in chunks:
+            pyzlc.info(
+                "Pi0.5 chunk metrics: "
+                f"request_id={chunk.get('request_id')}, "
+                f"kind={chunk.get('kind')}, "
+                f"request_latency={_format_optional(chunk.get('request_latency_s'))}s, "
+                f"first_action_latency={_format_optional(chunk.get('first_action_latency_s'))}s, "
+                f"chunk_duration={_format_optional(chunk.get('execution_duration_s'))}s, "
+                f"executed_actions={chunk.get('executed_action_count')}, "
+                f"action_count={chunk.get('action_count')}, "
+                f"predicted_delay={chunk.get('predicted_delay_steps')}, "
+                f"observed_delay={chunk.get('observed_delay_steps')}"
+            )
+
+        if self.cfg.metrics_path:
+            self._write_metrics(summary, chunks)
+
+    def _write_metrics(self, summary: Dict[str, Any], chunks: List[Dict[str, Any]]) -> None:
+        path = Path(self.cfg.metrics_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        record = {
+            "type": "pi05_inference_episode",
+            "wall_time": self._metrics_start_wall,
+            "summary": summary,
+            "chunks": chunks,
+        }
+        with path.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(_json_safe(record), sort_keys=True) + "\n")
+
+        text_path = path.with_suffix(".txt")
+        self._write_metrics_text(text_path, record)
+        pyzlc.info(f"Wrote Pi0.5 inference metrics to {path} and {text_path}")
+
+    def _write_metrics_text(self, path: Path, record: Dict[str, Any]) -> None:
+        summary = record["summary"]
+        chunks = record["chunks"]
+        lines = [
+            "Pi0.5 inference metrics",
+            f"wall_time={record.get('wall_time')}",
+            (
+                "summary: "
+                f"total_time={_format_optional(summary.get('total_time_s'))}s, "
+                f"inference_calls={summary.get('inference_calls')}, "
+                f"completed_chunks={summary.get('completed_chunks')}, "
+                f"actions_applied={summary.get('actions_applied')}, "
+                f"empty_action_steps={summary.get('empty_action_steps')}"
+            ),
+            (
+                "latency: "
+                f"avg_request={_format_optional(summary.get('avg_request_latency_s'))}s, "
+                f"avg_first_action={_format_optional(summary.get('avg_first_action_latency_s'))}s, "
+                f"avg_chunk_duration={_format_optional(summary.get('avg_chunk_execution_duration_s'))}s, "
+                f"recommended_delay={summary.get('recommended_delay_steps')}"
+            ),
+            "chunks:",
+            (
+                "  request  kind         actions  executed  pred_d  obs_d  "
+                "request_s  first_s  duration_s"
+            ),
+        ]
+        for chunk in chunks:
+            lines.append(
+                "  "
+                f"{str(chunk.get('request_id')):>7}  "
+                f"{str(chunk.get('kind')):<11}  "
+                f"{str(chunk.get('action_count')):>7}  "
+                f"{str(chunk.get('executed_action_count')):>8}  "
+                f"{str(chunk.get('predicted_delay_steps')):>6}  "
+                f"{str(chunk.get('observed_delay_steps')):>5}  "
+                f"{_format_optional(chunk.get('request_latency_s')):>9}  "
+                f"{_format_optional(chunk.get('first_action_latency_s')):>7}  "
+                f"{_format_optional(chunk.get('execution_duration_s')):>10}"
+            )
+
+        with path.open("a", encoding="utf-8") as f:
+            f.write("\n".join(lines) + "\n")
 
     def _reset_arm(self) -> None:
         self._ui_console.log("Resetting robot arm position...")
@@ -578,6 +909,32 @@ def _format_vec(vec: Optional[np.ndarray]) -> str:
         return "None"
     arr = np.asarray(vec, dtype=np.float64).reshape(-1)
     return "[" + ", ".join(f"{value:.4f}" for value in arr) + "]"
+
+
+def _mean(values: List[float]) -> Optional[float]:
+    if not values:
+        return None
+    return float(sum(values) / len(values))
+
+
+def _format_optional(value: Any) -> str:
+    if value is None:
+        return "n/a"
+    return f"{float(value):.3f}"
+
+
+def _json_safe(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {str(k): _json_safe(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_json_safe(v) for v in value]
+    if isinstance(value, tuple):
+        return [_json_safe(v) for v in value]
+    if isinstance(value, np.ndarray):
+        return value.tolist()
+    if isinstance(value, np.generic):
+        return value.item()
+    return value
 
 
 def _rotation_matrix_to_quat_xyzw(matrix: np.ndarray) -> np.ndarray:

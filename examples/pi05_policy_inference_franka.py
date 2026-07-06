@@ -68,6 +68,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--gripper_open_confirm_steps", type=int, default=1)
     parser.add_argument("--stop_after_first_release", action="store_true")
     parser.add_argument("--stop_after_release_steps", type=int, default=0)
+    parser.add_argument("--metrics_path", default=None)
     parser.add_argument("--robot_name", default="FrankaPanda")
     parser.add_argument("--static_camera", default="static_cam")
     parser.add_argument("--wrist_camera", default="wrist_cam")
@@ -124,6 +125,7 @@ def main() -> None:
         gripper_open_confirm_steps=args.gripper_open_confirm_steps,
         stop_after_first_release=args.stop_after_first_release,
         stop_after_release_steps=args.stop_after_release_steps,
+        metrics_path=args.metrics_path,
     )
     inference_manager = Pi05PolicyInference(
         data_collectors=data_collectors,

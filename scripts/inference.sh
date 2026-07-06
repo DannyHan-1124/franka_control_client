@@ -9,6 +9,7 @@ python examples/pi05_policy_inference_franka.py \
     --pyzlc_group_port 7725 \
     --policy_transport zmq \
     --policy_zmq_endpoint tcp://127.0.0.1:17725 \
+    --metrics_path logs/pi05_inference_metrics.jsonl \
     --static_camera static_cam \
     --wrist_camera wrist_cam \
     --rtc_enabled \
