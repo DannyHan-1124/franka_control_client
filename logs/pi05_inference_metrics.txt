@@ -1,5 +1,6 @@
 Pi0.5 inference metrics
-wall_time=1783349319.513648
+task: put red cylinder on blue cube
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=4
 summary: total_time=6.819s, inference_calls=17, completed_chunks=17, actions_applied=133, empty_action_steps=0
 latency: avg_request=0.316s, avg_first_action=0.340s, avg_chunk_duration=0.339s, recommended_delay=7
 chunks:
@@ -21,8 +22,10 @@ chunks:
        15  rtc_async         50         8       7      7      0.323    0.346       0.350
        16  rtc_async         50         8       7      7      0.326    0.346       0.350
        17  rtc_async         50         1       7      7      0.325    0.346       0.000
+
 Pi0.5 inference metrics
-wall_time=1783349337.2492635
+task: put red cylinder on blue cube
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=4
 summary: total_time=7.065s, inference_calls=18, completed_chunks=18, actions_applied=138, empty_action_steps=0
 latency: avg_request=0.321s, avg_first_action=0.340s, avg_chunk_duration=0.353s, recommended_delay=7
 chunks:
@@ -45,8 +48,10 @@ chunks:
        16  rtc_async         50         8       7      7      0.326    0.346       0.351
        17  rtc_async         50         6       7      7      0.326    0.346       0.250
        18  rtc_async       None         0       7   None        n/a      n/a         n/a
+
 Pi0.5 inference metrics
-wall_time=1783349355.1536503
+task: put red cylinder on blue cube
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=4
 summary: total_time=6.917s, inference_calls=18, completed_chunks=18, actions_applied=135, empty_action_steps=0
 latency: avg_request=0.316s, avg_first_action=0.341s, avg_chunk_duration=0.344s, recommended_delay=7
 chunks:
@@ -69,8 +74,10 @@ chunks:
        16  rtc_async         50         8       7      7      0.317    0.346       0.350
        17  rtc_async         50         3       7      7      0.320    0.346       0.100
        18  rtc_async       None         0       7   None        n/a      n/a         n/a
+
 Pi0.5 inference metrics
-wall_time=1783349371.6612036
+task: put red cylinder on blue cube
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=4
 summary: total_time=6.967s, inference_calls=18, completed_chunks=18, actions_applied=136, empty_action_steps=0
 latency: avg_request=0.314s, avg_first_action=0.340s, avg_chunk_duration=0.347s, recommended_delay=7
 chunks:
@@ -93,8 +100,10 @@ chunks:
        16  rtc_async         50         8       7      7      0.317    0.346       0.351
        17  rtc_async         50         4       7      7      0.318    0.346       0.150
        18  rtc_async       None         0       7   None        n/a      n/a         n/a
+
 Pi0.5 inference metrics
-wall_time=1783349399.782708
+task: put red cylinder on blue cube
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=4
 summary: total_time=6.965s, inference_calls=18, completed_chunks=18, actions_applied=136, empty_action_steps=0
 latency: avg_request=0.317s, avg_first_action=0.341s, avg_chunk_duration=0.347s, recommended_delay=7
 chunks:
@@ -117,8 +126,10 @@ chunks:
        16  rtc_async         50         8       7      7      0.322    0.346       0.350
        17  rtc_async         50         4       7      7      0.318    0.346       0.150
        18  rtc_async       None         0       7   None        n/a      n/a         n/a
+
 Pi0.5 inference metrics
-wall_time=1783349443.502295
+task: put red cylinder on blue cube
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=4
 summary: total_time=6.819s, inference_calls=14, completed_chunks=14, actions_applied=133, empty_action_steps=0
 latency: avg_request=0.313s, avg_first_action=0.339s, avg_chunk_duration=0.458s, recommended_delay=7
 chunks:
@@ -137,8 +148,10 @@ chunks:
        12  rtc_async         50        10       7      7      0.320    0.346       0.450
        13  rtc_async         50         6       7      7      0.320    0.346       0.250
        14  rtc_async       None         0       7   None        n/a      n/a         n/a
+
 Pi0.5 inference metrics
-wall_time=1783349460.68353
+task: put red cylinder on blue cube
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=4
 summary: total_time=6.920s, inference_calls=14, completed_chunks=14, actions_applied=135, empty_action_steps=0
 latency: avg_request=0.314s, avg_first_action=0.339s, avg_chunk_duration=0.466s, recommended_delay=7
 chunks:
@@ -157,8 +170,10 @@ chunks:
        12  rtc_async         50        10       7      7      0.320    0.346       0.451
        13  rtc_async         50         8       7      7      0.321    0.346       0.350
        14  rtc_async       None         0       7   None        n/a      n/a         n/a
+
 Pi0.5 inference metrics
-wall_time=1783349476.8117332
+task: put red cylinder on blue cube
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=4
 summary: total_time=6.918s, inference_calls=14, completed_chunks=14, actions_applied=135, empty_action_steps=0
 latency: avg_request=0.314s, avg_first_action=0.339s, avg_chunk_duration=0.466s, recommended_delay=7
 chunks:
@@ -177,8 +192,10 @@ chunks:
        12  rtc_async         50        10       7      7      0.318    0.346       0.450
        13  rtc_async         50         8       7      7      0.317    0.346       0.350
        14  rtc_async       None         0       7   None        n/a      n/a         n/a
+
 Pi0.5 inference metrics
-wall_time=1783349494.7721355
+task: put red cylinder on blue cube
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=4
 summary: total_time=6.869s, inference_calls=14, completed_chunks=14, actions_applied=134, empty_action_steps=0
 latency: avg_request=0.313s, avg_first_action=0.339s, avg_chunk_duration=0.462s, recommended_delay=7
 chunks:
@@ -197,8 +214,10 @@ chunks:
        12  rtc_async         50        10       7      7      0.320    0.346       0.451
        13  rtc_async         50         7       7      7      0.320    0.346       0.300
        14  rtc_async       None         0       7   None        n/a      n/a         n/a
+
 Pi0.5 inference metrics
-wall_time=1783349510.5529492
+task: put red cylinder on blue cube
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=4
 summary: total_time=6.974s, inference_calls=14, completed_chunks=14, actions_applied=136, empty_action_steps=0
 latency: avg_request=0.317s, avg_first_action=0.339s, avg_chunk_duration=0.470s, recommended_delay=7
 chunks:
@@ -217,8 +236,10 @@ chunks:
        12  rtc_async         50        10       7      7      0.321    0.346       0.450
        13  rtc_async         50         9       7      7      0.317    0.346       0.400
        14  rtc_async       None         0       7   None        n/a      n/a         n/a
+
 Pi0.5 inference metrics
-wall_time=1783349546.096779
+task: put red cylinder on blue cube
+config: rtc_enabled=True, rtc_execution_horizon=25, rtc_delay_steps=4
 summary: total_time=6.670s, inference_calls=6, completed_chunks=6, actions_applied=130, empty_action_steps=0
 latency: avg_request=0.311s, avg_first_action=0.327s, avg_chunk_duration=1.242s, recommended_delay=7
 chunks:
@@ -229,8 +250,10 @@ chunks:
         4  rtc_async         50        25       7      7      0.320    0.346       1.202
         5  rtc_async         50        23       7      7      0.321    0.346       1.101
         6  rtc_async       None         0       7   None        n/a      n/a         n/a
+
 Pi0.5 inference metrics
-wall_time=1783349561.3915982
+task: put red cylinder on blue cube
+config: rtc_enabled=True, rtc_execution_horizon=25, rtc_delay_steps=4
 summary: total_time=6.665s, inference_calls=6, completed_chunks=6, actions_applied=130, empty_action_steps=0
 latency: avg_request=0.310s, avg_first_action=0.327s, avg_chunk_duration=1.242s, recommended_delay=7
 chunks:
@@ -241,8 +264,10 @@ chunks:
         4  rtc_async         50        25       7      7      0.330    0.346       1.202
         5  rtc_async         50        23       7      7      0.322    0.346       1.102
         6  rtc_async       None         0       7   None        n/a      n/a         n/a
+
 Pi0.5 inference metrics
-wall_time=1783349597.462458
+task: put red cylinder on blue cube
+config: rtc_enabled=True, rtc_execution_horizon=25, rtc_delay_steps=4
 summary: total_time=6.719s, inference_calls=6, completed_chunks=6, actions_applied=131, empty_action_steps=0
 latency: avg_request=0.310s, avg_first_action=0.327s, avg_chunk_duration=1.252s, recommended_delay=7
 chunks:
@@ -253,8 +278,10 @@ chunks:
         4  rtc_async         50        25       7      7      0.329    0.346       1.202
         5  rtc_async         50        24       7      7      0.329    0.346       1.153
         6  rtc_async       None         0       7   None        n/a      n/a         n/a
+
 Pi0.5 inference metrics
-wall_time=1783349616.582073
+task: put red cylinder on blue cube
+config: rtc_enabled=True, rtc_execution_horizon=25, rtc_delay_steps=4
 summary: total_time=6.715s, inference_calls=6, completed_chunks=6, actions_applied=131, empty_action_steps=0
 latency: avg_request=0.309s, avg_first_action=0.327s, avg_chunk_duration=1.252s, recommended_delay=7
 chunks:
@@ -265,8 +292,10 @@ chunks:
         4  rtc_async         50        25       7      7      0.321    0.346       1.202
         5  rtc_async         50        24       7      7      0.328    0.346       1.152
         6  rtc_async       None         0       7   None        n/a      n/a         n/a
+
 Pi0.5 inference metrics
-wall_time=1783349633.222409
+task: put red cylinder on blue cube
+config: rtc_enabled=True, rtc_execution_horizon=25, rtc_delay_steps=4
 summary: total_time=6.566s, inference_calls=6, completed_chunks=6, actions_applied=128, empty_action_steps=0
 latency: avg_request=0.310s, avg_first_action=0.327s, avg_chunk_duration=1.222s, recommended_delay=7
 chunks:

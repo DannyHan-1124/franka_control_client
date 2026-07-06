@@ -126,6 +126,16 @@ def main() -> None:
         stop_after_first_release=args.stop_after_first_release,
         stop_after_release_steps=args.stop_after_release_steps,
         metrics_path=args.metrics_path,
+        run_metadata={
+            "control_hz": args.control_hz,
+            "pyzlc_name": args.pyzlc_name,
+            "pyzlc_host": args.pyzlc_host,
+            "pyzlc_group_name": args.pyzlc_group_name,
+            "pyzlc_group_port": args.pyzlc_group_port,
+            "robot_name": args.robot_name,
+            "static_camera": args.static_camera,
+            "wrist_camera": args.wrist_camera,
+        },
     )
     inference_manager = Pi05PolicyInference(
         data_collectors=data_collectors,

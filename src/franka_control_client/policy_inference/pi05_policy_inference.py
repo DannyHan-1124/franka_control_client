@@ -45,6 +45,7 @@ class Pi05PolicyInferenceConfig:
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
     metrics_path: Optional[str] = None
+    run_metadata: Optional[Dict[str, Any]] = None
     rtc_enabled: bool = False
     rtc_execution_horizon: int = 25
     rtc_delay_steps: int = 0
@@ -642,7 +643,12 @@ class Pi05PolicyInference(PolicyInferenceManager):
         recommended_delay = max(observed_delays) if observed_delays else self._rtc_delay_estimate(10**9)
 
         summary = {
+            "task": self.task,
+            "policy_name": self.cfg.policy_name,
             "policy_transport": self.cfg.policy_transport,
+            "policy_zmq_endpoint": self.cfg.policy_zmq_endpoint,
+            "obs_topic": self.cfg.obs_topic,
+            "action_topic": self.cfg.action_topic,
             "fps": int(self.fps),
             "rtc_enabled": bool(self.cfg.rtc_enabled),
             "rtc_execution_horizon": int(self.cfg.rtc_execution_horizon),
@@ -662,6 +668,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "avg_observed_delay_steps": _mean([float(delay) for delay in observed_delays]),
             "max_observed_delay_steps": max(observed_delays) if observed_delays else None,
             "recommended_delay_steps": recommended_delay,
+            "run_metadata": self.cfg.run_metadata or {},
         }
 
         pyzlc.info(
@@ -714,7 +721,13 @@ class Pi05PolicyInference(PolicyInferenceManager):
         chunks = record["chunks"]
         lines = [
             "Pi0.5 inference metrics",
-            f"wall_time={record.get('wall_time')}",
+            f"task: {summary.get('task')}",
+            (
+                "config: "
+                f"rtc_enabled={summary.get('rtc_enabled')}, "
+                f"rtc_execution_horizon={summary.get('rtc_execution_horizon')}, "
+                f"rtc_delay_steps={summary.get('rtc_delay_steps')}"
+            ),
             (
                 "summary: "
                 f"total_time={_format_optional(summary.get('total_time_s'))}s, "
@@ -751,7 +764,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             )
 
         with path.open("a", encoding="utf-8") as f:
-            f.write("\n".join(lines) + "\n")
+            f.write("\n".join(lines) + "\n\n")
 
     def _reset_arm(self) -> None:
         self._ui_console.log("Resetting robot arm position...")
