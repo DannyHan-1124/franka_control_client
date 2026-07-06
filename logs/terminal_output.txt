@@ -1,0 +1,29 @@
+Starting policy infering...[2026-07-06 16:10:36,260] [INFO] Starting control
+[2026-07-06 16:10:36,260] [INFO] Started Control Pair
+Infering... Press 's' to save, 'd' to discard, or 'q' to quit[2026-07-06 16:10:36,313] [INFO] Set Franka arm control mode to CartesianImpedance
+[2026-07-06 16:10:36,902] [INFO] Received Pi0.5 action chunk: len=1, gripper_min=0.000, gripper_max=0.000, first_close_step=None, first_open_step=0, longest_open_run=1, pos_start=[0.0000, 0.0000, 0.0000], pos_end=[0.0000, 0.0000, 0.0000], pos_min=[0.0000, 0.0000, 0.0000], pos_max=[0.0000, 0.0000, 0.0000]
+Policy infering closed.[2026-07-06 16:10:36,902] [INFO] Subscriber FrankaPanda/franka_arm_state has been closed
+[2026-07-06 16:10:36,902] [INFO] Subscriber FrankaPanda/robotiq_gripper_state has been closed
+[2026-07-06 16:10:36,902] [INFO] Subscriber static_cam has been closed
+[2026-07-06 16:10:36,902] [INFO] Subscriber wrist_cam has been closed
+Traceback (most recent call last):
+  File "/home/jjiang/utphd/franka_control_client/examples/pi05_policy_inference_franka.py", line 143, in <module>
+    main()
+  File "/home/jjiang/utphd/franka_control_client/examples/pi05_policy_inference_franka.py", line 137, in main
+    inference_manager.run()
+  File "/home/jjiang/utphd/franka_control_client/src/franka_control_client/policy_inference/policy_inference_manager.py", line 158, in run
+    self._infer_step()
+  File "/home/jjiang/utphd/franka_control_client/src/franka_control_client/policy_inference/pi05_policy_inference.py", line 257, in _infer_step
+    self._infer_rtc_step()
+  File "/home/jjiang/utphd/franka_control_client/src/franka_control_client/policy_inference/pi05_policy_inference.py", line 328, in _infer_rtc_step
+    self._maybe_launch_rtc_request()
+  File "/home/jjiang/utphd/franka_control_client/src/franka_control_client/policy_inference/pi05_policy_inference.py", line 386, in _maybe_launch_rtc_request
+    self._validate_rtc_schedule(chunk_len, launch_step, delay_estimate)
+  File "/home/jjiang/utphd/franka_control_client/src/franka_control_client/policy_inference/pi05_policy_inference.py", line 512, in _validate_rtc_schedule
+    raise RuntimeError(
+RuntimeError: Invalid RTC schedule: execution horizon reaches the end of the chunk (H=1, s=1, d=1).
+^CException ignored in: <module 'threading' from '/home/jjiang/miniconda3/envs/pi05_franka/lib/python3.12/threading.py'>
+Traceback (most recent call last):
+  File "/home/jjiang/miniconda3/envs/pi05_franka/lib/python3.12/threading.py", line 1624, in _shutdown
+    lock.acquire()
+KeyboardInterrupt: 
