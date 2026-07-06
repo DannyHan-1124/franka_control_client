@@ -300,7 +300,7 @@ class Pi05PolicyNode:
                 action_chunk = self.policy.select_action(observation)
 
         if action_chunk.ndim == 2:
-            action_chunk = action_chunk.unsqueeze(1)
+            action_chunk = action_chunk.unsqueeze(0)
         elif action_chunk.ndim == 1:
             action_chunk = action_chunk.reshape(1, 1, -1)
         if action_chunk.ndim != 3:
