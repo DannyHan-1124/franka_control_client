@@ -9,7 +9,7 @@ export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot/src:${PYTHONPATH:-
 # pgrep -af 'ssh.*(-L)'
 
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
-    --task "put red cylinder on yellow cube and put green cylinder on blue cube" \
+    --task "put red cylinder on blue cube" \
     --stop_after_first_release \
     --pyzlc_name policy_inference \
     --pyzlc_host 141.3.53.25 \
@@ -21,5 +21,5 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --static_camera static_cam \
     --wrist_camera wrist_cam \
     --rtc_enabled \
-    --rtc_execution_horizon 25 \
+    --rtc_execution_horizon 40 \
     --rtc_delay_steps 4

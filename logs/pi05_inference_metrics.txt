@@ -1,43 +1,279 @@
 Pi0.5 inference metrics
-wall_time=1783348141.640075
-summary: total_time=6.453s, inference_calls=4, completed_chunks=4, actions_applied=80, empty_action_steps=0
-latency: avg_request=1.090s, avg_first_action=1.111s, avg_chunk_duration=1.268s, recommended_delay=10
+wall_time=1783349319.513648
+summary: total_time=6.819s, inference_calls=17, completed_chunks=17, actions_applied=133, empty_action_steps=0
+latency: avg_request=0.316s, avg_first_action=0.340s, avg_chunk_duration=0.339s, recommended_delay=7
 chunks:
   request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
-        1  rtc_initial       50        35    None   None      2.456    2.490       1.652
-        2  rtc_async         50        22       4     10      0.477    0.496       1.051
-        3  rtc_async         50        23      10      7      0.336    0.346       1.101
-        4  rtc_async       None         0      10   None        n/a      n/a         n/a
+        1  rtc_initial       50        12    None   None      0.253    0.253       0.501
+        2  rtc_async         50         8       4      7      0.326    0.346       0.350
+        3  rtc_async         50         8       7      7      0.318    0.346       0.350
+        4  rtc_async         50         8       7      7      0.320    0.346       0.350
+        5  rtc_async         50         8       7      7      0.318    0.346       0.350
+        6  rtc_async         50         8       7      7      0.316    0.346       0.350
+        7  rtc_async         50         8       7      7      0.317    0.346       0.350
+        8  rtc_async         50         8       7      7      0.317    0.346       0.350
+        9  rtc_async         50         8       7      7      0.320    0.346       0.350
+       10  rtc_async         50         8       7      7      0.316    0.346       0.350
+       11  rtc_async         50         8       7      7      0.317    0.346       0.350
+       12  rtc_async         50         8       7      7      0.320    0.346       0.350
+       13  rtc_async         50         8       7      7      0.322    0.346       0.350
+       14  rtc_async         50         8       7      7      0.324    0.346       0.350
+       15  rtc_async         50         8       7      7      0.323    0.346       0.350
+       16  rtc_async         50         8       7      7      0.326    0.346       0.350
+       17  rtc_async         50         1       7      7      0.325    0.346       0.000
 Pi0.5 inference metrics
-wall_time=1783348166.2401931
-summary: total_time=8.671s, inference_calls=7, completed_chunks=7, actions_applied=169, empty_action_steps=0
-latency: avg_request=0.318s, avg_first_action=0.333s, avg_chunk_duration=1.152s, recommended_delay=7
+wall_time=1783349337.2492635
+summary: total_time=7.065s, inference_calls=18, completed_chunks=18, actions_applied=138, empty_action_steps=0
+latency: avg_request=0.321s, avg_first_action=0.340s, avg_chunk_duration=0.353s, recommended_delay=7
 chunks:
   request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
-        1  rtc_initial       50        32    None   None      0.253    0.253       1.502
-        2  rtc_async         50        25       4      7      0.328    0.346       1.202
-        3  rtc_async         50        25       7      7      0.333    0.346       1.202
-        4  rtc_async         50        25       7      7      0.328    0.346       1.202
-        5  rtc_async         50        25       7      7      0.325    0.345       1.202
-        6  rtc_async         50        25       7      7      0.326    0.346       1.201
-        7  rtc_async         50        12       7      7      0.333    0.346       0.551
+        1  rtc_initial       50        12    None   None      0.250    0.250       0.501
+        2  rtc_async         50         8       4      7      0.325    0.346       0.350
+        3  rtc_async         50         8       7      7      0.322    0.346       0.350
+        4  rtc_async         50         8       7      7      0.322    0.346       0.350
+        5  rtc_async         50         8       7      7      0.323    0.346       0.350
+        6  rtc_async         50         8       7      7      0.326    0.346       0.350
+        7  rtc_async         50         8       7      7      0.325    0.346       0.350
+        8  rtc_async         50         8       7      7      0.326    0.346       0.350
+        9  rtc_async         50         8       7      7      0.327    0.346       0.350
+       10  rtc_async         50         8       7      7      0.325    0.345       0.350
+       11  rtc_async         50         8       7      7      0.328    0.346       0.350
+       12  rtc_async         50         8       7      7      0.326    0.346       0.350
+       13  rtc_async         50         8       7      7      0.325    0.346       0.350
+       14  rtc_async         50         8       7      7      0.325    0.346       0.350
+       15  rtc_async         50         8       7      7      0.326    0.346       0.350
+       16  rtc_async         50         8       7      7      0.326    0.346       0.351
+       17  rtc_async         50         6       7      7      0.326    0.346       0.250
+       18  rtc_async       None         0       7   None        n/a      n/a         n/a
 Pi0.5 inference metrics
-wall_time=1783348260.1539166
-summary: total_time=4.768s, inference_calls=4, completed_chunks=4, actions_applied=91, empty_action_steps=0
-latency: avg_request=0.310s, avg_first_action=0.323s, avg_chunk_duration=1.076s, recommended_delay=7
+wall_time=1783349355.1536503
+summary: total_time=6.917s, inference_calls=18, completed_chunks=18, actions_applied=135, empty_action_steps=0
+latency: avg_request=0.316s, avg_first_action=0.341s, avg_chunk_duration=0.344s, recommended_delay=7
 chunks:
   request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
-        1  rtc_initial       50        32    None   None      0.255    0.255       1.502
-        2  rtc_async         50        25       4      7      0.327    0.346       1.202
-        3  rtc_async         50        25       7      7      0.326    0.346       1.202
-        4  rtc_async         50         9       7      7      0.334    0.346       0.400
+        1  rtc_initial       50        12    None   None      0.252    0.252       0.501
+        2  rtc_async         50         8       4      7      0.319    0.346       0.350
+        3  rtc_async         50         8       7      7      0.319    0.346       0.350
+        4  rtc_async         50         8       7      7      0.318    0.346       0.350
+        5  rtc_async         50         8       7      7      0.317    0.346       0.350
+        6  rtc_async         50         8       7      7      0.322    0.346       0.350
+        7  rtc_async         50         8       7      7      0.322    0.346       0.350
+        8  rtc_async         50         8       7      7      0.323    0.346       0.350
+        9  rtc_async         50         8       7      7      0.323    0.346       0.350
+       10  rtc_async         50         8       7      7      0.320    0.346       0.350
+       11  rtc_async         50         8       7      7      0.320    0.346       0.350
+       12  rtc_async         50         8       7      7      0.318    0.346       0.350
+       13  rtc_async         50         8       7      7      0.319    0.346       0.350
+       14  rtc_async         50         8       7      7      0.318    0.346       0.350
+       15  rtc_async         50         8       7      7      0.317    0.346       0.350
+       16  rtc_async         50         8       7      7      0.317    0.346       0.350
+       17  rtc_async         50         3       7      7      0.320    0.346       0.100
+       18  rtc_async       None         0       7   None        n/a      n/a         n/a
 Pi0.5 inference metrics
-wall_time=1783348287.6983006
-summary: total_time=6.721s, inference_calls=4, completed_chunks=4, actions_applied=131, empty_action_steps=0
-latency: avg_request=0.315s, avg_first_action=0.323s, avg_chunk_duration=1.578s, recommended_delay=7
+wall_time=1783349371.6612036
+summary: total_time=6.967s, inference_calls=18, completed_chunks=18, actions_applied=136, empty_action_steps=0
+latency: avg_request=0.314s, avg_first_action=0.340s, avg_chunk_duration=0.347s, recommended_delay=7
 chunks:
   request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
-        1  rtc_initial       50        47    None   None      0.253    0.253       2.255
-        2  rtc_async         50        40      10      7      0.334    0.346       1.953
-        3  rtc_async         50        40      10      7      0.334    0.345       1.953
-        4  rtc_async         50         4      10      7      0.339    0.346       0.151
+        1  rtc_initial       50        12    None   None      0.250    0.251       0.501
+        2  rtc_async         50         8       4      7      0.317    0.346       0.350
+        3  rtc_async         50         8       7      7      0.317    0.346       0.351
+        4  rtc_async         50         8       7      7      0.317    0.345       0.350
+        5  rtc_async         50         8       7      7      0.319    0.345       0.350
+        6  rtc_async         50         8       7      7      0.318    0.346       0.350
+        7  rtc_async         50         8       7      7      0.318    0.346       0.350
+        8  rtc_async         50         8       7      7      0.316    0.346       0.350
+        9  rtc_async         50         8       7      7      0.318    0.346       0.350
+       10  rtc_async         50         8       7      7      0.317    0.346       0.350
+       11  rtc_async         50         8       7      7      0.318    0.346       0.350
+       12  rtc_async         50         8       7      7      0.317    0.346       0.350
+       13  rtc_async         50         8       7      7      0.318    0.346       0.350
+       14  rtc_async         50         8       7      7      0.317    0.346       0.350
+       15  rtc_async         50         8       7      7      0.319    0.346       0.350
+       16  rtc_async         50         8       7      7      0.317    0.346       0.351
+       17  rtc_async         50         4       7      7      0.318    0.346       0.150
+       18  rtc_async       None         0       7   None        n/a      n/a         n/a
+Pi0.5 inference metrics
+wall_time=1783349399.782708
+summary: total_time=6.965s, inference_calls=18, completed_chunks=18, actions_applied=136, empty_action_steps=0
+latency: avg_request=0.317s, avg_first_action=0.341s, avg_chunk_duration=0.347s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        12    None   None      0.250    0.250       0.501
+        2  rtc_async         50         8       4      7      0.321    0.346       0.350
+        3  rtc_async         50         8       7      7      0.317    0.346       0.350
+        4  rtc_async         50         8       7      7      0.318    0.346       0.350
+        5  rtc_async         50         8       7      7      0.318    0.346       0.350
+        6  rtc_async         50         8       7      7      0.322    0.346       0.350
+        7  rtc_async         50         8       7      7      0.323    0.346       0.350
+        8  rtc_async         50         8       7      7      0.323    0.346       0.350
+        9  rtc_async         50         8       7      7      0.323    0.346       0.350
+       10  rtc_async         50         8       7      7      0.325    0.347       0.350
+       11  rtc_async         50         8       7      7      0.321    0.346       0.350
+       12  rtc_async         50         8       7      7      0.322    0.346       0.350
+       13  rtc_async         50         8       7      7      0.322    0.347       0.350
+       14  rtc_async         50         8       7      7      0.321    0.346       0.350
+       15  rtc_async         50         8       7      7      0.325    0.346       0.350
+       16  rtc_async         50         8       7      7      0.322    0.346       0.350
+       17  rtc_async         50         4       7      7      0.318    0.346       0.150
+       18  rtc_async       None         0       7   None        n/a      n/a         n/a
+Pi0.5 inference metrics
+wall_time=1783349443.502295
+summary: total_time=6.819s, inference_calls=14, completed_chunks=14, actions_applied=133, empty_action_steps=0
+latency: avg_request=0.313s, avg_first_action=0.339s, avg_chunk_duration=0.458s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.253    0.253       0.751
+        2  rtc_async         50        10       4      7      0.320    0.346       0.450
+        3  rtc_async         50        10       7      7      0.318    0.346       0.450
+        4  rtc_async         50        10       7      7      0.318    0.346       0.450
+        5  rtc_async         50        10       7      7      0.317    0.346       0.451
+        6  rtc_async         50        10       7      7      0.318    0.345       0.450
+        7  rtc_async         50        10       7      7      0.317    0.346       0.450
+        8  rtc_async         50        10       7      7      0.317    0.346       0.450
+        9  rtc_async         50        10       7      7      0.319    0.346       0.450
+       10  rtc_async         50        10       7      7      0.319    0.346       0.450
+       11  rtc_async         50        10       7      7      0.319    0.346       0.451
+       12  rtc_async         50        10       7      7      0.320    0.346       0.450
+       13  rtc_async         50         6       7      7      0.320    0.346       0.250
+       14  rtc_async       None         0       7   None        n/a      n/a         n/a
+Pi0.5 inference metrics
+wall_time=1783349460.68353
+summary: total_time=6.920s, inference_calls=14, completed_chunks=14, actions_applied=135, empty_action_steps=0
+latency: avg_request=0.314s, avg_first_action=0.339s, avg_chunk_duration=0.466s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.253    0.253       0.752
+        2  rtc_async         50        10       4      7      0.321    0.346       0.450
+        3  rtc_async         50        10       7      7      0.319    0.346       0.450
+        4  rtc_async         50        10       7      7      0.318    0.346       0.450
+        5  rtc_async         50        10       7      7      0.318    0.346       0.451
+        6  rtc_async         50        10       7      7      0.321    0.346       0.451
+        7  rtc_async         50        10       7      7      0.319    0.346       0.450
+        8  rtc_async         50        10       7      7      0.321    0.346       0.451
+        9  rtc_async         50        10       7      7      0.317    0.345       0.450
+       10  rtc_async         50        10       7      7      0.318    0.346       0.451
+       11  rtc_async         50        10       7      7      0.318    0.346       0.451
+       12  rtc_async         50        10       7      7      0.320    0.346       0.451
+       13  rtc_async         50         8       7      7      0.321    0.346       0.350
+       14  rtc_async       None         0       7   None        n/a      n/a         n/a
+Pi0.5 inference metrics
+wall_time=1783349476.8117332
+summary: total_time=6.918s, inference_calls=14, completed_chunks=14, actions_applied=135, empty_action_steps=0
+latency: avg_request=0.314s, avg_first_action=0.339s, avg_chunk_duration=0.466s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.252    0.252       0.751
+        2  rtc_async         50        10       4      7      0.323    0.346       0.451
+        3  rtc_async         50        10       7      7      0.316    0.346       0.451
+        4  rtc_async         50        10       7      7      0.317    0.346       0.450
+        5  rtc_async         50        10       7      7      0.321    0.346       0.451
+        6  rtc_async         50        10       7      7      0.319    0.346       0.450
+        7  rtc_async         50        10       7      7      0.317    0.346       0.451
+        8  rtc_async         50        10       7      7      0.320    0.346       0.450
+        9  rtc_async         50        10       7      7      0.317    0.346       0.450
+       10  rtc_async         50        10       7      7      0.320    0.346       0.451
+       11  rtc_async         50        10       7      7      0.320    0.346       0.450
+       12  rtc_async         50        10       7      7      0.318    0.346       0.450
+       13  rtc_async         50         8       7      7      0.317    0.346       0.350
+       14  rtc_async       None         0       7   None        n/a      n/a         n/a
+Pi0.5 inference metrics
+wall_time=1783349494.7721355
+summary: total_time=6.869s, inference_calls=14, completed_chunks=14, actions_applied=134, empty_action_steps=0
+latency: avg_request=0.313s, avg_first_action=0.339s, avg_chunk_duration=0.462s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.252    0.252       0.752
+        2  rtc_async         50        10       4      7      0.324    0.346       0.450
+        3  rtc_async         50        10       7      7      0.318    0.345       0.451
+        4  rtc_async         50        10       7      7      0.319    0.347       0.450
+        5  rtc_async         50        10       7      7      0.319    0.346       0.451
+        6  rtc_async         50        10       7      7      0.318    0.346       0.451
+        7  rtc_async         50        10       7      7      0.317    0.346       0.450
+        8  rtc_async         50        10       7      7      0.318    0.346       0.450
+        9  rtc_async         50        10       7      7      0.318    0.346       0.450
+       10  rtc_async         50        10       7      7      0.316    0.346       0.451
+       11  rtc_async         50        10       7      7      0.317    0.346       0.451
+       12  rtc_async         50        10       7      7      0.320    0.346       0.451
+       13  rtc_async         50         7       7      7      0.320    0.346       0.300
+       14  rtc_async       None         0       7   None        n/a      n/a         n/a
+Pi0.5 inference metrics
+wall_time=1783349510.5529492
+summary: total_time=6.974s, inference_calls=14, completed_chunks=14, actions_applied=136, empty_action_steps=0
+latency: avg_request=0.317s, avg_first_action=0.339s, avg_chunk_duration=0.470s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.258    0.258       0.751
+        2  rtc_async         50        10       4      7      0.324    0.345       0.450
+        3  rtc_async         50        10       7      7      0.324    0.346       0.450
+        4  rtc_async         50        10       7      7      0.322    0.346       0.450
+        5  rtc_async         50        10       7      7      0.329    0.346       0.450
+        6  rtc_async         50        10       7      7      0.322    0.346       0.450
+        7  rtc_async         50        10       7      7      0.321    0.345       0.450
+        8  rtc_async         50        10       7      7      0.318    0.346       0.450
+        9  rtc_async         50        10       7      7      0.321    0.346       0.450
+       10  rtc_async         50        10       7      7      0.319    0.346       0.451
+       11  rtc_async         50        10       7      7      0.320    0.346       0.450
+       12  rtc_async         50        10       7      7      0.321    0.346       0.450
+       13  rtc_async         50         9       7      7      0.317    0.346       0.400
+       14  rtc_async       None         0       7   None        n/a      n/a         n/a
+Pi0.5 inference metrics
+wall_time=1783349546.096779
+summary: total_time=6.670s, inference_calls=6, completed_chunks=6, actions_applied=130, empty_action_steps=0
+latency: avg_request=0.311s, avg_first_action=0.327s, avg_chunk_duration=1.242s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        32    None   None      0.254    0.254       1.502
+        2  rtc_async         50        25       4      7      0.326    0.345       1.201
+        3  rtc_async         50        25       7      7      0.334    0.346       1.202
+        4  rtc_async         50        25       7      7      0.320    0.346       1.202
+        5  rtc_async         50        23       7      7      0.321    0.346       1.101
+        6  rtc_async       None         0       7   None        n/a      n/a         n/a
+Pi0.5 inference metrics
+wall_time=1783349561.3915982
+summary: total_time=6.665s, inference_calls=6, completed_chunks=6, actions_applied=130, empty_action_steps=0
+latency: avg_request=0.310s, avg_first_action=0.327s, avg_chunk_duration=1.242s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        32    None   None      0.250    0.250       1.502
+        2  rtc_async         50        25       4      7      0.319    0.346       1.202
+        3  rtc_async         50        25       7      7      0.330    0.346       1.202
+        4  rtc_async         50        25       7      7      0.330    0.346       1.202
+        5  rtc_async         50        23       7      7      0.322    0.346       1.102
+        6  rtc_async       None         0       7   None        n/a      n/a         n/a
+Pi0.5 inference metrics
+wall_time=1783349597.462458
+summary: total_time=6.719s, inference_calls=6, completed_chunks=6, actions_applied=131, empty_action_steps=0
+latency: avg_request=0.310s, avg_first_action=0.327s, avg_chunk_duration=1.252s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        32    None   None      0.251    0.252       1.503
+        2  rtc_async         50        25       4      7      0.321    0.346       1.202
+        3  rtc_async         50        25       7      7      0.319    0.346       1.202
+        4  rtc_async         50        25       7      7      0.329    0.346       1.202
+        5  rtc_async         50        24       7      7      0.329    0.346       1.153
+        6  rtc_async       None         0       7   None        n/a      n/a         n/a
+Pi0.5 inference metrics
+wall_time=1783349616.582073
+summary: total_time=6.715s, inference_calls=6, completed_chunks=6, actions_applied=131, empty_action_steps=0
+latency: avg_request=0.309s, avg_first_action=0.327s, avg_chunk_duration=1.252s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        32    None   None      0.250    0.250       1.502
+        2  rtc_async         50        25       4      7      0.325    0.346       1.202
+        3  rtc_async         50        25       7      7      0.320    0.346       1.202
+        4  rtc_async         50        25       7      7      0.321    0.346       1.202
+        5  rtc_async         50        24       7      7      0.328    0.346       1.152
+        6  rtc_async       None         0       7   None        n/a      n/a         n/a
+Pi0.5 inference metrics
+wall_time=1783349633.222409
+summary: total_time=6.566s, inference_calls=6, completed_chunks=6, actions_applied=128, empty_action_steps=0
+latency: avg_request=0.310s, avg_first_action=0.327s, avg_chunk_duration=1.222s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        32    None   None      0.249    0.250       1.503
+        2  rtc_async         50        25       4      7      0.321    0.346       1.202
+        3  rtc_async         50        25       7      7      0.329    0.346       1.202
+        4  rtc_async         50        25       7      7      0.329    0.347       1.202
+        5  rtc_async         50        21       7      7      0.323    0.346       1.002
+        6  rtc_async       None         0       7   None        n/a      n/a         n/a
