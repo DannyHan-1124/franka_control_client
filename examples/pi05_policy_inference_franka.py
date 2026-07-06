@@ -65,7 +65,6 @@ def _parse_args() -> argparse.Namespace:
         default=8,
         help="Number of observed RTC inference delays used for the conservative max(Q) estimate.",
     )
-    parser.add_argument("--gripper_open_confirm_steps", type=int, default=1)
     parser.add_argument("--stop_after_first_release", action="store_true")
     parser.add_argument("--stop_after_release_steps", type=int, default=0)
     parser.add_argument("--metrics_path", default=None)
@@ -122,7 +121,6 @@ def main() -> None:
         rtc_execution_horizon=args.rtc_execution_horizon,
         rtc_delay_steps=args.rtc_delay_steps,
         rtc_delay_buffer_size=args.rtc_delay_buffer_size,
-        gripper_open_confirm_steps=args.gripper_open_confirm_steps,
         stop_after_first_release=args.stop_after_first_release,
         stop_after_release_steps=args.stop_after_release_steps,
         metrics_path=args.metrics_path,

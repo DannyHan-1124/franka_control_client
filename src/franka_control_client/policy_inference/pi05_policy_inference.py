@@ -41,7 +41,6 @@ class Pi05PolicyInferenceConfig:
     policy_zmq_endpoint: Optional[str] = None
     policy_zmq_timeout_ms: int = 30000
     chunk_replan_steps: int = 50
-    gripper_open_confirm_steps: int = 1
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
     metrics_path: Optional[str] = None
@@ -118,9 +117,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._chunk_step = 0
         self._last_action_timestamp: Optional[float] = None
         self._last_gripper_cmd: Optional[float] = None
-        self._pending_open_steps = 0
         self._release_confirmed = False
-        self._release_armed = False
         self._stop_after_release_countdown: Optional[int] = None
         self._last_sanitized_action: Optional[np.ndarray] = None
         self._rtc_lock = threading.Lock()
@@ -147,9 +144,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._raw_action_chunk = None
         self._chunk_step = 0
         self._last_gripper_cmd = None
-        self._pending_open_steps = 0
         self._release_confirmed = False
-        self._release_armed = False
         self._stop_after_release_countdown = None
         self._last_sanitized_action = None
         self._reset_rtc_state()
@@ -574,9 +569,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         pos_max = action_chunk[:, :3].max(axis=0)
         pos_start = action_chunk[0, :3]
         pos_end = action_chunk[-1, :3]
-        if first_close == 0 and first_open is None and not self._release_armed:
-            self._release_armed = True
-            pyzlc.info("Armed stop-after-release guard after closed carry chunk.")
         pyzlc.info(
             "Received Pi0.5 action chunk: "
             f"len={len(action_chunk)}, gripper_min={gripper.min():.3f}, "
@@ -640,7 +632,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
             for chunk in chunks
             if chunk.get("observed_delay_steps") is not None
         ]
-        recommended_delay = max(observed_delays) if observed_delays else self._rtc_delay_estimate(10**9)
+        recommended_delay = (
+            max(observed_delays) if observed_delays else self._rtc_delay_estimate(10**9)
+        ) if self.cfg.rtc_enabled else None
 
         summary = {
             "task": self.task,
@@ -651,10 +645,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "action_topic": self.cfg.action_topic,
             "fps": int(self.fps),
             "rtc_enabled": bool(self.cfg.rtc_enabled),
-            "rtc_execution_horizon": int(self.cfg.rtc_execution_horizon),
-            "rtc_delay_steps": int(self.cfg.rtc_delay_steps),
-            "rtc_delay_buffer_size": int(self.cfg.rtc_delay_buffer_size),
-            "gripper_open_confirm_steps": int(self.cfg.gripper_open_confirm_steps),
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),
             "total_time_s": total_time_s,
             "inference_calls": inference_calls,
@@ -665,13 +655,21 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "avg_first_action_latency_s": _mean(first_action_latencies),
             "avg_chunk_execution_duration_s": _mean(execution_durations),
             "avg_client_observation_build_s": _mean(observation_build_times),
-            "avg_observed_delay_steps": _mean([float(delay) for delay in observed_delays]),
-            "max_observed_delay_steps": max(observed_delays) if observed_delays else None,
-            "recommended_delay_steps": recommended_delay,
             "run_metadata": self.cfg.run_metadata or {},
         }
+        if self.cfg.rtc_enabled:
+            summary.update(
+                {
+                    "rtc_execution_horizon": int(self.cfg.rtc_execution_horizon),
+                    "rtc_delay_steps": int(self.cfg.rtc_delay_steps),
+                    "rtc_delay_buffer_size": int(self.cfg.rtc_delay_buffer_size),
+                    "avg_observed_delay_steps": _mean([float(delay) for delay in observed_delays]),
+                    "max_observed_delay_steps": max(observed_delays) if observed_delays else None,
+                    "recommended_delay_steps": recommended_delay,
+                }
+            )
 
-        pyzlc.info(
+        metrics_msg = (
             "Pi0.5 inference metrics: "
             f"total_time={summary['total_time_s']:.3f}s, "
             f"inference_calls={summary['inference_calls']}, "
@@ -680,11 +678,13 @@ class Pi05PolicyInference(PolicyInferenceManager):
             f"empty_action_steps={summary['empty_action_steps']}, "
             f"avg_request_latency={_format_optional(summary['avg_request_latency_s'])}s, "
             f"avg_first_action_latency={_format_optional(summary['avg_first_action_latency_s'])}s, "
-            f"avg_chunk_duration={_format_optional(summary['avg_chunk_execution_duration_s'])}s, "
-            f"recommended_delay={summary['recommended_delay_steps']}"
+            f"avg_chunk_duration={_format_optional(summary['avg_chunk_execution_duration_s'])}s"
         )
+        if self.cfg.rtc_enabled:
+            metrics_msg += f", recommended_delay={summary['recommended_delay_steps']}"
+        pyzlc.info(metrics_msg)
         for chunk in chunks:
-            pyzlc.info(
+            chunk_msg = (
                 "Pi0.5 chunk metrics: "
                 f"request_id={chunk.get('request_id')}, "
                 f"kind={chunk.get('kind')}, "
@@ -692,10 +692,14 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 f"first_action_latency={_format_optional(chunk.get('first_action_latency_s'))}s, "
                 f"chunk_duration={_format_optional(chunk.get('execution_duration_s'))}s, "
                 f"executed_actions={chunk.get('executed_action_count')}, "
-                f"action_count={chunk.get('action_count')}, "
-                f"predicted_delay={chunk.get('predicted_delay_steps')}, "
-                f"observed_delay={chunk.get('observed_delay_steps')}"
+                f"action_count={chunk.get('action_count')}"
             )
+            if self.cfg.rtc_enabled:
+                chunk_msg += (
+                    f", predicted_delay={chunk.get('predicted_delay_steps')}, "
+                    f"observed_delay={chunk.get('observed_delay_steps')}"
+                )
+            pyzlc.info(chunk_msg)
 
         if self.cfg.metrics_path:
             self._write_metrics(summary, chunks)
@@ -719,15 +723,35 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _write_metrics_text(self, path: Path, record: Dict[str, Any]) -> None:
         summary = record["summary"]
         chunks = record["chunks"]
+        config_items = [
+            f"rtc_enabled={summary.get('rtc_enabled')}",
+        ]
+        if summary.get("rtc_enabled"):
+            config_items.extend(
+                [
+                    f"rtc_execution_horizon={summary.get('rtc_execution_horizon')}",
+                    f"rtc_delay_steps={summary.get('rtc_delay_steps')}",
+                ]
+            )
+
+        latency_line = (
+            "latency: "
+            f"avg_request={_format_optional(summary.get('avg_request_latency_s'))}s, "
+            f"avg_first_action={_format_optional(summary.get('avg_first_action_latency_s'))}s, "
+            f"avg_chunk_duration={_format_optional(summary.get('avg_chunk_execution_duration_s'))}s"
+        )
+        if summary.get("rtc_enabled"):
+            latency_line += f", recommended_delay={summary.get('recommended_delay_steps')}"
+
+        chunk_header = "  request  kind         actions  executed  "
+        if summary.get("rtc_enabled"):
+            chunk_header += "pred_d  obs_d  "
+        chunk_header += "request_s  first_s  duration_s"
+
         lines = [
             "Pi0.5 inference metrics",
             f"task: {summary.get('task')}",
-            (
-                "config: "
-                f"rtc_enabled={summary.get('rtc_enabled')}, "
-                f"rtc_execution_horizon={summary.get('rtc_execution_horizon')}, "
-                f"rtc_delay_steps={summary.get('rtc_delay_steps')}"
-            ),
+            "config: " + ", ".join(config_items),
             (
                 "summary: "
                 f"total_time={_format_optional(summary.get('total_time_s'))}s, "
@@ -736,32 +760,29 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 f"actions_applied={summary.get('actions_applied')}, "
                 f"empty_action_steps={summary.get('empty_action_steps')}"
             ),
-            (
-                "latency: "
-                f"avg_request={_format_optional(summary.get('avg_request_latency_s'))}s, "
-                f"avg_first_action={_format_optional(summary.get('avg_first_action_latency_s'))}s, "
-                f"avg_chunk_duration={_format_optional(summary.get('avg_chunk_execution_duration_s'))}s, "
-                f"recommended_delay={summary.get('recommended_delay_steps')}"
-            ),
+            latency_line,
             "chunks:",
-            (
-                "  request  kind         actions  executed  pred_d  obs_d  "
-                "request_s  first_s  duration_s"
-            ),
+            chunk_header,
         ]
         for chunk in chunks:
-            lines.append(
+            chunk_line = (
                 "  "
                 f"{str(chunk.get('request_id')):>7}  "
                 f"{str(chunk.get('kind')):<11}  "
                 f"{str(chunk.get('action_count')):>7}  "
                 f"{str(chunk.get('executed_action_count')):>8}  "
-                f"{str(chunk.get('predicted_delay_steps')):>6}  "
-                f"{str(chunk.get('observed_delay_steps')):>5}  "
+            )
+            if summary.get("rtc_enabled"):
+                chunk_line += (
+                    f"{str(chunk.get('predicted_delay_steps')):>6}  "
+                    f"{str(chunk.get('observed_delay_steps')):>5}  "
+                )
+            chunk_line += (
                 f"{_format_optional(chunk.get('request_latency_s')):>9}  "
                 f"{_format_optional(chunk.get('first_action_latency_s')):>7}  "
                 f"{_format_optional(chunk.get('execution_duration_s')):>10}"
             )
+            lines.append(chunk_line)
 
         with path.open("a", encoding="utf-8") as f:
             f.write("\n".join(lines) + "\n\n")
@@ -850,33 +871,23 @@ class Pi05PolicyInference(PolicyInferenceManager):
         quat_norm = np.linalg.norm(quat)
         if quat_norm > 1e-6:
             arr[3:7] = quat / quat_norm
-        arr[7] = self._stabilize_gripper_command(1.0 if arr[7] >= 0.5 else 0.0)
+        gripper_cmd = 1.0 if arr[7] >= 0.5 else 0.0
+        self._observe_gripper_command(gripper_cmd)
+        arr[7] = gripper_cmd
         return arr
 
-    def _stabilize_gripper_command(self, gripper_cmd: float) -> float:
-        confirm_steps = int(self.cfg.gripper_open_confirm_steps)
-        if confirm_steps < 1:
-            raise ValueError("gripper_open_confirm_steps must be >= 1.")
-
+    def _observe_gripper_command(self, gripper_cmd: float) -> None:
         if self._last_gripper_cmd is None:
             self._last_gripper_cmd = gripper_cmd
-            return gripper_cmd
+            return
 
         if self._last_gripper_cmd >= 0.5 and gripper_cmd < 0.5:
-            self._pending_open_steps += 1
-            if not self._release_armed:
-                return 1.0
-            if self._pending_open_steps < confirm_steps:
-                return 1.0
             if not self._release_confirmed:
                 self._release_confirmed = True
                 self._stop_after_release_countdown = max(0, int(self.cfg.stop_after_release_steps))
                 self._log_confirmed_release()
-        else:
-            self._pending_open_steps = 0
 
         self._last_gripper_cmd = gripper_cmd
-        return gripper_cmd
 
     def _log_confirmed_release(self) -> None:
         try:
