@@ -20,12 +20,12 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --policy_transport streaming_zmq \
     --policy_zmq_endpoint tcp://127.0.0.1:17726 \
     --metrics_path "${REPO_ROOT}/logs/pi05_inference_metrics_new.jsonl" \
-    --execution_horizon 25 \
+    --execution_horizon 5 \
     --faster_infer_time_schedule HAS \
     --faster_alpha 0.6 \
     --faster_u0 0.9 \
     --delay 4 \
-    --early_stop_actions 25 \
+    --early_stop_actions 5 \
     --phase_fallback_schedule none \
     --phase_fallback_trigger before_gripper_open \
     --static_camera static_cam \
