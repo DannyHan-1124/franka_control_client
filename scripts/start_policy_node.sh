@@ -5,9 +5,15 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WORKSPACE_ROOT="$(cd "${REPO_ROOT}/.." && pwd)"
 export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot/src:${PYTHONPATH:-}"
 
+export HF_HOME=/scratch/$USER/hf_home
+export HF_DATASETS_CACHE=/scratch/$USER/hf_datasets
+export TRANSFORMERS_CACHE=/scratch/$USER/hf_transformers
+export XDG_CACHE_HOME=/scratch/$USER/cache
+mkdir -p "$HF_HOME" "$HF_DATASETS_CACHE" "$TRANSFORMERS_CACHE" "$XDG_CACHE_HOME"
+
 python -m franka_control_client.policy.pi05_policy_node \
-    --checkpoint_path /hkfs/work/workspace/scratch/utphd-myspace/outputs/pi05_moving_can_10ksteps/checkpoints/010000/pretrained_model \
-    --dataset_path /hkfs/work/workspace/scratch/utphd-myspace/datasets/put_moving_can_in_bowl \
+    --checkpoint_path /hkfs/work/workspace/scratch/utphd-myspace/outputs/pi05_cylinder_full_10ksteps/checkpoints/010000/pretrained_model \
+    --dataset_path /hkfs/work/workspace/scratch/utphd-myspace/datasets/cylinder_full \
     --device cuda \
     --policy_dtype bfloat16 \
     --obs_topic pi05/observation \
