@@ -9,7 +9,8 @@ export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot/src"
 # filesystem. Respect explicit overrides when the caller already supplied them.
 export HF_HOME="${HF_HOME:-${WORKSPACE_ROOT}/.cache/huggingface}"
 export HF_DATASETS_CACHE="${HF_DATASETS_CACHE:-${HF_HOME}/datasets}"
-mkdir -p "${HF_DATASETS_CACHE}"
+export HF_HUB_CACHE="${HF_HUB_CACHE:-${HF_HOME}/hub}"
+mkdir -p "${HF_DATASETS_CACHE}" "${HF_HUB_CACHE}"
 
 python -m franka_control_client.policy.pi05_policy_node \
     --checkpoint_path /hkfs/work/workspace/scratch/utphd-myspace/outputs/pi05_moving_cup_10ksteps_2/checkpoints/010000/pretrained_model \
