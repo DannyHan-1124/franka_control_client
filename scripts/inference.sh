@@ -9,8 +9,8 @@ export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot/src"
 # pgrep -af 'ssh.*(-L)'
 
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
-    --task "put cylinder in moving cup" \
-    --fps 35 \
+    --task "put red cylinder on red cube" \
+    --fps 20 \
     --stop_after_first_release \
     --robot_name FrankaPanda \
     --pyzlc_name policy_inference \
@@ -19,7 +19,7 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --pyzlc_group_port 7725 \
     --policy_transport streaming_zmq \
     --policy_zmq_endpoint tcp://127.0.0.1:17726 \
-    --metrics_path "${REPO_ROOT}/logs/pi05_inference_metrics_profiling.jsonl" \
+    --metrics_path "${REPO_ROOT}/logs/pi05_inference_metrics_new.jsonl" \
     --execution_horizon 25 \
     --faster_infer_time_schedule HAS \
     --faster_alpha 0.6 \
@@ -30,7 +30,6 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --phase_fallback_trigger before_gripper_open \
     --static_camera static_cam \
     --wrist_camera wrist_cam
-
 
 # --stop_after_first_release \
 # --metrics_path "${REPO_ROOT}/logs/pi05_inference_metrics_dynamic.jsonl" \
