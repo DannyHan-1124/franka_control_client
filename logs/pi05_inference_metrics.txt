@@ -306,3 +306,81 @@ chunks:
         4  rtc_async         50        25       7      7      0.329    0.347       1.202
         5  rtc_async         50        21       7      7      0.323    0.346       1.002
         6  rtc_async       None         0       7   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on blue cube
+config: rtc_enabled=False
+summary: total_time=7.182s, inference_calls=3, completed_chunks=3, actions_applied=132, empty_action_steps=0
+latency: avg_request=0.250s, avg_first_action=0.251s, avg_chunk_duration=2.105s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.252    0.252       2.408
+        2  sync              50        50      0.251    0.251       2.404
+        3  sync              50        32      0.249    0.249       1.503
+
+Pi0.5 inference metrics
+task: put red cylinder on blue cube
+config: rtc_enabled=False
+summary: total_time=7.331s, inference_calls=3, completed_chunks=3, actions_applied=135, empty_action_steps=0
+latency: avg_request=0.250s, avg_first_action=0.251s, avg_chunk_duration=2.154s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.251    0.251       2.406
+        2  sync              50        50      0.250    0.250       2.404
+        3  sync              50        35      0.251    0.251       1.653
+
+Pi0.5 inference metrics
+task: put red cylinder on blue cube
+config: rtc_enabled=False
+summary: total_time=7.233s, inference_calls=3, completed_chunks=3, actions_applied=133, empty_action_steps=0
+latency: avg_request=0.251s, avg_first_action=0.251s, avg_chunk_duration=2.121s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.251    0.251       2.404
+        2  sync              50        50      0.250    0.250       2.408
+        3  sync              50        33      0.252    0.252       1.553
+
+Pi0.5 inference metrics
+task: put red cylinder on blue cube
+config: rtc_enabled=False
+summary: total_time=7.329s, inference_calls=3, completed_chunks=3, actions_applied=135, empty_action_steps=0
+latency: avg_request=0.250s, avg_first_action=0.250s, avg_chunk_duration=2.154s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.250    0.250       2.405
+        2  sync              50        50      0.250    0.250       2.404
+        3  sync              50        35      0.250    0.250       1.653
+
+Pi0.5 inference metrics
+task: put red cylinder on blue cube
+config: rtc_enabled=False
+summary: total_time=7.326s, inference_calls=3, completed_chunks=3, actions_applied=135, empty_action_steps=0
+latency: avg_request=0.249s, avg_first_action=0.249s, avg_chunk_duration=2.154s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.249    0.250       2.404
+        2  sync              50        50      0.249    0.249       2.404
+        3  sync              50        35      0.249    0.249       1.653
+
+Pi0.5 inference metrics
+task: put red cylinder on blue cube
+config: rtc_enabled=False
+summary: total_time=7.277s, inference_calls=3, completed_chunks=3, actions_applied=134, empty_action_steps=0
+latency: avg_request=0.250s, avg_first_action=0.250s, avg_chunk_duration=2.137s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.249    0.250       2.404
+        2  sync              50        50      0.250    0.250       2.405
+        3  sync              50        34      0.251    0.251       1.603
+
+Pi0.5 inference metrics
+task: put red cylinder on blue cube
+config: rtc_enabled=False
+summary: total_time=7.227s, inference_calls=3, completed_chunks=3, actions_applied=133, empty_action_steps=0
+latency: avg_request=0.250s, avg_first_action=0.250s, avg_chunk_duration=2.121s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.250    0.250       2.403
+        2  sync              50        50      0.249    0.250       2.406
+        3  sync              50        33      0.249    0.250       1.553
+
