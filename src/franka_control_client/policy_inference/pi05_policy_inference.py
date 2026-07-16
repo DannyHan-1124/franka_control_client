@@ -52,7 +52,6 @@ class Pi05PolicyInferenceConfig:
     abpolicy_enabled: bool = False
     abpolicy_last_point_weight: float = 0.05
     abpolicy_delay_buffer_size: int = 8
-    action_space: str = "cartesian"
 
 
 class Pi05PolicyInference(PolicyInferenceManager):
@@ -60,7 +59,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
     Robot-side inference loop for a remote Pi0.5 policy node.
 
     Sends observations in the policy's trained feature names and applies
-    returned 8D Cartesian or joint-space actions.
+    returned 8D Cartesian actions.
     """
 
     def __init__(
@@ -73,8 +72,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.data_collectors = data_collectors
         self.control_pair = control_pair
         self.cfg = cfg
-        if cfg.abpolicy_enabled and cfg.action_space != "cartesian":
-            raise ValueError("This ABPolicy branch uses Cartesian position plus local rotation vectors.")
         if cfg.policy_transport == "zmq":
             if not cfg.policy_zmq_endpoint:
                 raise ValueError("policy_zmq_endpoint is required for ZMQ policy transport.")
@@ -655,7 +652,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "action_topic": self.cfg.action_topic,
             "fps": int(self.fps),
             "abpolicy_enabled": bool(self.cfg.abpolicy_enabled),
-            "action_space": self.cfg.action_space,
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),
             "total_time_s": total_time_s,
             "inference_calls": inference_calls,
@@ -734,7 +730,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         chunks = record["chunks"]
         config_items = [
             f"abpolicy_enabled={summary.get('abpolicy_enabled')}",
-            f"action_space={summary.get('action_space')}",
         ]
         asynchronous = summary.get("abpolicy_enabled")
 
@@ -825,16 +820,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
     def _build_state_vector(self) -> np.ndarray:
         arm_state = self.arm_wrapper.capture_step()
-        if self.cfg.action_space == "joint":
-            if "q" not in arm_state:
-                raise ValueError("Joint-space ABPolicy requires q in the Franka arm state.")
-            arm_vector = np.asarray(arm_state["q"], dtype=np.float32).reshape(-1)[:7]
-            if len(arm_vector) != 7:
-                raise ValueError(f"Expected seven Franka joints, got {len(arm_vector)}")
-        elif self.cfg.action_space == "cartesian":
-            arm_vector = _extract_ee_pose(arm_state)
-        else:
-            raise ValueError(f"Unsupported action space: {self.cfg.action_space!r}")
+        arm_vector = _extract_ee_pose(arm_state)
 
         grip_state = self.gripper_wrapper.capture_step()
         gripper = float(grip_state.get("position", 0.0))
@@ -854,11 +840,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
     def _sanitize_action(self, action: np.ndarray) -> np.ndarray:
         arr = np.asarray(action, dtype=np.float64).reshape(-1)[:ACTION_DIM]
-        if self.cfg.action_space == "cartesian":
-            quat = arr[3:7]
-            quat_norm = np.linalg.norm(quat)
-            if quat_norm > 1e-6:
-                arr[3:7] = quat / quat_norm
+        quat = arr[3:7]
+        quat_norm = np.linalg.norm(quat)
+        if quat_norm > 1e-6:
+            arr[3:7] = quat / quat_norm
         gripper_cmd = 1.0 if arr[7] >= 0.5 else 0.0
         self._observe_gripper_command(gripper_cmd)
         arr[7] = gripper_cmd

@@ -9,7 +9,6 @@ from franka_control_client.camera.camera import CameraDevice
 from franka_control_client.control_pair.cartesian_policy_panda_control_pair import (
     CartesianPolicyPandaRobotiqControlPair,
 )
-from franka_control_client.control_pair.policy_panda_control_pair import PolicyPandaControlPair
 from franka_control_client.data_collection.irl_wrapper import (
     IRL_HardwareDataWrapper,
     ImageDataWrapper,
@@ -43,7 +42,6 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--policy_zmq_endpoint", default=None)
     parser.add_argument("--policy_zmq_timeout_ms", type=int, default=30000)
     parser.add_argument("--chunk_replan_steps", type=int, default=50)
-    parser.add_argument("--action_space", choices=("cartesian", "joint"), default="cartesian")
     parser.add_argument(
         "--abpolicy_enabled",
         action="store_true",
@@ -74,18 +72,11 @@ def main() -> None:
         RemotePandaArm("FrankaPanda"),
         RemoteRobotiqGripper("FrankaPanda"),
     )
-    if args.action_space == "joint":
-        control_pair = PolicyPandaControlPair(
-            follower.panda_arm,
-            follower.robotiq_gripper,
-            control_hz=args.control_hz,
-        )
-    else:
-        control_pair = CartesianPolicyPandaRobotiqControlPair(
-            follower.panda_arm,
-            follower.robotiq_gripper,
-            control_hz=args.control_hz,
-        )
+    control_pair = CartesianPolicyPandaRobotiqControlPair(
+        follower.panda_arm,
+        follower.robotiq_gripper,
+        control_hz=args.control_hz,
+    )
 
     data_collectors: List[IRL_HardwareDataWrapper] = [
         ImageDataWrapper(
@@ -113,7 +104,6 @@ def main() -> None:
         abpolicy_enabled=args.abpolicy_enabled,
         abpolicy_last_point_weight=args.abpolicy_last_point_weight,
         abpolicy_delay_buffer_size=args.abpolicy_delay_buffer_size,
-        action_space=args.action_space,
         stop_after_first_release=args.stop_after_first_release,
         stop_after_release_steps=args.stop_after_release_steps,
         metrics_path=args.metrics_path,
