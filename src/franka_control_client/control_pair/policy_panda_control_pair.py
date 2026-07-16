@@ -20,6 +20,7 @@ GRIPPER_FORCE= 0.3
 ACTION_LOG_INTERVAL_S: float = 0.5
 GRIPPER_TOGGLE_WARN_WINDOW_S: float = 3.0
 GRIPPER_TOGGLE_WARN_COUNT: int = 6
+DEFAULT_POSITION = (0.0, 0.0, 0.0, -2.15, 0.0, 2.15, 0.0)
 
 class PolicyPandaControlPair(ControlPair):
     """
@@ -60,6 +61,14 @@ class PolicyPandaControlPair(ControlPair):
             if self._latest_action is None:
                 return None
             return self._latest_action.copy()
+
+    def reset_action(self) -> None:
+        with self._action_lock:
+            self._latest_action = None
+        self._last_gripper_cmd = None
+
+    def go_home(self) -> None:
+        self.panda_arm.move_franka_arm_to_joint_position(DEFAULT_POSITION)
 
     def control_rest(self) -> None:
         #todo:reset to default position

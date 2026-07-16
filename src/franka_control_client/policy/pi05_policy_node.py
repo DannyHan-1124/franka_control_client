@@ -13,10 +13,8 @@ import pyzlc
 import torch
 import zmq
 
-from lerobot.configs import RTCAttentionSchedule
 from lerobot.configs.train import TrainPipelineConfig
 from lerobot.policies.factory import make_policy, make_pre_post_processors
-from lerobot.policies.rtc.configuration_rtc import RTCConfig
 from lerobot.utils.random_utils import set_seed
 from lerobot.datasets.lerobot_dataset import LeRobotDatasetMetadata
 
@@ -36,11 +34,6 @@ class Pi05NodeConfig:
     pyzlc_group_port: int
     direct_zmq_bind: Optional[str]
     seed: int
-    rtc_enabled: bool
-    rtc_execution_horizon: int
-    rtc_max_guidance_weight: float
-    rtc_prefix_attention_schedule: str
-    rtc_debug: bool
 
 
 class Pi05PolicyNode:
@@ -97,29 +90,7 @@ class Pi05PolicyNode:
             pretrained_name_or_path=self.cfg.checkpoint_path,
             cli_args=cli_args,
         )
-        self._configure_rtc(train_cfg)
         return train_cfg
-
-    def _configure_rtc(self, train_cfg: TrainPipelineConfig) -> None:
-        if not self.cfg.rtc_enabled:
-            return
-
-        try:
-            schedule = RTCAttentionSchedule[self.cfg.rtc_prefix_attention_schedule.upper()]
-        except KeyError as exc:
-            valid = ", ".join(item.value.lower() for item in RTCAttentionSchedule)
-            raise ValueError(
-                f"Invalid RTC prefix attention schedule "
-                f"{self.cfg.rtc_prefix_attention_schedule!r}; expected one of: {valid}"
-            ) from exc
-
-        train_cfg.policy.rtc_config = RTCConfig(
-            enabled=True,
-            prefix_attention_schedule=schedule,
-            max_guidance_weight=float(self.cfg.rtc_max_guidance_weight),
-            execution_horizon=int(self.cfg.rtc_execution_horizon),
-            debug=bool(self.cfg.rtc_debug),
-        )
 
     def _validate_dataset_metadata(self) -> None:
         if not self.cfg.dataset_path:
@@ -172,9 +143,6 @@ class Pi05PolicyNode:
             ds_meta=ds_meta,
             rename_map=getattr(self.train_cfg, "rename_map", None),
         )
-        if self.cfg.rtc_enabled and hasattr(policy, "init_rtc_processor"):
-            policy.init_rtc_processor()
-    
         policy.eval()
 
         device = self.cfg.device
@@ -265,38 +233,15 @@ class Pi05PolicyNode:
             observation["task"] = task
         return observation
 
-    def _build_policy_kwargs(self, obs_msg: Dict[str, Any]) -> Dict[str, Any]:
-        raw_kwargs = obs_msg.get("policy_kwargs") or {}
-        if not isinstance(raw_kwargs, dict):
-            raise ValueError("policy_kwargs must be a dictionary when provided.")
-
-        policy_kwargs: Dict[str, Any] = {}
-        for key, value in raw_kwargs.items():
-            if key == "prev_chunk_left_over" and value is not None:
-                prefix = np.asarray(value, dtype=np.float32)
-                if prefix.ndim == 2:
-                    prefix = prefix[None, :, :]
-                if prefix.ndim != 3:
-                    raise ValueError(
-                        "prev_chunk_left_over must have shape (T, A) or (B, T, A)."
-                    )
-                policy_kwargs[key] = torch.from_numpy(prefix).to(self._policy_device)
-            elif key in {"inference_delay", "execution_horizon"} and value is not None:
-                policy_kwargs[key] = int(value)
-            else:
-                policy_kwargs[key] = value
-        return policy_kwargs
-
     def _predict_action_msg(self, obs_msg: Dict[str, Any]) -> Dict[str, Any]:
         observation = self._build_observation(obs_msg)
         observation = self.preprocessor(observation)
-        policy_kwargs = self._build_policy_kwargs(obs_msg)
-        rtc_request = self.cfg.rtc_enabled and policy_kwargs.get("prev_chunk_left_over") is not None
-
-        context = torch.enable_grad() if rtc_request else torch.inference_mode()
-        with context:
-            if hasattr(self.policy, "predict_action_chunk"):
-                action_chunk = self.policy.predict_action_chunk(observation, **policy_kwargs)
+        with torch.inference_mode():
+            abpolicy_enabled = bool(getattr(self.policy.config, "abpolicy_enabled", False))
+            if abpolicy_enabled:
+                action_chunk = self.policy.predict_control_points(observation)
+            elif hasattr(self.policy, "predict_action_chunk"):
+                action_chunk = self.policy.predict_action_chunk(observation)
             else:
                 action_chunk = self.policy.select_action(observation)
 
@@ -307,7 +252,6 @@ class Pi05PolicyNode:
         if action_chunk.ndim != 3:
             raise RuntimeError(f"Unexpected action shape: {tuple(action_chunk.shape)}")
 
-        raw_actions = action_chunk.detach().float().cpu().numpy()
         processed_actions = []
         for idx in range(action_chunk.shape[1]):
             single = action_chunk[:, idx, :]
@@ -320,12 +264,33 @@ class Pi05PolicyNode:
             processed_actions.append(processed.detach().float().cpu().numpy()[:8])
 
         action_array = np.stack(processed_actions, axis=0)
+        action_representation = getattr(
+            self.policy.config, "abpolicy_action_representation", None
+        )
+        reference_quaternion = None
+        if abpolicy_enabled and action_representation == "cartesian_rotvec":
+            state = np.asarray(obs_msg["observation.state"], dtype=np.float64).reshape(-1)
+            if state.size < 7:
+                raise ValueError("Cartesian ABPolicy observation state must contain an xyzw quaternion")
+            reference_quaternion = state[3:7].tolist()
         return {
             "timestamp": time.time(),
             "action": action_array.tolist(),
             "shape": list(action_array.shape),
-            "action_raw": raw_actions.tolist(),
-            "raw_shape": list(raw_actions.shape),
+            "action_representation": "bspline_control_points" if abpolicy_enabled else "raw_actions",
+            "abpolicy": (
+                {
+                    "past_action_steps": int(self.policy.config.abpolicy_past_action_steps),
+                    "future_action_steps": int(self.policy.config.abpolicy_future_action_steps),
+                    "spline_degree": int(self.policy.config.abpolicy_spline_degree),
+                    "num_control_points": int(self.policy.config.abpolicy_num_control_points),
+                    "num_free_control_points": int(self.policy.config.abpolicy_num_free_control_points),
+                    "action_representation": action_representation,
+                    "reference_quaternion_xyzw": reference_quaternion,
+                }
+                if abpolicy_enabled
+                else None
+            ),
         }
 
     def step(self) -> None:
@@ -395,30 +360,6 @@ def _parse_args() -> Pi05NodeConfig:
         help="Optional direct REQ/REP policy endpoint, e.g. tcp://127.0.0.1:40023.",
     )
     parser.add_argument("--seed", type=int, default=1000)
-    parser.add_argument(
-        "--rtc_enabled",
-        action="store_true",
-        help="Enable Real-Time Chunking guidance for requests that include RTC policy kwargs.",
-    )
-    parser.add_argument(
-        "--rtc_execution_horizon",
-        type=int,
-        default=25,
-        help="RTC execution horizon s: chunk index where the client switches/plans the next overlap.",
-    )
-    parser.add_argument(
-        "--rtc_max_guidance_weight",
-        type=float,
-        default=5.0,
-        help="RTC guidance weight clip; paper uses 5 for real-world experiments.",
-    )
-    parser.add_argument(
-        "--rtc_prefix_attention_schedule",
-        default="exp",
-        choices=("zeros", "ones", "linear", "exp"),
-        help="RTC prefix weight schedule; paper uses exponential prefix weights.",
-    )
-    parser.add_argument("--rtc_debug", action="store_true")
     args = parser.parse_args()
     return Pi05NodeConfig(**vars(args))
 

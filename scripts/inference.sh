@@ -5,21 +5,14 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WORKSPACE_ROOT="$(cd "${REPO_ROOT}/.." && pwd)"
 export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot/src:${PYTHONPATH:-}"
 
-# kill old connection
-# pgrep -af 'ssh.*(-L)'
-
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
-    --task "put red cylinder on blue cube" \
-    --stop_after_first_release \
-    --pyzlc_name policy_inference \
-    --pyzlc_host 141.3.53.25 \
-    --pyzlc_group_name robot_lab_robotiq_202 \
-    --pyzlc_group_port 7725 \
+    --task "${ABPOLICY_TASK:-put red cylinder on blue cube}" \
+    --fps 20 \
+    --control_hz 100 \
+    --action_space cartesian \
+    --abpolicy_enabled \
     --policy_transport zmq \
-    --policy_zmq_endpoint tcp://127.0.0.1:17725 \
-    --metrics_path "${REPO_ROOT}/logs/pi05_inference_metrics.jsonl" \
+    --policy_zmq_endpoint "${ABPOLICY_ZMQ_ENDPOINT:-tcp://127.0.0.1:17725}" \
+    --metrics_path "${REPO_ROOT}/logs/abpolicy_inference_metrics.jsonl" \
     --static_camera static_cam \
-    --wrist_camera wrist_cam \
-#    --rtc_enabled \
-#    --rtc_execution_horizon 10 \
-#    --rtc_delay_steps 7
+    --wrist_camera wrist_cam

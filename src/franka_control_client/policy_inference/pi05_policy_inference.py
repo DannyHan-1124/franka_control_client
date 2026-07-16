@@ -13,9 +13,6 @@ import numpy as np
 import pyzlc
 
 from .policy_inference_manager import PolicyInferenceEvent, PolicyInferenceManager
-from ..control_pair.cartesian_policy_panda_control_pair import (
-    CartesianPolicyPandaRobotiqControlPair,
-)
 from ..data_collection.irl_wrapper import (
     IRL_HardwareDataWrapper,
     ImageDataWrapper,
@@ -23,6 +20,13 @@ from ..data_collection.irl_wrapper import (
     RobotiqGripperDataWrapper,
 )
 from ..policy.policy import DirectZmqPolicy, RemotePolicy
+from .bspline import (
+    bspline_basis,
+    cartesian_to_packed_rotvec,
+    packed_rotvec_to_cartesian,
+    rebuild_trajectory,
+    refit_control_point_prefix,
+)
 
 
 IMAGE_SIZE = (224, 224)
@@ -45,10 +49,10 @@ class Pi05PolicyInferenceConfig:
     stop_after_release_steps: int = 0
     metrics_path: Optional[str] = None
     run_metadata: Optional[Dict[str, Any]] = None
-    rtc_enabled: bool = False
-    rtc_execution_horizon: int = 25
-    rtc_delay_steps: int = 0
-    rtc_delay_buffer_size: int = 8
+    abpolicy_enabled: bool = False
+    abpolicy_last_point_weight: float = 0.05
+    abpolicy_delay_buffer_size: int = 8
+    action_space: str = "cartesian"
 
 
 class Pi05PolicyInference(PolicyInferenceManager):
@@ -56,20 +60,21 @@ class Pi05PolicyInference(PolicyInferenceManager):
     Robot-side inference loop for a remote Pi0.5 policy node.
 
     Sends observations in the policy's trained feature names and applies
-    returned 8D absolute Cartesian actions:
-      [x, y, z, qx, qy, qz, qw, gripper]
+    returned 8D Cartesian or joint-space actions.
     """
 
     def __init__(
         self,
         data_collectors: List[IRL_HardwareDataWrapper],
-        control_pair: CartesianPolicyPandaRobotiqControlPair,
+        control_pair: Any,
         cfg: Pi05PolicyInferenceConfig,
     ) -> None:
         super().__init__(task=cfg.task, fps=cfg.fps)
         self.data_collectors = data_collectors
         self.control_pair = control_pair
         self.cfg = cfg
+        if cfg.abpolicy_enabled and cfg.action_space != "cartesian":
+            raise ValueError("This ABPolicy branch uses Cartesian position plus local rotation vectors.")
         if cfg.policy_transport == "zmq":
             if not cfg.policy_zmq_endpoint:
                 raise ValueError("policy_zmq_endpoint is required for ZMQ policy transport.")
@@ -113,25 +118,26 @@ class Pi05PolicyInference(PolicyInferenceManager):
             raise ValueError("Missing RobotiqGripperDataWrapper.")
 
         self._action_chunk: Optional[np.ndarray] = None
-        self._raw_action_chunk: Optional[np.ndarray] = None
         self._chunk_step = 0
         self._last_action_timestamp: Optional[float] = None
         self._last_gripper_cmd: Optional[float] = None
         self._release_confirmed = False
         self._stop_after_release_countdown: Optional[int] = None
         self._last_sanitized_action: Optional[np.ndarray] = None
-        self._rtc_lock = threading.Lock()
-        self._rtc_inflight = False
-        self._rtc_next_chunk: Optional[np.ndarray] = None
-        self._rtc_next_raw_chunk: Optional[np.ndarray] = None
-        self._rtc_next_launch_step = 0
-        self._rtc_next_metric_id: Optional[int] = None
-        self._rtc_pending_error: Optional[BaseException] = None
-        self._rtc_generation = 0
-        self._rtc_delay_history: Deque[int] = deque(
-            maxlen=max(1, int(cfg.rtc_delay_buffer_size))
+        self._abpolicy_lock = threading.Lock()
+        self._abpolicy_inflight = False
+        self._abpolicy_launch_step = 0
+        self._abpolicy_metric_id: Optional[int] = None
+        self._abpolicy_pending_error: Optional[BaseException] = None
+        self._abpolicy_generation = 0
+        self._abpolicy_delay_history: Deque[int] = deque(
+            maxlen=max(1, int(cfg.abpolicy_delay_buffer_size))
         )
-        self._rtc_delay_history.append(max(0, int(cfg.rtc_delay_steps)))
+        self._executed_action_history: Deque[np.ndarray] = deque(maxlen=128)
+        self._abpolicy_control_points: Optional[np.ndarray] = None
+        self._abpolicy_metadata: Optional[Dict[str, Any]] = None
+        self._abpolicy_next_control_points: Optional[np.ndarray] = None
+        self._abpolicy_next_metadata: Optional[Dict[str, Any]] = None
         self._metrics_lock = threading.Lock()
         self._reset_metrics()
 
@@ -141,13 +147,17 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _start_infering(self) -> None:
         self._reset_metrics()
         self._action_chunk = None
-        self._raw_action_chunk = None
         self._chunk_step = 0
         self._last_gripper_cmd = None
         self._release_confirmed = False
         self._stop_after_release_countdown = None
         self._last_sanitized_action = None
-        self._reset_rtc_state()
+        self._executed_action_history.clear()
+        self._abpolicy_control_points = None
+        self._abpolicy_metadata = None
+        self._abpolicy_next_control_points = None
+        self._abpolicy_next_metadata = None
+        self._reset_abpolicy_state()
         current_action = self.policy.current_action
         self._last_action_timestamp = (
             float(current_action["timestamp"]) if current_action is not None else None
@@ -252,11 +262,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
     def _infer_step(self) -> None:
         start = time.perf_counter()
-        if self.cfg.rtc_enabled:
-            self._infer_rtc_step()
+        if self.cfg.abpolicy_enabled:
+            self._infer_abpolicy_step()
             self._sleep_remaining_control_period(start)
             return
-
         if self._should_request_action_chunk():
             obs_start = time.perf_counter()
             observation = self._build_observation()
@@ -275,11 +284,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 timestamp = float(action_msg["timestamp"])
                 if timestamp != self._last_action_timestamp:
                     self._action_chunk = self._parse_action_payload(action_msg["action"])
-                    self._raw_action_chunk = (
-                        self._parse_raw_action_payload(action_msg)
-                        if action_msg.get("action_raw") is not None
-                        else None
-                    )
                     self._chunk_step = 0
                     self._last_action_timestamp = timestamp
                     self._finish_chunk_metric(
@@ -296,6 +300,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             sanitized_action = self._sanitize_action(action)
             self._last_sanitized_action = sanitized_action.copy()
             self.control_pair.update_action(sanitized_action)
+            self._executed_action_history.append(sanitized_action.copy())
             self._metrics_actions_applied += 1
             self._record_active_chunk_action_execution(self._chunk_step - 1)
             self._maybe_stop_after_release()
@@ -317,59 +322,58 @@ class Pi05PolicyInference(PolicyInferenceManager):
             return True
         return self._chunk_step >= max(1, int(self.cfg.chunk_replan_steps))
 
-    def _infer_rtc_step(self) -> None:
+    def _infer_abpolicy_step(self) -> None:
         if self.cfg.policy_transport != "zmq":
-            raise ValueError("RTC mode currently requires --policy_transport zmq.")
-
-        self._raise_pending_rtc_error()
-
+            raise ValueError("ABPolicy mode requires --policy_transport zmq.")
+        self._raise_pending_abpolicy_error()
         if self._action_chunk is None:
-            self._request_initial_rtc_chunk()
-
+            self._request_initial_abpolicy_chunk()
         if self._action_chunk is None:
             return
 
-        self._maybe_launch_rtc_request()
-        self._maybe_swap_to_rtc_chunk()
-
+        self._maybe_launch_abpolicy_request()
+        self._maybe_swap_to_abpolicy_chunk()
         if self._chunk_step < len(self._action_chunk):
             action = self._action_chunk[self._chunk_step]
             self._chunk_step += 1
             sanitized_action = self._sanitize_action(action)
             self._last_sanitized_action = sanitized_action.copy()
             self.control_pair.update_action(sanitized_action)
+            self._executed_action_history.append(sanitized_action.copy())
             self._metrics_actions_applied += 1
             self._record_active_chunk_action_execution(self._chunk_step - 1)
             self._maybe_stop_after_release()
         else:
             self._metrics_empty_action_steps += 1
+        self._maybe_swap_to_abpolicy_chunk()
 
-        self._maybe_swap_to_rtc_chunk()
-
-    def _request_initial_rtc_chunk(self) -> None:
-        obs_start = time.perf_counter()
+    def _request_initial_abpolicy_chunk(self) -> None:
+        observation_start = time.perf_counter()
         observation = self._build_observation()
-        observation_build_s = time.perf_counter() - obs_start
+        observation_build_s = time.perf_counter() - observation_start
         request_start = time.perf_counter()
         request_id = self._start_chunk_metric(
             transport=self.cfg.policy_transport,
             request_time_s=request_start,
             client_observation_build_s=observation_build_s,
-            kind="rtc_initial",
+            kind="abpolicy_initial",
         )
         self.policy.send_observation(observation)
         action_msg = self.policy.current_action
         if action_msg is None:
             return
-
-        timestamp = float(action_msg["timestamp"])
-        if timestamp == self._last_action_timestamp:
-            return
-
-        self._action_chunk = self._parse_action_payload(action_msg["action"])
-        self._raw_action_chunk = self._parse_raw_action_payload(action_msg)
+        control_points, metadata = self._parse_abpolicy_message(action_msg)
+        basis = self._abpolicy_basis(metadata)
+        packed_trajectory = rebuild_trajectory(control_points, basis)
+        trajectory = packed_rotvec_to_cartesian(
+            packed_trajectory, metadata["reference_quaternion_xyzw"]
+        )
+        start_step = metadata["past_action_steps"]
+        self._action_chunk = trajectory[start_step:]
+        self._abpolicy_control_points = control_points
+        self._abpolicy_metadata = metadata
         self._chunk_step = 0
-        self._last_action_timestamp = timestamp
+        self._last_action_timestamp = float(action_msg["timestamp"])
         self._finish_chunk_metric(
             request_id,
             request_latency_s=time.perf_counter() - request_start,
@@ -378,65 +382,34 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._active_chunk_metric_id = request_id
         self._log_action_chunk_debug(self._action_chunk)
 
-    def _maybe_launch_rtc_request(self) -> None:
-        if self._action_chunk is None:
-            return
-        with self._rtc_lock:
-            if self._rtc_inflight or self._rtc_next_chunk is not None:
+    def _maybe_launch_abpolicy_request(self) -> None:
+        with self._abpolicy_lock:
+            if self._abpolicy_inflight or self._abpolicy_next_control_points is not None:
                 return
+            self._abpolicy_inflight = True
+            launch_step = self._chunk_step
+            generation = self._abpolicy_generation
 
-        chunk_len = len(self._action_chunk)
-        delay_estimate = self._rtc_delay_estimate(chunk_len)
-        launch_step = max(self._rtc_min_execution_horizon(chunk_len), delay_estimate)
-        self._validate_rtc_schedule(chunk_len, launch_step, delay_estimate)
-        if self._chunk_step < launch_step:
-            return
-        if self._chunk_step >= len(self._action_chunk):
-            return
-
-        s = self._chunk_step
-        self._validate_rtc_schedule(chunk_len, s, delay_estimate)
-        if self._raw_action_chunk is None or len(self._raw_action_chunk) != chunk_len:
-            raise RuntimeError(
-                "RTC conditioning requires the raw policy action chunk returned by the policy node."
-            )
-        prev_chunk_left_over = self._raw_action_chunk[s:].copy()
-        guided_overlap = len(prev_chunk_left_over)
-        obs_start = time.perf_counter()
-        obs = self._build_observation(
-            policy_kwargs={
-                "prev_chunk_left_over": prev_chunk_left_over.tolist(),
-                "inference_delay": delay_estimate,
-                "execution_horizon": guided_overlap,
-            }
-        )
-        observation_build_s = time.perf_counter() - obs_start
-
-        with self._rtc_lock:
-            self._rtc_inflight = True
-            self._rtc_next_launch_step = s
-            generation = self._rtc_generation
-
+        observation_start = time.perf_counter()
+        observation = self._build_observation()
+        observation_build_s = time.perf_counter() - observation_start
         request_start = time.perf_counter()
         request_id = self._start_chunk_metric(
             transport=self.cfg.policy_transport,
             request_time_s=request_start,
             client_observation_build_s=observation_build_s,
-            kind="rtc_async",
-            launch_step=s,
-            predicted_delay_steps=delay_estimate,
-            leftover_action_count=guided_overlap,
+            kind="abpolicy_async",
+            launch_step=launch_step,
         )
-        thread = threading.Thread(
-            target=self._rtc_request_worker,
-            args=(obs, s, generation, request_id, request_start),
+        threading.Thread(
+            target=self._abpolicy_request_worker,
+            args=(observation, launch_step, generation, request_id, request_start),
             daemon=True,
-        )
-        thread.start()
+        ).start()
 
-    def _rtc_request_worker(
+    def _abpolicy_request_worker(
         self,
-        obs: Dict[str, Any],
+        observation: Dict[str, Any],
         launch_step: int,
         generation: int,
         request_id: int,
@@ -448,115 +421,151 @@ class Pi05PolicyInference(PolicyInferenceManager):
             timeout_ms=self.cfg.policy_zmq_timeout_ms,
         )
         try:
-            policy.send_observation(obs)
+            policy.send_observation(observation)
             action_msg = policy.current_action
             if action_msg is None:
-                raise RuntimeError("RTC policy request returned no action message.")
-            chunk = self._parse_action_payload(action_msg["action"])
-            raw_chunk = self._parse_raw_action_payload(action_msg)
-            timestamp = float(action_msg["timestamp"])
-            request_latency_s = time.perf_counter() - request_start
-            with self._rtc_lock:
-                if generation == self._rtc_generation and timestamp != self._last_action_timestamp:
-                    self._rtc_next_chunk = chunk
-                    self._rtc_next_raw_chunk = raw_chunk
-                    self._last_action_timestamp = timestamp
-                    self._rtc_next_launch_step = launch_step
-                    self._rtc_next_metric_id = request_id
+                raise RuntimeError("ABPolicy request returned no action message.")
+            control_points, metadata = self._parse_abpolicy_message(action_msg)
+            latency_s = time.perf_counter() - request_start
+            with self._abpolicy_lock:
+                if generation == self._abpolicy_generation:
+                    self._abpolicy_next_control_points = control_points
+                    self._abpolicy_next_metadata = metadata
+                    self._abpolicy_launch_step = launch_step
+                    self._abpolicy_metric_id = request_id
                     self._finish_chunk_metric(
                         request_id,
-                        request_latency_s=request_latency_s,
-                        action_count=len(chunk),
+                        request_latency_s=latency_s,
+                        action_count=metadata["future_action_steps"],
                     )
         except BaseException as exc:
-            with self._rtc_lock:
-                if generation == self._rtc_generation:
-                    self._rtc_pending_error = exc
+            with self._abpolicy_lock:
+                if generation == self._abpolicy_generation:
+                    self._abpolicy_pending_error = exc
                     self._mark_chunk_metric_error(request_id, str(exc))
         finally:
             policy.close()
-            with self._rtc_lock:
-                if generation == self._rtc_generation:
-                    self._rtc_inflight = False
+            with self._abpolicy_lock:
+                if generation == self._abpolicy_generation:
+                    self._abpolicy_inflight = False
 
-    def _maybe_swap_to_rtc_chunk(self) -> None:
-        if self._action_chunk is None:
-            return
-
-        with self._rtc_lock:
-            next_chunk = self._rtc_next_chunk
-            next_raw_chunk = self._rtc_next_raw_chunk
-            launch_step = self._rtc_next_launch_step
-            metric_id = self._rtc_next_metric_id
-            if next_chunk is None or next_raw_chunk is None:
+    def _maybe_swap_to_abpolicy_chunk(self) -> None:
+        with self._abpolicy_lock:
+            control_points = self._abpolicy_next_control_points
+            metadata = self._abpolicy_next_metadata
+            launch_step = self._abpolicy_launch_step
+            metric_id = self._abpolicy_metric_id
+            if control_points is None or metadata is None:
                 return
-            self._rtc_next_chunk = None
-            self._rtc_next_raw_chunk = None
-            self._rtc_next_metric_id = None
+            self._abpolicy_next_control_points = None
+            self._abpolicy_next_metadata = None
+            self._abpolicy_metric_id = None
 
         observed_delay = max(0, self._chunk_step - launch_step)
-        start_step = min(len(next_chunk), observed_delay)
-        self._action_chunk = next_chunk
-        self._raw_action_chunk = next_raw_chunk
-        self._chunk_step = start_step
-        self._record_rtc_delay(observed_delay)
+        n_prefix = metadata["past_action_steps"] + observed_delay
+        trajectory_length = metadata["past_action_steps"] + metadata["future_action_steps"]
+        n_prefix = min(n_prefix, trajectory_length - 1)
+        history = self._abpolicy_history(
+            n_prefix, np.asarray(metadata["reference_quaternion_xyzw"], dtype=np.float64)
+        )
+        basis = self._abpolicy_basis(metadata)
+        refitted = refit_control_point_prefix(
+            history,
+            control_points,
+            basis,
+            num_free_control_points=metadata["num_free_control_points"],
+            last_point_weight=self.cfg.abpolicy_last_point_weight,
+        )
+        # Match the reference deployment: CCR anchors arm motion, while the
+        # gripper trajectory remains the policy prediction.
+        refitted[:, 6] = control_points[:, 6]
+        packed_trajectory = rebuild_trajectory(refitted, basis)
+        trajectory = packed_rotvec_to_cartesian(
+            packed_trajectory, metadata["reference_quaternion_xyzw"]
+        )
+        self._action_chunk = trajectory[n_prefix:]
+        self._chunk_step = 0
+        self._abpolicy_control_points = refitted
+        self._abpolicy_metadata = metadata
+        self._record_abpolicy_delay(observed_delay)
         self._active_chunk_metric_id = metric_id
-        if self._active_chunk_metric_id is not None:
+        if metric_id is not None:
             self._update_chunk_metric(
-                self._active_chunk_metric_id,
+                metric_id,
                 observed_delay_steps=observed_delay,
-                start_step=start_step,
+                refit_prefix_steps=n_prefix,
+                start_step=n_prefix,
             )
         self._log_action_chunk_debug(self._action_chunk)
 
-    def _rtc_min_execution_horizon(self, chunk_len: int) -> int:
-        return max(1, min(int(self.cfg.rtc_execution_horizon), chunk_len))
-
-    def _rtc_delay_estimate(self, chunk_len: int) -> int:
-        with self._rtc_lock:
-            delay = max(self._rtc_delay_history) if self._rtc_delay_history else 0
-        return max(0, min(delay, chunk_len))
-
-    def _record_rtc_delay(self, delay: int) -> None:
-        with self._rtc_lock:
-            self._rtc_delay_history.append(max(0, int(delay)))
-
-    def _validate_rtc_schedule(self, chunk_len: int, launch_step: int, delay_estimate: int) -> None:
-        if launch_step >= chunk_len:
-            raise RuntimeError(
-                "Invalid RTC schedule: execution horizon reaches the end of the chunk "
-                f"(H={chunk_len}, s={launch_step}, d={delay_estimate})."
+    def _parse_abpolicy_message(self, action_msg: Dict[str, Any]) -> tuple[np.ndarray, Dict[str, Any]]:
+        if action_msg.get("action_representation") != "bspline_control_points":
+            raise ValueError("Policy node did not return ABPolicy B-spline control points.")
+        metadata_raw = action_msg.get("abpolicy")
+        if not isinstance(metadata_raw, dict):
+            raise ValueError("ABPolicy response is missing spline metadata.")
+        metadata = {
+            key: int(metadata_raw[key])
+            for key in (
+                "past_action_steps",
+                "future_action_steps",
+                "spline_degree",
+                "num_control_points",
+                "num_free_control_points",
             )
-        if delay_estimate > launch_step:
-            raise RuntimeError(
-                "Invalid RTC schedule: inference delay estimate exceeds execution horizon "
-                f"(d={delay_estimate}, s={launch_step})."
-            )
-        if delay_estimate > chunk_len - launch_step:
-            raise RuntimeError(
-                "Invalid RTC schedule: inference delay estimate is larger than the guided "
-                f"overlap left in the current chunk (H={chunk_len}, s={launch_step}, "
-                f"d={delay_estimate}). The paper requires d <= s <= H - d."
-            )
+        }
+        if metadata_raw.get("action_representation") != "cartesian_rotvec":
+            raise ValueError("Expected Cartesian rotation-vector ABPolicy control points.")
+        reference = np.asarray(metadata_raw.get("reference_quaternion_xyzw"), dtype=np.float64)
+        if reference.shape != (4,) or np.linalg.norm(reference) < 1e-6:
+            raise ValueError("ABPolicy response has an invalid reference quaternion.")
+        metadata["action_representation"] = "cartesian_rotvec"
+        metadata["reference_quaternion_xyzw"] = reference / np.linalg.norm(reference)
+        control_points = self._parse_action_payload(action_msg["action"])
+        if len(control_points) != metadata["num_control_points"]:
+            raise ValueError("ABPolicy control-point count does not match metadata.")
+        return control_points, metadata
 
-    def _raise_pending_rtc_error(self) -> None:
-        with self._rtc_lock:
-            error = self._rtc_pending_error
-            self._rtc_pending_error = None
+    def _abpolicy_basis(self, metadata: Dict[str, Any]) -> np.ndarray:
+        return bspline_basis(
+            metadata["past_action_steps"] + metadata["future_action_steps"],
+            metadata["num_control_points"],
+            metadata["spline_degree"],
+        )
+
+    def _abpolicy_history(self, length: int, reference_quaternion: np.ndarray) -> np.ndarray:
+        history = list(self._executed_action_history)[-length:]
+        if not history:
+            if self._last_sanitized_action is None:
+                raise RuntimeError("ABPolicy has no executed action history for refitting.")
+            history = [self._last_sanitized_action.copy()]
+        if len(history) < length:
+            history = [history[0].copy() for _ in range(length - len(history))] + history
+        return cartesian_to_packed_rotvec(
+            np.asarray(history, dtype=np.float64), reference_quaternion
+        )
+
+    def _record_abpolicy_delay(self, delay: int) -> None:
+        with self._abpolicy_lock:
+            self._abpolicy_delay_history.append(max(0, int(delay)))
+
+    def _raise_pending_abpolicy_error(self) -> None:
+        with self._abpolicy_lock:
+            error = self._abpolicy_pending_error
+            self._abpolicy_pending_error = None
         if error is not None:
-            raise RuntimeError(f"RTC policy request failed: {error}") from error
+            raise RuntimeError(f"ABPolicy request failed: {error}") from error
 
-    def _reset_rtc_state(self) -> None:
-        with self._rtc_lock:
-            self._rtc_generation += 1
-            self._rtc_inflight = False
-            self._rtc_next_chunk = None
-            self._rtc_next_raw_chunk = None
-            self._rtc_next_launch_step = 0
-            self._rtc_next_metric_id = None
-            self._rtc_pending_error = None
-            self._rtc_delay_history.clear()
-            self._rtc_delay_history.append(max(0, int(self.cfg.rtc_delay_steps)))
+    def _reset_abpolicy_state(self) -> None:
+        with self._abpolicy_lock:
+            self._abpolicy_generation += 1
+            self._abpolicy_inflight = False
+            self._abpolicy_launch_step = 0
+            self._abpolicy_metric_id = None
+            self._abpolicy_pending_error = None
+            self._abpolicy_next_control_points = None
+            self._abpolicy_next_metadata = None
+            self._abpolicy_delay_history.clear()
 
     def _log_action_chunk_debug(self, action_chunk: np.ndarray) -> None:
         gripper = np.asarray(action_chunk[:, 7], dtype=np.float64)
@@ -632,9 +641,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
             for chunk in chunks
             if chunk.get("observed_delay_steps") is not None
         ]
+        asynchronous = self.cfg.abpolicy_enabled
         recommended_delay = (
-            max(observed_delays) if observed_delays else self._rtc_delay_estimate(10**9)
-        ) if self.cfg.rtc_enabled else None
+            max(observed_delays) if observed_delays else 0
+        ) if asynchronous else None
 
         summary = {
             "task": self.task,
@@ -644,7 +654,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "obs_topic": self.cfg.obs_topic,
             "action_topic": self.cfg.action_topic,
             "fps": int(self.fps),
-            "rtc_enabled": bool(self.cfg.rtc_enabled),
+            "abpolicy_enabled": bool(self.cfg.abpolicy_enabled),
+            "action_space": self.cfg.action_space,
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),
             "total_time_s": total_time_s,
             "inference_calls": inference_calls,
@@ -657,12 +668,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "avg_client_observation_build_s": _mean(observation_build_times),
             "run_metadata": self.cfg.run_metadata or {},
         }
-        if self.cfg.rtc_enabled:
+        if asynchronous:
             summary.update(
                 {
-                    "rtc_execution_horizon": int(self.cfg.rtc_execution_horizon),
-                    "rtc_delay_steps": int(self.cfg.rtc_delay_steps),
-                    "rtc_delay_buffer_size": int(self.cfg.rtc_delay_buffer_size),
+                    "abpolicy_delay_buffer_size": int(self.cfg.abpolicy_delay_buffer_size),
                     "avg_observed_delay_steps": _mean([float(delay) for delay in observed_delays]),
                     "max_observed_delay_steps": max(observed_delays) if observed_delays else None,
                     "recommended_delay_steps": recommended_delay,
@@ -680,7 +689,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             f"avg_first_action_latency={_format_optional(summary['avg_first_action_latency_s'])}s, "
             f"avg_chunk_duration={_format_optional(summary['avg_chunk_execution_duration_s'])}s"
         )
-        if self.cfg.rtc_enabled:
+        if asynchronous:
             metrics_msg += f", recommended_delay={summary['recommended_delay_steps']}"
         pyzlc.info(metrics_msg)
         for chunk in chunks:
@@ -694,7 +703,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 f"executed_actions={chunk.get('executed_action_count')}, "
                 f"action_count={chunk.get('action_count')}"
             )
-            if self.cfg.rtc_enabled:
+            if asynchronous:
                 chunk_msg += (
                     f", predicted_delay={chunk.get('predicted_delay_steps')}, "
                     f"observed_delay={chunk.get('observed_delay_steps')}"
@@ -724,15 +733,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
         summary = record["summary"]
         chunks = record["chunks"]
         config_items = [
-            f"rtc_enabled={summary.get('rtc_enabled')}",
+            f"abpolicy_enabled={summary.get('abpolicy_enabled')}",
+            f"action_space={summary.get('action_space')}",
         ]
-        if summary.get("rtc_enabled"):
-            config_items.extend(
-                [
-                    f"rtc_execution_horizon={summary.get('rtc_execution_horizon')}",
-                    f"rtc_delay_steps={summary.get('rtc_delay_steps')}",
-                ]
-            )
+        asynchronous = summary.get("abpolicy_enabled")
 
         latency_line = (
             "latency: "
@@ -740,11 +744,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
             f"avg_first_action={_format_optional(summary.get('avg_first_action_latency_s'))}s, "
             f"avg_chunk_duration={_format_optional(summary.get('avg_chunk_execution_duration_s'))}s"
         )
-        if summary.get("rtc_enabled"):
+        if asynchronous:
             latency_line += f", recommended_delay={summary.get('recommended_delay_steps')}"
 
         chunk_header = "  request  kind         actions  executed  "
-        if summary.get("rtc_enabled"):
+        if asynchronous:
             chunk_header += "pred_d  obs_d  "
         chunk_header += "request_s  first_s  duration_s"
 
@@ -772,7 +776,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 f"{str(chunk.get('action_count')):>7}  "
                 f"{str(chunk.get('executed_action_count')):>8}  "
             )
-            if summary.get("rtc_enabled"):
+            if asynchronous:
                 chunk_line += (
                     f"{str(chunk.get('predicted_delay_steps')):>6}  "
                     f"{str(chunk.get('observed_delay_steps')):>5}  "
@@ -797,7 +801,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         except Exception as exc:
             self._ui_console.log(f"Failed to reset arm: {exc}")
 
-    def _build_observation(self, policy_kwargs: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def _build_observation(self) -> Dict[str, Any]:
         static_rgb = self._capture_rgb(self.static_cam)
         wrist_rgb = self._capture_rgb(self.wrist_cam)
         obs = {
@@ -806,8 +810,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "observation.state": self._build_state_vector().tolist(),
             "task": self.task,
         }
-        if policy_kwargs:
-            obs["policy_kwargs"] = policy_kwargs
         return obs
 
     def _capture_rgb(self, cam: ImageDataWrapper) -> np.ndarray:
@@ -823,13 +825,22 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
     def _build_state_vector(self) -> np.ndarray:
         arm_state = self.arm_wrapper.capture_step()
-        ee_pose = _extract_ee_pose(arm_state)
+        if self.cfg.action_space == "joint":
+            if "q" not in arm_state:
+                raise ValueError("Joint-space ABPolicy requires q in the Franka arm state.")
+            arm_vector = np.asarray(arm_state["q"], dtype=np.float32).reshape(-1)[:7]
+            if len(arm_vector) != 7:
+                raise ValueError(f"Expected seven Franka joints, got {len(arm_vector)}")
+        elif self.cfg.action_space == "cartesian":
+            arm_vector = _extract_ee_pose(arm_state)
+        else:
+            raise ValueError(f"Unsupported action space: {self.cfg.action_space!r}")
 
         grip_state = self.gripper_wrapper.capture_step()
         gripper = float(grip_state.get("position", 0.0))
         gripper = float(np.clip(gripper, 0.0, 1.0))
 
-        return np.concatenate([ee_pose, np.asarray([gripper], dtype=np.float32)])
+        return np.concatenate([arm_vector, np.asarray([gripper], dtype=np.float32)])
 
     def _parse_action_payload(self, payload: Any) -> np.ndarray:
         arr = np.asarray(payload, dtype=np.float64)
@@ -841,36 +852,13 @@ class Pi05PolicyInference(PolicyInferenceManager):
             raise ValueError(f"Expected action dim >= {ACTION_DIM}, got {arr.shape[-1]}")
         return arr[:, :ACTION_DIM]
 
-    def _parse_raw_action_payload(self, action_msg: Dict[str, Any]) -> np.ndarray:
-        payload = action_msg.get("action_raw")
-        if payload is None:
-            raise ValueError(
-                "Policy response is missing action_raw; restart the policy node from this branch "
-                "so RTC can condition on raw normalized actions."
-            )
-
-        arr = np.asarray(payload, dtype=np.float32)
-        if arr.ndim == 3:
-            if arr.shape[0] != 1:
-                raise ValueError(f"Expected one raw action batch, got shape {arr.shape}")
-            arr = arr[0]
-        elif arr.ndim == 1:
-            arr = arr.reshape(1, -1)
-        elif arr.ndim > 3:
-            arr = arr.reshape(-1, arr.shape[-1])
-
-        if arr.ndim != 2:
-            raise ValueError(f"Expected raw action chunk with shape (T, A), got {arr.shape}")
-        if arr.shape[-1] < ACTION_DIM:
-            raise ValueError(f"Expected raw action dim >= {ACTION_DIM}, got {arr.shape[-1]}")
-        return arr
-
     def _sanitize_action(self, action: np.ndarray) -> np.ndarray:
         arr = np.asarray(action, dtype=np.float64).reshape(-1)[:ACTION_DIM]
-        quat = arr[3:7]
-        quat_norm = np.linalg.norm(quat)
-        if quat_norm > 1e-6:
-            arr[3:7] = quat / quat_norm
+        if self.cfg.action_space == "cartesian":
+            quat = arr[3:7]
+            quat_norm = np.linalg.norm(quat)
+            if quat_norm > 1e-6:
+                arr[3:7] = quat / quat_norm
         gripper_cmd = 1.0 if arr[7] >= 0.5 else 0.0
         self._observe_gripper_command(gripper_cmd)
         arr[7] = gripper_cmd
