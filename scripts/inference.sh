@@ -6,7 +6,8 @@ WORKSPACE_ROOT="$(cd "${REPO_ROOT}/.." && pwd)"
 export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot/src:${PYTHONPATH:-}"
 
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
-    --task "put red cylinder on blue cube" \
+    --task "put red cylinder on red cube" \
+    --stop_after_first_release \
     --fps 20 \
     --control_hz 100 \
     --robot_name FrankaPanda \
