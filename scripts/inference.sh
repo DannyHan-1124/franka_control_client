@@ -9,6 +9,11 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --task "put red cylinder on blue cube" \
     --fps 20 \
     --control_hz 100 \
+    --robot_name FrankaPanda \
+    --pyzlc_name policy_inference \
+    --pyzlc_host 141.3.53.25 \
+    --pyzlc_group_name robot_lab_robotiq_202 \
+    --pyzlc_group_port 7725 \
     --abpolicy_enabled \
     --policy_transport zmq \
     --policy_zmq_endpoint tcp://127.0.0.1:40023 \
