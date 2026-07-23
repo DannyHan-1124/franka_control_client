@@ -384,3 +384,421 @@ chunks:
         2  sync              50        50      0.249    0.250       2.406
         3  sync              50        33      0.249    0.250       1.553
 
+Pi0.5 inference metrics
+task: put cylinder in moving cup
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=13.537s, inference_calls=26, completed_chunks=26, actions_applied=259, empty_action_steps=0
+latency: avg_request=0.344s, avg_first_action=0.361s, avg_chunk_duration=0.447s, recommended_delay=9
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        19    None   None      0.657    0.657       0.851
+        2  rtc_async         50         8       7      9      0.419    0.445       0.350
+        3  rtc_async         50        10       9      7      0.334    0.344       0.451
+        4  rtc_async         50        10       9      7      0.335    0.344       0.451
+        5  rtc_async         50        10       9      7      0.329    0.345       0.452
+        6  rtc_async         50        10       9      7      0.329    0.346       0.450
+        7  rtc_async         50        10       9      7      0.329    0.345       0.451
+        8  rtc_async         50        10       9      7      0.330    0.345       0.450
+        9  rtc_async         50        10       9      7      0.327    0.346       0.450
+       10  rtc_async         50        10       9      7      0.331    0.346       0.450
+       11  rtc_async         50        10       7      7      0.329    0.346       0.451
+       12  rtc_async         50        10       7      7      0.329    0.346       0.451
+       13  rtc_async         50        10       7      7      0.329    0.346       0.451
+       14  rtc_async         50        10       7      7      0.329    0.346       0.450
+       15  rtc_async         50        10       7      7      0.326    0.346       0.450
+       16  rtc_async         50        10       7      7      0.329    0.346       0.450
+       17  rtc_async         50        10       7      7      0.326    0.346       0.450
+       18  rtc_async         50        10       7      7      0.327    0.346       0.450
+       19  rtc_async         50        10       7      7      0.325    0.345       0.451
+       20  rtc_async         50        10       7      7      0.326    0.346       0.451
+       21  rtc_async         50        10       7      7      0.326    0.346       0.451
+       22  rtc_async         50        10       7      7      0.325    0.346       0.451
+       23  rtc_async         50        10       7      7      0.325    0.347       0.451
+       24  rtc_async         50        10       7      7      0.325    0.346       0.450
+       25  rtc_async         50        10       7      7      0.325    0.345       0.450
+       26  rtc_async         50         2       7      7      0.325    0.346       0.050
+
+Pi0.5 inference metrics
+task: put cylinder in moving cup
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=11.431s, inference_calls=23, completed_chunks=23, actions_applied=225, empty_action_steps=0
+latency: avg_request=0.323s, avg_first_action=0.341s, avg_chunk_duration=0.460s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.255    0.255       0.754
+        2  rtc_async         50        10       7      7      0.327    0.346       0.450
+        3  rtc_async         50        10       7      7      0.327    0.346       0.450
+        4  rtc_async         50        10       7      7      0.324    0.346       0.450
+        5  rtc_async         50        10       7      7      0.324    0.346       0.450
+        6  rtc_async         50        10       7      7      0.326    0.345       0.450
+        7  rtc_async         50        10       7      7      0.324    0.346       0.451
+        8  rtc_async         50        10       7      7      0.327    0.345       0.451
+        9  rtc_async         50        10       7      7      0.325    0.344       0.450
+       10  rtc_async         50        10       7      7      0.326    0.345       0.451
+       11  rtc_async         50        10       7      7      0.324    0.345       0.450
+       12  rtc_async         50        10       7      7      0.326    0.344       0.450
+       13  rtc_async         50        10       7      7      0.327    0.344       0.451
+       14  rtc_async         50        10       7      7      0.325    0.344       0.451
+       15  rtc_async         50        10       7      7      0.324    0.345       0.451
+       16  rtc_async         50        10       7      7      0.325    0.345       0.451
+       17  rtc_async         50        10       7      7      0.326    0.345       0.451
+       18  rtc_async         50        10       7      7      0.328    0.345       0.451
+       19  rtc_async         50        10       7      7      0.330    0.346       0.450
+       20  rtc_async         50        10       7      7      0.329    0.346       0.450
+       21  rtc_async         50        10       7      7      0.329    0.346       0.451
+       22  rtc_async         50         8       7      7      0.326    0.345       0.350
+       23  rtc_async       None         0       7   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put cylinder in moving cup
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=7.973s, inference_calls=16, completed_chunks=16, actions_applied=156, empty_action_steps=0
+latency: avg_request=0.321s, avg_first_action=0.339s, avg_chunk_duration=0.467s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.253    0.254       0.751
+        2  rtc_async         50        10       7      7      0.328    0.345       0.451
+        3  rtc_async         50        10       7      7      0.326    0.345       0.450
+        4  rtc_async         50        10       7      7      0.326    0.345       0.451
+        5  rtc_async         50        10       7      7      0.325    0.345       0.450
+        6  rtc_async         50        10       7      7      0.325    0.344       0.451
+        7  rtc_async         50        10       7      7      0.324    0.343       0.450
+        8  rtc_async         50        10       7      7      0.326    0.345       0.451
+        9  rtc_async         50        10       7      7      0.326    0.346       0.451
+       10  rtc_async         50        10       7      7      0.324    0.345       0.452
+       11  rtc_async         50        10       7      7      0.324    0.347       0.451
+       12  rtc_async         50        10       7      7      0.324    0.345       0.450
+       13  rtc_async         50        10       7      7      0.325    0.345       0.450
+       14  rtc_async         50        10       7      7      0.324    0.345       0.450
+       15  rtc_async         50         9       7      7      0.326    0.346       0.401
+       16  rtc_async       None         0       7   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put cylinder in moving cup
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=10.580s, inference_calls=21, completed_chunks=21, actions_applied=208, empty_action_steps=0
+latency: avg_request=0.322s, avg_first_action=0.341s, avg_chunk_duration=0.443s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.255    0.256       0.752
+        2  rtc_async         50        10       7      7      0.333    0.346       0.451
+        3  rtc_async         50        10       7      7      0.325    0.345       0.450
+        4  rtc_async         50        10       7      7      0.327    0.345       0.450
+        5  rtc_async         50        10       7      7      0.324    0.345       0.450
+        6  rtc_async         50        10       7      7      0.324    0.345       0.450
+        7  rtc_async         50        10       7      7      0.326    0.346       0.451
+        8  rtc_async         50        10       7      7      0.326    0.346       0.451
+        9  rtc_async         50        10       7      7      0.325    0.345       0.450
+       10  rtc_async         50        10       7      7      0.327    0.346       0.450
+       11  rtc_async         50        10       7      7      0.326    0.346       0.451
+       12  rtc_async         50        10       7      7      0.325    0.346       0.450
+       13  rtc_async         50        10       7      7      0.325    0.345       0.451
+       14  rtc_async         50        10       7      7      0.322    0.346       0.450
+       15  rtc_async         50        10       7      7      0.326    0.346       0.450
+       16  rtc_async         50        10       7      7      0.327    0.346       0.453
+       17  rtc_async         50        10       7      7      0.324    0.348       0.451
+       18  rtc_async         50        10       7      7      0.324    0.345       0.450
+       19  rtc_async         50        10       7      7      0.324    0.346       0.450
+       20  rtc_async         50        10       7      7      0.326    0.346       0.450
+       21  rtc_async         50         1       7      7      0.324    0.346       0.000
+
+Pi0.5 inference metrics
+task: put cylinder in moving cup
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=13.082s, inference_calls=26, completed_chunks=26, actions_applied=258, empty_action_steps=0
+latency: avg_request=0.323s, avg_first_action=0.342s, avg_chunk_duration=0.445s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.254    0.254       0.751
+        2  rtc_async         50        10       7      7      0.327    0.346       0.450
+        3  rtc_async         50        10       7      7      0.325    0.345       0.450
+        4  rtc_async         50        10       7      7      0.325    0.346       0.451
+        5  rtc_async         50        10       7      7      0.327    0.346       0.450
+        6  rtc_async         50        10       7      7      0.326    0.346       0.450
+        7  rtc_async         50        10       7      7      0.325    0.345       0.451
+        8  rtc_async         50        10       7      7      0.324    0.345       0.450
+        9  rtc_async         50        10       7      7      0.328    0.345       0.450
+       10  rtc_async         50        10       7      7      0.332    0.344       0.450
+       11  rtc_async         50        10       7      7      0.327    0.344       0.450
+       12  rtc_async         50        10       7      7      0.327    0.344       0.451
+       13  rtc_async         50        10       7      7      0.325    0.344       0.451
+       14  rtc_async         50        10       7      7      0.325    0.345       0.450
+       15  rtc_async         50        10       7      7      0.325    0.343       0.452
+       16  rtc_async         50        10       7      7      0.324    0.345       0.451
+       17  rtc_async         50        10       7      7      0.324    0.346       0.450
+       18  rtc_async         50        10       7      7      0.325    0.345       0.451
+       19  rtc_async         50        10       7      7      0.326    0.345       0.450
+       20  rtc_async         50        10       7      7      0.326    0.346       0.451
+       21  rtc_async         50        10       7      7      0.325    0.346       0.450
+       22  rtc_async         50        10       7      7      0.325    0.346       0.451
+       23  rtc_async         50        10       7      7      0.325    0.346       0.451
+       24  rtc_async         50        10       7      7      0.323    0.345       0.451
+       25  rtc_async         50        10       7      7      0.324    0.346       0.451
+       26  rtc_async         50         1       7      7      0.325    0.346       0.000
+
+Pi0.5 inference metrics
+task: put cylinder in moving cup
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=10.429s, inference_calls=21, completed_chunks=21, actions_applied=205, empty_action_steps=0
+latency: avg_request=0.323s, avg_first_action=0.341s, avg_chunk_duration=0.461s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.255    0.255       0.752
+        2  rtc_async         50        10       7      7      0.329    0.345       0.450
+        3  rtc_async         50        10       7      7      0.327    0.345       0.451
+        4  rtc_async         50        10       7      7      0.325    0.346       0.450
+        5  rtc_async         50        10       7      7      0.325    0.345       0.450
+        6  rtc_async         50        10       7      7      0.324    0.346       0.450
+        7  rtc_async         50        10       7      7      0.326    0.346       0.450
+        8  rtc_async         50        10       7      7      0.324    0.345       0.450
+        9  rtc_async         50        10       7      7      0.328    0.345       0.450
+       10  rtc_async         50        10       7      7      0.332    0.345       0.450
+       11  rtc_async         50        10       7      7      0.329    0.344       0.451
+       12  rtc_async         50        10       7      7      0.327    0.344       0.451
+       13  rtc_async         50        10       7      7      0.328    0.344       0.450
+       14  rtc_async         50        10       7      7      0.326    0.344       0.451
+       15  rtc_async         50        10       7      7      0.328    0.343       0.451
+       16  rtc_async         50        10       7      7      0.324    0.344       0.452
+       17  rtc_async         50        10       7      7      0.326    0.346       0.452
+       18  rtc_async         50        10       7      7      0.325    0.346       0.450
+       19  rtc_async         50        10       7      7      0.326    0.346       0.450
+       20  rtc_async         50         8       7      7      0.325    0.346       0.350
+       21  rtc_async       None         0       7   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put cylinder in moving cup
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=9.929s, inference_calls=20, completed_chunks=20, actions_applied=195, empty_action_steps=0
+latency: avg_request=0.322s, avg_first_action=0.341s, avg_chunk_duration=0.461s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.255    0.256       0.751
+        2  rtc_async         50        10       7      7      0.328    0.346       0.450
+        3  rtc_async         50        10       7      7      0.326    0.345       0.451
+        4  rtc_async         50        10       7      7      0.327    0.345       0.451
+        5  rtc_async         50        10       7      7      0.326    0.345       0.450
+        6  rtc_async         50        10       7      7      0.324    0.345       0.450
+        7  rtc_async         50        10       7      7      0.325    0.343       0.451
+        8  rtc_async         50        10       7      7      0.326    0.345       0.451
+        9  rtc_async         50        10       7      7      0.324    0.344       0.452
+       10  rtc_async         50        10       7      7      0.326    0.347       0.451
+       11  rtc_async         50        10       7      7      0.324    0.346       0.451
+       12  rtc_async         50        10       7      7      0.325    0.346       0.450
+       13  rtc_async         50        10       7      7      0.328    0.346       0.451
+       14  rtc_async         50        10       7      7      0.326    0.346       0.450
+       15  rtc_async         50        10       7      7      0.325    0.346       0.451
+       16  rtc_async         50        10       7      7      0.325    0.346       0.450
+       17  rtc_async         50        10       7      7      0.324    0.345       0.450
+       18  rtc_async         50        10       7      7      0.325    0.346       0.451
+       19  rtc_async         50         8       7      7      0.324    0.346       0.351
+       20  rtc_async       None         0       7   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put cylinder in moving cup
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=8.274s, inference_calls=17, completed_chunks=17, actions_applied=162, empty_action_steps=0
+latency: avg_request=0.319s, avg_first_action=0.340s, avg_chunk_duration=0.454s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.254    0.254       0.751
+        2  rtc_async         50        10       7      7      0.330    0.346       0.451
+        3  rtc_async         50        10       7      7      0.322    0.346       0.450
+        4  rtc_async         50        10       7      7      0.322    0.346       0.450
+        5  rtc_async         50        10       7      7      0.322    0.346       0.450
+        6  rtc_async         50        10       7      7      0.322    0.346       0.450
+        7  rtc_async         50        10       7      7      0.323    0.345       0.451
+        8  rtc_async         50        10       7      7      0.322    0.346       0.451
+        9  rtc_async         50        10       7      7      0.325    0.345       0.450
+       10  rtc_async         50        10       7      7      0.323    0.345       0.451
+       11  rtc_async         50        10       7      7      0.323    0.344       0.450
+       12  rtc_async         50        10       7      7      0.324    0.344       0.451
+       13  rtc_async         50        10       7      7      0.323    0.345       0.451
+       14  rtc_async         50        10       7      7      0.321    0.345       0.451
+       15  rtc_async         50        10       7      7      0.322    0.344       0.453
+       16  rtc_async         50         5       7      7      0.323    0.347       0.200
+       17  rtc_async       None         0       7   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put cylinder in moving cup
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=11.981s, inference_calls=24, completed_chunks=24, actions_applied=236, empty_action_steps=0
+latency: avg_request=0.321s, avg_first_action=0.342s, avg_chunk_duration=0.461s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.255    0.255       0.752
+        2  rtc_async         50        10       7      7      0.327    0.346       0.451
+        3  rtc_async         50        10       7      7      0.323    0.346       0.450
+        4  rtc_async         50        10       7      7      0.325    0.345       0.451
+        5  rtc_async         50        10       7      7      0.328    0.346       0.450
+        6  rtc_async         50        10       7      7      0.327    0.346       0.450
+        7  rtc_async         50        10       7      7      0.325    0.346       0.451
+        8  rtc_async         50        10       7      7      0.325    0.346       0.451
+        9  rtc_async         50        10       7      7      0.323    0.346       0.451
+       10  rtc_async         50        10       7      7      0.324    0.346       0.450
+       11  rtc_async         50        10       7      7      0.325    0.346       0.451
+       12  rtc_async         50        10       7      7      0.323    0.345       0.450
+       13  rtc_async         50        10       7      7      0.322    0.346       0.451
+       14  rtc_async         50        10       7      7      0.322    0.346       0.450
+       15  rtc_async         50        10       7      7      0.323    0.346       0.450
+       16  rtc_async         50        10       7      7      0.324    0.346       0.451
+       17  rtc_async         50        10       7      7      0.322    0.347       0.450
+       18  rtc_async         50        10       7      7      0.323    0.346       0.451
+       19  rtc_async         50        10       7      7      0.322    0.346       0.450
+       20  rtc_async         50        10       7      7      0.323    0.346       0.450
+       21  rtc_async         50        10       7      7      0.322    0.345       0.450
+       22  rtc_async         50        10       7      7      0.325    0.346       0.450
+       23  rtc_async         50         9       7      7      0.322    0.346       0.401
+       24  rtc_async       None         0       7   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put cylinder in moving cup
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=3.065s, inference_calls=6, completed_chunks=6, actions_applied=57, empty_action_steps=0
+latency: avg_request=0.314s, avg_first_action=0.327s, avg_chunk_duration=0.511s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.255    0.255       0.751
+        2  rtc_async         50        10       7      7      0.327    0.344       0.450
+        3  rtc_async         50        10       7      7      0.325    0.345       0.451
+        4  rtc_async         50        10       7      7      0.323    0.345       0.451
+        5  rtc_async         50        10       7      7      0.325    0.346       0.451
+        6  rtc_async         50         0       7   None      0.330      n/a         n/a
+
+Pi0.5 inference metrics
+task: put cylinder in moving cup
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=12.380s, inference_calls=25, completed_chunks=25, actions_applied=244, empty_action_steps=0
+latency: avg_request=0.321s, avg_first_action=0.342s, avg_chunk_duration=0.457s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.253    0.254       0.751
+        2  rtc_async         50        10       7      7      0.324    0.345       0.450
+        3  rtc_async         50        10       7      7      0.323    0.346       0.450
+        4  rtc_async         50        10       7      7      0.323    0.346       0.450
+        5  rtc_async         50        10       7      7      0.324    0.346       0.450
+        6  rtc_async         50        10       7      7      0.323    0.345       0.451
+        7  rtc_async         50        10       7      7      0.321    0.345       0.450
+        8  rtc_async         50        10       7      7      0.323    0.346       0.450
+        9  rtc_async         50        10       7      7      0.322    0.346       0.450
+       10  rtc_async         50        10       7      7      0.325    0.347       0.449
+       11  rtc_async         50        10       7      7      0.327    0.346       0.451
+       12  rtc_async         50        10       7      7      0.324    0.346       0.451
+       13  rtc_async         50        10       7      7      0.324    0.346       0.451
+       14  rtc_async         50        10       7      7      0.324    0.346       0.450
+       15  rtc_async         50        10       7      7      0.324    0.346       0.451
+       16  rtc_async         50        10       7      7      0.326    0.346       0.450
+       17  rtc_async         50        10       7      7      0.323    0.345       0.450
+       18  rtc_async         50        10       7      7      0.325    0.345       0.450
+       19  rtc_async         50        10       7      7      0.323    0.346       0.450
+       20  rtc_async         50        10       7      7      0.328    0.346       0.451
+       21  rtc_async         50        10       7      7      0.324    0.345       0.450
+       22  rtc_async         50        10       7      7      0.323    0.345       0.450
+       23  rtc_async         50        10       7      7      0.325    0.345       0.451
+       24  rtc_async         50         7       7      7      0.326    0.344       0.300
+       25  rtc_async       None         0       7   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put cylinder in moving cup
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=11.029s, inference_calls=22, completed_chunks=22, actions_applied=217, empty_action_steps=0
+latency: avg_request=0.320s, avg_first_action=0.341s, avg_chunk_duration=0.465s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.255    0.255       0.751
+        2  rtc_async         50        10       7      7      0.329    0.346       0.450
+        3  rtc_async         50        10       7      7      0.324    0.346       0.450
+        4  rtc_async         50        10       7      7      0.324    0.346       0.451
+        5  rtc_async         50        10       7      7      0.323    0.345       0.451
+        6  rtc_async         50        10       7      7      0.323    0.345       0.450
+        7  rtc_async         50        10       7      7      0.323    0.343       0.450
+        8  rtc_async         50        10       7      7      0.322    0.344       0.451
+        9  rtc_async         50        10       7      7      0.322    0.345       0.451
+       10  rtc_async         50        10       7      7      0.327    0.344       0.453
+       11  rtc_async         50        10       7      7      0.323    0.346       0.451
+       12  rtc_async         50        10       7      7      0.323    0.346       0.451
+       13  rtc_async         50        10       7      7      0.324    0.345       0.451
+       14  rtc_async         50        10       7      7      0.323    0.345       0.450
+       15  rtc_async         50        10       7      7      0.325    0.345       0.450
+       16  rtc_async         50        10       7      7      0.322    0.346       0.451
+       17  rtc_async         50        10       7      7      0.325    0.345       0.451
+       18  rtc_async         50        10       7      7      0.323    0.346       0.451
+       19  rtc_async         50        10       7      7      0.324    0.346       0.451
+       20  rtc_async         50        10       7      7      0.324    0.346       0.451
+       21  rtc_async         50        10       7      7      0.323    0.346       0.451
+       22  rtc_async       None         0       7   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put cylinder in moving cup
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=2.365s, inference_calls=5, completed_chunks=5, actions_applied=43, empty_action_steps=0
+latency: avg_request=0.306s, avg_first_action=0.323s, avg_chunk_duration=0.476s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.254    0.255       0.753
+        2  rtc_async         50        10       7      7      0.325    0.346       0.450
+        3  rtc_async         50        10       7      7      0.323    0.345       0.450
+        4  rtc_async         50         6       7      7      0.323    0.346       0.250
+        5  rtc_async       None         0       7   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put cylinder in moving cup
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=12.001s, inference_calls=24, completed_chunks=24, actions_applied=236, empty_action_steps=0
+latency: avg_request=0.321s, avg_first_action=0.341s, avg_chunk_duration=0.462s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.255    0.256       0.753
+        2  rtc_async         50        10       7      7      0.325    0.347       0.469
+        3  rtc_async         50        10       7      7      0.326    0.344       0.451
+        4  rtc_async         50        10       7      7      0.324    0.346       0.450
+        5  rtc_async         50        10       7      7      0.324    0.345       0.450
+        6  rtc_async         50        10       7      7      0.322    0.346       0.451
+        7  rtc_async         50        10       7      7      0.326    0.345       0.450
+        8  rtc_async         50        10       7      7      0.323    0.344       0.451
+        9  rtc_async         50        10       7      7      0.324    0.345       0.450
+       10  rtc_async         50        10       7      7      0.322    0.345       0.451
+       11  rtc_async         50        10       7      7      0.325    0.344       0.450
+       12  rtc_async         50        10       7      7      0.323    0.343       0.451
+       13  rtc_async         50        10       7      7      0.323    0.344       0.451
+       14  rtc_async         50        10       7      7      0.324    0.344       0.451
+       15  rtc_async         50        10       7      7      0.321    0.345       0.451
+       16  rtc_async         50        10       7      7      0.325    0.345       0.451
+       17  rtc_async         50        10       7      7      0.325    0.345       0.451
+       18  rtc_async         50        10       7      7      0.324    0.346       0.451
+       19  rtc_async         50        10       7      7      0.323    0.346       0.450
+       20  rtc_async         50        10       7      7      0.324    0.345       0.451
+       21  rtc_async         50        10       7      7      0.324    0.346       0.450
+       22  rtc_async         50        10       7      7      0.323    0.346       0.451
+       23  rtc_async         50         9       7      7      0.326    0.345       0.401
+       24  rtc_async       None         0       7   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put cylinder in moving cup
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=10.827s, inference_calls=22, completed_chunks=22, actions_applied=213, empty_action_steps=0
+latency: avg_request=0.320s, avg_first_action=0.341s, avg_chunk_duration=0.455s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.253    0.253       0.751
+        2  rtc_async         50        10       7      7      0.325    0.345       0.451
+        3  rtc_async         50        10       7      7      0.322    0.346       0.451
+        4  rtc_async         50        10       7      7      0.324    0.346       0.451
+        5  rtc_async         50        10       7      7      0.326    0.346       0.451
+        6  rtc_async         50        10       7      7      0.325    0.345       0.450
+        7  rtc_async         50        10       7      7      0.325    0.346       0.451
+        8  rtc_async         50        10       7      7      0.324    0.345       0.451
+        9  rtc_async         50        10       7      7      0.323    0.345       0.450
+       10  rtc_async         50        10       7      7      0.323    0.345       0.450
+       11  rtc_async         50        10       7      7      0.323    0.346       0.450
+       12  rtc_async         50        10       7      7      0.322    0.346       0.451
+       13  rtc_async         50        10       7      7      0.328    0.346       0.450
+       14  rtc_async         50        10       7      7      0.324    0.346       0.451
+       15  rtc_async         50        10       7      7      0.323    0.346       0.450
+       16  rtc_async         50        10       7      7      0.322    0.346       0.450
+       17  rtc_async         50        10       7      7      0.322    0.345       0.450
+       18  rtc_async         50        10       7      7      0.321    0.346       0.450
+       19  rtc_async         50        10       7      7      0.323    0.346       0.450
+       20  rtc_async         50        10       7      7      0.324    0.346       0.451
+       21  rtc_async         50         6       7      7      0.325    0.347       0.250
+       22  rtc_async       None         0       7   None        n/a      n/a         n/a
+
