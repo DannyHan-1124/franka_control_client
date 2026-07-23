@@ -1,21 +1,44 @@
-(pi05_franka) jjiang@irl-220:~/utphd/franka_control_client$ bash scripts/inference.sh
+Starting policy infering...[2026-07-23 11:21:36,150] [INFO] Starting control
+[2026-07-23 11:21:36,150] [INFO] Started Control Pair
+Infering... Press 's' to save, 'd' to discard, or 'q' to quit[2026-07-23 11:21:36,438] [INFO] Set Franka arm control mode to CartesianImpedance
+Policy infering closed.[2026-07-23 11:22:06,186] [INFO] Subscriber FrankaPanda/franka_arm_state has been closed
+[2026-07-23 11:22:06,186] [INFO] Subscriber FrankaPanda/robotiq_gripper_state has been closed
+[2026-07-23 11:22:06,186] [INFO] Subscriber static_cam has been closed
+[2026-07-23 11:22:06,186] [INFO] Subscriber wrist_cam has been closed
+Traceback (most recent call last):
+  File "/home/jjiang/utphd/franka_control_client/src/franka_control_client/policy/policy.py", line 106, in send_observation
+    msg = self._socket.recv_pyobj()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/jjiang/miniconda3/envs/pi05_franka/lib/python3.12/site-packages/zmq/sugar/socket.py", line 989, in recv_pyobj
+    msg = self.recv(flags)
+          ^^^^^^^^^^^^^^^^
+  File "zmq/backend/cython/_zmq.py", line 1218, in zmq.backend.cython._zmq.Socket.recv
+  File "zmq/backend/cython/_zmq.py", line 1253, in zmq.backend.cython._zmq.Socket.recv
+  File "zmq/backend/cython/_zmq.py", line 1413, in zmq.backend.cython._zmq._recv_copy
+  File "zmq/backend/cython/_zmq.py", line 1408, in zmq.backend.cython._zmq._recv_copy
+  File "zmq/backend/cython/_zmq.py", line 186, in zmq.backend.cython._zmq._check_rc
+zmq.error.Again: Resource temporarily unavailable
+
+The above exception was the direct cause of the following exception:
+
 Traceback (most recent call last):
   File "/home/jjiang/utphd/franka_control_client/examples/pi05_policy_inference_franka.py", line 132, in <module>
     main()
-  File "/home/jjiang/utphd/franka_control_client/examples/pi05_policy_inference_franka.py", line 62, in main
-    pyzlc.init(
-  File "/home/jjiang/miniconda3/envs/pi05_franka/lib/python3.12/site-packages/pyzlc/__init__.py", line 75, in init
-    LanComNode.init(node_name, node_ip, group, group_port, group_name, default_group)
-  File "/home/jjiang/miniconda3/envs/pi05_franka/lib/python3.12/site-packages/pyzlc/nodes/lancom_node.py", line 64, in init
-    cls.node_instances[group_name] = LanComNode(
-                                     ^^^^^^^^^^^
-  File "/home/jjiang/miniconda3/envs/pi05_franka/lib/python3.12/site-packages/pyzlc/nodes/lancom_node.py", line 94, in __init__
-    self.service_manager = ServiceManager(
-                           ^^^^^^^^^^^^^^^
-  File "/home/jjiang/miniconda3/envs/pi05_franka/lib/python3.12/site-packages/pyzlc/sockets/service_manager.py", line 24, in __init__
-    self.res_socket.bind(url)
-  File "/home/jjiang/miniconda3/envs/pi05_franka/lib/python3.12/site-packages/zmq/sugar/socket.py", line 320, in bind
-    super().bind(addr)
-  File "zmq/backend/cython/_zmq.py", line 1009, in zmq.backend.cython._zmq.Socket.bind
-  File "zmq/backend/cython/_zmq.py", line 190, in zmq.backend.cython._zmq._check_rc
-zmq.error.ZMQError: Cannot assign requested address (addr='tcp://192.168.0.109:0')
+  File "/home/jjiang/utphd/franka_control_client/examples/pi05_policy_inference_franka.py", line 126, in main
+    inference_manager.run()
+  File "/home/jjiang/utphd/franka_control_client/src/franka_control_client/policy_inference/policy_inference_manager.py", line 158, in run
+    self._infer_step()
+  File "/home/jjiang/utphd/franka_control_client/src/franka_control_client/policy_inference/pi05_policy_inference.py", line 259, in _infer_step
+    self._infer_abpolicy_step()
+  File "/home/jjiang/utphd/franka_control_client/src/franka_control_client/policy_inference/pi05_policy_inference.py", line 323, in _infer_abpolicy_step
+    self._request_initial_abpolicy_chunk()
+  File "/home/jjiang/utphd/franka_control_client/src/franka_control_client/policy_inference/pi05_policy_inference.py", line 354, in _request_initial_abpolicy_chunk
+    self.policy.send_observation(observation)
+  File "/home/jjiang/utphd/franka_control_client/src/franka_control_client/policy/policy.py", line 109, in send_observation
+    raise TimeoutError(
+TimeoutError: Timed out waiting for direct policy endpoint tcp://127.0.0.1:40023
+^CException ignored in: <module 'threading' from '/home/jjiang/miniconda3/envs/pi05_franka/lib/python3.12/threading.py'>
+Traceback (most recent call last):
+  File "/home/jjiang/miniconda3/envs/pi05_franka/lib/python3.12/threading.py", line 1624, in _shutdown
+    lock.acquire()
+KeyboardInterrupt: 
