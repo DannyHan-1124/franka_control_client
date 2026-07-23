@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Build the one SSH tunnel used by direct-ZMQ PI0.5 policy inference.
 #
-# Run on the lab computer after scripts/test.sh is running on the HoreKa GPU node.
+# Run on the lab computer after scripts/start_policy_node.sh is running on the HoreKa GPU node.
 # Usage:
 #   bash scripts/build_tunnel.sh hkn0401
 
