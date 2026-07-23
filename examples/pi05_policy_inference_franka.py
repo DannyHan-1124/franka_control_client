@@ -48,7 +48,6 @@ def _parse_args() -> argparse.Namespace:
         help="Execute asynchronous B-spline control points with continuity-constrained refitting.",
     )
     parser.add_argument("--abpolicy_last_point_weight", type=float, default=0.05)
-    parser.add_argument("--abpolicy_delay_buffer_size", type=int, default=8)
     parser.add_argument("--stop_after_first_release", action="store_true")
     parser.add_argument("--stop_after_release_steps", type=int, default=0)
     parser.add_argument("--metrics_path", default=None)
@@ -103,7 +102,6 @@ def main() -> None:
         chunk_replan_steps=args.chunk_replan_steps,
         abpolicy_enabled=args.abpolicy_enabled,
         abpolicy_last_point_weight=args.abpolicy_last_point_weight,
-        abpolicy_delay_buffer_size=args.abpolicy_delay_buffer_size,
         stop_after_first_release=args.stop_after_first_release,
         stop_after_release_steps=args.stop_after_release_steps,
         metrics_path=args.metrics_path,

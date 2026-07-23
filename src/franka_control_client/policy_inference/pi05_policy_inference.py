@@ -51,7 +51,6 @@ class Pi05PolicyInferenceConfig:
     run_metadata: Optional[Dict[str, Any]] = None
     abpolicy_enabled: bool = False
     abpolicy_last_point_weight: float = 0.05
-    abpolicy_delay_buffer_size: int = 8
 
 
 class Pi05PolicyInference(PolicyInferenceManager):
@@ -127,9 +126,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._abpolicy_metric_id: Optional[int] = None
         self._abpolicy_pending_error: Optional[BaseException] = None
         self._abpolicy_generation = 0
-        self._abpolicy_delay_history: Deque[int] = deque(
-            maxlen=max(1, int(cfg.abpolicy_delay_buffer_size))
-        )
         self._executed_action_history: Deque[np.ndarray] = deque(maxlen=128)
         self._abpolicy_control_points: Optional[np.ndarray] = None
         self._abpolicy_metadata: Optional[Dict[str, Any]] = None
@@ -484,7 +480,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._chunk_step = 0
         self._abpolicy_control_points = refitted
         self._abpolicy_metadata = metadata
-        self._record_abpolicy_delay(observed_delay)
         self._active_chunk_metric_id = metric_id
         if metric_id is not None:
             self._update_chunk_metric(
@@ -542,10 +537,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
             np.asarray(history, dtype=np.float64), reference_quaternion
         )
 
-    def _record_abpolicy_delay(self, delay: int) -> None:
-        with self._abpolicy_lock:
-            self._abpolicy_delay_history.append(max(0, int(delay)))
-
     def _raise_pending_abpolicy_error(self) -> None:
         with self._abpolicy_lock:
             error = self._abpolicy_pending_error
@@ -562,7 +553,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._abpolicy_pending_error = None
             self._abpolicy_next_control_points = None
             self._abpolicy_next_metadata = None
-            self._abpolicy_delay_history.clear()
 
     def _log_action_chunk_debug(self, action_chunk: np.ndarray) -> None:
         gripper = np.asarray(action_chunk[:, 7], dtype=np.float64)
@@ -667,7 +657,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if asynchronous:
             summary.update(
                 {
-                    "abpolicy_delay_buffer_size": int(self.cfg.abpolicy_delay_buffer_size),
                     "avg_observed_delay_steps": _mean([float(delay) for delay in observed_delays]),
                     "max_observed_delay_steps": max(observed_delays) if observed_delays else None,
                     "recommended_delay_steps": recommended_delay,
