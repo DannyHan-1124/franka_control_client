@@ -18,6 +18,9 @@ class PolicyActionMsg(TypedDict, total=True):
     shape: list[int]
     action_raw: NotRequired[list[float]]
     raw_shape: NotRequired[list[int]]
+    action_representation: NotRequired[str]
+    abpolicy: NotRequired[Dict[str, Any] | None]
+    error: NotRequired[str]
 
 
 class PolicyObservationMsg(TypedDict, total=True):
@@ -64,6 +67,9 @@ class RemotePolicy(RemoteDevice):
             shape=msg["shape"],
             action_raw=msg.get("action_raw"),
             raw_shape=msg.get("raw_shape"),
+            action_representation=msg.get("action_representation"),
+            abpolicy=msg.get("abpolicy"),
+            error=msg.get("error"),
         )
     #if put this in policy node, directly get observations,policy part need few of subscriber, if put here just need one subscriber，maybe save time fore policy_node
     def send_observation(self, obs: PolicyObservationMsg) -> None:
@@ -116,6 +122,9 @@ class DirectZmqPolicy(RemoteDevice):
             shape=msg["shape"],
             action_raw=msg.get("action_raw"),
             raw_shape=msg.get("raw_shape"),
+            action_representation=msg.get("action_representation"),
+            abpolicy=msg.get("abpolicy"),
+            error=msg.get("error"),
         )
 
     def _reset_socket(self) -> None:
