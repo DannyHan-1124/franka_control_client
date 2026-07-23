@@ -491,8 +491,14 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._log_action_chunk_debug(self._action_chunk)
 
     def _parse_abpolicy_message(self, action_msg: Dict[str, Any]) -> tuple[np.ndarray, Dict[str, Any]]:
-        if action_msg.get("action_representation") != "bspline_control_points":
-            raise ValueError("Policy node did not return ABPolicy B-spline control points.")
+        if action_msg.get("error"):
+            raise RuntimeError(f"Policy node failed while producing ABPolicy actions: {action_msg['error']}")
+        representation = action_msg.get("action_representation")
+        if representation != "bspline_control_points":
+            raise ValueError(
+                "Policy node did not return ABPolicy B-spline control points: "
+                f"action_representation={representation!r}, response_keys={sorted(action_msg)}"
+            )
         metadata_raw = action_msg.get("abpolicy")
         if not isinstance(metadata_raw, dict):
             raise ValueError("ABPolicy response is missing spline metadata.")

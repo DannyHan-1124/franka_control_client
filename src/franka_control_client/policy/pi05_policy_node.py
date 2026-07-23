@@ -71,6 +71,15 @@ class Pi05PolicyNode:
         self.train_cfg = self._load_train_cfg()
         self._validate_dataset_metadata()
         self.policy, self.preprocessor, self.postprocessor = self._load_policy_stack()
+        print(
+            "Loaded policy configuration: "
+            f"abpolicy_enabled={getattr(self.policy.config, 'abpolicy_enabled', None)}, "
+            f"chunk_size={getattr(self.policy.config, 'chunk_size', None)}, "
+            f"num_control_points={getattr(self.policy.config, 'abpolicy_num_control_points', None)}, "
+            f"action_representation="
+            f"{getattr(self.policy.config, 'abpolicy_action_representation', None)}",
+            flush=True,
+        )
         self._expected_image_shapes = self._get_expected_image_shapes()
         self._expected_state_dim = self._get_expected_state_dim()
 
