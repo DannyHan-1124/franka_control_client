@@ -15,9 +15,10 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --pyzlc_host 141.3.53.25 \
     --pyzlc_group_name robot_lab_robotiq_202 \
     --pyzlc_group_port 7725 \
-    --abpolicy_enabled \
     --policy_transport zmq \
     --policy_zmq_endpoint tcp://127.0.0.1:17725 \
-    --metrics_path "${REPO_ROOT}/logs/abpolicy_inference_metrics.jsonl" \
     --static_camera static_cam \
     --wrist_camera wrist_cam
+
+#   --abpolicy_enabled \
+#   --metrics_path "${REPO_ROOT}/logs/abpolicy_inference_metrics_new.jsonl" \
