@@ -5,6 +5,9 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WORKSPACE_ROOT="$(cd "${REPO_ROOT}/.." && pwd)"
 export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot/src:${PYTHONPATH:-}"
 
+# kill old connection
+# pgrep -af 'ssh.*(-L)'
+
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --task "put red cylinder on red cube" \
     --stop_after_first_release \
