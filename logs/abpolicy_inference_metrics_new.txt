@@ -413,14 +413,3 @@ chunks:
         2  sync              50        50      0.254    0.254       2.404
         3  sync              50        19      0.253    0.254       0.851
 
-Pi0.5 inference metrics
-task: put red cylinder on red cube
-config: abpolicy_enabled=False
-summary: total_time=5.690s, inference_calls=3, completed_chunks=3, actions_applied=101, empty_action_steps=0
-latency: avg_request=0.255s, avg_first_action=0.255s, avg_chunk_duration=1.603s
-chunks:
-  request  kind         actions  executed  request_s  first_s  duration_s
-        1  sync              50        50      0.255    0.255       2.405
-        2  sync              50        50      0.255    0.255       2.404
-        3  sync              50         1      0.254    0.254       0.000
-
