@@ -10,6 +10,7 @@ export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot/src"
 
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --task "put cylinder in moving cup" \
+    --stop_after_first_release \
     --fps 20 \
     --robot_name FrankaPanda \
     --pyzlc_name policy_inference \
@@ -18,12 +19,12 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --pyzlc_group_port 7725 \
     --policy_transport streaming_zmq \
     --policy_zmq_endpoint tcp://127.0.0.1:17726 \
-    --execution_horizon 25 \
-    --faster_infer_time_schedule HAS \
+    --execution_horizon 50 \
+    --faster_infer_time_schedule const \
     --faster_alpha 0.6 \
     --faster_u0 0.9 \
-    --delay 4 \
-    --early_stop_actions 25 \
+    --delay 0 \
+    --early_stop_actions 0 \
     --phase_fallback_schedule none \
     --phase_fallback_trigger before_gripper_open \
     --static_camera static_cam \
