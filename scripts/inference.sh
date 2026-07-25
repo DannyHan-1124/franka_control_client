@@ -16,6 +16,6 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --pyzlc_group_name robot_lab_robotiq_202 \
     --pyzlc_group_port 7725 \
     --policy_zmq_endpoint tcp://127.0.0.1:17726 \
-    --metrics_path "${REPO_ROOT}/logs/pi05_inference_metrics_dynamicvla_official.jsonl" \
+    --metrics_path "${REPO_ROOT}/logs/pi05_inference_metrics_dynamic.jsonl" \
     --static_camera static_cam \
     --wrist_camera wrist_cam
