@@ -28,6 +28,7 @@ from ..policy.policy import DirectZmqPolicy, RemotePolicy
 IMAGE_SIZE = (224, 224)
 STATE_DIM = 8
 ACTION_DIM = 8
+RESET_GRIPPER_OPEN_SECONDS = 2.0
 
 
 @dataclass
@@ -790,10 +791,19 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _reset_arm(self) -> None:
         self._ui_console.log("Resetting robot arm position...")
         try:
+            # go_home() leaves the Robotiq gripper open so the scene can be
+            # loaded before starting the next episode.
             self.control_pair.go_home()
-            time.sleep(3.0)
             self.control_pair.reset_action()
-            self._ui_console.log("Robot arm reset to home position.")
+            self._ui_console.log(
+                "Gripper is open; insert the cylinder. Closing in "
+                f"{RESET_GRIPPER_OPEN_SECONDS:g} seconds..."
+            )
+            time.sleep(RESET_GRIPPER_OPEN_SECONDS)
+            self.control_pair.gripper.close()
+            self._ui_console.log(
+                "Robot arm reset to home position and gripper closed."
+            )
         except Exception as exc:
             self._ui_console.log(f"Failed to reset arm: {exc}")
 
