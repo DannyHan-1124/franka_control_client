@@ -20,6 +20,7 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --pyzlc_group_port 7725 \
     --policy_transport zmq \
     --policy_zmq_endpoint tcp://127.0.0.1:17725 \
+    --metrics_path "${REPO_ROOT}/logs/abpolicy_inference_metrics_static.jsonl" \
     --static_camera static_cam \
     --wrist_camera wrist_cam
 

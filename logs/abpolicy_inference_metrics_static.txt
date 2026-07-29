@@ -1207,3 +1207,1107 @@ chunks:
         2  sync              50        50      0.255    0.256       2.403
         3  sync              50        16      0.255    0.255       0.701
 
+-----------------------------------OOD--------------------------------------------
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.873s, inference_calls=21, completed_chunks=21, actions_applied=134, empty_action_steps=0
+latency: avg_request=0.248s, avg_first_action=0.280s, avg_chunk_duration=0.282s, recommended_delay=6
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         6    None   None      0.253    0.257       0.200
+        2  abpolicy_async       32         7    None      6      0.247    0.251       0.300
+        3  abpolicy_async       32         7    None      6      0.249    0.296       0.300
+        4  abpolicy_async       32         7    None      6      0.247    0.297       0.300
+        5  abpolicy_async       32         7    None      6      0.257    0.296       0.300
+        6  abpolicy_async       32         7    None      6      0.247    0.296       0.300
+        7  abpolicy_async       32         7    None      6      0.247    0.296       0.300
+        8  abpolicy_async       32         6    None      6      0.247    0.296       0.250
+        9  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       10  abpolicy_async       32         7    None      6      0.251    0.296       0.300
+       11  abpolicy_async       32         7    None      6      0.251    0.296       0.300
+       12  abpolicy_async       32         7    None      6      0.249    0.296       0.300
+       13  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+       14  abpolicy_async       32         6    None      5      0.246    0.246       0.250
+       15  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+       16  abpolicy_async       32         7    None      6      0.246    0.296       0.300
+       17  abpolicy_async       32         6    None      6      0.250    0.295       0.250
+       18  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       19  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       20  abpolicy_async       32         7    None      6      0.252    0.297       0.300
+       21  abpolicy_async       32         0    None   None      0.245      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.669s, inference_calls=22, completed_chunks=22, actions_applied=130, empty_action_steps=0
+latency: avg_request=0.246s, avg_first_action=0.263s, avg_chunk_duration=0.257s, recommended_delay=6
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         6    None   None      0.250    0.255       0.200
+        2  abpolicy_async       32         6    None      6      0.248    0.251       0.250
+        3  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+        4  abpolicy_async       32         6    None      6      0.247    0.295       0.250
+        5  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+        6  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+        7  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+        8  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+        9  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       10  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       11  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       12  abpolicy_async       32         6    None      6      0.248    0.296       0.250
+       13  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       14  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       15  abpolicy_async       32         6    None      6      0.248    0.296       0.250
+       16  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+       17  abpolicy_async       32         7    None      6      0.250    0.296       0.300
+       18  abpolicy_async       32         7    None      6      0.248    0.296       0.300
+       19  abpolicy_async       32         6    None      6      0.251    0.295       0.250
+       20  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       21  abpolicy_async       32         3    None      5      0.245    0.246       0.100
+       22  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.919s, inference_calls=23, completed_chunks=23, actions_applied=135, empty_action_steps=0
+latency: avg_request=0.246s, avg_first_action=0.256s, avg_chunk_duration=0.254s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         7    None   None      0.249    0.254       0.250
+        2  abpolicy_async       32         6    None      7      0.252    0.301       0.250
+        3  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+        4  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+        5  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+        6  abpolicy_async       32         6    None      5      0.246    0.247       0.250
+        7  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+        8  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+        9  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       10  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       11  abpolicy_async       32         7    None      5      0.243    0.246       0.300
+       12  abpolicy_async       32         6    None      6      0.250    0.296       0.250
+       13  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+       14  abpolicy_async       32         6    None      6      0.250    0.297       0.250
+       15  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       16  abpolicy_async       32         6    None      6      0.247    0.297       0.250
+       17  abpolicy_async       32         6    None      5      0.245    0.247       0.250
+       18  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       19  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       20  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       21  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       22  abpolicy_async       32         5    None      5      0.243    0.246       0.200
+       23  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.974s, inference_calls=23, completed_chunks=23, actions_applied=136, empty_action_steps=0
+latency: avg_request=0.246s, avg_first_action=0.265s, avg_chunk_duration=0.257s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         7    None   None      0.248    0.253       0.250
+        2  abpolicy_async       32         7    None      7      0.257    0.301       0.300
+        3  abpolicy_async       32         7    None      6      0.246    0.296       0.300
+        4  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+        5  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+        6  abpolicy_async       32         6    None      5      0.244    0.245       0.250
+        7  abpolicy_async       32         7    None      5      0.243    0.246       0.300
+        8  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+        9  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       10  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       11  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       12  abpolicy_async       32         6    None      5      0.246    0.246       0.250
+       13  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       14  abpolicy_async       32         6    None      6      0.245    0.296       0.250
+       15  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       16  abpolicy_async       32         6    None      5      0.244    0.245       0.250
+       17  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       18  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+       19  abpolicy_async       32         7    None      6      0.248    0.296       0.300
+       20  abpolicy_async       32         7    None      6      0.255    0.296       0.300
+       21  abpolicy_async       32         6    None      6      0.247    0.296       0.250
+       22  abpolicy_async       32         2    None      5      0.245    0.246       0.055
+       23  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=7.324s, inference_calls=24, completed_chunks=24, actions_applied=143, empty_action_steps=0
+latency: avg_request=0.245s, avg_first_action=0.266s, avg_chunk_duration=0.259s, recommended_delay=6
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         6    None   None      0.248    0.253       0.200
+        2  abpolicy_async       32         7    None      6      0.242    0.251       0.300
+        3  abpolicy_async       32         6    None      6      0.248    0.296       0.250
+        4  abpolicy_async       32         6    None      5      0.244    0.247       0.250
+        5  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+        6  abpolicy_async       32         7    None      5      0.244    0.247       0.300
+        7  abpolicy_async       32         6    None      6      0.250    0.297       0.250
+        8  abpolicy_async       32         7    None      5      0.243    0.246       0.300
+        9  abpolicy_async       32         6    None      6      0.250    0.295       0.250
+       10  abpolicy_async       32         7    None      5      0.243    0.246       0.300
+       11  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+       12  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       13  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+       14  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       15  abpolicy_async       32         7    None      5      0.245    0.247       0.300
+       16  abpolicy_async       32         7    None      6      0.246    0.296       0.300
+       17  abpolicy_async       32         7    None      6      0.246    0.296       0.300
+       18  abpolicy_async       32         6    None      6      0.247    0.297       0.250
+       19  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       20  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+       21  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       22  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+       23  abpolicy_async       32         2    None      5      0.243    0.246       0.054
+       24  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=7.622s, inference_calls=24, completed_chunks=24, actions_applied=149, empty_action_steps=0
+latency: avg_request=0.247s, avg_first_action=0.273s, avg_chunk_duration=0.272s, recommended_delay=6
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         6    None   None      0.250    0.255       0.200
+        2  abpolicy_async       32         7    None      6      0.250    0.251       0.300
+        3  abpolicy_async       32         6    None      6      0.247    0.296       0.250
+        4  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+        5  abpolicy_async       32         7    None      6      0.246    0.297       0.300
+        6  abpolicy_async       32         6    None      6      0.249    0.296       0.250
+        7  abpolicy_async       32         7    None      5      0.245    0.247       0.300
+        8  abpolicy_async       32         7    None      6      0.247    0.296       0.300
+        9  abpolicy_async       32         6    None      6      0.247    0.297       0.250
+       10  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       11  abpolicy_async       32         6    None      6      0.249    0.296       0.250
+       12  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       13  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+       14  abpolicy_async       32         6    None      6      0.247    0.297       0.250
+       15  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+       16  abpolicy_async       32         6    None      6      0.248    0.297       0.250
+       17  abpolicy_async       32         7    None      5      0.245    0.247       0.300
+       18  abpolicy_async       32         7    None      6      0.247    0.296       0.300
+       19  abpolicy_async       32         6    None      6      0.248    0.296       0.250
+       20  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       21  abpolicy_async       32         7    None      6      0.246    0.297       0.300
+       22  abpolicy_async       32         6    None      6      0.246    0.297       0.250
+       23  abpolicy_async       32         5    None      5      0.245    0.247       0.200
+       24  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.768s, inference_calls=22, completed_chunks=22, actions_applied=132, empty_action_steps=0
+latency: avg_request=0.246s, avg_first_action=0.266s, avg_chunk_duration=0.262s, recommended_delay=6
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         6    None   None      0.249    0.253       0.200
+        2  abpolicy_async       32         6    None      6      0.244    0.251       0.250
+        3  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+        4  abpolicy_async       32         7    None      6      0.245    0.295       0.300
+        5  abpolicy_async       32         6    None      6      0.246    0.297       0.250
+        6  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+        7  abpolicy_async       32         6    None      6      0.251    0.296       0.250
+        8  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+        9  abpolicy_async       32         6    None      6      0.247    0.296       0.250
+       10  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+       11  abpolicy_async       32         6    None      5      0.244    0.247       0.250
+       12  abpolicy_async       32         7    None      5      0.243    0.246       0.300
+       13  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+       14  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       15  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       16  abpolicy_async       32         7    None      5      0.243    0.246       0.300
+       17  abpolicy_async       32         6    None      6      0.249    0.296       0.250
+       18  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       19  abpolicy_async       32         6    None      6      0.247    0.296       0.250
+       20  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       21  abpolicy_async       32         4    None      6      0.260    0.295       0.150
+       22  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.926s, inference_calls=23, completed_chunks=23, actions_applied=135, empty_action_steps=0
+latency: avg_request=0.245s, avg_first_action=0.263s, avg_chunk_duration=0.255s, recommended_delay=6
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         6    None   None      0.250    0.255       0.200
+        2  abpolicy_async       32         6    None      6      0.245    0.251       0.250
+        3  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+        4  abpolicy_async       32         7    None      6      0.249    0.296       0.300
+        5  abpolicy_async       32         6    None      6      0.245    0.296       0.250
+        6  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+        7  abpolicy_async       32         6    None      6      0.244    0.295       0.250
+        8  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+        9  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       10  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       11  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       12  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       13  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+       14  abpolicy_async       32         6    None      5      0.242    0.246       0.250
+       15  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+       16  abpolicy_async       32         7    None      6      0.247    0.296       0.300
+       17  abpolicy_async       32         7    None      6      0.249    0.296       0.300
+       18  abpolicy_async       32         6    None      6      0.245    0.296       0.250
+       19  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       20  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+       21  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+       22  abpolicy_async       32         2    None      5      0.244    0.246       0.055
+       23  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.970s, inference_calls=23, completed_chunks=23, actions_applied=136, empty_action_steps=0
+latency: avg_request=0.245s, avg_first_action=0.256s, avg_chunk_duration=0.257s, recommended_delay=6
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         6    None   None      0.249    0.254       0.200
+        2  abpolicy_async       32         6    None      6      0.244    0.251       0.250
+        3  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+        4  abpolicy_async       32         7    None      6      0.247    0.297       0.300
+        5  abpolicy_async       32         6    None      6      0.247    0.297       0.250
+        6  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+        7  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+        8  abpolicy_async       32         6    None      6      0.248    0.296       0.250
+        9  abpolicy_async       32         6    None      5      0.245    0.247       0.250
+       10  abpolicy_async       32         6    None      5      0.243    0.247       0.250
+       11  abpolicy_async       32         6    None      5      0.245    0.247       0.250
+       12  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+       13  abpolicy_async       32         7    None      5      0.243    0.245       0.300
+       14  abpolicy_async       32         6    None      6      0.246    0.295       0.250
+       15  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+       16  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       17  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+       18  abpolicy_async       32         6    None      5      0.246    0.246       0.250
+       19  abpolicy_async       32         6    None      5      0.246    0.247       0.250
+       20  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       21  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       22  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       23  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.920s, inference_calls=23, completed_chunks=23, actions_applied=135, empty_action_steps=0
+latency: avg_request=0.245s, avg_first_action=0.258s, avg_chunk_duration=0.254s, recommended_delay=6
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         6    None   None      0.250    0.255       0.200
+        2  abpolicy_async       32         6    None      6      0.243    0.251       0.250
+        3  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+        4  abpolicy_async       32         6    None      5      0.244    0.245       0.250
+        5  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+        6  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+        7  abpolicy_async       32         6    None      5      0.242    0.246       0.250
+        8  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+        9  abpolicy_async       32         6    None      5      0.246    0.247       0.250
+       10  abpolicy_async       32         6    None      5      0.242    0.247       0.250
+       11  abpolicy_async       32         6    None      5      0.246    0.247       0.250
+       12  abpolicy_async       32         6    None      5      0.243    0.247       0.250
+       13  abpolicy_async       32         6    None      5      0.242    0.246       0.250
+       14  abpolicy_async       32         6    None      5      0.245    0.247       0.250
+       15  abpolicy_async       32         6    None      5      0.245    0.247       0.250
+       16  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       17  abpolicy_async       32         7    None      5      0.244    0.247       0.300
+       18  abpolicy_async       32         7    None      6      0.249    0.297       0.300
+       19  abpolicy_async       32         7    None      6      0.247    0.296       0.300
+       20  abpolicy_async       32         7    None      6      0.247    0.297       0.300
+       21  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+       22  abpolicy_async       32         4    None      5      0.244    0.246       0.150
+       23  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+-----------------------------------edge--------------------------------------------
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.571s, inference_calls=22, completed_chunks=22, actions_applied=128, empty_action_steps=0
+latency: avg_request=0.245s, avg_first_action=0.254s, avg_chunk_duration=0.252s, recommended_delay=6
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         6    None   None      0.250    0.255       0.201
+        2  abpolicy_async       32         7    None      6      0.244    0.252       0.300
+        3  abpolicy_async       32         6    None      6      0.250    0.297       0.250
+        4  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+        5  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+        6  abpolicy_async       32         6    None      5      0.245    0.245       0.250
+        7  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+        8  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+        9  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       10  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       11  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       12  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       13  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+       14  abpolicy_async       32         6    None      5      0.246    0.247       0.250
+       15  abpolicy_async       32         6    None      5      0.242    0.246       0.250
+       16  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       17  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+       18  abpolicy_async       32         7    None      5      0.243    0.246       0.300
+       19  abpolicy_async       32         6    None      6      0.248    0.297       0.250
+       20  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+       21  abpolicy_async       32         5    None      5      0.245    0.246       0.200
+       22  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.920s, inference_calls=22, completed_chunks=22, actions_applied=135, empty_action_steps=0
+latency: avg_request=0.246s, avg_first_action=0.268s, avg_chunk_duration=0.269s, recommended_delay=6
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         6    None   None      0.249    0.254       0.200
+        2  abpolicy_async       32         6    None      6      0.244    0.251       0.250
+        3  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+        4  abpolicy_async       32         6    None      6      0.251    0.296       0.250
+        5  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+        6  abpolicy_async       32         6    None      6      0.245    0.295       0.250
+        7  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+        8  abpolicy_async       32         6    None      5      0.246    0.246       0.250
+        9  abpolicy_async       32         7    None      5      0.245    0.247       0.300
+       10  abpolicy_async       32         6    None      6      0.246    0.297       0.250
+       11  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       12  abpolicy_async       32         7    None      6      0.246    0.296       0.300
+       13  abpolicy_async       32         6    None      6      0.249    0.296       0.250
+       14  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       15  abpolicy_async       32         7    None      6      0.245    0.296       0.300
+       16  abpolicy_async       32         7    None      6      0.245    0.295       0.300
+       17  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+       18  abpolicy_async       32         6    None      5      0.245    0.247       0.250
+       19  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       20  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+       21  abpolicy_async       32         6    None      6      0.249    0.297       0.250
+       22  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.721s, inference_calls=22, completed_chunks=22, actions_applied=131, empty_action_steps=0
+latency: avg_request=0.245s, avg_first_action=0.256s, avg_chunk_duration=0.259s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         7    None   None      0.249    0.255       0.250
+        2  abpolicy_async       32         7    None      7      0.253    0.301       0.300
+        3  abpolicy_async       32         6    None      6      0.247    0.296       0.250
+        4  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+        5  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+        6  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+        7  abpolicy_async       32         6    None      6      0.244    0.295       0.250
+        8  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+        9  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       10  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       11  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       12  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+       13  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+       14  abpolicy_async       32         7    None      5      0.243    0.246       0.300
+       15  abpolicy_async       32         6    None      6      0.247    0.296       0.250
+       16  abpolicy_async       32         6    None      5      0.244    0.247       0.250
+       17  abpolicy_async       32         6    None      5      0.243    0.245       0.250
+       18  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       19  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       20  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       21  abpolicy_async       32         7    None      5      0.244    0.247       0.300
+       22  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube (fail, missed the cylinder)
+config: abpolicy_enabled=True
+summary: total_time=5.065s, inference_calls=16, completed_chunks=16, actions_applied=98, empty_action_steps=0
+latency: avg_request=0.247s, avg_first_action=0.269s, avg_chunk_duration=0.253s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         7    None   None      0.248    0.253       0.250
+        2  abpolicy_async       32         7    None      7      0.251    0.301       0.300
+        3  abpolicy_async       32         6    None      6      0.245    0.295       0.250
+        4  abpolicy_async       32         7    None      5      0.243    0.246       0.300
+        5  abpolicy_async       32         6    None      6      0.247    0.296       0.250
+        6  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+        7  abpolicy_async       32         7    None      5      0.242    0.246       0.300
+        8  abpolicy_async       32         6    None      6      0.246    0.297       0.250
+        9  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       10  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       11  abpolicy_async       32         7    None      5      0.243    0.246       0.300
+       12  abpolicy_async       32         6    None      6      0.266    0.296       0.250
+       13  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       14  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       15  abpolicy_async       32         7    None      6      0.246    0.296       0.300
+       16  abpolicy_async       32         1    None      6      0.246    0.296       0.000
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.922s, inference_calls=22, completed_chunks=22, actions_applied=135, empty_action_steps=0
+latency: avg_request=0.246s, avg_first_action=0.265s, avg_chunk_duration=0.254s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         7    None   None      0.251    0.256       0.250
+        2  abpolicy_async       32         7    None      7      0.256    0.301       0.300
+        3  abpolicy_async       32         6    None      6      0.247    0.296       0.250
+        4  abpolicy_async       32         7    None      5      0.243    0.246       0.300
+        5  abpolicy_async       32         7    None      6      0.246    0.296       0.300
+        6  abpolicy_async       32         6    None      6      0.247    0.296       0.250
+        7  abpolicy_async       32         6    None      5      0.243    0.245       0.250
+        8  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+        9  abpolicy_async       32         7    None      6      0.246    0.296       0.300
+       10  abpolicy_async       32         7    None      6      0.248    0.296       0.300
+       11  abpolicy_async       32         6    None      6      0.246    0.295       0.250
+       12  abpolicy_async       32         6    None      5      0.243    0.247       0.250
+       13  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       14  abpolicy_async       32         6    None      5      0.244    0.247       0.250
+       15  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       16  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       17  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       18  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       19  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+       20  abpolicy_async       32         6    None      5      0.244    0.247       0.250
+       21  abpolicy_async       32         6    None      5      0.244    0.247       0.250
+       22  abpolicy_async       32         1    None      5      0.246    0.247       0.000
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.623s, inference_calls=22, completed_chunks=22, actions_applied=129, empty_action_steps=0
+latency: avg_request=0.245s, avg_first_action=0.259s, avg_chunk_duration=0.255s, recommended_delay=6
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         6    None   None      0.253    0.258       0.200
+        2  abpolicy_async       32         6    None      6      0.244    0.251       0.250
+        3  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+        4  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+        5  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+        6  abpolicy_async       32         7    None      6      0.248    0.296       0.300
+        7  abpolicy_async       32         7    None      6      0.245    0.295       0.300
+        8  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+        9  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       10  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       11  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+       12  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       13  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       14  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+       15  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       16  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       17  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       18  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       19  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       20  abpolicy_async       32         7    None      6      0.245    0.295       0.300
+       21  abpolicy_async       32         4    None      6      0.251    0.296       0.150
+       22  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=7.121s, inference_calls=22, completed_chunks=22, actions_applied=139, empty_action_steps=0
+latency: avg_request=0.247s, avg_first_action=0.283s, avg_chunk_duration=0.278s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         7    None   None      0.250    0.255       0.250
+        2  abpolicy_async       32         7    None      7      0.251    0.301       0.300
+        3  abpolicy_async       32         6    None      6      0.245    0.295       0.250
+        4  abpolicy_async       32         7    None      5      0.246    0.247       0.300
+        5  abpolicy_async       32         7    None      6      0.248    0.296       0.300
+        6  abpolicy_async       32         7    None      6      0.248    0.296       0.300
+        7  abpolicy_async       32         7    None      6      0.248    0.296       0.300
+        8  abpolicy_async       32         6    None      6      0.248    0.296       0.250
+        9  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       10  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+       11  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       12  abpolicy_async       32         7    None      6      0.247    0.296       0.300
+       13  abpolicy_async       32         6    None      6      0.248    0.297       0.250
+       14  abpolicy_async       32         7    None      5      0.243    0.246       0.300
+       15  abpolicy_async       32         7    None      6      0.248    0.296       0.300
+       16  abpolicy_async       32         7    None      6      0.249    0.297       0.300
+       17  abpolicy_async       32         6    None      6      0.252    0.297       0.250
+       18  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       19  abpolicy_async       32         7    None      6      0.246    0.296       0.300
+       20  abpolicy_async       32         7    None      6      0.246    0.296       0.300
+       21  abpolicy_async       32         4    None      6      0.246    0.297       0.150
+       22  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.721s, inference_calls=22, completed_chunks=22, actions_applied=131, empty_action_steps=0
+latency: avg_request=0.246s, avg_first_action=0.259s, avg_chunk_duration=0.259s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         7    None   None      0.251    0.256       0.250
+        2  abpolicy_async       32         7    None      7      0.255    0.302       0.300
+        3  abpolicy_async       32         6    None      6      0.248    0.296       0.250
+        4  abpolicy_async       32         6    None      5      0.243    0.247       0.250
+        5  abpolicy_async       32         6    None      5      0.245    0.247       0.250
+        6  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+        7  abpolicy_async       32         6    None      6      0.247    0.296       0.250
+        8  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+        9  abpolicy_async       32         6    None      5      0.244    0.247       0.250
+       10  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       11  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       12  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+       13  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+       14  abpolicy_async       32         6    None      5      0.244    0.245       0.250
+       15  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+       16  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+       17  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       18  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       19  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       20  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       21  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       22  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.620s, inference_calls=22, completed_chunks=22, actions_applied=129, empty_action_steps=0
+latency: avg_request=0.245s, avg_first_action=0.261s, avg_chunk_duration=0.255s, recommended_delay=6
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         6    None   None      0.250    0.256       0.200
+        2  abpolicy_async       32         6    None      6      0.244    0.251       0.250
+        3  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+        4  abpolicy_async       32         6    None      5      0.244    0.247       0.250
+        5  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+        6  abpolicy_async       32         7    None      6      0.246    0.296       0.300
+        7  abpolicy_async       32         6    None      6      0.247    0.297       0.250
+        8  abpolicy_async       32         6    None      5      0.245    0.247       0.250
+        9  abpolicy_async       32         6    None      5      0.243    0.247       0.250
+       10  abpolicy_async       32         6    None      5      0.245    0.247       0.250
+       11  abpolicy_async       32         7    None      5      0.243    0.247       0.300
+       12  abpolicy_async       32         6    None      6      0.247    0.297       0.250
+       13  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       14  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       15  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       16  abpolicy_async       32         7    None      6      0.246    0.296       0.300
+       17  abpolicy_async       32         6    None      6      0.246    0.297       0.250
+       18  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       19  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       20  abpolicy_async       32         6    None      6      0.251    0.297       0.250
+       21  abpolicy_async       32         3    None      5      0.244    0.246       0.100
+       22  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.670s, inference_calls=22, completed_chunks=22, actions_applied=130, empty_action_steps=0
+latency: avg_request=0.245s, avg_first_action=0.256s, avg_chunk_duration=0.257s, recommended_delay=6
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         6    None   None      0.250    0.254       0.200
+        2  abpolicy_async       32         6    None      6      0.246    0.251       0.250
+        3  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+        4  abpolicy_async       32         6    None      6      0.255    0.297       0.250
+        5  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+        6  abpolicy_async       32         7    None      5      0.245    0.247       0.300
+        7  abpolicy_async       32         6    None      6      0.247    0.296       0.250
+        8  abpolicy_async       32         7    None      5      0.243    0.247       0.300
+        9  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+       10  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+       11  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       12  abpolicy_async       32         7    None      5      0.243    0.246       0.300
+       13  abpolicy_async       32         6    None      6      0.247    0.296       0.250
+       14  abpolicy_async       32         6    None      5      0.246    0.246       0.250
+       15  abpolicy_async       32         6    None      5      0.242    0.246       0.250
+       16  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       17  abpolicy_async       32         6    None      5      0.242    0.246       0.250
+       18  abpolicy_async       32         6    None      5      0.244    0.247       0.250
+       19  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+       20  abpolicy_async       32         6    None      5      0.242    0.246       0.250
+       21  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       22  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+-----------------------------------center--------------------------------------------
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=5.921s, inference_calls=20, completed_chunks=20, actions_applied=115, empty_action_steps=0
+latency: avg_request=0.246s, avg_first_action=0.258s, avg_chunk_duration=0.250s, recommended_delay=6
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         6    None   None      0.252    0.257       0.200
+        2  abpolicy_async       32         6    None      6      0.248    0.251       0.250
+        3  abpolicy_async       32         6    None      5      0.244    0.247       0.250
+        4  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+        5  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+        6  abpolicy_async       32         6    None      5      0.245    0.247       0.250
+        7  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+        8  abpolicy_async       32         6    None      5      0.245    0.247       0.250
+        9  abpolicy_async       32         6    None      5      0.245    0.247       0.250
+       10  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       11  abpolicy_async       32         7    None      6      0.246    0.297       0.300
+       12  abpolicy_async       32         6    None      6      0.250    0.297       0.250
+       13  abpolicy_async       32         7    None      5      0.242    0.246       0.300
+       14  abpolicy_async       32         6    None      6      0.247    0.296       0.250
+       15  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+       16  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+       17  abpolicy_async       32         6    None      5      0.244    0.247       0.250
+       18  abpolicy_async       32         6    None      5      0.244    0.247       0.250
+       19  abpolicy_async       32         3    None      5      0.244    0.247       0.099
+       20  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube (fail, missed final placement)
+config: abpolicy_enabled=True
+summary: total_time=6.022s, inference_calls=19, completed_chunks=19, actions_applied=117, empty_action_steps=0
+latency: avg_request=0.247s, avg_first_action=0.268s, avg_chunk_duration=0.255s, recommended_delay=6
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         6    None   None      0.251    0.256       0.200
+        2  abpolicy_async       32         7    None      6      0.246    0.252       0.300
+        3  abpolicy_async       32         6    None      6      0.247    0.296       0.250
+        4  abpolicy_async       32         6    None      5      0.244    0.247       0.250
+        5  abpolicy_async       32         6    None      5      0.246    0.247       0.250
+        6  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+        7  abpolicy_async       32         6    None      6      0.247    0.297       0.250
+        8  abpolicy_async       32         6    None      5      0.242    0.246       0.250
+        9  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+       10  abpolicy_async       32         7    None      6      0.248    0.297       0.300
+       11  abpolicy_async       32         7    None      6      0.246    0.297       0.300
+       12  abpolicy_async       32         6    None      6      0.259    0.297       0.250
+       13  abpolicy_async       32         6    None      5      0.245    0.247       0.250
+       14  abpolicy_async       32         6    None      5      0.246    0.247       0.250
+       15  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       16  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       17  abpolicy_async       32         7    None      6      0.247    0.296       0.300
+       18  abpolicy_async       32         7    None      6      0.247    0.297       0.300
+       19  abpolicy_async       32         1    None      6      0.248    0.296       0.000
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.421s, inference_calls=21, completed_chunks=21, actions_applied=125, empty_action_steps=0
+latency: avg_request=0.247s, avg_first_action=0.267s, avg_chunk_duration=0.260s, recommended_delay=6
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         6    None   None      0.251    0.256       0.200
+        2  abpolicy_async       32         6    None      6      0.247    0.251       0.250
+        3  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+        4  abpolicy_async       32         6    None      5      0.245    0.247       0.249
+        5  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+        6  abpolicy_async       32         7    None      6      0.252    0.296       0.300
+        7  abpolicy_async       32         7    None      6      0.247    0.296       0.300
+        8  abpolicy_async       32         7    None      6      0.250    0.296       0.300
+        9  abpolicy_async       32         7    None      6      0.246    0.297       0.300
+       10  abpolicy_async       32         7    None      6      0.248    0.296       0.300
+       11  abpolicy_async       32         7    None      6      0.255    0.296       0.300
+       12  abpolicy_async       32         6    None      6      0.248    0.297       0.250
+       13  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       14  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       15  abpolicy_async       32         6    None      6      0.249    0.296       0.250
+       16  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       17  abpolicy_async       32         6    None      5      0.244    0.247       0.250
+       18  abpolicy_async       32         6    None      5      0.244    0.247       0.250
+       19  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       20  abpolicy_async       32         3    None      5      0.246    0.247       0.100
+       21  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.470s, inference_calls=21, completed_chunks=21, actions_applied=126, empty_action_steps=0
+latency: avg_request=0.247s, avg_first_action=0.264s, avg_chunk_duration=0.262s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         7    None   None      0.251    0.256       0.250
+        2  abpolicy_async       32         6    None      7      0.253    0.301       0.250
+        3  abpolicy_async       32         6    None      5      0.246    0.246       0.250
+        4  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+        5  abpolicy_async       32         7    None      6      0.249    0.296       0.300
+        6  abpolicy_async       32         7    None      6      0.252    0.296       0.300
+        7  abpolicy_async       32         7    None      6      0.250    0.297       0.300
+        8  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+        9  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       10  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       11  abpolicy_async       32         7    None      6      0.246    0.297       0.300
+       12  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+       13  abpolicy_async       32         6    None      5      0.246    0.246       0.250
+       14  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       15  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       16  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       17  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       18  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       19  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       20  abpolicy_async       32         5    None      5      0.245    0.246       0.200
+       21  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.473s, inference_calls=20, completed_chunks=20, actions_applied=126, empty_action_steps=0
+latency: avg_request=0.247s, avg_first_action=0.274s, avg_chunk_duration=0.262s, recommended_delay=6
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         6    None   None      0.252    0.257       0.201
+        2  abpolicy_async       32         6    None      6      0.250    0.252       0.250
+        3  abpolicy_async       32         6    None      5      0.244    0.247       0.250
+        4  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+        5  abpolicy_async       32         7    None      6      0.246    0.296       0.300
+        6  abpolicy_async       32         7    None      6      0.249    0.297       0.300
+        7  abpolicy_async       32         7    None      6      0.247    0.296       0.300
+        8  abpolicy_async       32         6    None      6      0.247    0.295       0.250
+        9  abpolicy_async       32         7    None      5      0.245    0.247       0.300
+       10  abpolicy_async       32         7    None      6      0.248    0.297       0.300
+       11  abpolicy_async       32         7    None      6      0.251    0.296       0.300
+       12  abpolicy_async       32         6    None      6      0.248    0.297       0.250
+       13  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+       14  abpolicy_async       32         6    None      6      0.245    0.295       0.250
+       15  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       16  abpolicy_async       32         7    None      5      0.245    0.247       0.300
+       17  abpolicy_async       32         7    None      6      0.247    0.295       0.300
+       18  abpolicy_async       32         6    None      6      0.249    0.297       0.250
+       19  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+       20  abpolicy_async       32         1    None      6      0.246    0.295       0.000
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.322s, inference_calls=20, completed_chunks=20, actions_applied=123, empty_action_steps=0
+latency: avg_request=0.246s, avg_first_action=0.267s, avg_chunk_duration=0.255s, recommended_delay=6
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         6    None   None      0.252    0.257       0.200
+        2  abpolicy_async       32         7    None      6      0.246    0.252       0.299
+        3  abpolicy_async       32         7    None      6      0.247    0.296       0.300
+        4  abpolicy_async       32         7    None      6      0.247    0.296       0.300
+        5  abpolicy_async       32         6    None      6      0.248    0.296       0.250
+        6  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+        7  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+        8  abpolicy_async       32         7    None      6      0.248    0.297       0.300
+        9  abpolicy_async       32         6    None      6      0.246    0.297       0.250
+       10  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       11  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+       12  abpolicy_async       32         6    None      6      0.248    0.296       0.250
+       13  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       14  abpolicy_async       32         7    None      6      0.246    0.296       0.300
+       15  abpolicy_async       32         6    None      6      0.247    0.296       0.250
+       16  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       17  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+       18  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       19  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+       20  abpolicy_async       32         1    None      5      0.245    0.246       0.000
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.120s, inference_calls=19, completed_chunks=19, actions_applied=119, empty_action_steps=0
+latency: avg_request=0.246s, avg_first_action=0.273s, avg_chunk_duration=0.260s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         7    None   None      0.250    0.255       0.250
+        2  abpolicy_async       32         7    None      7      0.251    0.302       0.300
+        3  abpolicy_async       32         7    None      6      0.248    0.296       0.300
+        4  abpolicy_async       32         7    None      6      0.246    0.296       0.300
+        5  abpolicy_async       32         7    None      6      0.247    0.296       0.300
+        6  abpolicy_async       32         6    None      6      0.248    0.297       0.250
+        7  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+        8  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+        9  abpolicy_async       32         7    None      5      0.242    0.246       0.300
+       10  abpolicy_async       32         6    None      6      0.248    0.296       0.250
+       11  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+       12  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       13  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       14  abpolicy_async       32         6    None      6      0.247    0.296       0.250
+       15  abpolicy_async       32         7    None      5      0.242    0.246       0.300
+       16  abpolicy_async       32         6    None      6      0.250    0.296       0.250
+       17  abpolicy_async       32         7    None      5      0.246    0.246       0.300
+       18  abpolicy_async       32         7    None      6      0.247    0.296       0.300
+       19  abpolicy_async       32         1    None      6      0.247    0.296       0.000
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.068s, inference_calls=19, completed_chunks=19, actions_applied=118, empty_action_steps=0
+latency: avg_request=0.248s, avg_first_action=0.271s, avg_chunk_duration=0.258s, recommended_delay=6
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         6    None   None      0.249    0.254       0.200
+        2  abpolicy_async       32         6    None      6      0.248    0.251       0.250
+        3  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+        4  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+        5  abpolicy_async       32         7    None      6      0.246    0.296       0.300
+        6  abpolicy_async       32         7    None      6      0.287    0.297       0.300
+        7  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+        8  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+        9  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       10  abpolicy_async       32         6    None      6      0.249    0.297       0.250
+       11  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       12  abpolicy_async       32         7    None      6      0.246    0.296       0.300
+       13  abpolicy_async       32         7    None      6      0.249    0.296       0.300
+       14  abpolicy_async       32         7    None      6      0.246    0.296       0.300
+       15  abpolicy_async       32         6    None      6      0.249    0.296       0.250
+       16  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+       17  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+       18  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       19  abpolicy_async       32         1    None      5      0.244    0.246       0.000
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=6.225s, inference_calls=20, completed_chunks=20, actions_applied=121, empty_action_steps=0
+latency: avg_request=0.246s, avg_first_action=0.276s, avg_chunk_duration=0.266s, recommended_delay=6
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         6    None   None      0.249    0.255       0.200
+        2  abpolicy_async       32         7    None      6      0.245    0.252       0.300
+        3  abpolicy_async       32         7    None      6      0.247    0.296       0.300
+        4  abpolicy_async       32         7    None      6      0.247    0.296       0.300
+        5  abpolicy_async       32         7    None      6      0.246    0.297       0.300
+        6  abpolicy_async       32         7    None      6      0.248    0.297       0.300
+        7  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+        8  abpolicy_async       32         7    None      5      0.244    0.245       0.300
+        9  abpolicy_async       32         7    None      6      0.249    0.296       0.300
+       10  abpolicy_async       32         6    None      6      0.248    0.296       0.250
+       11  abpolicy_async       32         7    None      5      0.243    0.246       0.300
+       12  abpolicy_async       32         6    None      6      0.247    0.296       0.250
+       13  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+       14  abpolicy_async       32         7    None      6      0.246    0.296       0.300
+       15  abpolicy_async       32         6    None      6      0.246    0.296       0.250
+       16  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       17  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       18  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+       19  abpolicy_async       32         2    None      6      0.247    0.296       0.054
+       20  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=True
+summary: total_time=5.920s, inference_calls=19, completed_chunks=19, actions_applied=115, empty_action_steps=0
+latency: avg_request=0.246s, avg_first_action=0.264s, avg_chunk_duration=0.267s, recommended_delay=7
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         7    None   None      0.252    0.256       0.250
+        2  abpolicy_async       32         7    None      7      0.252    0.301       0.300
+        3  abpolicy_async       32         7    None      6      0.246    0.296       0.300
+        4  abpolicy_async       32         6    None      6      0.247    0.297       0.250
+        5  abpolicy_async       32         6    None      5      0.243    0.246       0.250
+        6  abpolicy_async       32         6    None      5      0.244    0.247       0.250
+        7  abpolicy_async       32         6    None      5      0.245    0.247       0.250
+        8  abpolicy_async       32         6    None      5      0.244    0.245       0.250
+        9  abpolicy_async       32         6    None      5      0.245    0.247       0.250
+       10  abpolicy_async       32         7    None      5      0.245    0.246       0.300
+       11  abpolicy_async       32         6    None      6      0.251    0.296       0.250
+       12  abpolicy_async       32         6    None      5      0.244    0.246       0.250
+       13  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       14  abpolicy_async       32         6    None      5      0.245    0.246       0.250
+       15  abpolicy_async       32         7    None      5      0.244    0.246       0.300
+       16  abpolicy_async       32         7    None      6      0.248    0.296       0.300
+       17  abpolicy_async       32         6    None      6      0.249    0.296       0.250
+       18  abpolicy_async       32         7    None      5      0.246    0.247       0.300
+       19  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+
+-----------------------------------edge--------------------------------------------
+Pi0.5 inference metrics
+task: put red cylinder on red cube (fail, closed gripper too early)
+config: abpolicy_enabled=False
+summary: total_time=5.725s, inference_calls=3, completed_chunks=3, actions_applied=102, empty_action_steps=0
+latency: avg_request=0.250s, avg_first_action=0.250s, avg_chunk_duration=1.603s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.251    0.251       2.404
+        2  sync              50        50      0.249    0.250       2.405
+        3  sync              50         2      0.249    0.250       0.000
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False
+summary: total_time=7.076s, inference_calls=3, completed_chunks=3, actions_applied=130, empty_action_steps=0
+latency: avg_request=0.250s, avg_first_action=0.250s, avg_chunk_duration=2.071s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.250    0.250       2.404
+        2  sync              50        50      0.250    0.250       2.405
+        3  sync              50        30      0.249    0.249       1.402
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False
+summary: total_time=7.075s, inference_calls=3, completed_chunks=3, actions_applied=130, empty_action_steps=0
+latency: avg_request=0.249s, avg_first_action=0.249s, avg_chunk_duration=2.071s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.250    0.250       2.404
+        2  sync              50        50      0.249    0.250       2.405
+        3  sync              50        30      0.249    0.249       1.402
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False
+summary: total_time=6.972s, inference_calls=3, completed_chunks=3, actions_applied=128, empty_action_steps=0
+latency: avg_request=0.249s, avg_first_action=0.249s, avg_chunk_duration=2.037s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.248    0.248       2.404
+        2  sync              50        50      0.248    0.249       2.404
+        3  sync              50        28      0.250    0.250       1.302
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False
+summary: total_time=6.925s, inference_calls=3, completed_chunks=3, actions_applied=127, empty_action_steps=0
+latency: avg_request=0.250s, avg_first_action=0.250s, avg_chunk_duration=2.020s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.250    0.250       2.405
+        2  sync              50        50      0.250    0.250       2.404
+        3  sync              50        27      0.249    0.249       1.252
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False
+summary: total_time=7.021s, inference_calls=3, completed_chunks=3, actions_applied=129, empty_action_steps=0
+latency: avg_request=0.249s, avg_first_action=0.249s, avg_chunk_duration=2.053s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.250    0.250       2.404
+        2  sync              50        50      0.248    0.248       2.403
+        3  sync              50        29      0.248    0.248       1.353
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube (fail, closed gripper too early)
+config: abpolicy_enabled=False
+summary: total_time=5.822s, inference_calls=3, completed_chunks=3, actions_applied=104, empty_action_steps=0
+latency: avg_request=0.249s, avg_first_action=0.250s, avg_chunk_duration=1.636s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.250    0.250       2.405
+        2  sync              50        50      0.249    0.249       2.404
+        3  sync              50         4      0.249    0.249       0.100
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False
+summary: total_time=7.027s, inference_calls=3, completed_chunks=3, actions_applied=129, empty_action_steps=0
+latency: avg_request=0.250s, avg_first_action=0.250s, avg_chunk_duration=2.053s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.252    0.252       2.404
+        2  sync              50        50      0.250    0.250       2.404
+        3  sync              50        29      0.248    0.249       1.352
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False
+summary: total_time=6.974s, inference_calls=3, completed_chunks=3, actions_applied=128, empty_action_steps=0
+latency: avg_request=0.249s, avg_first_action=0.250s, avg_chunk_duration=2.037s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.248    0.249       2.404
+        2  sync              50        50      0.251    0.251       2.404
+        3  sync              50        28      0.249    0.249       1.302
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False
+summary: total_time=7.026s, inference_calls=3, completed_chunks=3, actions_applied=129, empty_action_steps=0
+latency: avg_request=0.250s, avg_first_action=0.250s, avg_chunk_duration=2.053s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.252    0.252       2.404
+        2  sync              50        50      0.249    0.249       2.404
+        3  sync              50        29      0.250    0.250       1.352
+
+-----------------------------------center--------------------------------------------
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False
+summary: total_time=6.681s, inference_calls=3, completed_chunks=3, actions_applied=122, empty_action_steps=0
+latency: avg_request=0.252s, avg_first_action=0.252s, avg_chunk_duration=1.937s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.252    0.252       2.404
+        2  sync              50        50      0.253    0.253       2.404
+        3  sync              50        22      0.252    0.252       1.002
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False
+summary: total_time=6.728s, inference_calls=3, completed_chunks=3, actions_applied=123, empty_action_steps=0
+latency: avg_request=0.250s, avg_first_action=0.251s, avg_chunk_duration=1.953s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.253    0.254       2.404
+        2  sync              50        50      0.248    0.248       2.403
+        3  sync              50        23      0.250    0.250       1.053
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False
+summary: total_time=6.678s, inference_calls=3, completed_chunks=3, actions_applied=122, empty_action_steps=0
+latency: avg_request=0.250s, avg_first_action=0.251s, avg_chunk_duration=1.937s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.251    0.251       2.404
+        2  sync              50        50      0.250    0.251       2.405
+        3  sync              50        22      0.250    0.250       1.002
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False
+summary: total_time=6.730s, inference_calls=3, completed_chunks=3, actions_applied=123, empty_action_steps=0
+latency: avg_request=0.252s, avg_first_action=0.252s, avg_chunk_duration=1.953s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.251    0.251       2.404
+        2  sync              50        50      0.252    0.252       2.405
+        3  sync              50        23      0.252    0.252       1.052
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False
+summary: total_time=6.824s, inference_calls=3, completed_chunks=3, actions_applied=125, empty_action_steps=0
+latency: avg_request=0.249s, avg_first_action=0.249s, avg_chunk_duration=1.987s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.251    0.251       2.404
+        2  sync              50        50      0.248    0.248       2.404
+        3  sync              50        25      0.249    0.250       1.154
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False
+summary: total_time=6.822s, inference_calls=3, completed_chunks=3, actions_applied=125, empty_action_steps=0
+latency: avg_request=0.249s, avg_first_action=0.249s, avg_chunk_duration=1.987s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.250    0.250       2.404
+        2  sync              50        50      0.248    0.248       2.405
+        3  sync              50        25      0.249    0.249       1.152
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False
+summary: total_time=6.782s, inference_calls=3, completed_chunks=3, actions_applied=124, empty_action_steps=0
+latency: avg_request=0.252s, avg_first_action=0.252s, avg_chunk_duration=1.970s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.252    0.253       2.404
+        2  sync              50        50      0.251    0.252       2.404
+        3  sync              50        24      0.252    0.253       1.102
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False
+summary: total_time=6.821s, inference_calls=3, completed_chunks=3, actions_applied=125, empty_action_steps=0
+latency: avg_request=0.249s, avg_first_action=0.249s, avg_chunk_duration=1.986s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.249    0.249       2.403
+        2  sync              50        50      0.250    0.250       2.403
+        3  sync              50        25      0.248    0.249       1.152
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False
+summary: total_time=6.773s, inference_calls=3, completed_chunks=3, actions_applied=124, empty_action_steps=0
+latency: avg_request=0.249s, avg_first_action=0.249s, avg_chunk_duration=1.970s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.249    0.250       2.404
+        2  sync              50        50      0.249    0.249       2.404
+        3  sync              50        24      0.249    0.249       1.102
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False
+summary: total_time=6.871s, inference_calls=3, completed_chunks=3, actions_applied=126, empty_action_steps=0
+latency: avg_request=0.249s, avg_first_action=0.249s, avg_chunk_duration=2.003s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  sync              50        50      0.249    0.249       2.404
+        2  sync              50        50      0.248    0.249       2.403
+        3  sync              50        26      0.249    0.250       1.202
