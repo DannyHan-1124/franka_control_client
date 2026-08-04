@@ -366,3 +366,400 @@ boundaries:
             63          64    0.018790         2.240  0.000000   0.027113
             64          65    0.022095         1.165  0.000000   0.024323
             65          66    0.024195         0.788  0.000000   0.025154
+
+=== Pi0.5 inference episode: 2026-08-04 13:58:22 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=15, fps=20
+summary: total_time=9.031s, inference_calls=12, completed_chunks=12, prefix_chunks=11, actions_applied=174, empty_action_steps=6
+latency: avg_first_action=0.103s, p95_first_action=0.145s, recommended_delay=3, avg_final=0.301s, avg_chunk_duration=0.682s
+discontinuity: boundaries=11, avg_position_m=0.022728, max_position_m=0.059404, avg_rotation_deg=2.080, max_rotation_deg=5.159
+boundary_motion: avg_position_ratio=3.598, max_position_ratio=10.273, avg_rotation_ratio=3.392, avg_direction_change_deg=96.653, max_direction_change_deg=158.052, backtracking=6/11, backtracking_rate=0.545, avg_delta_v_m_s=0.535, max_delta_v_m_s=1.404, avg_delta_omega_deg_s=48.806
+post_boundary_motion: avg_position_ratio=1.393, max_position_ratio=2.622, low_motion=0/11, low_motion_rate=0.000, avg_direction_change_deg=81.257, max_direction_change_deg=147.199, avg_delta_v_m_s=0.250, max_delta_v_m_s=0.509
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0           0       50        15       11           0.144    0.295       0.702
+        2       HAS       4           0       46        15       11           0.145    0.360       0.767
+        3       HAS       4           0       46        15       11           0.096    0.296       0.702
+        4       HAS       4           0       46        15       11           0.096    0.296       0.701
+        5       HAS       4           0       46        15       11           0.095    0.296       0.701
+        6       HAS       4           0       46        15       11           0.095    0.296       0.701
+        7       HAS       4           0       46        15       11           0.096    0.296       0.701
+        8       HAS       4           0       46        15       11           0.095    0.296       0.701
+        9       HAS       4           0       46        15       11           0.094    0.294       0.701
+       10       HAS       4           0       46        15       11           0.096    0.296       0.701
+       11       HAS       4           0       46        15       11           0.094    0.294       0.701
+       12       HAS       4           0       46         9       11           0.095    0.295       0.400
+boundaries:
+  from_request  to_request  position_m  pos_ratio  direction_deg  backtrack  delta_v_m_s  rotation_deg  rot_ratio  delta_omega_deg_s  post_pos_ratio  low_motion  post_direction_deg  post_delta_v_m_s
+             1           2    0.007242      1.444         55.191      False        0.119         0.582      1.196             18.399           1.115       False             147.199             0.195
+             2           3    0.059404     10.273        137.544       True        1.404         3.181      4.821             84.138           0.291       False             133.474             0.300
+             3           4    0.033369      9.469        143.605       True        0.992         0.927      2.341             35.458           2.622       False             128.818             0.509
+             4           5    0.009956      1.068         76.273      False        0.328         1.141      2.114             12.037           1.816       False              49.297             0.272
+             5           6    0.012363      2.027         87.993      False        0.253         0.833      1.584             11.229           0.900       False              24.091             0.060
+             6           7    0.011516      2.298        106.267       True        0.312         1.502      3.905             26.929           1.492       False              63.995             0.162
+             7           8    0.043294      5.705        123.504       True        1.004         3.291      6.132             81.533           1.113       False              81.179             0.256
+             8           9    0.011503      1.302         29.591      False        0.157         0.544      0.880             21.492           1.497       False              17.609             0.098
+             9          10    0.031329      2.267        158.052       True        0.750         5.159      5.200            128.268           1.815       False              32.730             0.398
+            10          11    0.019558      1.945         94.813       True        0.409         4.951      7.575            104.591           0.759       False              78.144             0.161
+            11          12    0.010472      1.776         50.355      False        0.161         0.770      1.564             12.789           1.901       False             137.291             0.335
+
+=== Pi0.5 inference episode: 2026-08-04 13:58:44 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=15, fps=20
+summary: total_time=10.519s, inference_calls=14, completed_chunks=14, prefix_chunks=13, actions_applied=205, empty_action_steps=6
+latency: avg_first_action=0.099s, p95_first_action=0.113s, recommended_delay=3, avg_final=0.289s, avg_chunk_duration=0.683s
+discontinuity: boundaries=13, avg_position_m=0.023800, max_position_m=0.080073, avg_rotation_deg=1.830, max_rotation_deg=4.916
+boundary_motion: avg_position_ratio=3.377, max_position_ratio=8.884, avg_rotation_ratio=3.200, avg_direction_change_deg=138.340, max_direction_change_deg=174.698, backtracking=12/13, backtracking_rate=0.923, avg_delta_v_m_s=0.674, max_delta_v_m_s=1.897, avg_delta_omega_deg_s=45.042
+post_boundary_motion: avg_position_ratio=1.216, max_position_ratio=1.957, low_motion=0/13, low_motion_rate=0.000, avg_direction_change_deg=58.462, max_direction_change_deg=137.288, avg_delta_v_m_s=0.203, max_delta_v_m_s=0.304
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       13       HAS       0           0       50        15       11           0.146    0.296       0.701
+       14       HAS       4           0       46        15       11           0.095    0.296       0.702
+       15       HAS       4           0       46        15       11           0.095    0.296       0.701
+       16       HAS       4           0       46        15       11           0.096    0.296       0.701
+       17       HAS       4           0       46        15       11           0.096    0.296       0.701
+       18       HAS       4           0       46        15       11           0.096    0.246       0.701
+       19       HAS       4           0       46        15       11           0.096    0.296       0.701
+       20       HAS       4           0       46        15       11           0.096    0.296       0.701
+       21       HAS       4           0       46        15       11           0.096    0.296       0.701
+       22       HAS       4           0       46        15       11           0.095    0.296       0.701
+       23       HAS       4           0       46        15       11           0.095    0.296       0.701
+       24       HAS       4           0       46        15       11           0.095    0.295       0.701
+       25       HAS       4           0       46        15       11           0.095    0.245       0.702
+       26       HAS       4           0       46        10       11           0.096    0.296       0.451
+boundaries:
+  from_request  to_request  position_m  pos_ratio  direction_deg  backtrack  delta_v_m_s  rotation_deg  rot_ratio  delta_omega_deg_s  post_pos_ratio  low_motion  post_direction_deg  post_delta_v_m_s
+            13          14    0.014331      2.760        136.481       True        0.448         0.989      2.739             22.860           1.817       False              77.377             0.239
+            14          15    0.041836      7.995        171.479       True        1.105         1.670      2.943             48.588           1.311       False              74.286             0.268
+            15          16    0.011881      2.618        161.351       True        0.557         1.109      2.684             27.990           0.665       False              59.883             0.301
+            16          17    0.029920      5.369        153.268       True        0.821         0.982      2.785             28.376           0.710       False             137.288             0.304
+            17          18    0.049687      7.234        147.172       True        1.114         2.817      6.030             72.823           1.602       False              83.687             0.248
+            18          19    0.010454      0.951        114.811       True        0.399         0.573      0.858             18.853           1.641       False              17.140             0.134
+            19          20    0.011153      1.618        103.291       True        0.264         1.154      2.233             28.425           0.441       False              63.033             0.090
+            20          21    0.005456      0.972        121.773       True        0.213         0.612      1.767              9.389           1.449       False              31.204             0.084
+            21          22    0.080073      8.884        168.105       True        1.897         4.916      7.827            105.088           0.677       False              74.686             0.293
+            22          23    0.006521      0.697        174.698       True        0.508         1.860      2.292             48.556           1.957       False               9.491             0.063
+            23          24    0.020972      1.359        117.943       True        0.693         4.030      4.004            107.341           1.718       False              18.889             0.205
+            24          25    0.012221      1.321         58.161      False        0.209         1.642      2.096             35.718           1.204       False              74.724             0.235
+            25          26    0.014889      2.123        169.887       True        0.532         1.439      3.338             31.539           0.615       False              38.318             0.177
+
+=== Pi0.5 inference episode: 2026-08-04 13:59:03 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=15, fps=20
+summary: total_time=8.417s, inference_calls=12, completed_chunks=12, prefix_chunks=11, actions_applied=163, empty_action_steps=6
+latency: avg_first_action=0.099s, p95_first_action=0.118s, recommended_delay=3, avg_final=0.291s, avg_chunk_duration=0.692s
+discontinuity: boundaries=10, avg_position_m=0.024149, max_position_m=0.044774, avg_rotation_deg=1.414, max_rotation_deg=3.043
+boundary_motion: avg_position_ratio=3.097, max_position_ratio=5.265, avg_rotation_ratio=2.398, avg_direction_change_deg=109.599, max_direction_change_deg=168.048, backtracking=7/10, backtracking_rate=0.700, avg_delta_v_m_s=0.575, max_delta_v_m_s=1.130, avg_delta_omega_deg_s=38.515
+post_boundary_motion: avg_position_ratio=1.201, max_position_ratio=1.846, low_motion=0/10, low_motion_rate=0.000, avg_direction_change_deg=85.596, max_direction_change_deg=158.846, avg_delta_v_m_s=0.235, max_delta_v_m_s=0.389
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       27       HAS       0           0       50        15       11           0.145    0.295       0.701
+       28       HAS       4           0       46        15       11           0.095    0.296       0.703
+       29       HAS       4           0       46        15       11           0.096    0.297       0.703
+       30       HAS       4           0       46        15       11           0.095    0.296       0.701
+       31       HAS       4           0       46        15       11           0.096    0.296       0.701
+       32       HAS       4           0       46        15       11           0.096    0.296       0.701
+       33       HAS       4           0       46        15       11           0.095    0.296       0.701
+       34       HAS       4           0       46        15       11           0.095    0.296       0.701
+       35       HAS       4           0       46        15       11           0.095    0.295       0.701
+       36       HAS       4           0       46        15       11           0.096    0.246       0.701
+       37       HAS       4           0       46        13       11           0.095    0.295       0.601
+       38       HAS       4           0        1         0        1           0.095      n/a         n/a
+boundaries:
+  from_request  to_request  position_m  pos_ratio  direction_deg  backtrack  delta_v_m_s  rotation_deg  rot_ratio  delta_omega_deg_s  post_pos_ratio  low_motion  post_direction_deg  post_delta_v_m_s
+            27          28    0.017001      3.228        167.143       True        0.609         1.542      4.252             51.635           0.640       False             158.846             0.337
+            28          29    0.031654      5.098        162.985       True        0.932         1.772      3.005             63.380           1.148       False             114.642             0.389
+            29          30    0.034268      5.265        110.902       True        0.736         1.338      2.815             40.949           1.273       False             126.701             0.254
+            30          31    0.044774      4.806        168.048       True        1.130         3.043      4.944             79.629           0.853       False              88.929             0.284
+            31          32    0.013016      1.254        120.538       True        0.446         0.361      0.584             15.904           1.206       False               5.560             0.025
+            32          33    0.005025      0.906        106.905       True        0.153         1.021      2.378             29.621           0.686       False             113.763             0.139
+            33          34    0.019176      3.362        146.513       True        0.537         0.223      0.671             16.505           1.846       False              34.936             0.121
+            34          35    0.024761      2.175         12.540      False        0.285         0.790      1.150             16.964           1.795       False              23.089             0.224
+            35          36    0.035232      2.899         82.621      False        0.703         2.996      2.834             49.721           1.422       False              50.997             0.273
+            36          37    0.016584      1.972         17.800      False        0.214         1.053      1.351             20.843           1.144       False             138.501             0.300
+
+=== Pi0.5 inference episode: 2026-08-04 13:59:21 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=15, fps=20
+summary: total_time=10.617s, inference_calls=15, completed_chunks=15, prefix_chunks=14, actions_applied=207, empty_action_steps=6
+latency: avg_first_action=0.095s, p95_first_action=0.096s, recommended_delay=2, avg_final=0.285s, avg_chunk_duration=0.690s
+discontinuity: boundaries=13, avg_position_m=0.024601, max_position_m=0.063838, avg_rotation_deg=1.555, max_rotation_deg=3.269
+boundary_motion: avg_position_ratio=3.781, max_position_ratio=11.897, avg_rotation_ratio=2.891, avg_direction_change_deg=105.453, max_direction_change_deg=163.613, backtracking=9/13, backtracking_rate=0.692, avg_delta_v_m_s=0.570, max_delta_v_m_s=1.645, avg_delta_omega_deg_s=36.820
+post_boundary_motion: avg_position_ratio=1.094, max_position_ratio=2.100, low_motion=0/13, low_motion_rate=0.000, avg_direction_change_deg=76.609, max_direction_change_deg=142.090, avg_delta_v_m_s=0.210, max_delta_v_m_s=0.383
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       39       HAS       0           0       50        15       11           0.095    0.296       0.701
+       40       HAS       4           0       46        15       11           0.096    0.246       0.701
+       41       HAS       4           0       46        15       11           0.095    0.246       0.701
+       42       HAS       4           0       46        15       11           0.096    0.296       0.701
+       43       HAS       4           0       46        15       11           0.096    0.296       0.701
+       44       HAS       4           0       46        15       11           0.095    0.295       0.701
+       45       HAS       4           0       46        15       11           0.096    0.296       0.701
+       46       HAS       4           0       46        15       11           0.095    0.296       0.701
+       47       HAS       4           0       46        15       11           0.095    0.296       0.702
+       48       HAS       4           0       46        15       11           0.095    0.296       0.702
+       49       HAS       4           0       46        15       11           0.095    0.296       0.701
+       50       HAS       4           0       46        15       11           0.096    0.296       0.701
+       51       HAS       4           0       46        15       11           0.095    0.296       0.701
+       52       HAS       4           0       46        12       11           0.096    0.246       0.551
+       53       HAS       4           0        0         0        0             n/a      n/a         n/a
+boundaries:
+  from_request  to_request  position_m  pos_ratio  direction_deg  backtrack  delta_v_m_s  rotation_deg  rot_ratio  delta_omega_deg_s  post_pos_ratio  low_motion  post_direction_deg  post_delta_v_m_s
+            39          40    0.010229      1.738        155.393       True        0.366         0.744      1.630             12.842           1.393       False              51.392             0.145
+            40          41    0.025018      3.653        163.613       True        0.642         0.392      0.711              5.382           1.448       False              92.201             0.251
+            41          42    0.018001      3.141        104.477       True        0.403         1.086      2.779             32.132           1.113       False             100.072             0.184
+            42          43    0.063838     11.897        162.614       True        1.645         2.497      6.224             70.484           0.898       False              73.954             0.367
+            43          44    0.050085      7.815        125.750       True        1.118         1.449      3.211             35.404           0.823       False              67.721             0.173
+            44          45    0.042259      5.975        145.118       True        1.081         3.269      5.567             83.827           0.322       False             142.090             0.311
+            45          46    0.021675      2.248         47.088      False        0.330         1.843      2.491             41.208           1.482       False             101.741             0.383
+            46          47    0.009851      1.601         79.275      False        0.218         1.108      2.696             27.636           0.893       False              68.112             0.140
+            47          48    0.015987      3.820         96.831       True        0.375         1.136      2.215             33.936           2.100       False             129.086             0.305
+            48          49    0.011123      1.324        118.704       True        0.420         1.331      2.414             47.251           1.399       False              15.659             0.075
+            49          50    0.024814      2.037         23.228      False        0.305         2.424      2.426             37.039           1.405       False              12.241             0.133
+            50          51    0.012503      1.245         50.163      False        0.196         1.341      1.751             10.847           0.571       False              64.995             0.184
+            51          52    0.014432      2.654         98.633       True        0.313         1.600      3.470             40.676           0.381       False              76.650             0.086
+
+=== Pi0.5 inference episode: 2026-08-04 14:00:27 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=15, fps=20
+summary: total_time=8.115s, inference_calls=11, completed_chunks=11, prefix_chunks=10, actions_applied=157, empty_action_steps=6
+latency: avg_first_action=0.100s, p95_first_action=0.120s, recommended_delay=3, avg_final=0.291s, avg_chunk_duration=0.665s
+discontinuity: boundaries=10, avg_position_m=0.022353, max_position_m=0.047735, avg_rotation_deg=1.449, max_rotation_deg=2.181
+boundary_motion: avg_position_ratio=3.144, max_position_ratio=7.697, avg_rotation_ratio=2.835, avg_direction_change_deg=100.308, max_direction_change_deg=154.510, backtracking=6/10, backtracking_rate=0.600, avg_delta_v_m_s=0.512, max_delta_v_m_s=1.182, avg_delta_omega_deg_s=31.103
+post_boundary_motion: avg_position_ratio=1.246, max_position_ratio=3.258, low_motion=0/10, low_motion_rate=0.000, avg_direction_change_deg=75.541, max_direction_change_deg=168.941, avg_delta_v_m_s=0.226, max_delta_v_m_s=0.417
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       54       HAS       0           0       50        15       11           0.145    0.296       0.701
+       55       HAS       4           0       46        15       11           0.095    0.296       0.701
+       56       HAS       4           0       46        15       11           0.095    0.296       0.702
+       57       HAS       4           0       46        15       11           0.095    0.296       0.702
+       58       HAS       4           0       46        15       11           0.096    0.296       0.701
+       59       HAS       4           0       46        15       11           0.096    0.246       0.701
+       60       HAS       4           0       46        15       11           0.096    0.296       0.701
+       61       HAS       4           0       46        15       11           0.096    0.296       0.701
+       62       HAS       4           0       46        15       11           0.095    0.296       0.701
+       63       HAS       4           0       46        15       11           0.096    0.296       0.701
+       64       HAS       4           0       46         7       11           0.094    0.294       0.301
+boundaries:
+  from_request  to_request  position_m  pos_ratio  direction_deg  backtrack  delta_v_m_s  rotation_deg  rot_ratio  delta_omega_deg_s  post_pos_ratio  low_motion  post_direction_deg  post_delta_v_m_s
+            54          55    0.014850      2.239        139.036       True        0.561         0.708      1.947             34.957           0.659       False             107.890             0.339
+            55          56    0.025752      4.633        152.494       True        0.652         1.702      4.227             43.412           0.945       False             168.941             0.254
+            56          57    0.047735      7.697        154.510       True        1.182         2.181      4.376             60.961           0.929       False             136.478             0.339
+            57          58    0.017945      2.560        141.887       True        0.565         0.833      2.230             24.756           1.295       False              34.370             0.135
+            58          59    0.010450      1.030         57.367      False        0.191         1.056      1.700             13.067           0.615       False              91.280             0.228
+            59          60    0.003317      0.600        149.767       True        0.146         0.868      2.317             12.041           1.044       False              77.220             0.127
+            60          61    0.027638      5.196         42.186      False        0.446         1.940      5.680             43.896           3.258       False              37.584             0.240
+            61          62    0.037562      2.897         20.110      False        0.692         1.798      1.713             17.343           1.787       False              40.095             0.417
+            62          63    0.020248      1.972         35.907      False        0.265         2.135      2.121             29.725           1.279       False              18.893             0.093
+            63          64    0.018031      2.614        109.811       True        0.420         1.264      2.040             30.872           0.646       False              42.660             0.086
+
+=== Pi0.5 inference episode: 2026-08-04 14:01:09 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=25, fps=20
+summary: total_time=6.563s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=126, empty_action_steps=6
+latency: avg_first_action=0.103s, p95_first_action=0.132s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=1.002s
+discontinuity: boundaries=5, avg_position_m=0.026041, max_position_m=0.056031, avg_rotation_deg=1.677, max_rotation_deg=2.578
+boundary_motion: avg_position_ratio=3.617, max_position_ratio=7.968, avg_rotation_ratio=2.634, avg_direction_change_deg=103.882, max_direction_change_deg=168.356, backtracking=3/5, backtracking_rate=0.600, avg_delta_v_m_s=0.587, max_delta_v_m_s=1.100, avg_delta_omega_deg_s=33.136
+post_boundary_motion: avg_position_ratio=2.060, max_position_ratio=3.933, low_motion=0/5, low_motion_rate=0.000, avg_direction_change_deg=43.152, max_direction_change_deg=49.278, avg_delta_v_m_s=0.206, max_delta_v_m_s=0.285
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0           0       50        25       11           0.143    0.294       1.204
+        2       HAS       4           0       46        25       11           0.095    0.296       1.202
+        3       HAS       4           0       46        25       11           0.095    0.296       1.202
+        4       HAS       4           0       46        25       11           0.096    0.296       1.202
+        5       HAS       4           0       46        25       11           0.096    0.296       1.202
+        6       HAS       4           0       38         1        9           0.095      n/a       0.000
+boundaries:
+  from_request  to_request  position_m  pos_ratio  direction_deg  backtrack  delta_v_m_s  rotation_deg  rot_ratio  delta_omega_deg_s  post_pos_ratio  low_motion  post_direction_deg  post_delta_v_m_s
+             1           2    0.013116      2.766        108.973       True        0.443         0.942      1.473             34.266           3.933       False              49.278             0.285
+             2           3    0.005906      0.711        142.343       True        0.305         1.199      1.970             24.089           0.806       False              42.606             0.138
+             3           4    0.056031      7.968         78.350      False        1.100         2.547      4.229             36.676           2.371       False              40.491             0.236
+             4           5    0.021380      1.884         21.387      False        0.251         1.120      1.122             14.306           1.131       False              40.230             0.166
+             5           6    0.033771      4.755        168.356       True        0.834         2.578      4.375             56.343             n/a        None                 n/a               n/a
+
+=== Pi0.5 inference episode: 2026-08-04 14:01:25 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=25, fps=20
+summary: total_time=6.663s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=128, empty_action_steps=6
+latency: avg_first_action=0.112s, p95_first_action=0.147s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=1.018s
+discontinuity: boundaries=5, avg_position_m=0.018431, max_position_m=0.040717, avg_rotation_deg=1.471, max_rotation_deg=2.941
+boundary_motion: avg_position_ratio=2.436, max_position_ratio=5.801, avg_rotation_ratio=2.991, avg_direction_change_deg=100.217, max_direction_change_deg=144.236, backtracking=3/5, backtracking_rate=0.600, avg_delta_v_m_s=0.435, max_delta_v_m_s=0.831, avg_delta_omega_deg_s=26.618
+post_boundary_motion: avg_position_ratio=1.803, max_position_ratio=3.719, low_motion=0/5, low_motion_rate=0.000, avg_direction_change_deg=37.691, max_direction_change_deg=77.439, avg_delta_v_m_s=0.229, max_delta_v_m_s=0.552
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        7       HAS       0           0       50        25       11           0.147    0.298       1.202
+        8       HAS       4           0       46        25       11           0.096    0.296       1.202
+        9       HAS       4           0       46        25       11           0.145    0.296       1.202
+       10       HAS       4           0       46        25       11           0.096    0.296       1.202
+       11       HAS       4           0       46        25       11           0.095    0.295       1.202
+       12       HAS       4           0       46         3       11           0.095    0.295       0.100
+boundaries:
+  from_request  to_request  position_m  pos_ratio  direction_deg  backtrack  delta_v_m_s  rotation_deg  rot_ratio  delta_omega_deg_s  post_pos_ratio  low_motion  post_direction_deg  post_delta_v_m_s
+             7           8    0.009407      1.012         94.434       True        0.295         1.357      2.054             27.664           1.857       False              33.008             0.203
+             8           9    0.007489      1.018        144.236       True        0.374         1.288      2.572             24.710           0.817       False              29.170             0.149
+             9          10    0.040717      5.801         81.503      False        0.831         2.941      7.873             52.995           3.719       False              77.439             0.552
+            10          11    0.010597      0.817         37.170      False        0.164         1.131      1.176             10.200           1.020       False              11.526             0.054
+            11          12    0.023947      3.530        143.741       True        0.510         0.640      1.280             17.519           1.602       False              37.312             0.189
+
+=== Pi0.5 inference episode: 2026-08-04 14:01:41 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=25, fps=20
+summary: total_time=6.663s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=128, empty_action_steps=6
+latency: avg_first_action=0.112s, p95_first_action=0.146s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=1.019s
+discontinuity: boundaries=5, avg_position_m=0.017405, max_position_m=0.030256, avg_rotation_deg=1.173, max_rotation_deg=2.549
+boundary_motion: avg_position_ratio=2.304, max_position_ratio=4.605, avg_rotation_ratio=2.002, avg_direction_change_deg=96.804, max_direction_change_deg=150.578, backtracking=3/5, backtracking_rate=0.600, avg_delta_v_m_s=0.366, max_delta_v_m_s=0.560, avg_delta_omega_deg_s=21.490
+post_boundary_motion: avg_position_ratio=1.639, max_position_ratio=3.794, low_motion=0/5, low_motion_rate=0.000, avg_direction_change_deg=25.639, max_direction_change_deg=47.927, avg_delta_v_m_s=0.148, max_delta_v_m_s=0.295
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       13       HAS       0           0       50        25       11           0.146    0.296       1.204
+       14       HAS       4           0       46        25       11           0.096    0.296       1.202
+       15       HAS       4           0       46        25       11           0.095    0.296       1.202
+       16       HAS       4           0       46        25       11           0.146    0.296       1.202
+       17       HAS       4           0       46        25       11           0.095    0.296       1.202
+       18       HAS       4           0       46         3       11           0.096    0.296       0.100
+boundaries:
+  from_request  to_request  position_m  pos_ratio  direction_deg  backtrack  delta_v_m_s  rotation_deg  rot_ratio  delta_omega_deg_s  post_pos_ratio  low_motion  post_direction_deg  post_delta_v_m_s
+            13          14    0.007589      0.796        150.578       True        0.434         0.406      0.789             20.722           1.324       False              26.269             0.132
+            14          15    0.005678      0.685        147.453       True        0.229         0.693      1.195             13.723           1.054       False              41.708             0.116
+            15          16    0.030256      4.605         16.779      False        0.413         2.549      4.846             40.201           3.794       False               4.772             0.295
+            16          17    0.019962      1.496         20.008      False        0.194         1.422      1.476             12.032           1.306       False               7.522             0.118
+            17          18    0.023539      3.938        149.205       True        0.560         0.794      1.704             20.773           0.717       False              47.927             0.077
+
+=== Pi0.5 inference episode: 2026-08-04 14:02:00 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=25, fps=20
+summary: total_time=6.562s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=126, empty_action_steps=6
+latency: avg_first_action=0.104s, p95_first_action=0.133s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=1.002s
+discontinuity: boundaries=5, avg_position_m=0.023348, max_position_m=0.056145, avg_rotation_deg=1.636, max_rotation_deg=3.625
+boundary_motion: avg_position_ratio=3.550, max_position_ratio=10.370, avg_rotation_ratio=3.113, avg_direction_change_deg=28.039, max_direction_change_deg=45.411, backtracking=0/5, backtracking_rate=0.000, avg_delta_v_m_s=0.365, max_delta_v_m_s=0.970, avg_delta_omega_deg_s=35.839
+post_boundary_motion: avg_position_ratio=1.274, max_position_ratio=2.551, low_motion=0/5, low_motion_rate=0.000, avg_direction_change_deg=40.113, max_direction_change_deg=48.039, avg_delta_v_m_s=0.143, max_delta_v_m_s=0.190
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       19       HAS       0           0       50        25       11           0.097    0.297       1.202
+       20       HAS       4           0       46        25       11           0.096    0.296       1.202
+       21       HAS       4           0       46        25       11           0.146    0.296       1.202
+       22       HAS       4           0       46        25       11           0.094    0.295       1.202
+       23       HAS       4           0       46        25       11           0.095    0.296       1.202
+       24       HAS       4           0       38         1        9           0.095      n/a       0.000
+boundaries:
+  from_request  to_request  position_m  pos_ratio  direction_deg  backtrack  delta_v_m_s  rotation_deg  rot_ratio  delta_omega_deg_s  post_pos_ratio  low_motion  post_direction_deg  post_delta_v_m_s
+            19          20    0.013998      1.735         35.771      False        0.166         1.030      1.968             14.659           0.691       False              23.343             0.106
+            20          21    0.001872      0.280          4.859      False        0.086         0.741      1.235             17.236           0.824       False              48.039             0.096
+            21          22    0.056145     10.370         45.411      False        0.970         3.625      8.381             73.102           2.551       False              42.540             0.190
+            22          23    0.022529      1.860         11.929      False        0.280         1.156      1.297             35.705           1.030       False              46.529             0.181
+            23          24    0.022198      3.502         42.225      False        0.325         1.631      2.683             38.492             n/a        None                 n/a               n/a
+
+=== Pi0.5 inference episode: 2026-08-04 14:02:44 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=25, fps=20
+summary: total_time=7.113s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=137, empty_action_steps=6
+latency: avg_first_action=0.112s, p95_first_action=0.145s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=1.094s
+discontinuity: boundaries=5, avg_position_m=0.019624, max_position_m=0.028114, avg_rotation_deg=1.401, max_rotation_deg=1.901
+boundary_motion: avg_position_ratio=2.459, max_position_ratio=4.014, avg_rotation_ratio=2.234, avg_direction_change_deg=108.128, max_direction_change_deg=155.271, backtracking=3/5, backtracking_rate=0.600, avg_delta_v_m_s=0.473, max_delta_v_m_s=0.752, avg_delta_omega_deg_s=28.175
+post_boundary_motion: avg_position_ratio=1.426, max_position_ratio=2.538, low_motion=0/5, low_motion_rate=0.000, avg_direction_change_deg=42.551, max_direction_change_deg=77.284, avg_delta_v_m_s=0.155, max_delta_v_m_s=0.210
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0           0       50        25       11           0.144    0.295       1.202
+        2       HAS       4           0       46        25       11           0.095    0.296       1.202
+        3       HAS       4           0       46        25       11           0.095    0.295       1.202
+        4       HAS       4           0       46        25       11           0.145    0.296       1.203
+        5       HAS       4           0       46        25       11           0.096    0.296       1.202
+        6       HAS       4           0       46        12       11           0.096    0.296       0.551
+boundaries:
+  from_request  to_request  position_m  pos_ratio  direction_deg  backtrack  delta_v_m_s  rotation_deg  rot_ratio  delta_omega_deg_s  post_pos_ratio  low_motion  post_direction_deg  post_delta_v_m_s
+             1           2    0.008506      0.958         68.996      False        0.200         0.818      1.002             21.831           0.854       False              77.284             0.210
+             2           3    0.011719      1.844        134.271       True        0.319         1.148      2.744             19.990           0.952       False              59.026             0.113
+             3           4    0.024941      4.014        155.271       True        0.752         1.315      2.747             31.773           2.538       False              25.496             0.137
+             4           5    0.028114      2.223         46.017      False        0.433         1.901      2.088             23.418           1.592       False               8.776             0.174
+             5           6    0.024840      3.255        136.085       True        0.659         1.825      2.586             43.864           1.195       False              42.176             0.140
+
+=== Pi0.5 inference episode: 2026-08-04 14:03:28 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=46, fps=20
+summary: total_time=6.813s, inference_calls=3, completed_chunks=3, prefix_chunks=2, actions_applied=131, empty_action_steps=6
+latency: avg_first_action=0.145s, p95_first_action=0.145s, recommended_delay=3, avg_final=0.295s, avg_chunk_duration=2.137s
+discontinuity: boundaries=2, avg_position_m=0.022503, max_position_m=0.039840, avg_rotation_deg=1.256, max_rotation_deg=1.504
+boundary_motion: avg_position_ratio=3.101, max_position_ratio=5.672, avg_rotation_ratio=2.275, avg_direction_change_deg=67.916, max_direction_change_deg=119.990, backtracking=1/2, backtracking_rate=0.500, avg_delta_v_m_s=0.482, max_delta_v_m_s=0.575, avg_delta_omega_deg_s=22.680
+post_boundary_motion: avg_position_ratio=0.863, max_position_ratio=1.293, low_motion=0/2, low_motion_rate=0.000, avg_direction_change_deg=69.485, max_direction_change_deg=114.929, avg_delta_v_m_s=0.236, max_delta_v_m_s=0.370
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0           0       50        46       11           0.144    0.294       2.254
+        2       HAS       4           0       46        46       11           0.146    0.296       2.254
+        3       HAS       4           0       46        39       11           0.145    0.296       1.903
+boundaries:
+  from_request  to_request  position_m  pos_ratio  direction_deg  backtrack  delta_v_m_s  rotation_deg  rot_ratio  delta_omega_deg_s  post_pos_ratio  low_motion  post_direction_deg  post_delta_v_m_s
+             1           2    0.005167      0.529        119.990       True        0.389         1.009      1.348             23.951           0.432       False             114.929             0.370
+             2           3    0.039840      5.672         15.843      False        0.575         1.504      3.202             21.408           1.293       False              24.041             0.101
+
+=== Pi0.5 inference episode: 2026-08-04 14:03:45 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=46, fps=20
+summary: total_time=6.812s, inference_calls=3, completed_chunks=3, prefix_chunks=2, actions_applied=131, empty_action_steps=6
+latency: avg_first_action=0.112s, p95_first_action=0.140s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=2.137s
+discontinuity: boundaries=2, avg_position_m=0.022046, max_position_m=0.034687, avg_rotation_deg=2.619, max_rotation_deg=3.496
+boundary_motion: avg_position_ratio=2.388, max_position_ratio=3.757, avg_rotation_ratio=3.642, avg_direction_change_deg=110.063, max_direction_change_deg=164.978, backtracking=1/2, backtracking_rate=0.500, avg_delta_v_m_s=0.456, max_delta_v_m_s=0.597, avg_delta_omega_deg_s=54.337
+post_boundary_motion: avg_position_ratio=1.133, max_position_ratio=1.551, low_motion=0/2, low_motion_rate=0.000, avg_direction_change_deg=35.070, max_direction_change_deg=54.537, avg_delta_v_m_s=0.108, max_delta_v_m_s=0.121
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        4       HAS       0           0       50        46       11           0.145    0.296       2.255
+        5       HAS       4           0       46        46       11           0.096    0.296       2.254
+        6       HAS       4           0       46        39       11           0.095    0.296       1.903
+boundaries:
+  from_request  to_request  position_m  pos_ratio  direction_deg  backtrack  delta_v_m_s  rotation_deg  rot_ratio  delta_omega_deg_s  post_pos_ratio  low_motion  post_direction_deg  post_delta_v_m_s
+             4           5    0.009406      1.019        164.978       True        0.316         1.741      2.876             38.805           0.715       False              54.537             0.121
+             5           6    0.034687      3.757         55.147      False        0.597         3.496      4.408             69.869           1.551       False              15.603             0.096
+
+=== Pi0.5 inference episode: 2026-08-04 14:04:05 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=46, fps=20
+summary: total_time=6.762s, inference_calls=3, completed_chunks=3, prefix_chunks=2, actions_applied=130, empty_action_steps=6
+latency: avg_first_action=0.129s, p95_first_action=0.146s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=2.120s
+discontinuity: boundaries=2, avg_position_m=0.015581, max_position_m=0.028821, avg_rotation_deg=1.206, max_rotation_deg=1.365
+boundary_motion: avg_position_ratio=1.858, max_position_ratio=3.457, avg_rotation_ratio=2.049, avg_direction_change_deg=76.518, max_direction_change_deg=88.298, backtracking=0/2, backtracking_rate=0.000, avg_delta_v_m_s=0.365, max_delta_v_m_s=0.610, avg_delta_omega_deg_s=23.044
+post_boundary_motion: avg_position_ratio=0.978, max_position_ratio=1.645, low_motion=0/2, low_motion_rate=0.000, avg_direction_change_deg=56.600, max_direction_change_deg=56.738, avg_delta_v_m_s=0.175, max_delta_v_m_s=0.239
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        7       HAS       0           0       50        46       11           0.146    0.296       2.254
+        8       HAS       4           0       46        46       11           0.146    0.297       2.254
+        9       HAS       4           0       46        38       11           0.096    0.296       1.853
+boundaries:
+  from_request  to_request  position_m  pos_ratio  direction_deg  backtrack  delta_v_m_s  rotation_deg  rot_ratio  delta_omega_deg_s  post_pos_ratio  low_motion  post_direction_deg  post_delta_v_m_s
+             7           8    0.002341      0.259         64.739      False        0.120         1.047      1.807             10.707           0.311       False              56.462             0.111
+             8           9    0.028821      3.457         88.298      False        0.610         1.365      2.291             35.381           1.645       False              56.738             0.239
+
+=== Pi0.5 inference episode: 2026-08-04 14:04:21 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=46, fps=20
+summary: total_time=6.713s, inference_calls=3, completed_chunks=3, prefix_chunks=2, actions_applied=129, empty_action_steps=6
+latency: avg_first_action=0.145s, p95_first_action=0.146s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=2.104s
+discontinuity: boundaries=2, avg_position_m=0.019437, max_position_m=0.028211, avg_rotation_deg=1.379, max_rotation_deg=1.428
+boundary_motion: avg_position_ratio=2.481, max_position_ratio=3.650, avg_rotation_ratio=2.011, avg_direction_change_deg=96.667, max_direction_change_deg=165.001, backtracking=1/2, backtracking_rate=0.500, avg_delta_v_m_s=0.407, max_delta_v_m_s=0.442, avg_delta_omega_deg_s=47.272
+post_boundary_motion: avg_position_ratio=0.776, max_position_ratio=1.094, low_motion=0/2, low_motion_rate=0.000, avg_direction_change_deg=88.874, max_direction_change_deg=157.617, avg_delta_v_m_s=0.146, max_delta_v_m_s=0.233
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       10       HAS       0           0       50        46       11           0.145    0.295       2.256
+       11       HAS       4           0       46        46       11           0.146    0.296       2.253
+       12       HAS       4           0       46        37       11           0.145    0.296       1.802
+boundaries:
+  from_request  to_request  position_m  pos_ratio  direction_deg  backtrack  delta_v_m_s  rotation_deg  rot_ratio  delta_omega_deg_s  post_pos_ratio  low_motion  post_direction_deg  post_delta_v_m_s
+            10          11    0.010662      1.312        165.001       True        0.373         1.330      1.718             44.944           0.459       False             157.617             0.233
+            11          12    0.028211      3.650         28.333      False        0.442         1.428      2.305             49.601           1.094       False              20.130             0.060
+
+=== Pi0.5 inference episode: 2026-08-04 14:05:03 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=46, fps=20
+summary: total_time=7.062s, inference_calls=4, completed_chunks=4, prefix_chunks=3, actions_applied=136, empty_action_steps=6
+latency: avg_first_action=0.129s, p95_first_action=0.145s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=2.220s
+discontinuity: boundaries=2, avg_position_m=0.025903, max_position_m=0.028215, avg_rotation_deg=1.520, max_rotation_deg=1.892
+boundary_motion: avg_position_ratio=3.069, max_position_ratio=3.079, avg_rotation_ratio=2.154, avg_direction_change_deg=85.841, max_direction_change_deg=128.821, backtracking=1/2, backtracking_rate=0.500, avg_delta_v_m_s=0.512, max_delta_v_m_s=0.617, avg_delta_omega_deg_s=47.285
+post_boundary_motion: avg_position_ratio=1.316, max_position_ratio=1.397, low_motion=0/2, low_motion_rate=0.000, avg_direction_change_deg=32.991, max_direction_change_deg=58.239, avg_delta_v_m_s=0.132, max_delta_v_m_s=0.202
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       13       HAS       0           0       50        46       11           0.145    0.296       2.254
+       14       HAS       4           0       46        46       11           0.146    0.296       2.254
+       15       HAS       4           0       46        44       11           0.096    0.296       2.153
+       16       HAS       4           0        0         0        0             n/a      n/a         n/a
+boundaries:
+  from_request  to_request  position_m  pos_ratio  direction_deg  backtrack  delta_v_m_s  rotation_deg  rot_ratio  delta_omega_deg_s  post_pos_ratio  low_motion  post_direction_deg  post_delta_v_m_s
+            13          14    0.023591      3.058        128.821       True        0.617         1.148      1.498             43.588           1.397       False              58.239             0.202
+            14          15    0.028215      3.079         42.860      False        0.407         1.892      2.811             50.982           1.235       False               7.742             0.062
