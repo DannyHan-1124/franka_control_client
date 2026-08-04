@@ -225,6 +225,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._metrics_boundary_discontinuities: list[dict[str, Any]] = []
         self._metrics_last_applied_request_id: Optional[int] = None
         self._metrics_last_applied_action: Optional[np.ndarray] = None
+        self._metrics_within_chunk_position_steps: list[float] = []
+        self._metrics_within_chunk_rotation_steps: list[float] = []
+        self._metrics_last_position_delta: Optional[np.ndarray] = None
+        self._metrics_last_rotation_delta: Optional[np.ndarray] = None
+        self._metrics_pending_boundary_context: Optional[dict[str, Any]] = None
         self._metrics_start_perf = time.perf_counter()
         self._metrics_start_wall = time.time()
         self._last_observation_profile: dict[str, float] = {}
@@ -624,13 +629,76 @@ class Pi05PolicyInference(PolicyInferenceManager):
         previous = self._metrics_last_applied_action
         previous_request_id = self._metrics_last_applied_request_id
 
-        if (
+        if previous is not None and request_id == previous_request_id:
+            position_delta = current[:3] - previous[:3]
+            rotation_delta = _quat_delta_rotvec(previous[3:7], current[3:7])
+
+            pending = self._metrics_pending_boundary_context
+            if pending is not None and pending.get("request_id") == request_id:
+                boundary = pending["boundary"]
+                previous_position_delta = pending.get("previous_position_delta")
+                previous_rotation_delta = pending.get("previous_rotation_delta")
+                post_step_m = float(np.linalg.norm(position_delta))
+                post_rotation_deg = float(np.degrees(np.linalg.norm(rotation_delta)))
+                boundary["post_boundary_position_step_m"] = post_step_m
+                boundary["post_boundary_rotation_step_deg"] = post_rotation_deg
+                boundary["post_boundary_position_step_ratio"] = _safe_ratio(
+                    post_step_m,
+                    pending.get("baseline_position_step_m"),
+                )
+                post_position_ratio = boundary["post_boundary_position_step_ratio"]
+                boundary["post_boundary_low_motion"] = (
+                    post_position_ratio is not None and post_position_ratio < 0.25
+                )
+                boundary["post_boundary_rotation_step_ratio"] = _safe_ratio(
+                    post_rotation_deg,
+                    pending.get("baseline_rotation_step_deg"),
+                )
+                if previous_position_delta is not None:
+                    boundary["post_boundary_direction_change_deg"] = _vector_angle_deg(
+                        previous_position_delta,
+                        position_delta,
+                    )
+                    boundary["post_boundary_linear_velocity_change_m_s"] = float(
+                        np.linalg.norm(position_delta - previous_position_delta) * self.cfg.fps
+                    )
+                if previous_rotation_delta is not None:
+                    boundary["post_boundary_angular_velocity_change_deg_s"] = float(
+                        np.degrees(np.linalg.norm(rotation_delta - previous_rotation_delta))
+                        * self.cfg.fps
+                    )
+                metric = self._metrics_stream_chunks.get(int(request_id))
+                if metric is None:
+                    metric = next(
+                        (
+                            chunk
+                            for chunk in self._metrics_chunks
+                            if chunk.get("request_id") == request_id
+                        ),
+                        None,
+                    )
+                if metric is not None:
+                    metric["boundary_discontinuity"] = dict(boundary)
+                self._metrics_pending_boundary_context = None
+
+            self._metrics_within_chunk_position_steps.append(float(np.linalg.norm(position_delta)))
+            self._metrics_within_chunk_rotation_steps.append(
+                float(np.degrees(np.linalg.norm(rotation_delta)))
+            )
+            self._metrics_last_position_delta = position_delta
+            self._metrics_last_rotation_delta = rotation_delta
+
+        elif (
             previous is not None
             and request_id is not None
             and previous_request_id is not None
             and request_id != previous_request_id
         ):
-            position_jump_m = float(np.linalg.norm(current[:3] - previous[:3]))
+            position_delta = current[:3] - previous[:3]
+            rotation_delta = _quat_delta_rotvec(previous[3:7], current[3:7])
+            position_jump_m = float(np.linalg.norm(position_delta))
+            baseline_position_step_m = _median(self._metrics_within_chunk_position_steps)
+            baseline_rotation_step_deg = _median(self._metrics_within_chunk_rotation_steps)
 
             previous_quat = previous[3:7]
             current_quat = current[3:7]
@@ -648,20 +716,56 @@ class Pi05PolicyInference(PolicyInferenceManager):
             else:
                 rotation_jump_deg = None
 
-            # q and -q represent the same orientation. Align their signs before
-            # computing the full action-vector distance.
-            aligned_current = current.copy()
-            if np.dot(previous_quat, current_quat) < 0.0:
-                aligned_current[3:7] *= -1.0
             boundary = {
                 "from_request_id": int(previous_request_id),
                 "to_request_id": int(request_id),
                 "position_jump_m": position_jump_m,
                 "rotation_jump_deg": rotation_jump_deg,
-                "gripper_jump": float(abs(current[7] - previous[7])),
-                "action_l2": float(np.linalg.norm(aligned_current - previous)),
+                "baseline_position_step_m": baseline_position_step_m,
+                "position_jump_ratio": _safe_ratio(position_jump_m, baseline_position_step_m),
+                "baseline_rotation_step_deg": baseline_rotation_step_deg,
+                "rotation_jump_ratio": _safe_ratio(rotation_jump_deg, baseline_rotation_step_deg),
             }
+            if self._metrics_last_position_delta is not None:
+                direction_change_deg = _vector_angle_deg(
+                    self._metrics_last_position_delta,
+                    position_delta,
+                )
+                boundary["direction_change_deg"] = direction_change_deg
+                boundary["backtracking"] = (
+                    direction_change_deg is not None and direction_change_deg > 90.0
+                )
+                boundary["linear_velocity_change_m_s"] = float(
+                    np.linalg.norm(position_delta - self._metrics_last_position_delta) * self.cfg.fps
+                )
+            else:
+                boundary["direction_change_deg"] = None
+                boundary["backtracking"] = None
+                boundary["linear_velocity_change_m_s"] = None
+            if self._metrics_last_rotation_delta is not None:
+                boundary["angular_velocity_change_deg_s"] = float(
+                    np.degrees(np.linalg.norm(rotation_delta - self._metrics_last_rotation_delta))
+                    * self.cfg.fps
+                )
+            else:
+                boundary["angular_velocity_change_deg_s"] = None
             self._metrics_boundary_discontinuities.append(boundary)
+            self._metrics_pending_boundary_context = {
+                "request_id": request_id,
+                "boundary": boundary,
+                "previous_position_delta": (
+                    self._metrics_last_position_delta.copy()
+                    if self._metrics_last_position_delta is not None
+                    else None
+                ),
+                "previous_rotation_delta": (
+                    self._metrics_last_rotation_delta.copy()
+                    if self._metrics_last_rotation_delta is not None
+                    else None
+                ),
+                "baseline_position_step_m": baseline_position_step_m,
+                "baseline_rotation_step_deg": baseline_rotation_step_deg,
+            }
             metric = self._metrics_stream_chunks.get(int(request_id))
             if metric is None:
                 metric = next(
@@ -674,6 +778,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 )
             if metric is not None:
                 metric["boundary_discontinuity"] = dict(boundary)
+
+            self._metrics_within_chunk_position_steps = []
+            self._metrics_within_chunk_rotation_steps = []
+            self._metrics_last_position_delta = None
+            self._metrics_last_rotation_delta = None
 
         self._metrics_last_applied_request_id = request_id
         self._metrics_last_applied_action = current.copy()
@@ -773,8 +882,33 @@ class Pi05PolicyInference(PolicyInferenceManager):
             for item in boundaries
             if item.get("rotation_jump_deg") is not None
         ]
-        gripper_jumps = [float(item["gripper_jump"]) for item in boundaries]
-        action_l2_jumps = [float(item["action_l2"]) for item in boundaries]
+        position_jump_ratios = _boundary_values(boundaries, "position_jump_ratio")
+        rotation_jump_ratios = _boundary_values(boundaries, "rotation_jump_ratio")
+        direction_changes = _boundary_values(boundaries, "direction_change_deg")
+        linear_velocity_changes = _boundary_values(boundaries, "linear_velocity_change_m_s")
+        angular_velocity_changes = _boundary_values(boundaries, "angular_velocity_change_deg_s")
+        post_position_step_ratios = _boundary_values(
+            boundaries,
+            "post_boundary_position_step_ratio",
+        )
+        post_direction_changes = _boundary_values(
+            boundaries,
+            "post_boundary_direction_change_deg",
+        )
+        post_linear_velocity_changes = _boundary_values(
+            boundaries,
+            "post_boundary_linear_velocity_change_m_s",
+        )
+        backtracking_values = [
+            bool(item["backtracking"])
+            for item in boundaries
+            if item.get("backtracking") is not None
+        ]
+        low_motion_values = [
+            bool(item["post_boundary_low_motion"])
+            for item in boundaries
+            if item.get("post_boundary_low_motion") is not None
+        ]
         prefix_chunks = sum(1 for chunk in chunks if int(chunk.get("prefix_steps") or 0) > 0)
         p95_first_action_latency_s = (
             float(np.percentile(first_action_latencies, 95)) if first_action_latencies else None
@@ -811,10 +945,47 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "max_boundary_position_jump_m": max(position_jumps) if position_jumps else None,
             "avg_boundary_rotation_jump_deg": _mean(rotation_jumps),
             "max_boundary_rotation_jump_deg": max(rotation_jumps) if rotation_jumps else None,
-            "avg_boundary_gripper_jump": _mean(gripper_jumps),
-            "max_boundary_gripper_jump": max(gripper_jumps) if gripper_jumps else None,
-            "avg_boundary_action_l2": _mean(action_l2_jumps),
-            "max_boundary_action_l2": max(action_l2_jumps) if action_l2_jumps else None,
+            "avg_boundary_position_jump_ratio": _mean(position_jump_ratios),
+            "max_boundary_position_jump_ratio": max(position_jump_ratios) if position_jump_ratios else None,
+            "avg_boundary_rotation_jump_ratio": _mean(rotation_jump_ratios),
+            "max_boundary_rotation_jump_ratio": max(rotation_jump_ratios) if rotation_jump_ratios else None,
+            "avg_boundary_direction_change_deg": _mean(direction_changes),
+            "max_boundary_direction_change_deg": max(direction_changes) if direction_changes else None,
+            "boundary_backtracking_count": sum(backtracking_values),
+            "boundary_backtracking_rate": (
+                float(sum(backtracking_values) / len(backtracking_values))
+                if backtracking_values
+                else None
+            ),
+            "post_boundary_low_motion_ratio_threshold": 0.25,
+            "post_boundary_low_motion_count": sum(low_motion_values),
+            "post_boundary_low_motion_rate": (
+                float(sum(low_motion_values) / len(low_motion_values))
+                if low_motion_values
+                else None
+            ),
+            "avg_boundary_linear_velocity_change_m_s": _mean(linear_velocity_changes),
+            "max_boundary_linear_velocity_change_m_s": (
+                max(linear_velocity_changes) if linear_velocity_changes else None
+            ),
+            "avg_boundary_angular_velocity_change_deg_s": _mean(angular_velocity_changes),
+            "max_boundary_angular_velocity_change_deg_s": (
+                max(angular_velocity_changes) if angular_velocity_changes else None
+            ),
+            "avg_post_boundary_position_step_ratio": _mean(post_position_step_ratios),
+            "max_post_boundary_position_step_ratio": (
+                max(post_position_step_ratios) if post_position_step_ratios else None
+            ),
+            "avg_post_boundary_direction_change_deg": _mean(post_direction_changes),
+            "max_post_boundary_direction_change_deg": (
+                max(post_direction_changes) if post_direction_changes else None
+            ),
+            "avg_post_boundary_linear_velocity_change_m_s": _mean(
+                post_linear_velocity_changes
+            ),
+            "max_post_boundary_linear_velocity_change_m_s": (
+                max(post_linear_velocity_changes) if post_linear_velocity_changes else None
+            ),
         }
         if self.cfg.faster_infer_time_schedule.upper() == "HAS":
             summary["faster_alpha"] = float(self.cfg.faster_alpha)
@@ -957,11 +1128,33 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 f"avg_position_m={_format_optional_precision(summary.get('avg_boundary_position_jump_m'), 6)}, "
                 f"max_position_m={_format_optional_precision(summary.get('max_boundary_position_jump_m'), 6)}, "
                 f"avg_rotation_deg={_format_optional(summary.get('avg_boundary_rotation_jump_deg'))}, "
-                f"max_rotation_deg={_format_optional(summary.get('max_boundary_rotation_jump_deg'))}, "
-                f"avg_gripper={_format_optional_precision(summary.get('avg_boundary_gripper_jump'), 6)}, "
-                f"max_gripper={_format_optional_precision(summary.get('max_boundary_gripper_jump'), 6)}, "
-                f"avg_action_l2={_format_optional_precision(summary.get('avg_boundary_action_l2'), 6)}, "
-                f"max_action_l2={_format_optional_precision(summary.get('max_boundary_action_l2'), 6)}"
+                f"max_rotation_deg={_format_optional(summary.get('max_boundary_rotation_jump_deg'))}"
+            ),
+            (
+                "boundary_motion: "
+                f"avg_position_ratio={_format_optional(summary.get('avg_boundary_position_jump_ratio'))}, "
+                f"max_position_ratio={_format_optional(summary.get('max_boundary_position_jump_ratio'))}, "
+                f"avg_rotation_ratio={_format_optional(summary.get('avg_boundary_rotation_jump_ratio'))}, "
+                f"avg_direction_change_deg={_format_optional(summary.get('avg_boundary_direction_change_deg'))}, "
+                f"max_direction_change_deg={_format_optional(summary.get('max_boundary_direction_change_deg'))}, "
+                f"backtracking={summary.get('boundary_backtracking_count')}/"
+                f"{summary.get('chunk_boundary_count')}, "
+                f"backtracking_rate={_format_optional(summary.get('boundary_backtracking_rate'))}, "
+                f"avg_delta_v_m_s={_format_optional(summary.get('avg_boundary_linear_velocity_change_m_s'))}, "
+                f"max_delta_v_m_s={_format_optional(summary.get('max_boundary_linear_velocity_change_m_s'))}, "
+                f"avg_delta_omega_deg_s={_format_optional(summary.get('avg_boundary_angular_velocity_change_deg_s'))}"
+            ),
+            (
+                "post_boundary_motion: "
+                f"avg_position_ratio={_format_optional(summary.get('avg_post_boundary_position_step_ratio'))}, "
+                f"max_position_ratio={_format_optional(summary.get('max_post_boundary_position_step_ratio'))}, "
+                f"low_motion={summary.get('post_boundary_low_motion_count')}/"
+                f"{summary.get('chunk_boundary_count')}, "
+                f"low_motion_rate={_format_optional(summary.get('post_boundary_low_motion_rate'))}, "
+                f"avg_direction_change_deg={_format_optional(summary.get('avg_post_boundary_direction_change_deg'))}, "
+                f"max_direction_change_deg={_format_optional(summary.get('max_post_boundary_direction_change_deg'))}, "
+                f"avg_delta_v_m_s={_format_optional(summary.get('avg_post_boundary_linear_velocity_change_m_s'))}, "
+                f"max_delta_v_m_s={_format_optional(summary.get('max_post_boundary_linear_velocity_change_m_s'))}"
             ),
             "chunks:",
             (
@@ -990,7 +1183,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 [
                     "boundaries:",
                     (
-                        "  from_request  to_request  position_m  rotation_deg  gripper  action_l2"
+                        "  from_request  to_request  position_m  pos_ratio  direction_deg  backtrack  "
+                        "delta_v_m_s  rotation_deg  rot_ratio  delta_omega_deg_s  post_pos_ratio  low_motion  "
+                        "post_direction_deg  post_delta_v_m_s"
                     ),
                 ]
             )
@@ -1000,9 +1195,17 @@ class Pi05PolicyInference(PolicyInferenceManager):
                     f"{str(boundary.get('from_request_id')):>12}  "
                     f"{str(boundary.get('to_request_id')):>10}  "
                     f"{_format_optional_precision(boundary.get('position_jump_m'), 6):>10}  "
+                    f"{_format_optional(boundary.get('position_jump_ratio')):>9}  "
+                    f"{_format_optional(boundary.get('direction_change_deg')):>13}  "
+                    f"{str(boundary.get('backtracking')):>9}  "
+                    f"{_format_optional(boundary.get('linear_velocity_change_m_s')):>11}  "
                     f"{_format_optional(boundary.get('rotation_jump_deg')):>12}  "
-                    f"{_format_optional_precision(boundary.get('gripper_jump'), 6):>7}  "
-                    f"{_format_optional_precision(boundary.get('action_l2'), 6):>9}"
+                    f"{_format_optional(boundary.get('rotation_jump_ratio')):>9}  "
+                    f"{_format_optional(boundary.get('angular_velocity_change_deg_s')):>17}  "
+                    f"{_format_optional(boundary.get('post_boundary_position_step_ratio')):>14}  "
+                    f"{str(boundary.get('post_boundary_low_motion')):>10}  "
+                    f"{_format_optional(boundary.get('post_boundary_direction_change_deg')):>18}  "
+                    f"{_format_optional(boundary.get('post_boundary_linear_velocity_change_m_s')):>16}"
                 )
 
         with path.open("a", encoding="utf-8") as f:
@@ -1379,6 +1582,62 @@ def _mean(values: List[float]) -> Optional[float]:
     if not values:
         return None
     return float(sum(values) / len(values))
+
+
+def _median(values: List[float]) -> Optional[float]:
+    if not values:
+        return None
+    return float(np.median(np.asarray(values, dtype=np.float64)))
+
+
+def _safe_ratio(numerator: Optional[float], denominator: Optional[float]) -> Optional[float]:
+    if numerator is None or denominator is None or denominator <= 1e-12:
+        return None
+    return float(numerator / denominator)
+
+
+def _vector_angle_deg(first: np.ndarray, second: np.ndarray) -> Optional[float]:
+    first_arr = np.asarray(first, dtype=np.float64)
+    second_arr = np.asarray(second, dtype=np.float64)
+    denominator = float(np.linalg.norm(first_arr) * np.linalg.norm(second_arr))
+    if denominator <= 1e-12:
+        return None
+    cosine = float(np.clip(np.dot(first_arr, second_arr) / denominator, -1.0, 1.0))
+    return float(np.degrees(np.arccos(cosine)))
+
+
+def _quat_delta_rotvec(previous: np.ndarray, current: np.ndarray) -> np.ndarray:
+    """Return the shortest relative xyzw-quaternion rotation as a rotation vector."""
+    q0 = _normalize_quat(previous)
+    q1 = _normalize_quat(current)
+    if np.dot(q0, q1) < 0.0:
+        q1 = -q1
+
+    x0, y0, z0, w0 = q0
+    x1, y1, z1, w1 = q1
+    # q_delta = q1 * conjugate(q0)
+    vector = np.asarray(
+        [
+            -w1 * x0 + x1 * w0 - y1 * z0 + z1 * y0,
+            -w1 * y0 + x1 * z0 + y1 * w0 - z1 * x0,
+            -w1 * z0 - x1 * y0 + y1 * x0 + z1 * w0,
+        ],
+        dtype=np.float64,
+    )
+    scalar = float(w1 * w0 + x1 * x0 + y1 * y0 + z1 * z0)
+    vector_norm = float(np.linalg.norm(vector))
+    if vector_norm <= 1e-12:
+        return np.zeros(3, dtype=np.float64)
+    angle = 2.0 * np.arctan2(vector_norm, max(scalar, 0.0))
+    return vector * (angle / vector_norm)
+
+
+def _boundary_values(boundaries: List[Dict[str, Any]], key: str) -> List[float]:
+    return [
+        float(item[key])
+        for item in boundaries
+        if item.get(key) is not None
+    ]
 
 
 def _without_time_profile(chunk: Dict[str, Any]) -> Dict[str, Any]:
