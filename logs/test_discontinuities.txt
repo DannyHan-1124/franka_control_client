@@ -1,0 +1,368 @@
+
+=== Pi0.5 inference episode: 2026-08-04 13:35:26 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=25, fps=20
+summary: total_time=6.261s, inference_calls=5, completed_chunks=5, prefix_chunks=4, actions_applied=120, empty_action_steps=6
+latency: avg_first_action=0.116s, p95_first_action=0.146s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=1.152s
+discontinuity: boundaries=4, avg_position_m=0.014807, max_position_m=0.025138, avg_rotation_deg=1.665, max_rotation_deg=3.344, avg_gripper=0.250000, max_gripper=1.000000, avg_action_l2=0.269027, max_action_l2=1.000040
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0           0       50        25       11           0.145    0.296       1.202
+        2       HAS       4           0       46        25       11           0.095    0.296       1.202
+        3       HAS       4           0       46        25       11           0.096    0.296       1.202
+        4       HAS       4           0       46        25       11           0.096    0.296       1.202
+        5       HAS       4           0       46        20       11           0.146    0.296       0.951
+boundaries:
+  from_request  to_request  position_m  rotation_deg  gripper  action_l2
+             1           2    0.011670         0.984  0.000000   0.014488
+             2           3    0.002592         0.982  1.000000   1.000040
+             3           4    0.019829         1.351  0.000000   0.023068
+             4           5    0.025138         3.344  0.000000   0.038512
+
+=== Pi0.5 inference episode: 2026-08-04 13:35:42 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=25, fps=20
+summary: total_time=6.611s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=127, empty_action_steps=6
+latency: avg_first_action=0.112s, p95_first_action=0.146s, recommended_delay=3, avg_final=0.295s, avg_chunk_duration=1.010s
+discontinuity: boundaries=5, avg_position_m=0.020926, max_position_m=0.047099, avg_rotation_deg=1.572, max_rotation_deg=2.648, avg_gripper=0.000000, max_gripper=0.000000, avg_action_l2=0.025450, max_action_l2=0.052462
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        6       HAS       0           0       50        25       11           0.146    0.296       1.202
+        7       HAS       4           0       46        25       11           0.096    0.296       1.202
+        8       HAS       4           0       46        25       11           0.146    0.296       1.202
+        9       HAS       4           0       46        25       11           0.095    0.296       1.202
+       10       HAS       4           0       46        25       11           0.094    0.295       1.202
+       11       HAS       4           0       46         2       11           0.094    0.294       0.050
+boundaries:
+  from_request  to_request  position_m  rotation_deg  gripper  action_l2
+             6           7    0.006206         1.090  0.000000   0.011358
+             7           8    0.008743         1.227  0.000000   0.013821
+             8           9    0.047099         2.648  0.000000   0.052462
+             9          10    0.022782         1.738  0.000000   0.027371
+            10          11    0.019802         1.159  0.000000   0.022236
+
+=== Pi0.5 inference episode: 2026-08-04 13:36:03 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=25, fps=20
+summary: total_time=6.612s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=127, empty_action_steps=6
+latency: avg_first_action=0.104s, p95_first_action=0.133s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=1.010s
+discontinuity: boundaries=5, avg_position_m=0.014212, max_position_m=0.023998, avg_rotation_deg=1.227, max_rotation_deg=2.181, avg_gripper=0.000000, max_gripper=0.000000, avg_action_l2=0.017811, max_action_l2=0.030628
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       12       HAS       0           0       50        25       11           0.145    0.296       1.202
+       13       HAS       4           0       46        25       11           0.095    0.296       1.202
+       14       HAS       4           0       46        25       11           0.095    0.296       1.202
+       15       HAS       4           0       46        25       11           0.095    0.295       1.202
+       16       HAS       4           0       46        25       11           0.095    0.295       1.203
+       17       HAS       4           0       46         2       11           0.096    0.296       0.050
+boundaries:
+  from_request  to_request  position_m  rotation_deg  gripper  action_l2
+            12          13    0.007788         0.621  0.000000   0.009490
+            13          14    0.012233         1.203  0.000000   0.016121
+            14          15    0.011963         0.975  0.000000   0.014681
+            15          16    0.023998         2.181  0.000000   0.030628
+            16          17    0.015077         1.155  0.000000   0.018137
+
+=== Pi0.5 inference episode: 2026-08-04 13:36:19 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=25, fps=20
+summary: total_time=6.563s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=126, empty_action_steps=6
+latency: avg_first_action=0.112s, p95_first_action=0.145s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=1.002s
+discontinuity: boundaries=5, avg_position_m=0.021578, max_position_m=0.051403, avg_rotation_deg=1.617, max_rotation_deg=2.777, avg_gripper=0.200000, max_gripper=1.000000, avg_action_l2=0.222183, max_action_l2=1.000216
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       18       HAS       0           0       50        25       11           0.146    0.296       1.204
+       19       HAS       4           0       46        25       11           0.096    0.296       1.202
+       20       HAS       4           0       46        25       11           0.096    0.296       1.202
+       21       HAS       4           0       46        25       11           0.145    0.295       1.202
+       22       HAS       4           0       46        25       11           0.096    0.296       1.202
+       23       HAS       4           0       38         1        9           0.095      n/a       0.000
+boundaries:
+  from_request  to_request  position_m  rotation_deg  gripper  action_l2
+            18          19    0.014754         1.326  0.000000   0.018749
+            19          20    0.004719         1.117  0.000000   0.010827
+            20          21    0.051403         2.777  0.000000   0.056830
+            21          22    0.018314         1.829  0.000000   0.024292
+            22          23    0.018700         1.037  1.000000   1.000216
+
+=== Pi0.5 inference episode: 2026-08-04 13:36:34 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=25, fps=20
+summary: total_time=6.318s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=121, empty_action_steps=6
+latency: avg_first_action=0.115s, p95_first_action=0.145s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=1.163s
+discontinuity: boundaries=4, avg_position_m=0.012902, max_position_m=0.015185, avg_rotation_deg=1.640, max_rotation_deg=2.272, avg_gripper=0.250000, max_gripper=1.000000, avg_action_l2=0.266361, max_action_l2=1.000074
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       24       HAS       0           0       50        25       11           0.145    0.295       1.202
+       25       HAS       4           0       46        25       11           0.095    0.296       1.204
+       26       HAS       4           0       46        25       11           0.096    0.296       1.202
+       27       HAS       4           0       46        25       11           0.145    0.296       1.202
+       28       HAS       4           0       46        21       11           0.096    0.296       1.006
+       29       HAS       4           0        0         0        0             n/a      n/a         n/a
+boundaries:
+  from_request  to_request  position_m  rotation_deg  gripper  action_l2
+            24          25    0.013470         1.212  0.000000   0.017124
+            25          26    0.008778         0.962  1.000000   1.000074
+            26          27    0.015185         2.272  0.000000   0.024970
+            27          28    0.014175         2.115  0.000000   0.023274
+
+=== Pi0.5 inference episode: 2026-08-04 13:37:41 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=46, fps=20
+summary: total_time=6.513s, inference_calls=3, completed_chunks=3, prefix_chunks=2, actions_applied=125, empty_action_steps=6
+latency: avg_first_action=0.145s, p95_first_action=0.146s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=2.037s
+discontinuity: boundaries=2, avg_position_m=0.015494, max_position_m=0.026043, avg_rotation_deg=2.456, max_rotation_deg=2.619, avg_gripper=0.000000, max_gripper=0.000000, avg_action_l2=0.027628, max_action_l2=0.034649
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0           0       50        46       11           0.145    0.295       2.254
+        2       HAS       4           0       46        46       11           0.146    0.296       2.254
+        3       HAS       4           0       46        33       11           0.145    0.296       1.605
+boundaries:
+  from_request  to_request  position_m  rotation_deg  gripper  action_l2
+             1           2    0.004945         2.292  0.000000   0.020607
+             2           3    0.026043         2.619  0.000000   0.034649
+
+=== Pi0.5 inference episode: 2026-08-04 13:37:58 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=46, fps=20
+summary: total_time=6.561s, inference_calls=3, completed_chunks=3, prefix_chunks=2, actions_applied=126, empty_action_steps=6
+latency: avg_first_action=0.129s, p95_first_action=0.145s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=2.053s
+discontinuity: boundaries=2, avg_position_m=0.020147, max_position_m=0.032473, avg_rotation_deg=1.333, max_rotation_deg=1.439, avg_gripper=0.000000, max_gripper=0.000000, avg_action_l2=0.024038, max_action_l2=0.034817
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        4       HAS       0           0       50        46       11           0.144    0.295       2.254
+        5       HAS       4           0       46        46       11           0.096    0.296       2.253
+        6       HAS       4           0       46        34       11           0.146    0.296       1.653
+boundaries:
+  from_request  to_request  position_m  rotation_deg  gripper  action_l2
+             4           5    0.007820         1.227  0.000000   0.013259
+             5           6    0.032473         1.439  0.000000   0.034817
+
+=== Pi0.5 inference episode: 2026-08-04 13:38:14 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=46, fps=20
+summary: total_time=6.814s, inference_calls=3, completed_chunks=3, prefix_chunks=2, actions_applied=131, empty_action_steps=6
+latency: avg_first_action=0.129s, p95_first_action=0.146s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=2.137s
+discontinuity: boundaries=2, avg_position_m=0.022320, max_position_m=0.038174, avg_rotation_deg=1.041, max_rotation_deg=1.225, avg_gripper=0.000000, max_gripper=0.000000, avg_action_l2=0.024762, max_action_l2=0.039643
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        7       HAS       0           0       50        46       11           0.146    0.296       2.254
+        8       HAS       4           0       46        46       11           0.095    0.297       2.255
+        9       HAS       4           0       46        39       11           0.146    0.296       1.903
+boundaries:
+  from_request  to_request  position_m  rotation_deg  gripper  action_l2
+             7           8    0.006466         0.856  0.000000   0.009880
+             8           9    0.038174         1.225  0.000000   0.039643
+
+=== Pi0.5 inference episode: 2026-08-04 13:38:33 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=46, fps=20
+summary: total_time=6.912s, inference_calls=3, completed_chunks=3, prefix_chunks=2, actions_applied=133, empty_action_steps=6
+latency: avg_first_action=0.129s, p95_first_action=0.146s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=2.170s
+discontinuity: boundaries=2, avg_position_m=0.015091, max_position_m=0.022786, avg_rotation_deg=1.468, max_rotation_deg=1.505, avg_gripper=0.000000, max_gripper=0.000000, avg_action_l2=0.020530, max_action_l2=0.025986
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       10       HAS       0           0       50        46       11           0.146    0.296       2.254
+       11       HAS       4           0       46        46       11           0.145    0.295       2.254
+       12       HAS       4           0       46        41       11           0.096    0.296       2.003
+boundaries:
+  from_request  to_request  position_m  rotation_deg  gripper  action_l2
+            10          11    0.007396         1.505  0.000000   0.015073
+            11          12    0.022786         1.432  0.000000   0.025986
+
+=== Pi0.5 inference episode: 2026-08-04 13:38:54 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=46, fps=20
+summary: total_time=6.862s, inference_calls=3, completed_chunks=3, prefix_chunks=2, actions_applied=132, empty_action_steps=6
+latency: avg_first_action=0.129s, p95_first_action=0.146s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=2.153s
+discontinuity: boundaries=2, avg_position_m=0.021703, max_position_m=0.037235, avg_rotation_deg=1.390, max_rotation_deg=1.798, avg_gripper=0.000000, max_gripper=0.000000, avg_action_l2=0.025481, max_action_l2=0.040406
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       13       HAS       0           0       50        46       11           0.146    0.296       2.254
+       14       HAS       4           0       46        46       11           0.096    0.296       2.253
+       15       HAS       4           0       46        40       11           0.145    0.296       1.953
+boundaries:
+  from_request  to_request  position_m  rotation_deg  gripper  action_l2
+            13          14    0.006170         0.981  0.000000   0.010555
+            14          15    0.037235         1.798  0.000000   0.040406
+
+=== Pi0.5 inference episode: 2026-08-04 13:39:36 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=15, fps=20
+summary: total_time=9.968s, inference_calls=14, completed_chunks=14, prefix_chunks=13, actions_applied=194, empty_action_steps=6
+latency: avg_first_action=0.106s, p95_first_action=0.145s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=0.697s
+discontinuity: boundaries=12, avg_position_m=0.025767, max_position_m=0.043116, avg_rotation_deg=2.026, max_rotation_deg=6.381, avg_gripper=0.000000, max_gripper=0.000000, avg_action_l2=0.032802, max_action_l2=0.061516
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0           0       50        15       11           0.144    0.295       0.701
+        2       HAS       4           0       46        15       11           0.146    0.296       0.701
+        3       HAS       4           0       46        15       11           0.096    0.296       0.701
+        4       HAS       4           0       46        15       11           0.094    0.295       0.701
+        5       HAS       4           0       46        15       11           0.095    0.296       0.701
+        6       HAS       4           0       46        15       11           0.095    0.295       0.701
+        7       HAS       4           0       46        15       11           0.145    0.295       0.702
+        8       HAS       4           0       46        15       11           0.096    0.297       0.701
+        9       HAS       4           0       46        15       11           0.095    0.296       0.701
+       10       HAS       4           0       46        15       11           0.096    0.296       0.701
+       11       HAS       4           0       46        15       11           0.095    0.296       0.701
+       12       HAS       4           0       46        15       11           0.095    0.296       0.701
+       13       HAS       4           0       46        14       11           0.094    0.294       0.651
+       14       HAS       4           0        4         0        3           0.096      n/a         n/a
+boundaries:
+  from_request  to_request  position_m  rotation_deg  gripper  action_l2
+             1           2    0.016458         1.759  0.000000   0.022508
+             2           3    0.029959         1.078  0.000000   0.031400
+             3           4    0.042380         1.894  0.000000   0.045487
+             4           5    0.037491         0.896  0.000000   0.038298
+             5           6    0.043116         1.872  0.000000   0.046107
+             6           7    0.012357         1.262  0.000000   0.016550
+             7           8    0.007784         1.111  0.000000   0.012434
+             8           9    0.012210         0.656  0.000000   0.013485
+             9          10    0.040577         3.320  0.000000   0.049857
+            10          11    0.020989         3.163  0.000000   0.034677
+            11          12    0.026163         6.381  0.000000   0.061516
+            12          13    0.019721         0.922  0.000000   0.021299
+
+=== Pi0.5 inference episode: 2026-08-04 13:39:55 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=15, fps=20
+summary: total_time=9.567s, inference_calls=13, completed_chunks=13, prefix_chunks=12, actions_applied=186, empty_action_steps=6
+latency: avg_first_action=0.099s, p95_first_action=0.116s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=0.667s
+discontinuity: boundaries=12, avg_position_m=0.018293, max_position_m=0.045258, avg_rotation_deg=1.197, max_rotation_deg=2.167, avg_gripper=0.000000, max_gripper=0.000000, avg_action_l2=0.021527, max_action_l2=0.049049
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       15       HAS       0           0       50        15       11           0.145    0.296       0.701
+       16       HAS       4           0       46        15       11           0.095    0.296       0.702
+       17       HAS       4           0       46        15       11           0.095    0.297       0.702
+       18       HAS       4           0       46        15       11           0.096    0.296       0.701
+       19       HAS       4           0       46        15       11           0.096    0.296       0.701
+       20       HAS       4           0       46        15       11           0.096    0.296       0.701
+       21       HAS       4           0       46        15       11           0.096    0.296       0.701
+       22       HAS       4           0       46        15       11           0.096    0.296       0.701
+       23       HAS       4           0       46        15       11           0.096    0.296       0.701
+       24       HAS       4           0       46        15       11           0.096    0.296       0.701
+       25       HAS       4           0       46        15       11           0.096    0.296       0.701
+       26       HAS       4           0       46        15       11           0.096    0.296       0.701
+       27       HAS       4           0       46         6       11           0.094    0.295       0.250
+boundaries:
+  from_request  to_request  position_m  rotation_deg  gripper  action_l2
+            15          16    0.008465         1.051  0.000000   0.012478
+            16          17    0.024434         0.711  0.000000   0.025211
+            17          18    0.017141         0.701  0.000000   0.018201
+            18          19    0.045258         2.167  0.000000   0.049049
+            19          20    0.032478         1.144  0.000000   0.033978
+            20          21    0.005250         0.874  0.000000   0.009256
+            21          22    0.008687         0.905  0.000000   0.011740
+            22          23    0.008780         1.046  0.000000   0.012668
+            23          24    0.021664         2.034  0.000000   0.028008
+            24          25    0.021906         1.386  0.000000   0.025025
+            25          26    0.013215         1.122  0.000000   0.016445
+            26          27    0.012239         1.227  0.000000   0.016261
+
+=== Pi0.5 inference episode: 2026-08-04 13:40:14 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=15, fps=20
+summary: total_time=10.720s, inference_calls=15, completed_chunks=15, prefix_chunks=14, actions_applied=209, empty_action_steps=6
+latency: avg_first_action=0.099s, p95_first_action=0.111s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=0.698s
+discontinuity: boundaries=13, avg_position_m=0.026229, max_position_m=0.062785, avg_rotation_deg=1.410, max_rotation_deg=2.410, avg_gripper=0.076923, max_gripper=1.000000, avg_action_l2=0.105816, max_action_l2=1.000125
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       28       HAS       0           0       50        15       11           0.146    0.296       0.701
+       29       HAS       4           0       46        15       11           0.096    0.296       0.701
+       30       HAS       4           0       46        15       11           0.095    0.296       0.701
+       31       HAS       4           0       46        15       11           0.095    0.295       0.701
+       32       HAS       4           0       46        15       11           0.095    0.295       0.701
+       33       HAS       4           0       46        15       11           0.096    0.296       0.703
+       34       HAS       4           0       46        15       11           0.096    0.296       0.701
+       35       HAS       4           0       46        15       11           0.095    0.296       0.701
+       36       HAS       4           0       46        15       11           0.095    0.296       0.701
+       37       HAS       4           0       46        15       11           0.096    0.296       0.701
+       38       HAS       4           0       46        15       11           0.096    0.296       0.701
+       39       HAS       4           0       46        15       11           0.095    0.296       0.701
+       40       HAS       4           0       46        15       11           0.094    0.294       0.701
+       41       HAS       4           0       46        14       11           0.095    0.296       0.651
+       42       HAS       4           0        8         0        4           0.095      n/a         n/a
+boundaries:
+  from_request  to_request  position_m  rotation_deg  gripper  action_l2
+            28          29    0.010603         0.779  0.000000   0.012594
+            29          30    0.030050         0.717  0.000000   0.030695
+            30          31    0.024954         0.524  0.000000   0.025369
+            31          32    0.041217         0.991  0.000000   0.042114
+            32          33    0.062785         2.137  0.000000   0.065497
+            33          34    0.051805         1.886  0.000000   0.054357
+            34          35    0.023516         2.056  0.000000   0.029577
+            35          36    0.011660         1.723  0.000000   0.019028
+            36          37    0.015186         0.493  1.000000   1.000125
+            37          38    0.018759         0.355  0.000000   0.019012
+            38          39    0.021074         2.410  0.000000   0.029775
+            39          40    0.016268         2.034  0.000000   0.024074
+            40          41    0.013095         2.222  0.000000   0.023396
+
+=== Pi0.5 inference episode: 2026-08-04 13:40:33 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=15, fps=20
+summary: total_time=9.617s, inference_calls=13, completed_chunks=13, prefix_chunks=12, actions_applied=187, empty_action_steps=6
+latency: avg_first_action=0.103s, p95_first_action=0.145s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=0.670s
+discontinuity: boundaries=12, avg_position_m=0.025411, max_position_m=0.053373, avg_rotation_deg=1.743, max_rotation_deg=3.699, avg_gripper=0.000000, max_gripper=0.000000, avg_action_l2=0.029980, max_action_l2=0.056690
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       43       HAS       0           0       50        15       11           0.144    0.295       0.701
+       44       HAS       4           0       46        15       11           0.095    0.295       0.701
+       45       HAS       4           0       46        15       11           0.095    0.296       0.701
+       46       HAS       4           0       46        15       11           0.096    0.296       0.703
+       47       HAS       4           0       46        15       11           0.096    0.297       0.701
+       48       HAS       4           0       46        15       11           0.146    0.296       0.701
+       49       HAS       4           0       46        15       11           0.095    0.296       0.701
+       50       HAS       4           0       46        15       11           0.096    0.296       0.701
+       51       HAS       4           0       46        15       11           0.095    0.296       0.701
+       52       HAS       4           0       46        15       11           0.096    0.296       0.701
+       53       HAS       4           0       46        15       11           0.095    0.295       0.701
+       54       HAS       4           0       46        15       11           0.094    0.295       0.701
+       55       HAS       4           0       46         7       11           0.095    0.296       0.300
+boundaries:
+  from_request  to_request  position_m  rotation_deg  gripper  action_l2
+            43          44    0.014051         0.425  0.000000   0.014532
+            44          45    0.053373         2.189  0.000000   0.056690
+            45          46    0.012345         1.473  0.000000   0.017819
+            46          47    0.049764         2.535  0.000000   0.054458
+            47          48    0.036130         1.986  0.000000   0.040071
+            48          49    0.012934         1.485  0.000000   0.018311
+            49          50    0.012592         0.943  0.000000   0.015041
+            50          51    0.015218         1.145  0.000000   0.018206
+            51          52    0.020651         1.750  0.000000   0.025684
+            52          53    0.041817         3.699  0.000000   0.052824
+            53          54    0.015748         1.320  0.000000   0.019512
+            54          55    0.020314         1.970  0.000000   0.026612
+
+=== Pi0.5 inference episode: 2026-08-04 13:40:53 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=4, execution_horizon=15, fps=20
+summary: total_time=8.517s, inference_calls=12, completed_chunks=12, prefix_chunks=11, actions_applied=165, empty_action_steps=6
+latency: avg_first_action=0.104s, p95_first_action=0.146s, recommended_delay=3, avg_final=0.296s, avg_chunk_duration=0.701s
+discontinuity: boundaries=10, avg_position_m=0.021056, max_position_m=0.055048, avg_rotation_deg=1.344, max_rotation_deg=2.739, avg_gripper=0.100000, max_gripper=1.000000, avg_action_l2=0.123790, max_action_l2=1.000037
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       56       HAS       0           0       50        15       11           0.095    0.296       0.701
+       57       HAS       4           0       46        15       11           0.146    0.296       0.701
+       58       HAS       4           0       46        15       11           0.095    0.295       0.701
+       59       HAS       4           0       46        15       11           0.095    0.296       0.701
+       60       HAS       4           0       46        15       11           0.095    0.296       0.703
+       61       HAS       4           0       46        15       11           0.096    0.296       0.702
+       62       HAS       4           0       46        15       11           0.096    0.296       0.701
+       63       HAS       4           0       46        15       11           0.146    0.296       0.701
+       64       HAS       4           0       46        15       11           0.095    0.296       0.701
+       65       HAS       4           0       46        15       11           0.095    0.296       0.701
+       66       HAS       4           0       46        15       11           0.096    0.296       0.701
+       67       HAS       4           0       18         0        6           0.094      n/a         n/a
+boundaries:
+  from_request  to_request  position_m  rotation_deg  gripper  action_l2
+            56          57    0.005303         0.922  0.000000   0.009638
+            57          58    0.050824         2.102  0.000000   0.054032
+            58          59    0.011156         1.251  0.000000   0.015612
+            59          60    0.007165         1.011  0.000000   0.011364
+            60          61    0.008514         0.728  0.000000   0.010620
+            61          62    0.007468         0.492  1.000000   1.000037
+            62          63    0.055048         2.739  0.000000   0.060011
+            63          64    0.018790         2.240  0.000000   0.027113
+            64          65    0.022095         1.165  0.000000   0.024323
+            65          66    0.024195         0.788  0.000000   0.025154
