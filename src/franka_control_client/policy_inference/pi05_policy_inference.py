@@ -222,6 +222,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._metrics_empty_action_steps = 0
         self._metrics_chunks: list[dict[str, Any]] = []
         self._metrics_stream_chunks: dict[int, dict[str, Any]] = {}
+        self._metrics_boundary_discontinuities: list[dict[str, Any]] = []
+        self._metrics_last_applied_request_id: Optional[int] = None
+        self._metrics_last_applied_action: Optional[np.ndarray] = None
         self._metrics_start_perf = time.perf_counter()
         self._metrics_start_wall = time.time()
         self._last_observation_profile: dict[str, float] = {}
@@ -287,6 +290,12 @@ class Pi05PolicyInference(PolicyInferenceManager):
             action = self._action_chunk[self._chunk_step]
             self._chunk_step += 1
             sanitized_action = self._sanitize_action(action)
+            request_id = (
+                int(self._metrics_chunks[-1]["request_id"])
+                if self._metrics_chunks
+                else None
+            )
+            self._record_applied_action_boundary(request_id, sanitized_action)
             self._last_sanitized_action = sanitized_action.copy()
             self.control_pair.update_action(sanitized_action)
             self._metrics_actions_applied += 1
@@ -314,9 +323,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._request_stream()
             self._drain_streaming_updates()
 
+        source_request_id = self._current_request_id
         action = self._pop_next_stream_action()
         if action is not None:
             sanitized_action = self._sanitize_action(action)
+            self._record_applied_action_boundary(source_request_id, sanitized_action)
             self._last_sanitized_action = sanitized_action.copy()
             self.control_pair.update_action(sanitized_action)
             self._metrics_actions_applied += 1
@@ -603,6 +614,70 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 chunk.update(metric)
                 break
 
+    def _record_applied_action_boundary(
+        self,
+        request_id: Optional[int],
+        action: np.ndarray,
+    ) -> None:
+        """Measure the jump between consecutively executed policy chunks."""
+        current = np.asarray(action, dtype=np.float64)
+        previous = self._metrics_last_applied_action
+        previous_request_id = self._metrics_last_applied_request_id
+
+        if (
+            previous is not None
+            and request_id is not None
+            and previous_request_id is not None
+            and request_id != previous_request_id
+        ):
+            position_jump_m = float(np.linalg.norm(current[:3] - previous[:3]))
+
+            previous_quat = previous[3:7]
+            current_quat = current[3:7]
+            previous_norm = float(np.linalg.norm(previous_quat))
+            current_norm = float(np.linalg.norm(current_quat))
+            if previous_norm > 0.0 and current_norm > 0.0:
+                quat_dot = float(
+                    np.clip(
+                        abs(np.dot(previous_quat / previous_norm, current_quat / current_norm)),
+                        0.0,
+                        1.0,
+                    )
+                )
+                rotation_jump_deg = float(np.degrees(2.0 * np.arccos(quat_dot)))
+            else:
+                rotation_jump_deg = None
+
+            # q and -q represent the same orientation. Align their signs before
+            # computing the full action-vector distance.
+            aligned_current = current.copy()
+            if np.dot(previous_quat, current_quat) < 0.0:
+                aligned_current[3:7] *= -1.0
+            boundary = {
+                "from_request_id": int(previous_request_id),
+                "to_request_id": int(request_id),
+                "position_jump_m": position_jump_m,
+                "rotation_jump_deg": rotation_jump_deg,
+                "gripper_jump": float(abs(current[7] - previous[7])),
+                "action_l2": float(np.linalg.norm(aligned_current - previous)),
+            }
+            self._metrics_boundary_discontinuities.append(boundary)
+            metric = self._metrics_stream_chunks.get(int(request_id))
+            if metric is None:
+                metric = next(
+                    (
+                        chunk
+                        for chunk in self._metrics_chunks
+                        if chunk.get("request_id") == request_id
+                    ),
+                    None,
+                )
+            if metric is not None:
+                metric["boundary_discontinuity"] = dict(boundary)
+
+        self._metrics_last_applied_request_id = request_id
+        self._metrics_last_applied_action = current.copy()
+
     def _should_request_action_chunk(self) -> bool:
         if self._action_chunk is None:
             return True
@@ -691,28 +766,15 @@ class Pi05PolicyInference(PolicyInferenceManager):
             for chunk in chunks
             if chunk.get("execution_duration_s") is not None
         ]
-        client_observation_build_times = [
-            float(chunk["client_observation_build_s"])
-            for chunk in chunks
-            if chunk.get("client_observation_build_s") is not None
+        boundaries = list(self._metrics_boundary_discontinuities)
+        position_jumps = [float(item["position_jump_m"]) for item in boundaries]
+        rotation_jumps = [
+            float(item["rotation_jump_deg"])
+            for item in boundaries
+            if item.get("rotation_jump_deg") is not None
         ]
-        client_send_times = [
-            float(chunk["client_send_s"])
-            for chunk in chunks
-            if chunk.get("client_send_s") is not None
-        ]
-        server_preprocess_times = _server_profile_values(chunks, "preprocess_s")
-        server_policy_kwargs_times = _server_profile_values(chunks, "policy_kwargs_s")
-        server_first_delta_times = _server_profile_values(chunks, "time_to_first_delta_s")
-        server_stream_compute_times = _server_profile_values(chunks, "stream_compute_s")
-        server_postprocess_times = _server_profile_values(chunks, "postprocess_s")
-        server_send_times = _server_profile_values(chunks, "send_s")
-        server_total_times = _server_profile_values(chunks, "server_total_s")
-        model_prefix_embed_times = _server_model_profile_values(chunks, "prefix_embed_s")
-        model_prefix_forward_times = _server_model_profile_values(chunks, "prefix_forward_s")
-        model_schedule_times = _server_model_profile_values(chunks, "schedule_s")
-        model_denoise_times = _server_model_profile_values(chunks, "denoise_s")
-        model_total_times = _server_model_profile_values(chunks, "total_s")
+        gripper_jumps = [float(item["gripper_jump"]) for item in boundaries]
+        action_l2_jumps = [float(item["action_l2"]) for item in boundaries]
         prefix_chunks = sum(1 for chunk in chunks if int(chunk.get("prefix_steps") or 0) > 0)
         p95_first_action_latency_s = (
             float(np.percentile(first_action_latencies, 95)) if first_action_latencies else None
@@ -744,43 +806,16 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "recommended_delay": recommended_delay,
             "avg_final_latency_s": _mean(final_latencies),
             "avg_chunk_execution_duration_s": _mean(execution_durations),
-            "avg_client_observation_build_s": _mean(client_observation_build_times),
-            "avg_client_send_s": _mean(client_send_times),
-            "avg_server_preprocess_s": _mean(server_preprocess_times),
-            "avg_server_policy_kwargs_s": _mean(server_policy_kwargs_times),
-            "avg_server_time_to_first_delta_s": _mean(server_first_delta_times),
-            "avg_server_stream_compute_s": _mean(server_stream_compute_times),
-            "avg_server_postprocess_s": _mean(server_postprocess_times),
-            "avg_server_send_s": _mean(server_send_times),
-            "avg_server_total_s": _mean(server_total_times),
-            "avg_model_prefix_embed_s": _mean(model_prefix_embed_times),
-            "avg_model_prefix_forward_s": _mean(model_prefix_forward_times),
-            "avg_model_schedule_s": _mean(model_schedule_times),
-            "avg_model_denoise_s": _mean(model_denoise_times),
-            "avg_model_total_s": _mean(model_total_times),
+            "chunk_boundary_count": len(boundaries),
+            "avg_boundary_position_jump_m": _mean(position_jumps),
+            "max_boundary_position_jump_m": max(position_jumps) if position_jumps else None,
+            "avg_boundary_rotation_jump_deg": _mean(rotation_jumps),
+            "max_boundary_rotation_jump_deg": max(rotation_jumps) if rotation_jumps else None,
+            "avg_boundary_gripper_jump": _mean(gripper_jumps),
+            "max_boundary_gripper_jump": max(gripper_jumps) if gripper_jumps else None,
+            "avg_boundary_action_l2": _mean(action_l2_jumps),
+            "max_boundary_action_l2": max(action_l2_jumps) if action_l2_jumps else None,
         }
-        model_prefill_parts = [
-            summary.get("avg_model_prefix_embed_s"),
-            summary.get("avg_model_prefix_forward_s"),
-        ]
-        summary["avg_model_prefill_s"] = (
-            float(sum(value for value in model_prefill_parts if value is not None))
-            if any(value is not None for value in model_prefill_parts)
-            else None
-        )
-        non_policy_parts = [
-            summary.get("avg_client_observation_build_s"),
-            summary.get("avg_client_send_s"),
-            summary.get("avg_server_preprocess_s"),
-            summary.get("avg_server_policy_kwargs_s"),
-            summary.get("avg_server_postprocess_s"),
-            summary.get("avg_server_send_s"),
-        ]
-        summary["avg_non_policy_overhead_s"] = (
-            float(sum(value for value in non_policy_parts if value is not None))
-            if any(value is not None for value in non_policy_parts)
-            else None
-        )
         if self.cfg.faster_infer_time_schedule.upper() == "HAS":
             summary["faster_alpha"] = float(self.cfg.faster_alpha)
             summary["faster_u0"] = float(self.cfg.faster_u0)
@@ -805,7 +840,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
             f"recommended_delay={summary['recommended_delay']}, "
             f"avg_final_latency={_format_optional(summary['avg_final_latency_s'])}s, "
             f"avg_chunk_duration={_format_optional(summary['avg_chunk_execution_duration_s'])}s, "
-            f"avg_server_compute={_format_optional(summary['avg_server_stream_compute_s'])}s"
+            f"avg_boundary_position_jump={_format_optional(summary['avg_boundary_position_jump_m'])}m, "
+            f"avg_boundary_rotation_jump={_format_optional(summary['avg_boundary_rotation_jump_deg'])}deg"
         )
 
         for chunk in chunks:
@@ -831,16 +867,22 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 )
 
         if self.cfg.metrics_path:
-            self._write_metrics(summary, chunks)
+            self._write_metrics(summary, chunks, boundaries)
 
-    def _write_metrics(self, summary: Dict[str, Any], chunks: List[Dict[str, Any]]) -> None:
+    def _write_metrics(
+        self,
+        summary: Dict[str, Any],
+        chunks: List[Dict[str, Any]],
+        boundaries: List[Dict[str, Any]],
+    ) -> None:
         path = Path(self.cfg.metrics_path)
         path.parent.mkdir(parents=True, exist_ok=True)
         record = {
             "type": "pi05_inference_episode",
             "wall_time": self._metrics_start_wall,
             "summary": summary,
-            "chunks": _json_safe(chunks),
+            "chunks": _json_safe([_without_time_profile(chunk) for chunk in chunks]),
+            "boundaries": _json_safe(boundaries),
         }
         with path.open("a", encoding="utf-8") as f:
             f.write(json.dumps(_json_safe(record), sort_keys=True) + "\n")
@@ -852,6 +894,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _write_metrics_text(self, path: Path, record: Dict[str, Any]) -> None:
         summary = record["summary"]
         chunks = record["chunks"]
+        boundaries = record.get("boundaries", [])
         wall_time = record.get("wall_time")
         if wall_time is None:
             timestamp = "unknown"
@@ -909,24 +952,16 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 f"avg_chunk_duration={_format_optional(summary.get('avg_chunk_execution_duration_s'))}s"
             ),
             (
-                "profile: "
-                f"client_obs={_format_optional(summary.get('avg_client_observation_build_s'))}s, "
-                f"client_send={_format_optional(summary.get('avg_client_send_s'))}s, "
-                f"server_preprocess={_format_optional(summary.get('avg_server_preprocess_s'))}s, "
-                f"server_kwargs={_format_optional(summary.get('avg_server_policy_kwargs_s'))}s, "
-                f"server_first_delta={_format_optional(summary.get('avg_server_time_to_first_delta_s'))}s, "
-                f"server_compute={_format_optional(summary.get('avg_server_stream_compute_s'))}s, "
-                f"server_postprocess={_format_optional(summary.get('avg_server_postprocess_s'))}s, "
-                f"server_send={_format_optional(summary.get('avg_server_send_s'))}s, "
-                f"server_total={_format_optional(summary.get('avg_server_total_s'))}s"
-            ),
-            (
-                "high_level_profile: "
-                f"non_policy_overhead={_format_optional(summary.get('avg_non_policy_overhead_s'))}s, "
-                f"model_prefill={_format_optional(summary.get('avg_model_prefill_s'))}s, "
-                f"model_denoise={_format_optional(summary.get('avg_model_denoise_s'))}s, "
-                f"model_total={_format_optional(summary.get('avg_model_total_s'))}s, "
-                f"robot_chunk_execution={_format_optional(summary.get('avg_chunk_execution_duration_s'))}s"
+                "discontinuity: "
+                f"boundaries={summary.get('chunk_boundary_count')}, "
+                f"avg_position_m={_format_optional_precision(summary.get('avg_boundary_position_jump_m'), 6)}, "
+                f"max_position_m={_format_optional_precision(summary.get('max_boundary_position_jump_m'), 6)}, "
+                f"avg_rotation_deg={_format_optional(summary.get('avg_boundary_rotation_jump_deg'))}, "
+                f"max_rotation_deg={_format_optional(summary.get('max_boundary_rotation_jump_deg'))}, "
+                f"avg_gripper={_format_optional_precision(summary.get('avg_boundary_gripper_jump'), 6)}, "
+                f"max_gripper={_format_optional_precision(summary.get('max_boundary_gripper_jump'), 6)}, "
+                f"avg_action_l2={_format_optional_precision(summary.get('avg_boundary_action_l2'), 6)}, "
+                f"max_action_l2={_format_optional_precision(summary.get('max_boundary_action_l2'), 6)}"
             ),
             "chunks:",
             (
@@ -950,35 +985,24 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 f"{_format_optional(chunk.get('execution_duration_s')):>10}"
             )
 
-        if any(chunk.get("client_observation_build_s") is not None for chunk in chunks):
+        if boundaries:
             lines.extend(
                 [
-                    "profile by request:",
+                    "boundaries:",
                     (
-                        "  request  client_obs  client_send  server_pre  server_kwargs  "
-                        "server_first  server_compute  model_prefill  model_denoise  server_total"
+                        "  from_request  to_request  position_m  rotation_deg  gripper  action_l2"
                     ),
                 ]
             )
-            for chunk in chunks:
-                server_profile = chunk.get("server_profile")
-                if not isinstance(server_profile, dict):
-                    server_profile = {}
-                model_profile = server_profile.get("model_profile")
-                if not isinstance(model_profile, dict):
-                    model_profile = {}
+            for boundary in boundaries:
                 lines.append(
                     "  "
-                    f"{str(chunk.get('request_id')):>7}  "
-                    f"{_format_optional(chunk.get('client_observation_build_s')):>10}  "
-                    f"{_format_optional(chunk.get('client_send_s')):>11}  "
-                    f"{_format_optional(server_profile.get('preprocess_s')):>10}  "
-                    f"{_format_optional(server_profile.get('policy_kwargs_s')):>13}  "
-                    f"{_format_optional(server_profile.get('time_to_first_delta_s')):>12}  "
-                    f"{_format_optional(server_profile.get('stream_compute_s')):>14}  "
-                    f"{_format_optional(model_profile.get('prefix_forward_s')):>13}  "
-                    f"{_format_optional(model_profile.get('denoise_s')):>13}  "
-                    f"{_format_optional(server_profile.get('server_total_s')):>12}"
+                    f"{str(boundary.get('from_request_id')):>12}  "
+                    f"{str(boundary.get('to_request_id')):>10}  "
+                    f"{_format_optional_precision(boundary.get('position_jump_m'), 6):>10}  "
+                    f"{_format_optional(boundary.get('rotation_jump_deg')):>12}  "
+                    f"{_format_optional_precision(boundary.get('gripper_jump'), 6):>7}  "
+                    f"{_format_optional_precision(boundary.get('action_l2'), 6):>9}"
                 )
 
         with path.open("a", encoding="utf-8") as f:
@@ -1357,37 +1381,28 @@ def _mean(values: List[float]) -> Optional[float]:
     return float(sum(values) / len(values))
 
 
-def _server_profile_values(chunks: List[Dict[str, Any]], key: str) -> List[float]:
-    values: List[float] = []
-    for chunk in chunks:
-        profile = chunk.get("server_profile")
-        if not isinstance(profile, dict):
-            continue
-        value = profile.get(key)
-        if value is not None:
-            values.append(float(value))
-    return values
-
-
-def _server_model_profile_values(chunks: List[Dict[str, Any]], key: str) -> List[float]:
-    values: List[float] = []
-    for chunk in chunks:
-        profile = chunk.get("server_profile")
-        if not isinstance(profile, dict):
-            continue
-        model_profile = profile.get("model_profile")
-        if not isinstance(model_profile, dict):
-            continue
-        value = model_profile.get(key)
-        if value is not None:
-            values.append(float(value))
-    return values
+def _without_time_profile(chunk: Dict[str, Any]) -> Dict[str, Any]:
+    """Remove detailed profiling payloads while retaining user-facing latencies."""
+    profile_keys = {
+        "client_observation_build_s",
+        "client_observation_profile",
+        "client_send_s",
+        "server_profile",
+        "server_time_to_first_delta_s",
+    }
+    return {key: value for key, value in chunk.items() if key not in profile_keys}
 
 
 def _format_optional(value: Any) -> str:
     if value is None:
         return "n/a"
     return f"{float(value):.3f}"
+
+
+def _format_optional_precision(value: Any, precision: int) -> str:
+    if value is None:
+        return "n/a"
+    return f"{float(value):.{precision}f}"
 
 
 def _json_safe(value: Any) -> Any:

@@ -13,14 +13,14 @@ export HF_HUB_CACHE="${HF_HUB_CACHE:-${HF_HOME}/hub}"
 mkdir -p "${HF_DATASETS_CACHE}" "${HF_HUB_CACHE}"
 
 python -m franka_control_client.policy.pi05_policy_node \
-    --checkpoint_path /hkfs/work/workspace/scratch/utphd-myspace/outputs/pi05_moving_cup_10ksteps_2/checkpoints/010000/pretrained_model \
-    --dataset_path /hkfs/work/workspace/scratch/utphd-myspace/datasets/put_cylinder_in_moving_cup \
+    --checkpoint_path /hkfs/work/workspace/scratch/utphd-myspace/outputs/pi05_cylinder_full_10ksteps/checkpoints/010000/pretrained_model \
+    --dataset_path /hkfs/work/workspace/scratch/utphd-myspace/datasets/cylinder_full \
     --device cuda \
     --policy_dtype bfloat16 \
     --obs_topic pi05/observation \
     --action_topic pi05/action \
     --fps 20 \
-    --default_task "put cylinder in moving cup" \
+    --default_task "put red cylinder on red cube" \
     --faster_infer_time_schedule HAS \
     --faster_alpha 0.6 \
     --faster_u0 0.9 \
