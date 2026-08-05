@@ -282,6 +282,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
                             "schedule": active_schedule,
                             "request_time_s": request_start,
                             "request_latency_s": latency_s,
+                            "inference_latency_s": latency_s,
                             "action_count": int(len(self._action_chunk)),
                             "executed_action_count": 0,
                             "first_action_index": None,
@@ -875,40 +876,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
             for chunk in chunks
             if chunk.get("execution_duration_s") is not None
         ]
-        boundaries = list(self._metrics_boundary_discontinuities)
-        position_jumps = [float(item["position_jump_m"]) for item in boundaries]
-        rotation_jumps = [
-            float(item["rotation_jump_deg"])
-            for item in boundaries
-            if item.get("rotation_jump_deg") is not None
-        ]
-        position_jump_ratios = _boundary_values(boundaries, "position_jump_ratio")
-        rotation_jump_ratios = _boundary_values(boundaries, "rotation_jump_ratio")
-        direction_changes = _boundary_values(boundaries, "direction_change_deg")
-        linear_velocity_changes = _boundary_values(boundaries, "linear_velocity_change_m_s")
-        angular_velocity_changes = _boundary_values(boundaries, "angular_velocity_change_deg_s")
-        post_position_step_ratios = _boundary_values(
-            boundaries,
-            "post_boundary_position_step_ratio",
-        )
-        post_direction_changes = _boundary_values(
-            boundaries,
-            "post_boundary_direction_change_deg",
-        )
-        post_linear_velocity_changes = _boundary_values(
-            boundaries,
-            "post_boundary_linear_velocity_change_m_s",
-        )
-        backtracking_values = [
-            bool(item["backtracking"])
-            for item in boundaries
-            if item.get("backtracking") is not None
-        ]
-        low_motion_values = [
-            bool(item["post_boundary_low_motion"])
-            for item in boundaries
-            if item.get("post_boundary_low_motion") is not None
-        ]
         prefix_chunks = sum(1 for chunk in chunks if int(chunk.get("prefix_steps") or 0) > 0)
         p95_first_action_latency_s = (
             float(np.percentile(first_action_latencies, 95)) if first_action_latencies else None
@@ -934,59 +901,20 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "prefix_chunks": prefix_chunks,
             "actions_applied": self._metrics_actions_applied,
             "empty_action_steps": self._metrics_empty_action_steps,
-            "avg_request_latency_s": _mean(request_latencies),
-            "avg_first_action_latency_s": _mean(first_action_latencies),
-            "p95_first_action_latency_s": p95_first_action_latency_s,
-            "recommended_delay": recommended_delay,
-            "avg_final_latency_s": _mean(final_latencies),
             "avg_chunk_execution_duration_s": _mean(execution_durations),
-            "chunk_boundary_count": len(boundaries),
-            "avg_boundary_position_jump_m": _mean(position_jumps),
-            "max_boundary_position_jump_m": max(position_jumps) if position_jumps else None,
-            "avg_boundary_rotation_jump_deg": _mean(rotation_jumps),
-            "max_boundary_rotation_jump_deg": max(rotation_jumps) if rotation_jumps else None,
-            "avg_boundary_position_jump_ratio": _mean(position_jump_ratios),
-            "max_boundary_position_jump_ratio": max(position_jump_ratios) if position_jump_ratios else None,
-            "avg_boundary_rotation_jump_ratio": _mean(rotation_jump_ratios),
-            "max_boundary_rotation_jump_ratio": max(rotation_jump_ratios) if rotation_jump_ratios else None,
-            "avg_boundary_direction_change_deg": _mean(direction_changes),
-            "max_boundary_direction_change_deg": max(direction_changes) if direction_changes else None,
-            "boundary_backtracking_count": sum(backtracking_values),
-            "boundary_backtracking_rate": (
-                float(sum(backtracking_values) / len(backtracking_values))
-                if backtracking_values
-                else None
-            ),
-            "post_boundary_low_motion_ratio_threshold": 0.25,
-            "post_boundary_low_motion_count": sum(low_motion_values),
-            "post_boundary_low_motion_rate": (
-                float(sum(low_motion_values) / len(low_motion_values))
-                if low_motion_values
-                else None
-            ),
-            "avg_boundary_linear_velocity_change_m_s": _mean(linear_velocity_changes),
-            "max_boundary_linear_velocity_change_m_s": (
-                max(linear_velocity_changes) if linear_velocity_changes else None
-            ),
-            "avg_boundary_angular_velocity_change_deg_s": _mean(angular_velocity_changes),
-            "max_boundary_angular_velocity_change_deg_s": (
-                max(angular_velocity_changes) if angular_velocity_changes else None
-            ),
-            "avg_post_boundary_position_step_ratio": _mean(post_position_step_ratios),
-            "max_post_boundary_position_step_ratio": (
-                max(post_position_step_ratios) if post_position_step_ratios else None
-            ),
-            "avg_post_boundary_direction_change_deg": _mean(post_direction_changes),
-            "max_post_boundary_direction_change_deg": (
-                max(post_direction_changes) if post_direction_changes else None
-            ),
-            "avg_post_boundary_linear_velocity_change_m_s": _mean(
-                post_linear_velocity_changes
-            ),
-            "max_post_boundary_linear_velocity_change_m_s": (
-                max(post_linear_velocity_changes) if post_linear_velocity_changes else None
-            ),
         }
+        if self._streaming_policy is None:
+            # Direct ZMQ returns one complete chunk per blocking request.
+            summary["avg_inference_latency_s"] = _mean(request_latencies)
+        else:
+            summary.update(
+                {
+                    "avg_first_action_latency_s": _mean(first_action_latencies),
+                    "p95_first_action_latency_s": p95_first_action_latency_s,
+                    "recommended_delay": recommended_delay,
+                    "avg_final_latency_s": _mean(final_latencies),
+                }
+            )
         if self.cfg.faster_infer_time_schedule.upper() == "HAS":
             summary["faster_alpha"] = float(self.cfg.faster_alpha)
             summary["faster_u0"] = float(self.cfg.faster_u0)
@@ -998,7 +926,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             summary["phase_fallback_schedule"] = self.cfg.phase_fallback_schedule
             summary["phase_fallback_trigger"] = self.cfg.phase_fallback_trigger
 
-        pyzlc.info(
+        metrics_msg = (
             "Pi0.5 inference metrics: "
             f"total_time={summary['total_time_s']:.3f}s, "
             f"inference_calls={summary['inference_calls']}, "
@@ -1006,14 +934,22 @@ class Pi05PolicyInference(PolicyInferenceManager):
             f"prefix_chunks={summary['prefix_chunks']}, "
             f"actions_applied={summary['actions_applied']}, "
             f"empty_action_steps={summary['empty_action_steps']}, "
-            f"avg_first_action_latency={_format_optional(summary['avg_first_action_latency_s'])}s, "
-            f"p95_first_action_latency={_format_optional(summary['p95_first_action_latency_s'])}s, "
-            f"recommended_delay={summary['recommended_delay']}, "
-            f"avg_final_latency={_format_optional(summary['avg_final_latency_s'])}s, "
-            f"avg_chunk_duration={_format_optional(summary['avg_chunk_execution_duration_s'])}s, "
-            f"avg_boundary_position_jump={_format_optional(summary['avg_boundary_position_jump_m'])}m, "
-            f"avg_boundary_rotation_jump={_format_optional(summary['avg_boundary_rotation_jump_deg'])}deg"
         )
+        if self._streaming_policy is None:
+            metrics_msg += (
+                f"avg_inference_latency={_format_optional(summary['avg_inference_latency_s'])}s, "
+            )
+        else:
+            metrics_msg += (
+                f"avg_first_action_latency={_format_optional(summary['avg_first_action_latency_s'])}s, "
+                f"p95_first_action_latency={_format_optional(summary['p95_first_action_latency_s'])}s, "
+                f"recommended_delay={summary['recommended_delay']}, "
+                f"avg_final_latency={_format_optional(summary['avg_final_latency_s'])}s, "
+            )
+        metrics_msg += (
+            f"avg_chunk_duration={_format_optional(summary['avg_chunk_execution_duration_s'])}s"
+        )
+        pyzlc.info(metrics_msg)
 
         for chunk in chunks:
             if chunk.get("final_latency_s") is not None:
@@ -1031,20 +967,19 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 pyzlc.info(
                     "Pi0.5 chunk metrics: "
                     f"request_id={chunk.get('request_id')}, "
-                    f"request_latency={_format_optional(chunk.get('request_latency_s'))}s, "
+                    f"inference_latency={_format_optional(chunk.get('inference_latency_s', chunk.get('request_latency_s')))}s, "
                     f"chunk_duration={_format_optional(chunk.get('execution_duration_s'))}s, "
                     f"executed_actions={chunk.get('executed_action_count')}, "
                     f"action_count={chunk.get('action_count')}"
                 )
 
         if self.cfg.metrics_path:
-            self._write_metrics(summary, chunks, boundaries)
+            self._write_metrics(summary, chunks)
 
     def _write_metrics(
         self,
         summary: Dict[str, Any],
         chunks: List[Dict[str, Any]],
-        boundaries: List[Dict[str, Any]],
     ) -> None:
         path = Path(self.cfg.metrics_path)
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -1053,7 +988,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "wall_time": self._metrics_start_wall,
             "summary": summary,
             "chunks": _json_safe([_without_time_profile(chunk) for chunk in chunks]),
-            "boundaries": _json_safe(boundaries),
         }
         with path.open("a", encoding="utf-8") as f:
             f.write(json.dumps(_json_safe(record), sort_keys=True) + "\n")
@@ -1065,7 +999,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _write_metrics_text(self, path: Path, record: Dict[str, Any]) -> None:
         summary = record["summary"]
         chunks = record["chunks"]
-        boundaries = record.get("boundaries", [])
         wall_time = record.get("wall_time")
         if wall_time is None:
             timestamp = "unknown"
@@ -1114,98 +1047,56 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 f"actions_applied={summary.get('actions_applied')}, "
                 f"empty_action_steps={summary.get('empty_action_steps')}"
             ),
-            (
+        ]
+        if summary.get("transport") == "streaming_zmq":
+            lines.append(
                 "latency: "
                 f"avg_first_action={_format_optional(summary.get('avg_first_action_latency_s'))}s, "
                 f"p95_first_action={_format_optional(summary.get('p95_first_action_latency_s'))}s, "
                 f"recommended_delay={summary.get('recommended_delay')}, "
                 f"avg_final={_format_optional(summary.get('avg_final_latency_s'))}s, "
                 f"avg_chunk_duration={_format_optional(summary.get('avg_chunk_execution_duration_s'))}s"
-            ),
-            (
-                "discontinuity: "
-                f"boundaries={summary.get('chunk_boundary_count')}, "
-                f"avg_position_m={_format_optional_precision(summary.get('avg_boundary_position_jump_m'), 6)}, "
-                f"max_position_m={_format_optional_precision(summary.get('max_boundary_position_jump_m'), 6)}, "
-                f"avg_rotation_deg={_format_optional(summary.get('avg_boundary_rotation_jump_deg'))}, "
-                f"max_rotation_deg={_format_optional(summary.get('max_boundary_rotation_jump_deg'))}"
-            ),
-            (
-                "boundary_motion: "
-                f"avg_position_ratio={_format_optional(summary.get('avg_boundary_position_jump_ratio'))}, "
-                f"max_position_ratio={_format_optional(summary.get('max_boundary_position_jump_ratio'))}, "
-                f"avg_rotation_ratio={_format_optional(summary.get('avg_boundary_rotation_jump_ratio'))}, "
-                f"avg_direction_change_deg={_format_optional(summary.get('avg_boundary_direction_change_deg'))}, "
-                f"max_direction_change_deg={_format_optional(summary.get('max_boundary_direction_change_deg'))}, "
-                f"backtracking={summary.get('boundary_backtracking_count')}/"
-                f"{summary.get('chunk_boundary_count')}, "
-                f"backtracking_rate={_format_optional(summary.get('boundary_backtracking_rate'))}, "
-                f"avg_delta_v_m_s={_format_optional(summary.get('avg_boundary_linear_velocity_change_m_s'))}, "
-                f"max_delta_v_m_s={_format_optional(summary.get('max_boundary_linear_velocity_change_m_s'))}, "
-                f"avg_delta_omega_deg_s={_format_optional(summary.get('avg_boundary_angular_velocity_change_deg_s'))}"
-            ),
-            (
-                "post_boundary_motion: "
-                f"avg_position_ratio={_format_optional(summary.get('avg_post_boundary_position_step_ratio'))}, "
-                f"max_position_ratio={_format_optional(summary.get('max_post_boundary_position_step_ratio'))}, "
-                f"low_motion={summary.get('post_boundary_low_motion_count')}/"
-                f"{summary.get('chunk_boundary_count')}, "
-                f"low_motion_rate={_format_optional(summary.get('post_boundary_low_motion_rate'))}, "
-                f"avg_direction_change_deg={_format_optional(summary.get('avg_post_boundary_direction_change_deg'))}, "
-                f"max_direction_change_deg={_format_optional(summary.get('max_post_boundary_direction_change_deg'))}, "
-                f"avg_delta_v_m_s={_format_optional(summary.get('avg_post_boundary_linear_velocity_change_m_s'))}, "
-                f"max_delta_v_m_s={_format_optional(summary.get('max_post_boundary_linear_velocity_change_m_s'))}"
-            ),
-            "chunks:",
-            (
+            )
+            lines.extend([
+                "chunks:",
                 "  request  schedule  prefix  early_stop  emitted  executed  updates  "
                 "first_action_s  final_s  duration_s"
-            ),
-        ]
+            ])
+        else:
+            lines.extend([
+                (
+                    "latency: "
+                    f"avg_inference={_format_optional(summary.get('avg_inference_latency_s'))}s, "
+                    f"avg_chunk_duration={_format_optional(summary.get('avg_chunk_execution_duration_s'))}s"
+                ),
+                "chunks:",
+                "  request  schedule  actions  executed  inference_s  duration_s",
+            ])
 
         for chunk in chunks:
-            lines.append(
-                "  "
-                f"{str(chunk.get('request_id')):>7}  "
-                f"{str(chunk.get('schedule', 'n/a')):>8}  "
-                f"{str(chunk.get('prefix_steps', 0)):>6}  "
-                f"{str(chunk.get('early_stop_actions', 'n/a')):>10}  "
-                f"{str(chunk.get('emitted_action_count', chunk.get('action_count', 'n/a'))):>7}  "
-                f"{str(chunk.get('executed_action_count')):>8}  "
-                f"{str(chunk.get('update_count', 'n/a')):>7}  "
-                f"{_format_optional(chunk.get('first_action_latency_s')):>14}  "
-                f"{_format_optional(chunk.get('final_latency_s')):>7}  "
-                f"{_format_optional(chunk.get('execution_duration_s')):>10}"
-            )
-
-        if boundaries:
-            lines.extend(
-                [
-                    "boundaries:",
-                    (
-                        "  from_request  to_request  position_m  pos_ratio  direction_deg  backtrack  "
-                        "delta_v_m_s  rotation_deg  rot_ratio  delta_omega_deg_s  post_pos_ratio  low_motion  "
-                        "post_direction_deg  post_delta_v_m_s"
-                    ),
-                ]
-            )
-            for boundary in boundaries:
+            if summary.get("transport") == "streaming_zmq":
                 lines.append(
                     "  "
-                    f"{str(boundary.get('from_request_id')):>12}  "
-                    f"{str(boundary.get('to_request_id')):>10}  "
-                    f"{_format_optional_precision(boundary.get('position_jump_m'), 6):>10}  "
-                    f"{_format_optional(boundary.get('position_jump_ratio')):>9}  "
-                    f"{_format_optional(boundary.get('direction_change_deg')):>13}  "
-                    f"{str(boundary.get('backtracking')):>9}  "
-                    f"{_format_optional(boundary.get('linear_velocity_change_m_s')):>11}  "
-                    f"{_format_optional(boundary.get('rotation_jump_deg')):>12}  "
-                    f"{_format_optional(boundary.get('rotation_jump_ratio')):>9}  "
-                    f"{_format_optional(boundary.get('angular_velocity_change_deg_s')):>17}  "
-                    f"{_format_optional(boundary.get('post_boundary_position_step_ratio')):>14}  "
-                    f"{str(boundary.get('post_boundary_low_motion')):>10}  "
-                    f"{_format_optional(boundary.get('post_boundary_direction_change_deg')):>18}  "
-                    f"{_format_optional(boundary.get('post_boundary_linear_velocity_change_m_s')):>16}"
+                    f"{str(chunk.get('request_id')):>7}  "
+                    f"{str(chunk.get('schedule', 'n/a')):>8}  "
+                    f"{str(chunk.get('prefix_steps', 0)):>6}  "
+                    f"{str(chunk.get('early_stop_actions', 'n/a')):>10}  "
+                    f"{str(chunk.get('emitted_action_count', chunk.get('action_count', 'n/a'))):>7}  "
+                    f"{str(chunk.get('executed_action_count')):>8}  "
+                    f"{str(chunk.get('update_count', 'n/a')):>7}  "
+                    f"{_format_optional(chunk.get('first_action_latency_s')):>14}  "
+                    f"{_format_optional(chunk.get('final_latency_s')):>7}  "
+                    f"{_format_optional(chunk.get('execution_duration_s')):>10}"
+                )
+            else:
+                lines.append(
+                    "  "
+                    f"{str(chunk.get('request_id')):>7}  "
+                    f"{str(chunk.get('schedule', 'n/a')):>8}  "
+                    f"{str(chunk.get('action_count', 'n/a')):>7}  "
+                    f"{str(chunk.get('executed_action_count')):>8}  "
+                    f"{_format_optional(chunk.get('inference_latency_s', chunk.get('request_latency_s'))):>11}  "
+                    f"{_format_optional(chunk.get('execution_duration_s')):>10}"
                 )
 
         with path.open("a", encoding="utf-8") as f:
@@ -1643,6 +1534,7 @@ def _boundary_values(boundaries: List[Dict[str, Any]], key: str) -> List[float]:
 def _without_time_profile(chunk: Dict[str, Any]) -> Dict[str, Any]:
     """Remove detailed profiling payloads while retaining user-facing latencies."""
     profile_keys = {
+        "boundary_discontinuity",
         "client_observation_build_s",
         "client_observation_profile",
         "client_send_s",

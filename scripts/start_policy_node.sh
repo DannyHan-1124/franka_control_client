@@ -24,4 +24,4 @@ python -m franka_control_client.policy.pi05_policy_node \
     --faster_infer_time_schedule HAS \
     --faster_alpha 0.6 \
     --faster_u0 0.9 \
-    --streaming_zmq_bind tcp://0.0.0.0:40024
+    --direct_zmq_bind tcp://0.0.0.0:40024
