@@ -28,6 +28,7 @@ from ..policy.policy import DirectZmqPolicy, RemotePolicy
 IMAGE_SIZE = (224, 224)
 STATE_DIM = 8
 ACTION_DIM = 8
+RESET_SETTLE_SECONDS = 3.0
 RESET_GRIPPER_OPEN_SECONDS = 2.0
 
 
@@ -44,6 +45,7 @@ class Pi05PolicyInferenceConfig:
     chunk_replan_steps: int = 50
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
+    close_gripper_on_reset: bool = False
     metrics_path: Optional[str] = None
     run_metadata: Optional[Dict[str, Any]] = None
     rtc_enabled: bool = False
@@ -647,6 +649,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "fps": int(self.fps),
             "rtc_enabled": bool(self.cfg.rtc_enabled),
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),
+            "close_gripper_on_reset": bool(self.cfg.close_gripper_on_reset),
             "total_time_s": total_time_s,
             "inference_calls": inference_calls,
             "completed_chunks": len(chunks),
@@ -794,6 +797,12 @@ class Pi05PolicyInference(PolicyInferenceManager):
             # go_home() leaves the Robotiq gripper open so the scene can be
             # loaded before starting the next episode.
             self.control_pair.go_home()
+            if not self.cfg.close_gripper_on_reset:
+                time.sleep(RESET_SETTLE_SECONDS)
+                self.control_pair.reset_action()
+                self._ui_console.log("Robot arm reset to home position.")
+                return
+
             self.control_pair.reset_action()
             self._ui_console.log(
                 "Gripper is open; insert the cylinder. Closing in "
@@ -811,7 +820,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         static_rgb = self._capture_rgb(self.static_cam)
         wrist_rgb = self._capture_rgb(self.wrist_cam)
         # Match the wrist-camera orientation used by the moving_cup dataset.
-        wrist_rgb = cv2.rotate(wrist_rgb, cv2.ROTATE_180)
+        # wrist_rgb = cv2.rotate(wrist_rgb, cv2.ROTATE_180)
         obs = {
             "observation.images.base_0_rgb": _encode_rgb_image(static_rgb),
             "observation.images.left_wrist_0_rgb": _encode_rgb_image(wrist_rgb),
