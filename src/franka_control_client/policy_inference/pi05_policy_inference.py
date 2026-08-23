@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import time
+from collections import deque
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -61,6 +62,8 @@ class Pi05PolicyInferenceConfig:
     debug_image_interval: int = 25
     reclose_after_release_min_motion_m: float = 0.08
     task_after_first_release: Optional[str] = None
+    puma_history_steps: int = 4
+    puma_history_stride: int = 4
 
 
 class Pi05PolicyInference(PolicyInferenceManager):
@@ -136,6 +139,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._last_sanitized_action: Optional[np.ndarray] = None
         self._debug_image_step = 0
         self._release_pos: Optional[np.ndarray] = None
+        history_length = cfg.puma_history_steps * cfg.puma_history_stride + 1
+        self._puma_static_history = deque(maxlen=history_length)
 
         self.register_start_infering_event(self.control_pair.start_control_pair)
         self.register_stop_infering_event(self.control_pair.stop_control_pair)
@@ -151,6 +156,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._last_sanitized_action = None
         self._debug_image_step = 0
         self._release_pos = None
+        self._puma_static_history.clear()
         self.task = self._initial_task
         current_action = self.policy.current_action
         self._last_action_timestamp = (
@@ -161,8 +167,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
     def _infer_step(self) -> None:
         start = time.perf_counter()
+        observation = self._build_observation()
         if self._should_request_action_chunk():
-            self.policy.send_observation(self._build_observation())
+            self.policy.send_observation(observation)
 
             action_msg = self.policy.current_action
             if action_msg is not None:
@@ -240,10 +247,22 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _build_observation(self) -> Dict[str, Any]:
         static_rgb = self._capture_rgb(self.static_cam)
         wrist_rgb = self._capture_rgb(self.wrist_cam)
+        self._puma_static_history.append(static_rgb)
         self._maybe_save_debug_images(static_rgb, wrist_rgb)
+        history_indices = [
+            max(0, len(self._puma_static_history) - 1 - offset)
+            for offset in reversed(
+                [(i + 1) * self.cfg.puma_history_stride for i in range(self.cfg.puma_history_steps)]
+            )
+        ] + [len(self._puma_static_history) - 1]
         return {
             "observation.images.base_0_rgb": _encode_rgb_image(static_rgb),
             "observation.images.left_wrist_0_rgb": _encode_rgb_image(wrist_rgb),
+            "puma_history": {
+                "observation.images.base_0_rgb": [
+                    _encode_rgb_image(self._puma_static_history[index]) for index in history_indices
+                ],
+            },
             "observation.state": self._build_state_vector().tolist(),
             "task": self.task,
         }

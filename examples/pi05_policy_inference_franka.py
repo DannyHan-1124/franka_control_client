@@ -55,6 +55,8 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--static_camera", default="static_cam")
     parser.add_argument("--wrist_camera", default="wrist_cam")
     parser.add_argument("--no_clamp_actions", action="store_true")
+    parser.add_argument("--puma_history_steps", type=int, default=4)
+    parser.add_argument("--puma_history_stride", type=int, default=4)
     return parser.parse_args()
 
 
@@ -111,6 +113,8 @@ def main() -> None:
         debug_image_dir=args.debug_image_dir,
         debug_image_interval=args.debug_image_interval,
         reclose_after_release_min_motion_m=args.reclose_after_release_min_motion_m,
+        puma_history_steps=args.puma_history_steps,
+        puma_history_stride=args.puma_history_stride,
     )
     inference_manager = Pi05PolicyInference(
         data_collectors=data_collectors,

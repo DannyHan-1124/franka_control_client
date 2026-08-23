@@ -221,9 +221,25 @@ class Pi05PolicyNode:
         for key, shape in self._expected_image_shapes.items():
             if key not in obs_msg:
                 continue
-            rgb = self._decode_image(obs_msg[key])
-            rgb = self._resize_image(rgb, shape)
-            observation[key] = torch.from_numpy(np.ascontiguousarray(rgb)).float().unsqueeze(0) / 255.0
+            puma_history = obs_msg.get("puma_history", {}).get(key)
+            puma_config = getattr(self.train_cfg.policy, "puma_config", None)
+            if (
+                puma_config is not None
+                and puma_config.enabled
+                and key == puma_config.flow_camera_key
+            ):
+                if not puma_history:
+                    raise ValueError(f"PUMA checkpoint requires timestamped history for {key}")
+                frames = [self._resize_image(self._decode_image(value), shape) for value in puma_history]
+                sequence = np.stack(frames, axis=0)
+                observation[key] = (
+                    torch.from_numpy(np.ascontiguousarray(sequence)).permute(0, 3, 1, 2).float().unsqueeze(0)
+                    / 255.0
+                )
+            else:
+                rgb = self._decode_image(obs_msg[key])
+                rgb = self._resize_image(rgb, shape)
+                observation[key] = torch.from_numpy(np.ascontiguousarray(rgb)).float().unsqueeze(0) / 255.0
 
         task = obs_msg.get("task") or self.cfg.default_task
         if task:
