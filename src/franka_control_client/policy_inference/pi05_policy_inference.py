@@ -136,7 +136,15 @@ class Pi05PolicyInference(PolicyInferenceManager):
         start = time.perf_counter()
         observation = self._build_observation()
         if self._should_request_action_chunk():
-            self.policy.send_observation(observation)
+            try:
+                self.policy.send_observation(observation)
+            except Exception as exc:
+                self._action_chunk = None
+                self._chunk_step = 0
+                self.control_pair.reset_action()
+                pyzlc.error(f"Stopping inference after policy error: {exc}")
+                self._state_machine.trigger(PolicyInferenceEvent.DISCARD)
+                return
 
             action_msg = self.policy.current_action
             if action_msg is not None:

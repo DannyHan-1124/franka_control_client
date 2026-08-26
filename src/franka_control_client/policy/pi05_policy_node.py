@@ -303,8 +303,6 @@ class Pi05PolicyNode:
                 self._direct_socket.send_pyobj(
                     {
                         "timestamp": time.time(),
-                        "action": [[0.0, 0.0, 0.0, -2.15, 0.0, 2.15, 0.0, 0.0]],
-                        "shape": [1, 8],
                         "error": str(exc),
                     }
                 )

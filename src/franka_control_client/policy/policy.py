@@ -85,11 +85,7 @@ class DirectZmqPolicy(RemoteDevice):
         self._socket.setsockopt(zmq.RCVTIMEO, timeout_ms)
         self._socket.setsockopt(zmq.SNDTIMEO, timeout_ms)
         self._socket.connect(endpoint)
-        self._current_action: Optional[PolicyActionMsg] = PolicyActionMsg(
-            timestamp=time.time(),
-            action=DEFAULT_INIT_ACTION,
-            shape=[len(DEFAULT_INIT_ACTION)],
-        )
+        self._current_action: Optional[PolicyActionMsg] = None
 
     @property
     def current_action(self) -> Optional[PolicyActionMsg]:
@@ -101,10 +97,22 @@ class DirectZmqPolicy(RemoteDevice):
             self._socket.send_pyobj(obs)
             msg = self._socket.recv_pyobj()
         except zmq.Again as exc:
+            self._current_action = None
             self._reset_socket()
             raise TimeoutError(
                 f"Timed out waiting for direct policy endpoint {self.endpoint}"
             ) from exc
+
+        if not isinstance(msg, dict):
+            self._current_action = None
+            raise RuntimeError(f"Invalid direct policy response type: {type(msg)!r}")
+        if msg.get("error"):
+            self._current_action = None
+            raise RuntimeError(f"Direct policy inference failed: {msg['error']}")
+        missing = [key for key in ("timestamp", "action", "shape") if key not in msg]
+        if missing:
+            self._current_action = None
+            raise RuntimeError(f"Direct policy response is missing fields: {missing}")
 
         self._current_action = PolicyActionMsg(
             timestamp=msg["timestamp"],
