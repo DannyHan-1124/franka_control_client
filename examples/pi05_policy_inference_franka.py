@@ -29,7 +29,6 @@ def _parse_args() -> argparse.Namespace:
         description="Run Franka Pi0.5 policy inference against a remote pyzlc policy node."
     )
     parser.add_argument("--task", required=True)
-    parser.add_argument("--task_after_first_release", default=None)
     parser.add_argument("--fps", type=int, default=20)
     parser.add_argument("--control_hz", type=float, default=100.0)
     parser.add_argument("--pyzlc_name", default="pi05_franka_client")
@@ -42,19 +41,12 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--policy_transport", choices=("pyzlc", "zmq"), default="pyzlc")
     parser.add_argument("--policy_zmq_endpoint", default=None)
     parser.add_argument("--policy_zmq_timeout_ms", type=int, default=30000)
-    parser.add_argument("--max_position_step_m", type=float, default=0.005)
-    parser.add_argument("--max_rotation_step_rad", type=float, default=0.05)
     parser.add_argument("--chunk_replan_steps", type=int, default=50)
-    parser.add_argument("--gripper_open_confirm_steps", type=int, default=1)
     parser.add_argument("--stop_after_first_release", action="store_true")
     parser.add_argument("--stop_after_release_steps", type=int, default=0)
-    parser.add_argument("--debug_image_dir", default=None)
-    parser.add_argument("--debug_image_interval", type=int, default=25)
-    parser.add_argument("--reclose_after_release_min_motion_m", type=float, default=0.08)
     parser.add_argument("--robot_name", default="FrankaPanda")
     parser.add_argument("--static_camera", default="static_cam")
     parser.add_argument("--wrist_camera", default="wrist_cam")
-    parser.add_argument("--no_clamp_actions", action="store_true")
     parser.add_argument("--puma_history_steps", type=int, default=4)
     parser.add_argument("--puma_history_stride", type=int, default=4)
     return parser.parse_args()
@@ -96,23 +88,15 @@ def main() -> None:
     inference_cfg = Pi05PolicyInferenceConfig(
         policy_name=args.policy_name,
         task=args.task,
-        task_after_first_release=args.task_after_first_release,
         fps=args.fps,
         obs_topic=args.obs_topic,
         action_topic=args.action_topic,
-        clamp_actions=not args.no_clamp_actions,
         policy_transport=args.policy_transport,
         policy_zmq_endpoint=args.policy_zmq_endpoint,
         policy_zmq_timeout_ms=args.policy_zmq_timeout_ms,
-        max_position_step_m=args.max_position_step_m,
-        max_rotation_step_rad=args.max_rotation_step_rad,
         chunk_replan_steps=args.chunk_replan_steps,
-        gripper_open_confirm_steps=args.gripper_open_confirm_steps,
         stop_after_first_release=args.stop_after_first_release,
         stop_after_release_steps=args.stop_after_release_steps,
-        debug_image_dir=args.debug_image_dir,
-        debug_image_interval=args.debug_image_interval,
-        reclose_after_release_min_motion_m=args.reclose_after_release_min_motion_m,
         puma_history_steps=args.puma_history_steps,
         puma_history_stride=args.puma_history_stride,
     )
