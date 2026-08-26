@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import json
 import time
 from collections import deque
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import cv2
@@ -39,6 +41,8 @@ class Pi05PolicyInferenceConfig:
     chunk_replan_steps: int = 50
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
+    metrics_path: Optional[str] = None
+    run_metadata: Optional[Dict[str, Any]] = None
     puma_history_steps: int = 4
     puma_history_stride: int = 4
 
@@ -113,11 +117,13 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._last_sanitized_action: Optional[np.ndarray] = None
         history_length = cfg.puma_history_steps * cfg.puma_history_stride + 1
         self._puma_static_history = deque(maxlen=history_length)
+        self._reset_metrics()
 
         self.register_start_infering_event(self.control_pair.start_control_pair)
         self.register_stop_infering_event(self.control_pair.stop_control_pair)
 
     def _start_infering(self) -> None:
+        self._reset_metrics()
         self._action_chunk = None
         self._chunk_step = 0
         self._last_gripper_cmd = None
@@ -132,13 +138,79 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.control_pair.reset_action()
         super()._start_infering()
 
+    def _reset_metrics(self) -> None:
+        self._metrics_start_perf = time.perf_counter()
+        self._metrics_start_wall = time.time()
+        self._metrics_reported = False
+        self._metrics_inference_calls = 0
+        self._metrics_actions_applied = 0
+        self._metrics_empty_action_steps = 0
+        self._metrics_chunks: list[dict[str, Any]] = []
+        self._active_chunk_metric_id: Optional[int] = None
+
+    def _start_chunk_metric(self, request_time_s: float, observation_build_s: float) -> int:
+        self._metrics_inference_calls += 1
+        request_id = self._metrics_inference_calls
+        self._metrics_chunks.append(
+            {
+                "request_id": request_id,
+                "kind": "sync",
+                "transport": self.cfg.policy_transport,
+                "request_time_s": request_time_s,
+                "client_observation_build_s": observation_build_s,
+                "request_latency_s": None,
+                "action_count": None,
+                "executed_action_count": 0,
+                "first_action_index": None,
+                "last_action_index": None,
+                "first_action_latency_s": None,
+                "first_action_applied_time_s": None,
+                "last_action_applied_time_s": None,
+                "execution_duration_s": None,
+                "error": None,
+            }
+        )
+        return request_id
+
+    def _chunk_metric(self, request_id: int) -> Optional[dict[str, Any]]:
+        for metric in self._metrics_chunks:
+            if metric["request_id"] == request_id:
+                return metric
+        return None
+
+    def _record_active_chunk_action_execution(self, action_index: int) -> None:
+        if self._active_chunk_metric_id is None:
+            return
+        metric = self._chunk_metric(self._active_chunk_metric_id)
+        if metric is None:
+            return
+        now = time.perf_counter()
+        first_time = metric["first_action_applied_time_s"]
+        if first_time is None:
+            metric["first_action_applied_time_s"] = now
+            metric["first_action_index"] = int(action_index)
+            metric["first_action_latency_s"] = now - float(metric["request_time_s"])
+            first_time = now
+        metric["last_action_applied_time_s"] = now
+        metric["last_action_index"] = int(action_index)
+        metric["executed_action_count"] += 1
+        metric["execution_duration_s"] = now - float(first_time)
+
     def _infer_step(self) -> None:
         start = time.perf_counter()
+        observation_start = time.perf_counter()
         observation = self._build_observation()
+        observation_build_s = time.perf_counter() - observation_start
         if self._should_request_action_chunk():
+            request_start = time.perf_counter()
+            request_id = self._start_chunk_metric(request_start, observation_build_s)
             try:
                 self.policy.send_observation(observation)
             except Exception as exc:
+                metric = self._chunk_metric(request_id)
+                if metric is not None:
+                    metric["request_latency_s"] = time.perf_counter() - request_start
+                    metric["error"] = str(exc)
                 self._action_chunk = None
                 self._chunk_step = 0
                 self.control_pair.reset_action()
@@ -153,6 +225,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
                     self._action_chunk = self._parse_action_payload(action_msg["action"])
                     self._chunk_step = 0
                     self._last_action_timestamp = timestamp
+                    metric = self._chunk_metric(request_id)
+                    if metric is not None:
+                        metric["request_latency_s"] = time.perf_counter() - request_start
+                        metric["action_count"] = len(self._action_chunk)
+                    self._active_chunk_metric_id = request_id
                     self._log_action_chunk_debug(self._action_chunk)
 
         if self._action_chunk is not None and self._chunk_step < len(self._action_chunk):
@@ -161,7 +238,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
             sanitized_action = self._sanitize_action(action)
             self._last_sanitized_action = sanitized_action.copy()
             self.control_pair.update_action(sanitized_action)
+            self._metrics_actions_applied += 1
+            self._record_active_chunk_action_execution(self._chunk_step - 1)
             self._maybe_stop_after_release()
+        else:
+            self._metrics_empty_action_steps += 1
 
         elapsed = time.perf_counter() - start
         sleep_time = max(0.0, (1.0 / self.fps) - elapsed)
@@ -204,7 +285,119 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._ui_console.log("Episode discarded.")
 
     def _stop_infering(self) -> None:
+        self._report_metrics()
         super()._stop_infering()
+
+    def _report_metrics(self) -> None:
+        if self._metrics_reported:
+            return
+        self._metrics_reported = True
+
+        chunks = [dict(chunk) for chunk in self._metrics_chunks]
+        request_latencies = [
+            float(chunk["request_latency_s"])
+            for chunk in chunks
+            if chunk["request_latency_s"] is not None
+        ]
+        first_action_latencies = [
+            float(chunk["first_action_latency_s"])
+            for chunk in chunks
+            if chunk["first_action_latency_s"] is not None
+        ]
+        execution_durations = [
+            float(chunk["execution_duration_s"])
+            for chunk in chunks
+            if chunk["execution_duration_s"] is not None
+        ]
+        observation_build_times = [
+            float(chunk["client_observation_build_s"])
+            for chunk in chunks
+            if chunk["client_observation_build_s"] is not None
+        ]
+        summary = {
+            "task": self.task,
+            "policy_name": self.cfg.policy_name,
+            "policy_transport": self.cfg.policy_transport,
+            "policy_zmq_endpoint": self.cfg.policy_zmq_endpoint,
+            "obs_topic": self.cfg.obs_topic,
+            "action_topic": self.cfg.action_topic,
+            "fps": int(self.fps),
+            "stop_after_first_release": bool(self.cfg.stop_after_first_release),
+            "puma_history_steps": int(self.cfg.puma_history_steps),
+            "puma_history_stride": int(self.cfg.puma_history_stride),
+            "total_time_s": time.perf_counter() - self._metrics_start_perf,
+            "inference_calls": int(self._metrics_inference_calls),
+            "completed_chunks": len(chunks),
+            "actions_applied": int(self._metrics_actions_applied),
+            "empty_action_steps": int(self._metrics_empty_action_steps),
+            "avg_request_latency_s": _mean(request_latencies),
+            "avg_first_action_latency_s": _mean(first_action_latencies),
+            "avg_chunk_execution_duration_s": _mean(execution_durations),
+            "avg_client_observation_build_s": _mean(observation_build_times),
+            "run_metadata": self.cfg.run_metadata or {},
+        }
+        pyzlc.info(
+            "Pi0.5 inference metrics: "
+            f"total_time={summary['total_time_s']:.3f}s, "
+            f"inference_calls={summary['inference_calls']}, "
+            f"completed_chunks={summary['completed_chunks']}, "
+            f"actions_applied={summary['actions_applied']}, "
+            f"empty_action_steps={summary['empty_action_steps']}, "
+            f"avg_request_latency={_format_optional(summary['avg_request_latency_s'])}s, "
+            f"avg_first_action_latency={_format_optional(summary['avg_first_action_latency_s'])}s, "
+            f"avg_chunk_duration={_format_optional(summary['avg_chunk_execution_duration_s'])}s"
+        )
+        if self.cfg.metrics_path:
+            self._write_metrics(summary, chunks)
+
+    def _write_metrics(self, summary: Dict[str, Any], chunks: List[Dict[str, Any]]) -> None:
+        path = Path(self.cfg.metrics_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        record = {
+            "type": "pi05_puma_inference_episode",
+            "wall_time": self._metrics_start_wall,
+            "summary": summary,
+            "chunks": chunks,
+        }
+        with path.open("a", encoding="utf-8") as file:
+            file.write(json.dumps(_json_safe(record), sort_keys=True) + "\n")
+
+        text_path = path.with_suffix(".txt")
+        lines = [
+            "Pi0.5 PUMA inference metrics",
+            f"task: {summary['task']}",
+            (
+                "summary: "
+                f"total_time={_format_optional(summary['total_time_s'])}s, "
+                f"inference_calls={summary['inference_calls']}, "
+                f"completed_chunks={summary['completed_chunks']}, "
+                f"actions_applied={summary['actions_applied']}, "
+                f"empty_action_steps={summary['empty_action_steps']}"
+            ),
+            (
+                "latency: "
+                f"avg_request={_format_optional(summary['avg_request_latency_s'])}s, "
+                f"avg_first_action={_format_optional(summary['avg_first_action_latency_s'])}s, "
+                f"avg_chunk_duration={_format_optional(summary['avg_chunk_execution_duration_s'])}s, "
+                f"avg_observation_build={_format_optional(summary['avg_client_observation_build_s'])}s"
+            ),
+            "chunks:",
+            "  request  actions  executed  request_s  first_s  duration_s  error",
+        ]
+        for chunk in chunks:
+            lines.append(
+                "  "
+                f"{str(chunk['request_id']):>7}  "
+                f"{str(chunk['action_count']):>7}  "
+                f"{str(chunk['executed_action_count']):>8}  "
+                f"{_format_optional(chunk['request_latency_s']):>9}  "
+                f"{_format_optional(chunk['first_action_latency_s']):>7}  "
+                f"{_format_optional(chunk['execution_duration_s']):>10}  "
+                f"{chunk['error'] or ''}"
+            )
+        with text_path.open("a", encoding="utf-8") as file:
+            file.write("\n".join(lines) + "\n\n")
+        pyzlc.info(f"Wrote Pi0.5 inference metrics to {path} and {text_path}")
 
     def _reset_arm(self) -> None:
         self._ui_console.log("Resetting robot arm position...")
@@ -379,6 +572,32 @@ def _format_vec(vec: Optional[np.ndarray]) -> str:
         return "None"
     arr = np.asarray(vec, dtype=np.float64).reshape(-1)
     return "[" + ", ".join(f"{value:.4f}" for value in arr) + "]"
+
+
+def _mean(values: List[float]) -> Optional[float]:
+    if not values:
+        return None
+    return float(sum(values) / len(values))
+
+
+def _format_optional(value: Any) -> str:
+    if value is None:
+        return "n/a"
+    return f"{float(value):.3f}"
+
+
+def _json_safe(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {str(key): _json_safe(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_json_safe(item) for item in value]
+    if isinstance(value, tuple):
+        return [_json_safe(item) for item in value]
+    if isinstance(value, np.ndarray):
+        return value.tolist()
+    if isinstance(value, np.generic):
+        return value.item()
+    return value
 
 
 def _rotation_matrix_to_quat_xyzw(matrix: np.ndarray) -> np.ndarray:

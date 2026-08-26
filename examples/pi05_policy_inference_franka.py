@@ -44,6 +44,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--chunk_replan_steps", type=int, default=50)
     parser.add_argument("--stop_after_first_release", action="store_true")
     parser.add_argument("--stop_after_release_steps", type=int, default=0)
+    parser.add_argument("--metrics_path", default=None)
     parser.add_argument("--robot_name", default="FrankaPanda")
     parser.add_argument("--static_camera", default="static_cam")
     parser.add_argument("--wrist_camera", default="wrist_cam")
@@ -97,6 +98,17 @@ def main() -> None:
         chunk_replan_steps=args.chunk_replan_steps,
         stop_after_first_release=args.stop_after_first_release,
         stop_after_release_steps=args.stop_after_release_steps,
+        metrics_path=args.metrics_path,
+        run_metadata={
+            "control_hz": args.control_hz,
+            "pyzlc_name": args.pyzlc_name,
+            "pyzlc_host": args.pyzlc_host,
+            "pyzlc_group_name": args.pyzlc_group_name,
+            "pyzlc_group_port": args.pyzlc_group_port,
+            "robot_name": args.robot_name,
+            "static_camera": args.static_camera,
+            "wrist_camera": args.wrist_camera,
+        },
         puma_history_steps=args.puma_history_steps,
         puma_history_stride=args.puma_history_stride,
     )
