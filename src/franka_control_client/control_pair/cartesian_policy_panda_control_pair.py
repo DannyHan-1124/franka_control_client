@@ -12,7 +12,7 @@ from ..franka_robot.panda_arm import ControlMode, RemotePandaArm
 from ..robotiq_gripper.robotiq_gripper import RemoteRobotiqGripper
 
 
-DEFAULT_CONTROL_HZ: float = 100.0
+DEFAULT_CONTROL_HZ: float = 20.0
 GRIPPER_DEADBAND: float = 1e-3
 GRIPPER_SPEED: float = 0.7
 GRIPPER_FORCE: float = 0.3

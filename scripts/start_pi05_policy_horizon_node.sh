@@ -24,5 +24,5 @@ python -m franka_control_client.policy.pi05_policy_horizon_node \
     --policy_dtype bfloat16 \
     --default_task "put red cube in bowl" \
     --direct_zmq_bind tcp://0.0.0.0:40023 \
-    --call_vla_after_actions 20 \
-    --chunk_start_index 2
+    --call_vla_after_actions 10 \
+    --chunk_start_index 2 \

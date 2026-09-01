@@ -12,7 +12,6 @@ POLICY_ZMQ_ENDPOINT="${POLICY_ZMQ_ENDPOINT:-tcp://127.0.0.1:${LOCAL_POLICY_PORT:
 
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --task "put red cube in bowl" \
-    --stop_after_first_release \
     --pyzlc_name policy_inference_horizon \
     --pyzlc_host 141.3.53.25 \
     --pyzlc_group_name robot_lab_robotiq_202 \
@@ -22,5 +21,6 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --metrics_path "${REPO_ROOT}/logs/pi05_horizon_inference_metrics.jsonl" \
     --static_camera static_cam \
     --wrist_camera wrist_cam \
-    --call_vla_after_actions 10 \
-    --inference_latency 2
+    --call_vla_after_actions 25 \
+    --inference_latency 10
+    # --stop_after_first_release \
