@@ -5,10 +5,10 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WORKSPACE_ROOT="$(cd "${REPO_ROOT}/.." && pwd)"
 export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot/src:${PYTHONPATH:-}"
 
-export HF_HOME="${HF_HOME:-/data/zhuoyue/cache/huggingface}"
-export HF_DATASETS_CACHE="${HF_DATASETS_CACHE:-/data/zhuoyue/cache/huggingface/datasets}"
-export TRANSFORMERS_CACHE="${TRANSFORMERS_CACHE:-/data/zhuoyue/cache/huggingface/transformers}"
-export XDG_CACHE_HOME="${XDG_CACHE_HOME:-/data/zhuoyue/cache}"
+export HF_HOME="${HF_HOME:-${HOME}/.cache/huggingface}"
+export HF_DATASETS_CACHE="${HF_DATASETS_CACHE:-${HF_HOME}/datasets}"
+export TRANSFORMERS_CACHE="${TRANSFORMERS_CACHE:-${HF_HOME}/transformers}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-${HOME}/.cache}"
 mkdir -p "$HF_HOME" "$HF_DATASETS_CACHE" "$TRANSFORMERS_CACHE" "$XDG_CACHE_HOME"
 
 python -m franka_control_client.policy.pi05_policy_node \
