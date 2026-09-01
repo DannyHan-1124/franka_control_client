@@ -43,6 +43,18 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--policy_zmq_timeout_ms", type=int, default=30000)
     parser.add_argument("--chunk_replan_steps", type=int, default=50)
     parser.add_argument(
+        "--call_vla_after_actions",
+        type=int,
+        default=None,
+        help="Execute this many actions per chunk before switching to the next prediction.",
+    )
+    parser.add_argument(
+        "--inference_latency",
+        type=int,
+        default=0,
+        help="Request the next chunk this many action steps before the execution horizon.",
+    )
+    parser.add_argument(
         "--rtc_enabled",
         action="store_true",
         help="Enable async Real-Time Chunking client execution. Requires --policy_transport zmq.",
@@ -82,6 +94,21 @@ def _parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = _parse_args()
+    if args.call_vla_after_actions is not None and args.call_vla_after_actions < 1:
+        raise ValueError("--call_vla_after_actions must be >= 1")
+    if args.inference_latency < 0:
+        raise ValueError("--inference_latency must be >= 0")
+    if (
+        args.call_vla_after_actions is not None
+        and args.inference_latency > args.call_vla_after_actions
+    ):
+        raise ValueError("--inference_latency must be <= --call_vla_after_actions")
+    if args.call_vla_after_actions is not None and args.rtc_enabled:
+        raise ValueError("--call_vla_after_actions and --rtc_enabled are mutually exclusive")
+    if args.call_vla_after_actions is not None and args.policy_transport != "zmq":
+        raise ValueError("--call_vla_after_actions requires --policy_transport zmq")
+    if args.call_vla_after_actions is None and args.inference_latency != 0:
+        raise ValueError("--inference_latency requires --call_vla_after_actions")
     pyzlc.init(
         args.pyzlc_name,
         args.pyzlc_host,
@@ -123,6 +150,8 @@ def main() -> None:
         policy_zmq_endpoint=args.policy_zmq_endpoint,
         policy_zmq_timeout_ms=args.policy_zmq_timeout_ms,
         chunk_replan_steps=args.chunk_replan_steps,
+        call_vla_after_actions=args.call_vla_after_actions,
+        inference_latency=args.inference_latency,
         rtc_enabled=args.rtc_enabled,
         rtc_execution_horizon=args.rtc_execution_horizon,
         rtc_delay_steps=args.rtc_delay_steps,

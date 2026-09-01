@@ -18,6 +18,10 @@ class PolicyActionMsg(TypedDict, total=True):
     shape: list[int]
     action_raw: NotRequired[list[float]]
     raw_shape: NotRequired[list[int]]
+    ack: NotRequired[bool]
+    success: NotRequired[bool]
+    path: NotRequired[str]
+    error: NotRequired[str]
 
 
 class PolicyObservationMsg(TypedDict, total=True):
@@ -116,6 +120,10 @@ class DirectZmqPolicy(RemoteDevice):
             shape=msg["shape"],
             action_raw=msg.get("action_raw"),
             raw_shape=msg.get("raw_shape"),
+            ack=msg.get("ack"),
+            success=msg.get("success"),
+            path=msg.get("path"),
+            error=msg.get("error"),
         )
 
     def _reset_socket(self) -> None:

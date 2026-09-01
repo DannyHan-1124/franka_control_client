@@ -43,6 +43,8 @@ class Pi05PolicyInferenceConfig:
     policy_zmq_endpoint: Optional[str] = None
     policy_zmq_timeout_ms: int = 30000
     chunk_replan_steps: int = 50
+    call_vla_after_actions: Optional[int] = None
+    inference_latency: int = 0
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
     close_gripper_on_reset: bool = False
@@ -69,6 +71,19 @@ class Pi05PolicyInference(PolicyInferenceManager):
         control_pair: CartesianPolicyPandaRobotiqControlPair,
         cfg: Pi05PolicyInferenceConfig,
     ) -> None:
+        if cfg.call_vla_after_actions is not None:
+            if cfg.call_vla_after_actions < 1:
+                raise ValueError("call_vla_after_actions must be >= 1")
+            if cfg.inference_latency < 0:
+                raise ValueError("inference_latency must be >= 0")
+            if cfg.inference_latency > cfg.call_vla_after_actions:
+                raise ValueError("inference_latency must not exceed call_vla_after_actions")
+            if cfg.policy_transport != "zmq":
+                raise ValueError("Horizon look-ahead requires ZMQ policy transport")
+            if cfg.rtc_enabled:
+                raise ValueError("Horizon look-ahead and RTC are mutually exclusive")
+        elif cfg.inference_latency != 0:
+            raise ValueError("inference_latency requires call_vla_after_actions")
         super().__init__(task=cfg.task, fps=cfg.fps)
         self.data_collectors = data_collectors
         self.control_pair = control_pair
@@ -135,6 +150,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             maxlen=max(1, int(cfg.rtc_delay_buffer_size))
         )
         self._rtc_delay_history.append(max(0, int(cfg.rtc_delay_steps)))
+        self._episode_id = 0
         self._metrics_lock = threading.Lock()
         self._reset_metrics()
 
@@ -142,6 +158,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.register_stop_infering_event(self.control_pair.stop_control_pair)
 
     def _start_infering(self) -> None:
+        self._episode_id += 1
         self._reset_metrics()
         self._action_chunk = None
         self._raw_action_chunk = None
@@ -255,6 +272,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
     def _infer_step(self) -> None:
         start = time.perf_counter()
+        if self.cfg.call_vla_after_actions is not None:
+            self._infer_horizon_step()
+            self._sleep_remaining_control_period(start)
+            return
         if self.cfg.rtc_enabled:
             self._infer_rtc_step()
             self._sleep_remaining_control_period(start)
@@ -306,6 +327,164 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._metrics_empty_action_steps += 1
 
         self._sleep_remaining_control_period(start)
+
+    def _infer_horizon_step(self) -> None:
+        """Execute H actions while requesting the next chunk at H - latency."""
+        if self.cfg.policy_transport != "zmq":
+            raise ValueError(
+                "Horizon look-ahead currently requires --policy_transport zmq."
+            )
+        if self.cfg.rtc_enabled:
+            raise ValueError("Horizon look-ahead and RTC cannot be enabled together.")
+
+        self._raise_pending_rtc_error()
+        if self._action_chunk is None:
+            self._request_initial_horizon_chunk()
+        if self._action_chunk is None:
+            return
+
+        self._maybe_launch_horizon_request()
+        self._maybe_swap_to_horizon_chunk()
+
+        horizon = self._fixed_execution_horizon()
+        if self._chunk_step < horizon and self._chunk_step < len(self._action_chunk):
+            action = self._action_chunk[self._chunk_step]
+            self._chunk_step += 1
+            sanitized_action = self._sanitize_action(action)
+            self._last_sanitized_action = sanitized_action.copy()
+            self.control_pair.update_action(sanitized_action)
+            self._metrics_actions_applied += 1
+            self._record_active_chunk_action_execution(self._chunk_step - 1)
+            self._maybe_stop_after_release()
+        else:
+            self._metrics_empty_action_steps += 1
+
+        self._maybe_swap_to_horizon_chunk()
+
+    def _request_initial_horizon_chunk(self) -> None:
+        obs_start = time.perf_counter()
+        observation = self._build_observation()
+        observation_build_s = time.perf_counter() - obs_start
+        request_start = time.perf_counter()
+        request_id = self._start_chunk_metric(
+            transport=self.cfg.policy_transport,
+            request_time_s=request_start,
+            client_observation_build_s=observation_build_s,
+            kind="horizon_initial",
+        )
+        self.policy.send_observation(observation)
+        action_msg = self.policy.current_action
+        if action_msg is None:
+            return
+        timestamp = float(action_msg["timestamp"])
+        if timestamp == self._last_action_timestamp:
+            return
+        self._action_chunk = self._parse_action_payload(action_msg["action"])
+        self._chunk_step = 0
+        self._last_action_timestamp = timestamp
+        self._finish_chunk_metric(
+            request_id,
+            request_latency_s=time.perf_counter() - request_start,
+            action_count=len(self._action_chunk),
+        )
+        self._active_chunk_metric_id = request_id
+        self._log_action_chunk_debug(self._action_chunk)
+
+    def _fixed_execution_horizon(self) -> int:
+        assert self._action_chunk is not None
+        configured = int(self.cfg.call_vla_after_actions or len(self._action_chunk))
+        return min(configured, len(self._action_chunk))
+
+    def _maybe_launch_horizon_request(self) -> None:
+        if self._action_chunk is None:
+            return
+        with self._rtc_lock:
+            if self._rtc_inflight or self._rtc_next_chunk is not None:
+                return
+        horizon = self._fixed_execution_horizon()
+        latency = int(self.cfg.inference_latency)
+        launch_step = max(0, horizon - latency)
+        if self._chunk_step < launch_step:
+            return
+
+        obs_start = time.perf_counter()
+        observation = self._build_observation()
+        observation_build_s = time.perf_counter() - obs_start
+        with self._rtc_lock:
+            self._rtc_inflight = True
+            self._rtc_next_launch_step = self._chunk_step
+            generation = self._rtc_generation
+        request_start = time.perf_counter()
+        request_id = self._start_chunk_metric(
+            transport=self.cfg.policy_transport,
+            request_time_s=request_start,
+            client_observation_build_s=observation_build_s,
+            kind="horizon_async",
+            launch_step=self._chunk_step,
+            configured_horizon=horizon,
+            predicted_delay_steps=latency,
+        )
+        threading.Thread(
+            target=self._horizon_request_worker,
+            args=(observation, generation, request_id, request_start),
+            daemon=True,
+        ).start()
+
+    def _horizon_request_worker(
+        self,
+        observation: Dict[str, Any],
+        generation: int,
+        request_id: int,
+        request_start: float,
+    ) -> None:
+        policy = DirectZmqPolicy(
+            self.cfg.policy_name,
+            endpoint=self.cfg.policy_zmq_endpoint or "",
+            timeout_ms=self.cfg.policy_zmq_timeout_ms,
+        )
+        try:
+            policy.send_observation(observation)
+            action_msg = policy.current_action
+            if action_msg is None:
+                raise RuntimeError("Horizon policy request returned no action message.")
+            chunk = self._parse_action_payload(action_msg["action"])
+            timestamp = float(action_msg["timestamp"])
+            with self._rtc_lock:
+                if generation == self._rtc_generation and timestamp != self._last_action_timestamp:
+                    self._rtc_next_chunk = chunk
+                    self._rtc_next_metric_id = request_id
+                    self._last_action_timestamp = timestamp
+                    self._finish_chunk_metric(
+                        request_id,
+                        request_latency_s=time.perf_counter() - request_start,
+                        action_count=len(chunk),
+                    )
+        except BaseException as exc:
+            with self._rtc_lock:
+                if generation == self._rtc_generation:
+                    self._rtc_pending_error = exc
+                    self._mark_chunk_metric_error(request_id, str(exc))
+        finally:
+            policy.close()
+            with self._rtc_lock:
+                if generation == self._rtc_generation:
+                    self._rtc_inflight = False
+
+    def _maybe_swap_to_horizon_chunk(self) -> None:
+        if self._action_chunk is None or self._chunk_step < self._fixed_execution_horizon():
+            return
+        with self._rtc_lock:
+            next_chunk = self._rtc_next_chunk
+            metric_id = self._rtc_next_metric_id
+            if next_chunk is None:
+                return
+            self._rtc_next_chunk = None
+            self._rtc_next_metric_id = None
+        self._action_chunk = next_chunk
+        self._raw_action_chunk = None
+        self._chunk_step = 0
+        self._active_chunk_metric_id = metric_id
+        self._log_action_chunk_debug(self._action_chunk)
 
     def _sleep_remaining_control_period(self, start: float) -> None:
         elapsed = time.perf_counter() - start
@@ -826,6 +1005,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "observation.images.left_wrist_0_rgb": _encode_rgb_image(wrist_rgb),
             "observation.state": self._build_state_vector().tolist(),
             "task": self.task,
+            "episode_id": self._episode_id,
         }
         if policy_kwargs:
             obs["policy_kwargs"] = policy_kwargs
