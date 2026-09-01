@@ -17,7 +17,7 @@ GRIPPER_DEADBAND: float = 1e-3
 GRIPPER_SPEED: float = 0.7
 GRIPPER_FORCE: float = 0.3
 DEFAULT_POSITION = (0.0, 0.0, 0.0, -2.15, 0.0, 2.15, 0.0)
-MAX_POSITION_COMMAND_STEP_M: float = 0.01
+MAX_POSITION_COMMAND_STEP_M: float = 0.013
 
 
 class CartesianPolicyPandaRobotiqControlPair(ControlPair):

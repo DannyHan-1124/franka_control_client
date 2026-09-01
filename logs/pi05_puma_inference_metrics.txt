@@ -1,0 +1,541 @@
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=8.082s, inference_calls=4, completed_chunks=4, actions_applied=97, empty_action_steps=0
+latency: avg_request=0.850s, avg_first_action=0.851s, avg_chunk_duration=1.119s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        25      2.424    2.424       1.157  
+        2       50        25      0.333    0.333       1.156  
+        3       50        25      0.323    0.323       1.157  
+        4       50        22      0.322    0.323       1.007  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=10.470s, inference_calls=7, completed_chunks=7, actions_applied=171, empty_action_steps=0
+latency: avg_request=0.324s, avg_first_action=0.324s, avg_chunk_duration=1.128s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        25      0.347    0.347       1.157  
+        2       50        25      0.320    0.320       1.156  
+        3       50        25      0.321    0.321       1.158  
+        4       50        25      0.319    0.319       1.156  
+        5       50        25      0.319    0.319       1.157  
+        6       50        25      0.320    0.320       1.158  
+        7       50        21      0.320    0.320       0.956  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=6.460s, inference_calls=5, completed_chunks=5, actions_applied=101, empty_action_steps=0
+latency: avg_request=0.325s, avg_first_action=0.325s, avg_chunk_duration=0.925s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        25      0.346    0.347       1.157  
+        2       50        25      0.319    0.319       1.157  
+        3       50        25      0.321    0.322       1.158  
+        4       50        25      0.320    0.320       1.156  
+        5       50         1      0.319    0.319       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=7.466s, inference_calls=5, completed_chunks=5, actions_applied=122, empty_action_steps=0
+latency: avg_request=0.325s, avg_first_action=0.325s, avg_chunk_duration=1.127s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        25      0.345    0.345       1.157  
+        2       50        25      0.319    0.319       1.158  
+        3       50        25      0.322    0.322       1.156  
+        4       50        25      0.321    0.321       1.157  
+        5       50        22      0.319    0.319       1.006  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=7.215s, inference_calls=5, completed_chunks=5, actions_applied=117, empty_action_steps=0
+latency: avg_request=0.325s, avg_first_action=0.325s, avg_chunk_duration=1.077s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        25      0.346    0.346       1.156  
+        2       50        25      0.319    0.320       1.157  
+        3       50        25      0.319    0.320       1.156  
+        4       50        25      0.318    0.318       1.157  
+        5       50        17      0.320    0.321       0.756  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=7.160s, inference_calls=5, completed_chunks=5, actions_applied=116, empty_action_steps=0
+latency: avg_request=0.324s, avg_first_action=0.324s, avg_chunk_duration=1.067s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        25      0.346    0.346       1.156  
+        2       50        25      0.318    0.318       1.156  
+        3       50        25      0.319    0.319       1.157  
+        4       50        25      0.318    0.318       1.158  
+        5       50        16      0.319    0.319       0.707  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=8.283s, inference_calls=6, completed_chunks=6, actions_applied=133, empty_action_steps=0
+latency: avg_request=0.323s, avg_first_action=0.323s, avg_chunk_duration=1.015s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        25      0.343    0.343       1.158  
+        2       50        25      0.320    0.320       1.156  
+        3       50        25      0.320    0.321       1.156  
+        4       50        25      0.320    0.320       1.157  
+        5       50        25      0.317    0.317       1.156  
+        6       50         8      0.319    0.319       0.305  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=8.977s, inference_calls=6, completed_chunks=6, actions_applied=147, empty_action_steps=0
+latency: avg_request=0.321s, avg_first_action=0.321s, avg_chunk_duration=1.132s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        25      0.340    0.340       1.157  
+        2       50        25      0.318    0.318       1.156  
+        3       50        25      0.316    0.317       1.157  
+        4       50        25      0.318    0.318       1.157  
+        5       50        25      0.317    0.318       1.157  
+        6       50        22      0.318    0.318       1.006  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=8.028s, inference_calls=6, completed_chunks=6, actions_applied=128, empty_action_steps=0
+latency: avg_request=0.322s, avg_first_action=0.322s, avg_chunk_duration=0.973s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        25      0.344    0.344       1.157  
+        2       50        25      0.318    0.318       1.157  
+        3       50        25      0.319    0.319       1.156  
+        4       50        25      0.317    0.317       1.157  
+        5       50        25      0.318    0.318       1.157  
+        6       50         3      0.318    0.318       0.055  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=4.200s, inference_calls=4, completed_chunks=4, actions_applied=76, empty_action_steps=0
+latency: avg_request=0.323s, avg_first_action=0.323s, avg_chunk_duration=0.695s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        25      0.343    0.344       0.927  
+        2       50        25      0.317    0.317       0.927  
+        3       50        25      0.316    0.316       0.926  
+        4       50         1      0.316    0.316       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=4.199s, inference_calls=4, completed_chunks=4, actions_applied=76, empty_action_steps=0
+latency: avg_request=0.323s, avg_first_action=0.323s, avg_chunk_duration=0.695s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        25      0.340    0.340       0.927  
+        2       50        25      0.318    0.318       0.926  
+        3       50        25      0.318    0.318       0.927  
+        4       50         1      0.316    0.316       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=5.446s, inference_calls=5, completed_chunks=5, actions_applied=81, empty_action_steps=0
+latency: avg_request=0.323s, avg_first_action=0.323s, avg_chunk_duration=0.725s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        20      0.344    0.345       0.908  
+        2       50        20      0.316    0.316       0.906  
+        3       50        20      0.317    0.317       0.907  
+        4       50        20      0.316    0.316       0.907  
+        5       50         1      0.319    0.320       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=8.408s, inference_calls=7, completed_chunks=7, actions_applied=130, empty_action_steps=0
+latency: avg_request=0.322s, avg_first_action=0.322s, avg_chunk_duration=0.835s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        20      0.345    0.346       0.906  
+        2       50        20      0.317    0.318       0.906  
+        3       50        20      0.318    0.318       0.906  
+        4       50        20      0.319    0.320       0.906  
+        5       50        20      0.317    0.317       0.907  
+        6       50        20      0.318    0.318       0.906  
+        7       50        10      0.321    0.321       0.406  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=0.920s, inference_calls=1, completed_chunks=1, actions_applied=18, empty_action_steps=0
+latency: avg_request=0.345s, avg_first_action=0.345s, avg_chunk_duration=0.539s, avg_observation_build=0.006s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        18      0.345    0.345       0.539  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=4.177s, inference_calls=5, completed_chunks=5, actions_applied=81, empty_action_steps=0
+latency: avg_request=0.323s, avg_first_action=0.323s, avg_chunk_duration=0.485s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        20      0.344    0.345       0.606  
+        2       50        20      0.317    0.318       0.606  
+        3       50        20      0.317    0.317       0.608  
+        4       50        20      0.317    0.317       0.606  
+        5       50         1      0.317    0.317       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=4.173s, inference_calls=5, completed_chunks=5, actions_applied=81, empty_action_steps=0
+latency: avg_request=0.321s, avg_first_action=0.322s, avg_chunk_duration=0.485s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        20      0.343    0.343       0.607  
+        2       50        20      0.316    0.316       0.606  
+        3       50        20      0.316    0.316       0.606  
+        4       50        20      0.315    0.316       0.606  
+        5       50         1      0.317    0.317       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=8.845s, inference_calls=8, completed_chunks=8, actions_applied=192, empty_action_steps=0
+latency: avg_request=0.441s, avg_first_action=0.442s, avg_chunk_duration=0.635s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        25      1.222    1.222       0.664  
+        2       50        25      0.325    0.325       0.664  
+        3       50        25      0.331    0.332       0.664  
+        4       50        25      0.344    0.345       0.664  
+        5       50        25      0.337    0.338       0.664  
+        6       50        25      0.325    0.326       0.664  
+        7       50        25      0.323    0.323       0.664  
+        8       50        17      0.322    0.322       0.435  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=9.489s, inference_calls=10, completed_chunks=10, actions_applied=226, empty_action_steps=0
+latency: avg_request=0.325s, avg_first_action=0.325s, avg_chunk_duration=0.598s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        25      0.349    0.349       0.664  
+        2       50        25      0.322    0.322       0.664  
+        3       50        25      0.322    0.323       0.665  
+        4       50        25      0.323    0.323       0.663  
+        5       50        25      0.322    0.323       0.663  
+        6       50        25      0.323    0.323       0.664  
+        7       50        25      0.322    0.322       0.664  
+        8       50        25      0.322    0.322       0.664  
+        9       50        25      0.322    0.323       0.664  
+       10       50         1      0.322    0.322       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=8.666s, inference_calls=9, completed_chunks=9, actions_applied=207, empty_action_steps=0
+latency: avg_request=0.328s, avg_first_action=0.328s, avg_chunk_duration=0.607s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        25      0.347    0.347       0.664  
+        2       50        25      0.323    0.323       0.663  
+        3       50        25      0.320    0.321       0.664  
+        4       50        25      0.321    0.321       0.665  
+        5       50        25      0.320    0.320       0.664  
+        6       50        25      0.319    0.319       0.664  
+        7       50        25      0.336    0.337       0.664  
+        8       50        25      0.332    0.333       0.664  
+        9       50         7      0.330    0.330       0.148  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=7.758s, inference_calls=8, completed_chunks=8, actions_applied=187, empty_action_steps=0
+latency: avg_request=0.324s, avg_first_action=0.324s, avg_chunk_duration=0.617s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        25      0.346    0.346       0.664  
+        2       50        25      0.323    0.323       0.664  
+        3       50        25      0.320    0.320       0.664  
+        4       50        25      0.321    0.321       0.664  
+        5       50        25      0.319    0.320       0.663  
+        6       50        25      0.320    0.320       0.664  
+        7       50        25      0.320    0.320       0.664  
+        8       50        12      0.321    0.321       0.291  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=9.115s, inference_calls=9, completed_chunks=9, actions_applied=224, empty_action_steps=0
+latency: avg_request=0.323s, avg_first_action=0.323s, avg_chunk_duration=0.661s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        25      0.344    0.344       0.664  
+        2       50        25      0.322    0.322       0.664  
+        3       50        25      0.321    0.321       0.664  
+        4       50        25      0.320    0.320       0.664  
+        5       50        25      0.321    0.321       0.664  
+        6       50        25      0.320    0.320       0.664  
+        7       50        25      0.319    0.319       0.663  
+        8       50        25      0.321    0.321       0.664  
+        9       50        24      0.320    0.321       0.635  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=9.552s, inference_calls=10, completed_chunks=10, actions_applied=229, empty_action_steps=0
+latency: avg_request=0.323s, avg_first_action=0.323s, avg_chunk_duration=0.604s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        25      0.347    0.347       0.664  
+        2       50        25      0.323    0.323       0.664  
+        3       50        25      0.319    0.319       0.664  
+        4       50        25      0.319    0.319       0.663  
+        5       50        25      0.319    0.320       0.664  
+        6       50        25      0.319    0.319       0.664  
+        7       50        25      0.318    0.318       0.664  
+        8       50        25      0.322    0.323       0.664  
+        9       50        25      0.320    0.320       0.664  
+       10       50         4      0.319    0.320       0.062  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=6.875s, inference_calls=6, completed_chunks=6, actions_applied=176, empty_action_steps=0
+latency: avg_request=0.329s, avg_first_action=0.329s, avg_chunk_duration=0.792s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.347    0.347       0.951  
+        2       50        35      0.324    0.324       0.950  
+        3       50        35      0.332    0.332       0.951  
+        4       50        35      0.325    0.325       0.950  
+        5       50        35      0.324    0.325       0.950  
+        6       50         1      0.320    0.321       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=6.519s, inference_calls=5, completed_chunks=5, actions_applied=174, empty_action_steps=0
+latency: avg_request=0.330s, avg_first_action=0.330s, avg_chunk_duration=0.945s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.354    0.354       0.950  
+        2       50        35      0.329    0.329       0.951  
+        3       50        35      0.324    0.324       0.950  
+        4       50        35      0.322    0.322       0.951  
+        5       50        34      0.322    0.323       0.922  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=6.995s, inference_calls=6, completed_chunks=6, actions_applied=180, empty_action_steps=0
+latency: avg_request=0.330s, avg_first_action=0.330s, avg_chunk_duration=0.807s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.344    0.344       0.950  
+        2       50        35      0.333    0.334       0.950  
+        3       50        35      0.333    0.333       0.950  
+        4       50        35      0.324    0.325       0.950  
+        5       50        35      0.322    0.323       0.950  
+        6       50         5      0.323    0.323       0.091  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=7.717s, inference_calls=6, completed_chunks=6, actions_applied=206, empty_action_steps=0
+latency: avg_request=0.326s, avg_first_action=0.326s, avg_chunk_duration=0.931s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.347    0.347       0.950  
+        2       50        35      0.320    0.321       0.951  
+        3       50        35      0.321    0.321       0.951  
+        4       50        35      0.320    0.320       0.951  
+        5       50        35      0.321    0.322       0.950  
+        6       50        31      0.327    0.327       0.836  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=7.717s, inference_calls=6, completed_chunks=6, actions_applied=191, empty_action_steps=0
+latency: avg_request=0.397s, avg_first_action=0.397s, avg_chunk_duration=0.860s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.750    0.750       0.951  
+        2       50        35      0.326    0.326       0.950  
+        3       50        35      0.319    0.319       0.951  
+        4       50        35      0.322    0.322       0.951  
+        5       50        35      0.336    0.337       0.951  
+        6       50        16      0.328    0.328       0.406  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=7.168s, inference_calls=6, completed_chunks=6, actions_applied=187, empty_action_steps=0
+latency: avg_request=0.325s, avg_first_action=0.325s, avg_chunk_duration=0.841s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.347    0.347       0.950  
+        2       50        35      0.321    0.321       0.950  
+        3       50        35      0.321    0.322       0.950  
+        4       50        35      0.320    0.320       0.951  
+        5       50        35      0.320    0.320       0.950  
+        6       50        12      0.320    0.321       0.292  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=6.213s, inference_calls=5, completed_chunks=5, actions_applied=164, empty_action_steps=0
+latency: avg_request=0.326s, avg_first_action=0.326s, avg_chunk_duration=0.887s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.347    0.347       0.951  
+        2       50        35      0.321    0.322       0.950  
+        3       50        35      0.322    0.323       0.950  
+        4       50        35      0.320    0.320       0.951  
+        5       50        24      0.322    0.322       0.635  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=8.148s, inference_calls=7, completed_chunks=7, actions_applied=211, empty_action_steps=0
+latency: avg_request=0.324s, avg_first_action=0.324s, avg_chunk_duration=0.815s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.346    0.346       0.951  
+        2       50        35      0.320    0.320       0.950  
+        3       50        35      0.320    0.320       0.950  
+        4       50        35      0.320    0.320       0.950  
+        5       50        35      0.319    0.319       0.951  
+        6       50        35      0.322    0.322       0.951  
+        7       50         1      0.321    0.321       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=6.208s, inference_calls=5, completed_chunks=5, actions_applied=164, empty_action_steps=0
+latency: avg_request=0.325s, avg_first_action=0.325s, avg_chunk_duration=0.887s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.341    0.341       0.950  
+        2       50        35      0.323    0.324       0.950  
+        3       50        35      0.322    0.322       0.950  
+        4       50        35      0.320    0.320       0.951  
+        5       50        24      0.321    0.321       0.635  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=7.801s, inference_calls=6, completed_chunks=6, actions_applied=208, empty_action_steps=0
+latency: avg_request=0.330s, avg_first_action=0.330s, avg_chunk_duration=0.941s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.343    0.344       0.950  
+        2       50        35      0.319    0.319       0.950  
+        3       50        35      0.322    0.322       0.950  
+        4       50        35      0.340    0.340       0.951  
+        5       50        35      0.327    0.327       0.951  
+        6       50        33      0.328    0.328       0.893  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=5.693s, inference_calls=5, completed_chunks=5, actions_applied=146, empty_action_steps=0
+latency: avg_request=0.325s, avg_first_action=0.326s, avg_chunk_duration=0.784s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.342    0.342       0.951  
+        2       50        35      0.323    0.323       0.951  
+        3       50        35      0.322    0.323       0.951  
+        4       50        35      0.320    0.320       0.950  
+        5       50         6      0.320    0.321       0.119  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=8.419s, inference_calls=7, completed_chunks=7, actions_applied=211, empty_action_steps=0
+latency: avg_request=0.363s, avg_first_action=0.363s, avg_chunk_duration=0.815s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.339    0.340       0.951  
+        2       50        35      0.320    0.320       0.950  
+        3       50        35      0.321    0.321       0.951  
+        4       50        35      0.463    0.464       0.951  
+        5       50        35      0.419    0.419       0.950  
+        6       50        35      0.343    0.343       0.951  
+        7       50         1      0.335    0.335       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=9.410s, inference_calls=5, completed_chunks=5, actions_applied=158, empty_action_steps=0
+latency: avg_request=0.344s, avg_first_action=0.344s, avg_chunk_duration=1.488s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.365    0.366       1.658  
+        2       50        35      0.359    0.359       1.659  
+        3       50        35      0.330    0.330       1.658  
+        4       50        35      0.327    0.328       1.658  
+        5       50        18      0.337    0.337       0.806  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=9.051s, inference_calls=7, completed_chunks=7, actions_applied=242, empty_action_steps=0
+latency: avg_request=0.325s, avg_first_action=0.326s, avg_chunk_duration=0.938s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        40      0.349    0.350       1.094  
+        2       50        40      0.321    0.321       1.094  
+        3       50        40      0.322    0.322       1.094  
+        4       50        40      0.321    0.321       1.093  
+        5       50        40      0.322    0.322       1.094  
+        6       50        40      0.322    0.323       1.094  
+        7       50         2      0.320    0.321       0.005  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=7.770s, inference_calls=6, completed_chunks=6, actions_applied=208, empty_action_steps=0
+latency: avg_request=0.325s, avg_first_action=0.325s, avg_chunk_duration=0.941s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        40      0.345    0.345       1.093  
+        2       50        40      0.320    0.320       1.095  
+        3       50        40      0.323    0.323       1.094  
+        4       50        40      0.320    0.321       1.094  
+        5       50        40      0.321    0.321       1.094  
+        6       50         8      0.320    0.320       0.177  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=5.438s, inference_calls=5, completed_chunks=5, actions_applied=137, empty_action_steps=0
+latency: avg_request=0.326s, avg_first_action=0.326s, avg_chunk_duration=0.733s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        30      0.347    0.347       0.807  
+        2       50        30      0.320    0.320       0.807  
+        3       50        30      0.320    0.320       0.809  
+        4       50        30      0.321    0.321       0.807  
+        5       50        17      0.320    0.320       0.434  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=4.977s, inference_calls=5, completed_chunks=5, actions_applied=121, empty_action_steps=0
+latency: avg_request=0.325s, avg_first_action=0.326s, avg_chunk_duration=0.646s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        30      0.344    0.344       0.807  
+        2       50        30      0.322    0.322       0.807  
+        3       50        30      0.319    0.319       0.807  
+        4       50        30      0.320    0.320       0.808  
+        5       50         1      0.322    0.322       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=5.293s, inference_calls=5, completed_chunks=5, actions_applied=132, empty_action_steps=0
+latency: avg_request=0.326s, avg_first_action=0.326s, avg_chunk_duration=0.704s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        30      0.346    0.346       0.807  
+        2       50        30      0.320    0.321       0.808  
+        3       50        30      0.321    0.321       0.807  
+        4       50        30      0.321    0.321       0.807  
+        5       50        12      0.320    0.320       0.291  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=5.467s, inference_calls=5, completed_chunks=5, actions_applied=138, empty_action_steps=0
+latency: avg_request=0.326s, avg_first_action=0.326s, avg_chunk_duration=0.738s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        30      0.343    0.343       0.807  
+        2       50        30      0.323    0.324       0.807  
+        3       50        30      0.325    0.325       0.807  
+        4       50        30      0.320    0.320       0.807  
+        5       50        18      0.320    0.321       0.463  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+summary: total_time=5.676s, inference_calls=5, completed_chunks=5, actions_applied=145, empty_action_steps=0
+latency: avg_request=0.327s, avg_first_action=0.328s, avg_chunk_duration=0.779s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.347    0.347       0.951  
+        2       50        35      0.323    0.323       0.952  
+        3       50        35      0.322    0.322       0.951  
+        4       50        35      0.322    0.323       0.952  
+        5       50         5      0.322    0.322       0.091  
+

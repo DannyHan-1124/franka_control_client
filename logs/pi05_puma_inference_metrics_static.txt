@@ -1,0 +1,220 @@
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.455s, inference_calls=4, completed_chunks=4, actions_applied=126, empty_action_steps=0
+latency: avg_request=0.342s, avg_first_action=0.342s, avg_chunk_duration=1.482s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.353    0.353       1.658  
+        2       50        35      0.348    0.348       1.658  
+        3       50        35      0.329    0.330       1.658  
+        4       50        21      0.338    0.338       0.956  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.523s, inference_calls=4, completed_chunks=4, actions_applied=127, empty_action_steps=0
+latency: avg_request=0.347s, avg_first_action=0.347s, avg_chunk_duration=1.495s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.357    0.357       1.658  
+        2       50        35      0.352    0.352       1.658  
+        3       50        35      0.349    0.349       1.658  
+        4       50        22      0.329    0.329       1.007  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.854s, inference_calls=4, completed_chunks=4, actions_applied=132, empty_action_steps=0
+latency: avg_request=0.367s, avg_first_action=0.367s, avg_chunk_duration=1.558s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.351    0.351       1.658  
+        2       50        35      0.351    0.351       1.658  
+        3       50        35      0.406    0.406       1.658  
+        4       50        27      0.359    0.359       1.257  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.976s, inference_calls=4, completed_chunks=4, actions_applied=135, empty_action_steps=0
+latency: avg_request=0.360s, avg_first_action=0.360s, avg_chunk_duration=1.595s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.353    0.354       1.658  
+        2       50        35      0.366    0.366       1.658  
+        3       50        35      0.361    0.361       1.658  
+        4       50        30      0.360    0.360       1.407  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.803s, inference_calls=4, completed_chunks=4, actions_applied=132, empty_action_steps=0
+latency: avg_request=0.354s, avg_first_action=0.354s, avg_chunk_duration=1.557s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.353    0.353       1.657  
+        2       50        35      0.345    0.345       1.658  
+        3       50        35      0.356    0.356       1.658  
+        4       50        27      0.362    0.362       1.257  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.495s, inference_calls=4, completed_chunks=4, actions_applied=126, empty_action_steps=0
+latency: avg_request=0.353s, avg_first_action=0.353s, avg_chunk_duration=1.482s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.350    0.350       1.658  
+        2       50        35      0.353    0.354       1.657  
+        3       50        35      0.357    0.357       1.657  
+        4       50        21      0.351    0.351       0.956  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.448s, inference_calls=4, completed_chunks=4, actions_applied=125, empty_action_steps=0
+latency: avg_request=0.353s, avg_first_action=0.354s, avg_chunk_duration=1.470s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.361    0.362       1.657  
+        2       50        35      0.349    0.350       1.658  
+        3       50        35      0.351    0.352       1.657  
+        4       50        20      0.351    0.351       0.906  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.732s, inference_calls=4, completed_chunks=4, actions_applied=131, empty_action_steps=0
+latency: avg_request=0.348s, avg_first_action=0.349s, avg_chunk_duration=1.545s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.352    0.353       1.658  
+        2       50        35      0.353    0.353       1.658  
+        3       50        35      0.349    0.349       1.659  
+        4       50        26      0.339    0.340       1.207  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.851s, inference_calls=4, completed_chunks=4, actions_applied=132, empty_action_steps=0
+latency: avg_request=0.366s, avg_first_action=0.366s, avg_chunk_duration=1.557s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.354    0.354       1.657  
+        2       50        35      0.342    0.342       1.658  
+        3       50        35      0.413    0.413       1.657  
+        4       50        27      0.356    0.356       1.258  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.489s, inference_calls=4, completed_chunks=4, actions_applied=126, empty_action_steps=0
+latency: avg_request=0.351s, avg_first_action=0.351s, avg_chunk_duration=1.482s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.356    0.356       1.657  
+        2       50        35      0.349    0.349       1.658  
+        3       50        35      0.350    0.351       1.658  
+        4       50        21      0.348    0.348       0.957  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.454s, inference_calls=4, completed_chunks=4, actions_applied=125, empty_action_steps=0
+latency: avg_request=0.355s, avg_first_action=0.355s, avg_chunk_duration=1.470s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.412    0.412       1.658  
+        2       50        35      0.333    0.334       1.658  
+        3       50        35      0.332    0.333       1.657  
+        4       50        20      0.341    0.341       0.907  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.486s, inference_calls=4, completed_chunks=4, actions_applied=126, empty_action_steps=0
+latency: avg_request=0.350s, avg_first_action=0.350s, avg_chunk_duration=1.482s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.352    0.353       1.658  
+        2       50        35      0.349    0.349       1.658  
+        3       50        35      0.350    0.350       1.657  
+        4       50        21      0.349    0.349       0.957  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.858s, inference_calls=4, completed_chunks=4, actions_applied=133, empty_action_steps=0
+latency: avg_request=0.355s, avg_first_action=0.356s, avg_chunk_duration=1.570s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.364    0.364       1.658  
+        2       50        35      0.360    0.360       1.657  
+        3       50        35      0.354    0.354       1.658  
+        4       50        28      0.344    0.344       1.307  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.824s, inference_calls=4, completed_chunks=4, actions_applied=132, empty_action_steps=0
+latency: avg_request=0.359s, avg_first_action=0.360s, avg_chunk_duration=1.558s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.350    0.350       1.657  
+        2       50        35      0.349    0.349       1.658  
+        3       50        35      0.335    0.336       1.657  
+        4       50        27      0.404    0.404       1.258  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.872s, inference_calls=4, completed_chunks=4, actions_applied=122, empty_action_steps=0
+latency: avg_request=0.497s, avg_first_action=0.497s, avg_chunk_duration=1.433s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.353    0.353       1.658  
+        2       50        35      0.349    0.350       1.659  
+        3       50        35      0.359    0.359       1.658  
+        4       50        17      0.925    0.926       0.756  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.978s, inference_calls=4, completed_chunks=4, actions_applied=136, empty_action_steps=0
+latency: avg_request=0.348s, avg_first_action=0.348s, avg_chunk_duration=1.608s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.349    0.349       1.658  
+        2       50        35      0.343    0.343       1.657  
+        3       50        35      0.349    0.350       1.657  
+        4       50        31      0.350    0.350       1.457  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.965s, inference_calls=4, completed_chunks=4, actions_applied=136, empty_action_steps=0
+latency: avg_request=0.345s, avg_first_action=0.345s, avg_chunk_duration=1.607s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.352    0.353       1.658  
+        2       50        35      0.350    0.351       1.657  
+        3       50        35      0.348    0.348       1.657  
+        4       50        31      0.329    0.330       1.457  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.430s, inference_calls=4, completed_chunks=4, actions_applied=125, empty_action_steps=0
+latency: avg_request=0.349s, avg_first_action=0.349s, avg_chunk_duration=1.470s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.364    0.364       1.657  
+        2       50        35      0.350    0.350       1.657  
+        3       50        35      0.338    0.339       1.657  
+        4       50        20      0.343    0.343       0.906  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.713s, inference_calls=4, completed_chunks=4, actions_applied=131, empty_action_steps=0
+latency: avg_request=0.344s, avg_first_action=0.344s, avg_chunk_duration=1.546s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.353    0.353       1.659  
+        2       50        35      0.347    0.347       1.658  
+        3       50        35      0.344    0.344       1.657  
+        4       50        26      0.333    0.333       1.208  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.497s, inference_calls=4, completed_chunks=4, actions_applied=127, empty_action_steps=0
+latency: avg_request=0.340s, avg_first_action=0.341s, avg_chunk_duration=1.495s, avg_observation_build=0.005s
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        35      0.351    0.351       1.658  
+        2       50        35      0.346    0.347       1.657  
+        3       50        35      0.328    0.328       1.658  
+        4       50        22      0.335    0.336       1.007  
+
