@@ -27,23 +27,6 @@ IMAGE_SIZE = (224, 224)
 STATE_DIM = 8
 ACTION_DIM = 8
 
-# Conservative bounds from the provided dataset stats. They catch obvious
-# malformed actions before a command reaches the robot.
-ACTION_MIN = np.asarray(
-    [0.3190808892, -0.2152197808, 0.0648892596, 0.6027086973,
-     0.0071996935, -0.0767344609, -0.2188671827, 0.0],
-    dtype=np.float64,
-)
-ACTION_MAX = np.asarray(
-    [0.6499189734, 0.2323044389, 0.3287435770, 0.9907264709,
-     0.7829164267, 0.3113254011, 0.2575095892, 1.0],
-    dtype=np.float64,
-)
-ACTION_CLIP_POS_WARN_M = 0.01
-ACTION_CLIP_QUAT_WARN = 0.05
-ACTION_CLIP_GRIPPER_WARN = 0.25
-
-
 @dataclass
 class Pi05PolicyInferenceConfig:
     policy_name: str = "pi05"
@@ -51,12 +34,10 @@ class Pi05PolicyInferenceConfig:
     fps: int = 20
     obs_topic: Optional[str] = None
     action_topic: Optional[str] = None
-    clamp_actions: bool = True
     policy_transport: str = "streaming_zmq"
     policy_zmq_endpoint: Optional[str] = None
     policy_zmq_timeout_ms: int = 30000
-    max_position_step_m: float = 0.0
-    max_rotation_step_rad: float = 0.0
+    continuous_min_execute_steps: int = 0
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
     task_after_first_release: Optional[str] = None
@@ -134,6 +115,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._stream_request_times: dict[int, float] = {}
         self._stream_inferred_request_ids: set[int] = set()
         self._stream_action_sources: dict[int, tuple[int, int]] = {}
+        self._stream_pending_request_id: Optional[int] = None
+        self._stream_execution_window_request_id: Optional[int] = None
         self._reset_metrics()
 
         self.register_start_infering_event(self.control_pair.start_control_pair)
@@ -154,6 +137,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._stream_request_times = {}
         self._stream_inferred_request_ids = set()
         self._stream_action_sources = {}
+        self._stream_pending_request_id = None
+        self._stream_execution_window_request_id = None
         self.task = self._initial_task
         current_action = self.policy.current_action
         self._last_action_timestamp = (
@@ -183,8 +168,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
     def _infer_official_dynamicvla_step(self, start: float) -> None:
         """Publish the latest observation and merge indexed asynchronous chunks."""
-        self._publish_official_dynamicvla_observation()
         self._drain_streaming_updates()
+        if self._should_publish_replan_observation():
+            self._publish_official_dynamicvla_observation()
+            self._drain_streaming_updates()
 
         action = self._pop_next_continuous_stream_action()
         if action is not None:
@@ -202,6 +189,34 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if sleep_time > 0.001:
             time.sleep(sleep_time)
 
+    def _should_publish_replan_observation(self) -> bool:
+        min_execute_steps = int(self.cfg.continuous_min_execute_steps)
+        if min_execute_steps <= 0:
+            return True
+        if self._stream_pending_request_id is not None:
+            return False
+
+        request_id = self._stream_execution_window_request_id
+        if request_id is None:
+            return True
+        metric = self._metrics_stream_chunks.get(request_id)
+        executed_steps = int(metric.get("executed_action_count") or 0) if metric else 0
+        if executed_steps >= min_execute_steps:
+            return True
+
+        has_future_actions = any(
+            step >= self._stream_global_step and source[0] == request_id
+            for step, source in self._stream_action_sources.items()
+        )
+        if not has_future_actions:
+            pyzlc.info(
+                "Requesting next chunk before the minimum execution window because "
+                f"request_id={request_id} has no actions left: "
+                f"executed={executed_steps}, min={min_execute_steps}"
+            )
+            return True
+        return False
+
     def _publish_official_dynamicvla_observation(self) -> None:
         if self._streaming_policy is None:
             return
@@ -210,6 +225,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
         obs.setdefault("policy_kwargs", {})["delay"] = 0
         request_time = time.perf_counter()
         request_id = self._streaming_policy.publish_latest_observation(obs)
+        if self.cfg.continuous_min_execute_steps > 0:
+            self._stream_pending_request_id = request_id
         self._metrics_observations_published += 1
         self._stream_request_start_steps[request_id] = observation_step
         self._stream_request_times[request_id] = request_time
@@ -286,10 +303,14 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 self._stream_action_buffer[target_step] = action
                 self._stream_action_sources[target_step] = (request_id, int(idx))
             if msg.get("final"):
+                if request_id == self._stream_pending_request_id:
+                    self._stream_pending_request_id = None
                 if metric is not None:
                     metric["final_latency_s"] = time.perf_counter() - float(metric["request_time_s"])
                     self._metrics_chunks.append(dict(metric))
             if indices:
+                if self.cfg.continuous_min_execute_steps > 0:
+                    self._stream_execution_window_request_id = request_id
                 pyzlc.info(
                     "Received streamed Pi0.5 actions: "
                     f"request_id={request_id}, indices={indices}, final={bool(msg.get('final'))}"
@@ -417,6 +438,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "schedule": "const",
             "streaming_mode": "continuous",
             "continuous_strategy": "official_dynamicvla",
+            "continuous_min_execute_steps": int(self.cfg.continuous_min_execute_steps),
             "fps": int(self.cfg.fps),
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),
             "total_time_s": total_time_s,
@@ -505,6 +527,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             f"schedule={summary.get('schedule')}",
             f"streaming_mode={summary.get('streaming_mode')}",
             f"continuous_strategy={summary.get('continuous_strategy')}",
+            f"continuous_min_execute_steps={summary.get('continuous_min_execute_steps')}",
         ]
         config_parts.extend(
             [
@@ -632,22 +655,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
     def _sanitize_action(self, action: np.ndarray) -> np.ndarray:
         arr = np.asarray(action, dtype=np.float64).reshape(-1)[:ACTION_DIM]
-        if self.cfg.clamp_actions:
-            # Clamp before sending to the robot; large clips are still logged so
-            # bad model outputs remain visible in real-robot tests.
-            clipped = np.clip(arr, ACTION_MIN, ACTION_MAX)
-            clip_summary = self._significant_clip_summary(arr, clipped)
-            if clip_summary:
-                pyzlc.warning(
-                    "Clipped out-of-range Pi0.5 action "
-                    f"({clip_summary}): raw={_format_vec(arr)}, clipped={_format_vec(clipped)}"
-                )
-            arr = clipped
         quat = arr[3:7]
         quat_norm = np.linalg.norm(quat)
         if quat_norm > 1e-6:
             arr[3:7] = quat / quat_norm
-        arr = self._limit_cartesian_step(arr)
         arr[7] = self._stabilize_gripper_command(1.0 if arr[7] >= 0.5 else 0.0)
         return arr
 
@@ -705,46 +716,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
     def _force_final_open_command(self) -> None:
         self._open_gripper()
-
-    def _significant_clip_summary(self, raw: np.ndarray, clipped: np.ndarray) -> str:
-        delta = np.abs(clipped - raw)
-        parts = []
-
-        pos_delta = float(np.linalg.norm(delta[:3]))
-        if pos_delta > ACTION_CLIP_POS_WARN_M:
-            parts.append(f"pos_delta={pos_delta:.4f}m")
-
-        quat_delta = float(np.linalg.norm(delta[3:7]))
-        if quat_delta > ACTION_CLIP_QUAT_WARN:
-            parts.append(f"quat_delta={quat_delta:.4f}")
-
-        gripper_delta = float(delta[7])
-        if gripper_delta > ACTION_CLIP_GRIPPER_WARN:
-            parts.append(f"gripper_delta={gripper_delta:.3f}")
-
-        return ", ".join(parts)
-
-    def _limit_cartesian_step(self, action: np.ndarray) -> np.ndarray:
-        current_state = self.arm_wrapper.capture_step()
-        current_pose = _extract_ee_pose(current_state).astype(np.float64)
-        limited = action.copy()
-
-        pos_delta = limited[:3] - current_pose[:3]
-        pos_dist = float(np.linalg.norm(pos_delta))
-        max_pos_step = float(self.cfg.max_position_step_m)
-        if max_pos_step > 0.0 and pos_dist > max_pos_step:
-            limited[:3] = current_pose[:3] + pos_delta * (max_pos_step / pos_dist)
-            pyzlc.warning(
-                "Limited Cartesian position step: "
-                f"{pos_dist:.4f}m -> {max_pos_step:.4f}m"
-            )
-
-        max_rot_step = float(self.cfg.max_rotation_step_rad)
-        if max_rot_step > 0.0:
-            limited[3:7] = _limit_quat_step(current_pose[3:7], limited[3:7], max_rot_step)
-
-        return limited
-
 
 def _extract_ee_pose(arm_state: Dict[str, Any]) -> np.ndarray:
     if "EE_pos" in arm_state and "EE_quat" in arm_state:
@@ -850,45 +821,3 @@ def _rotation_matrix_to_quat_xyzw(matrix: np.ndarray) -> np.ndarray:
             qz = 0.25 * s
     quat = np.asarray([qx, qy, qz, qw], dtype=np.float64)
     return quat / max(np.linalg.norm(quat), 1e-12)
-
-
-def _limit_quat_step(current: np.ndarray, target: np.ndarray, max_angle_rad: float) -> np.ndarray:
-    current_q = _normalize_quat(current)
-    target_q = _normalize_quat(target)
-    dot = float(np.dot(current_q, target_q))
-    if dot < 0.0:
-        target_q = -target_q
-        dot = -dot
-    dot = float(np.clip(dot, -1.0, 1.0))
-    angle = 2.0 * np.arccos(dot)
-    if angle <= max_angle_rad:
-        return target_q
-
-    t = max_angle_rad / max(angle, 1e-12)
-    limited = _slerp_quat(current_q, target_q, t)
-    pyzlc.warning(
-        "Limited Cartesian rotation step: "
-        f"{angle:.4f}rad -> {max_angle_rad:.4f}rad"
-    )
-    return limited
-
-
-def _slerp_quat(q0: np.ndarray, q1: np.ndarray, t: float) -> np.ndarray:
-    dot = float(np.clip(np.dot(q0, q1), -1.0, 1.0))
-    if dot > 0.9995:
-        return _normalize_quat(q0 + t * (q1 - q0))
-
-    theta_0 = np.arccos(dot)
-    sin_theta_0 = np.sin(theta_0)
-    theta = theta_0 * t
-    s0 = np.sin(theta_0 - theta) / sin_theta_0
-    s1 = np.sin(theta) / sin_theta_0
-    return _normalize_quat((s0 * q0) + (s1 * q1))
-
-
-def _normalize_quat(quat: np.ndarray) -> np.ndarray:
-    q = np.asarray(quat, dtype=np.float64).reshape(4)
-    norm = float(np.linalg.norm(q))
-    if norm <= 1e-12:
-        return np.asarray([0.0, 0.0, 0.0, 1.0], dtype=np.float64)
-    return q / norm

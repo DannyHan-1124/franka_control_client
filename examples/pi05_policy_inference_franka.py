@@ -39,16 +39,13 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--policy_zmq_endpoint", default=None, help="Streaming ZMQ endpoint for the policy server.")
     parser.add_argument("--policy_zmq_timeout_ms", type=int, default=30000, help="ZMQ send/receive timeout.")
     parser.add_argument(
-        "--max_position_step_m",
-        type=float,
-        default=0.0,
-        help="Inference-side max Cartesian position step; disabled by default.",
-    )
-    parser.add_argument(
-        "--max_rotation_step_rad",
-        type=float,
-        default=0.0,
-        help="Inference-side max quaternion rotation step; disabled by default.",
+        "--continuous_min_execute_steps",
+        type=int,
+        default=0,
+        help=(
+            "Minimum number of actions to execute from each completed chunk before "
+            "requesting the next replan; 0 preserves immediate continuous replanning."
+        ),
     )
     parser.add_argument("--stop_after_first_release", action="store_true", help="Stop the episode after the first confirmed release.")
     parser.add_argument("--stop_after_release_steps", type=int, default=0, help="Extra policy steps to run after release before stopping.")
@@ -97,8 +94,7 @@ def main() -> None:
         policy_transport="streaming_zmq",
         policy_zmq_endpoint=args.policy_zmq_endpoint,
         policy_zmq_timeout_ms=args.policy_zmq_timeout_ms,
-        max_position_step_m=args.max_position_step_m,
-        max_rotation_step_rad=args.max_rotation_step_rad,
+        continuous_min_execute_steps=args.continuous_min_execute_steps,
         stop_after_first_release=args.stop_after_first_release,
         stop_after_release_steps=args.stop_after_release_steps,
         metrics_path=args.metrics_path,
