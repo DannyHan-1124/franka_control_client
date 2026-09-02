@@ -29,7 +29,6 @@ DEFAULT_POSITION4 = (0.0, -0.4603, 0.0131, -2.9605, -0.0014, 2.5054, 0.0235)
 DEFAULT_POSITION5 = (0.0, 0.4195, 0.4311, -1.8333, -1.1522, 1.2765, 2.3814)
 
 MAX_POSITION_COMMAND_STEP_M: float = 0.013
-POSITION_LIMIT_WARN_FACTOR: float = 2.0
 
 
 class CartesianPolicyPandaRobotiqControlPair(ControlPair):
@@ -134,11 +133,6 @@ class CartesianPolicyPandaRobotiqControlPair(ControlPair):
         dist = float(np.linalg.norm(delta))
         if dist > MAX_POSITION_COMMAND_STEP_M:
             target = self._last_sent_pos + delta * (MAX_POSITION_COMMAND_STEP_M / dist)
-            if dist > MAX_POSITION_COMMAND_STEP_M * POSITION_LIMIT_WARN_FACTOR:
-                pyzlc.warning(
-                    "Limited large Cartesian command step in control loop: "
-                    f"{dist:.4f}m -> {MAX_POSITION_COMMAND_STEP_M:.4f}m"
-                )
         self._last_sent_pos = target.copy()
         return target
 
