@@ -18,7 +18,7 @@ GRIPPER_SPEED: float = 0.7
 GRIPPER_FORCE: float = 0.3
 DEFAULT_POSITION = (0.0, 0.0, 0.0, -2.15, 0.0, 2.15, 0.0)
 DEFAULT_POSITION3 = [-0.0776, 0.5898, 0.0743, -1.7098, -0.0104, 2.6200, -1.4712]
-MAX_POSITION_COMMAND_STEP_M: float = 0.01
+MAX_POSITION_COMMAND_STEP_M: float = 0.013
 
 
 class CartesianPolicyPandaRobotiqControlPair(ControlPair):
