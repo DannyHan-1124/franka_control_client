@@ -133,6 +133,10 @@ class CartesianPolicyPandaRobotiqControlPair(ControlPair):
         dist = float(np.linalg.norm(delta))
         if dist > MAX_POSITION_COMMAND_STEP_M:
             target = self._last_sent_pos + delta * (MAX_POSITION_COMMAND_STEP_M / dist)
+            pyzlc.warning(
+                "Limited Cartesian command step in control loop: "
+                f"{dist:.4f}m -> {MAX_POSITION_COMMAND_STEP_M:.4f}m"
+            )
         self._last_sent_pos = target.copy()
         return target
 
