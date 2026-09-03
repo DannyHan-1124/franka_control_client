@@ -530,13 +530,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 if metric is not None:
                     metric["final_latency_s"] = now - float(metric["request_time_s"])
                     self._metrics_chunks.append(dict(metric))
-            if indices:
-                pyzlc.info(
-                    "Received Pi0.5 actions: "
-                    f"request_id={request_id}, target={target}, model_indices={indices}, "
-                    f"final={bool(msg.get('final'))}"
-                )
-
     def _pop_next_stream_action(self) -> Optional[np.ndarray]:
         if self._current_request_id is None:
             return None
@@ -926,53 +919,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
             summary["phase_fallback_schedule"] = self.cfg.phase_fallback_schedule
             summary["phase_fallback_trigger"] = self.cfg.phase_fallback_trigger
 
-        metrics_msg = (
-            "Pi0.5 inference metrics: "
-            f"total_time={summary['total_time_s']:.3f}s, "
-            f"inference_calls={summary['inference_calls']}, "
-            f"completed_chunks={summary['completed_chunks']}, "
-            f"prefix_chunks={summary['prefix_chunks']}, "
-            f"actions_applied={summary['actions_applied']}, "
-            f"empty_action_steps={summary['empty_action_steps']}, "
-        )
-        if self._streaming_policy is None:
-            metrics_msg += (
-                f"avg_inference_latency={_format_optional(summary['avg_inference_latency_s'])}s, "
-            )
-        else:
-            metrics_msg += (
-                f"avg_first_action_latency={_format_optional(summary['avg_first_action_latency_s'])}s, "
-                f"p95_first_action_latency={_format_optional(summary['p95_first_action_latency_s'])}s, "
-                f"recommended_delay={summary['recommended_delay']}, "
-                f"avg_final_latency={_format_optional(summary['avg_final_latency_s'])}s, "
-            )
-        metrics_msg += (
-            f"avg_chunk_duration={_format_optional(summary['avg_chunk_execution_duration_s'])}s"
-        )
-        pyzlc.info(metrics_msg)
-
-        for chunk in chunks:
-            if chunk.get("final_latency_s") is not None:
-                pyzlc.info(
-                    "Pi0.5 chunk metrics: "
-                    f"request_id={chunk.get('request_id')}, "
-                    f"prefix_steps={chunk.get('prefix_steps', 0)}, "
-                    f"first_action_latency={_format_optional(chunk.get('first_action_latency_s'))}s, "
-                    f"final_latency={_format_optional(chunk.get('final_latency_s'))}s, "
-                    f"chunk_duration={_format_optional(chunk.get('execution_duration_s'))}s, "
-                    f"executed_actions={chunk.get('executed_action_count')}, "
-                    f"emitted_actions={chunk.get('emitted_action_count')}"
-                )
-            else:
-                pyzlc.info(
-                    "Pi0.5 chunk metrics: "
-                    f"request_id={chunk.get('request_id')}, "
-                    f"inference_latency={_format_optional(chunk.get('inference_latency_s', chunk.get('request_latency_s')))}s, "
-                    f"chunk_duration={_format_optional(chunk.get('execution_duration_s'))}s, "
-                    f"executed_actions={chunk.get('executed_action_count')}, "
-                    f"action_count={chunk.get('action_count')}"
-                )
-
         if self.cfg.metrics_path:
             self._write_metrics(summary, chunks)
 
@@ -994,7 +940,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
         text_path = path.with_suffix(".txt")
         self._write_metrics_text(text_path, record)
-        pyzlc.info(f"Wrote Pi0.5 inference metrics to {path} and {text_path}")
 
     def _write_metrics_text(self, path: Path, record: Dict[str, Any]) -> None:
         summary = record["summary"]
