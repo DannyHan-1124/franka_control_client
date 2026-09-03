@@ -21,6 +21,6 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --metrics_path "${REPO_ROOT}/logs/pi05_horizon_inference_metrics.jsonl" \
     --static_camera static_cam \
     --wrist_camera wrist_cam \
-    --call_vla_after_actions 25 \
-    --inference_latency 10
+    --call_vla_after_actions 10 \
+    --inference_latency 3
     # --stop_after_first_release \
