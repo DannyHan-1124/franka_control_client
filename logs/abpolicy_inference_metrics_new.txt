@@ -4,28 +4,28 @@ config: abpolicy_enabled=True
 summary: total_time=6.988s, inference_calls=21, completed_chunks=21, actions_applied=136, empty_action_steps=0
 latency: avg_request=0.270s, avg_first_action=0.295s, avg_chunk_duration=0.287s, recommended_delay=7
 chunks:
-  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
         1  abpolicy_initial       32         7    None   None      0.265    0.272       0.250
-        2  abpolicy_async       32         7    None      7      0.269    0.301       0.300
-        3  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-        4  abpolicy_async       32         7    None      6      0.269    0.296       0.299
-        5  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-        6  abpolicy_async       32         7    None      6      0.270    0.296       0.299
-        7  abpolicy_async       32         7    None      6      0.271    0.296       0.300
-        8  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-        9  abpolicy_async       32         7    None      6      0.271    0.295       0.300
-       10  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-       11  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-       12  abpolicy_async       32         7    None      6      0.273    0.296       0.300
-       13  abpolicy_async       32         7    None      6      0.277    0.296       0.300
-       14  abpolicy_async       32         7    None      6      0.270    0.296       0.300
-       15  abpolicy_async       32         7    None      6      0.270    0.295       0.300
-       16  abpolicy_async       32         7    None      6      0.271    0.296       0.300
-       17  abpolicy_async       32         7    None      6      0.270    0.295       0.300
-       18  abpolicy_async       32         7    None      6      0.268    0.296       0.300
-       19  abpolicy_async       32         7    None      6      0.273    0.295       0.300
-       20  abpolicy_async       32         3    None      6      0.272    0.295       0.100
-       21  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+        2  abpolicy_async         32         7    None      7      0.269    0.301       0.300
+        3  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+        4  abpolicy_async         32         7    None      6      0.269    0.296       0.299
+        5  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+        6  abpolicy_async         32         7    None      6      0.270    0.296       0.299
+        7  abpolicy_async         32         7    None      6      0.271    0.296       0.300
+        8  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+        9  abpolicy_async         32         7    None      6      0.271    0.295       0.300
+       10  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+       11  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+       12  abpolicy_async         32         7    None      6      0.273    0.296       0.300
+       13  abpolicy_async         32         7    None      6      0.277    0.296       0.300
+       14  abpolicy_async         32         7    None      6      0.270    0.296       0.300
+       15  abpolicy_async         32         7    None      6      0.270    0.295       0.300
+       16  abpolicy_async         32         7    None      6      0.271    0.296       0.300
+       17  abpolicy_async         32         7    None      6      0.270    0.295       0.300
+       18  abpolicy_async         32         7    None      6      0.268    0.296       0.300
+       19  abpolicy_async         32         7    None      6      0.273    0.295       0.300
+       20  abpolicy_async         32         3    None      6      0.272    0.295       0.100
+       21  abpolicy_async       None         0    None   None        n/a      n/a         n/a
 
 Pi0.5 inference metrics
 task: put red cylinder on red cube
@@ -33,44 +33,44 @@ config: abpolicy_enabled=True
 summary: total_time=12.802s, inference_calls=37, completed_chunks=37, actions_applied=252, empty_action_steps=0
 latency: avg_request=0.273s, avg_first_action=0.295s, avg_chunk_duration=0.299s, recommended_delay=7
 chunks:
-  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
         1  abpolicy_initial       32         7    None   None      0.265    0.271       0.250
-        2  abpolicy_async       32         7    None      7      0.269    0.301       0.300
-        3  abpolicy_async       32         7    None      6      0.270    0.295       0.300
-        4  abpolicy_async       32         7    None      6      0.270    0.296       0.300
-        5  abpolicy_async       32         7    None      6      0.272    0.296       0.300
-        6  abpolicy_async       32         7    None      6      0.271    0.294       0.300
-        7  abpolicy_async       32         7    None      6      0.270    0.295       0.300
-        8  abpolicy_async       32         7    None      6      0.271    0.296       0.300
-        9  abpolicy_async       32         7    None      6      0.270    0.295       0.300
-       10  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-       11  abpolicy_async       32         7    None      6      0.269    0.295       0.300
-       12  abpolicy_async       32         7    None      6      0.284    0.296       0.300
-       13  abpolicy_async       32         7    None      6      0.285    0.294       0.300
-       14  abpolicy_async       32         7    None      6      0.278    0.296       0.300
-       15  abpolicy_async       32         7    None      6      0.282    0.297       0.299
-       16  abpolicy_async       32         7    None      6      0.280    0.296       0.301
-       17  abpolicy_async       32         7    None      6      0.278    0.296       0.300
-       18  abpolicy_async       32         7    None      6      0.275    0.296       0.300
-       19  abpolicy_async       32         7    None      6      0.278    0.296       0.300
-       20  abpolicy_async       32         7    None      6      0.277    0.296       0.300
-       21  abpolicy_async       32         7    None      6      0.275    0.296       0.300
-       22  abpolicy_async       32         7    None      6      0.274    0.296       0.300
-       23  abpolicy_async       32         7    None      6      0.275    0.296       0.300
-       24  abpolicy_async       32         7    None      6      0.274    0.296       0.300
-       25  abpolicy_async       32         7    None      6      0.274    0.296       0.300
-       26  abpolicy_async       32         7    None      6      0.273    0.296       0.300
-       27  abpolicy_async       32         7    None      6      0.273    0.296       0.300
-       28  abpolicy_async       32         7    None      6      0.261    0.295       0.300
-       29  abpolicy_async       32         7    None      6      0.273    0.296       0.300
-       30  abpolicy_async       32         7    None      6      0.272    0.295       0.300
-       31  abpolicy_async       32         7    None      6      0.270    0.296       0.300
-       32  abpolicy_async       32         7    None      6      0.273    0.294       0.300
-       33  abpolicy_async       32         7    None      6      0.272    0.296       0.300
-       34  abpolicy_async       32         7    None      6      0.271    0.293       0.301
-       35  abpolicy_async       32         7    None      6      0.274    0.296       0.302
-       36  abpolicy_async       32         7    None      6      0.272    0.296       0.300
-       37  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+        2  abpolicy_async         32         7    None      7      0.269    0.301       0.300
+        3  abpolicy_async         32         7    None      6      0.270    0.295       0.300
+        4  abpolicy_async         32         7    None      6      0.270    0.296       0.300
+        5  abpolicy_async         32         7    None      6      0.272    0.296       0.300
+        6  abpolicy_async         32         7    None      6      0.271    0.294       0.300
+        7  abpolicy_async         32         7    None      6      0.270    0.295       0.300
+        8  abpolicy_async         32         7    None      6      0.271    0.296       0.300
+        9  abpolicy_async         32         7    None      6      0.270    0.295       0.300
+       10  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+       11  abpolicy_async         32         7    None      6      0.269    0.295       0.300
+       12  abpolicy_async         32         7    None      6      0.284    0.296       0.300
+       13  abpolicy_async         32         7    None      6      0.285    0.294       0.300
+       14  abpolicy_async         32         7    None      6      0.278    0.296       0.300
+       15  abpolicy_async         32         7    None      6      0.282    0.297       0.299
+       16  abpolicy_async         32         7    None      6      0.280    0.296       0.301
+       17  abpolicy_async         32         7    None      6      0.278    0.296       0.300
+       18  abpolicy_async         32         7    None      6      0.275    0.296       0.300
+       19  abpolicy_async         32         7    None      6      0.278    0.296       0.300
+       20  abpolicy_async         32         7    None      6      0.277    0.296       0.300
+       21  abpolicy_async         32         7    None      6      0.275    0.296       0.300
+       22  abpolicy_async         32         7    None      6      0.274    0.296       0.300
+       23  abpolicy_async         32         7    None      6      0.275    0.296       0.300
+       24  abpolicy_async         32         7    None      6      0.274    0.296       0.300
+       25  abpolicy_async         32         7    None      6      0.274    0.296       0.300
+       26  abpolicy_async         32         7    None      6      0.273    0.296       0.300
+       27  abpolicy_async         32         7    None      6      0.273    0.296       0.300
+       28  abpolicy_async         32         7    None      6      0.261    0.295       0.300
+       29  abpolicy_async         32         7    None      6      0.273    0.296       0.300
+       30  abpolicy_async         32         7    None      6      0.272    0.295       0.300
+       31  abpolicy_async         32         7    None      6      0.270    0.296       0.300
+       32  abpolicy_async         32         7    None      6      0.273    0.294       0.300
+       33  abpolicy_async         32         7    None      6      0.272    0.296       0.300
+       34  abpolicy_async         32         7    None      6      0.271    0.293       0.301
+       35  abpolicy_async         32         7    None      6      0.274    0.296       0.302
+       36  abpolicy_async         32         7    None      6      0.272    0.296       0.300
+       37  abpolicy_async       None         0    None   None        n/a      n/a         n/a
 
 Pi0.5 inference metrics
 task: put red cylinder on red cube
@@ -78,30 +78,30 @@ config: abpolicy_enabled=True
 summary: total_time=7.687s, inference_calls=23, completed_chunks=23, actions_applied=150, empty_action_steps=0
 latency: avg_request=0.269s, avg_first_action=0.295s, avg_chunk_duration=0.288s, recommended_delay=7
 chunks:
-  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
         1  abpolicy_initial       32         7    None   None      0.263    0.269       0.250
-        2  abpolicy_async       32         7    None      7      0.281    0.301       0.300
-        3  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-        4  abpolicy_async       32         7    None      6      0.271    0.296       0.300
-        5  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-        6  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-        7  abpolicy_async       32         7    None      6      0.267    0.296       0.300
-        8  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-        9  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-       10  abpolicy_async       32         7    None      6      0.271    0.296       0.300
-       11  abpolicy_async       32         7    None      6      0.271    0.296       0.300
-       12  abpolicy_async       32         7    None      6      0.269    0.295       0.300
-       13  abpolicy_async       32         7    None      6      0.267    0.296       0.300
-       14  abpolicy_async       32         7    None      6      0.267    0.295       0.300
-       15  abpolicy_async       32         7    None      6      0.268    0.296       0.300
-       16  abpolicy_async       32         7    None      6      0.270    0.293       0.300
-       17  abpolicy_async       32         7    None      6      0.269    0.295       0.300
-       18  abpolicy_async       32         7    None      6      0.269    0.294       0.300
-       19  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-       20  abpolicy_async       32         7    None      6      0.269    0.297       0.299
-       21  abpolicy_async       32         7    None      6      0.269    0.297       0.300
-       22  abpolicy_async       32         3    None      6      0.266    0.296       0.100
-       23  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+        2  abpolicy_async         32         7    None      7      0.281    0.301       0.300
+        3  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+        4  abpolicy_async         32         7    None      6      0.271    0.296       0.300
+        5  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+        6  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+        7  abpolicy_async         32         7    None      6      0.267    0.296       0.300
+        8  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+        9  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+       10  abpolicy_async         32         7    None      6      0.271    0.296       0.300
+       11  abpolicy_async         32         7    None      6      0.271    0.296       0.300
+       12  abpolicy_async         32         7    None      6      0.269    0.295       0.300
+       13  abpolicy_async         32         7    None      6      0.267    0.296       0.300
+       14  abpolicy_async         32         7    None      6      0.267    0.295       0.300
+       15  abpolicy_async         32         7    None      6      0.268    0.296       0.300
+       16  abpolicy_async         32         7    None      6      0.270    0.293       0.300
+       17  abpolicy_async         32         7    None      6      0.269    0.295       0.300
+       18  abpolicy_async         32         7    None      6      0.269    0.294       0.300
+       19  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+       20  abpolicy_async         32         7    None      6      0.269    0.297       0.299
+       21  abpolicy_async         32         7    None      6      0.269    0.297       0.300
+       22  abpolicy_async         32         3    None      6      0.266    0.296       0.100
+       23  abpolicy_async       None         0    None   None        n/a      n/a         n/a
 
 
 Pi0.5 inference metrics
@@ -110,28 +110,28 @@ config: abpolicy_enabled=True
 summary: total_time=7.091s, inference_calls=21, completed_chunks=21, actions_applied=138, empty_action_steps=0
 latency: avg_request=0.269s, avg_first_action=0.295s, avg_chunk_duration=0.292s, recommended_delay=7
 chunks:
-  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
         1  abpolicy_initial       32         7    None   None      0.266    0.271       0.250
-        2  abpolicy_async       32         7    None      7      0.266    0.301       0.300
-        3  abpolicy_async       32         7    None      6      0.267    0.294       0.300
-        4  abpolicy_async       32         7    None      6      0.270    0.296       0.300
-        5  abpolicy_async       32         7    None      6      0.271    0.294       0.300
-        6  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-        7  abpolicy_async       32         7    None      6      0.269    0.295       0.300
-        8  abpolicy_async       32         7    None      6      0.268    0.296       0.300
-        9  abpolicy_async       32         7    None      6      0.270    0.296       0.299
-       10  abpolicy_async       32         7    None      6      0.268    0.296       0.300
-       11  abpolicy_async       32         7    None      6      0.268    0.296       0.300
-       12  abpolicy_async       32         7    None      6      0.268    0.296       0.300
-       13  abpolicy_async       32         7    None      6      0.269    0.297       0.300
-       14  abpolicy_async       32         7    None      6      0.271    0.296       0.300
-       15  abpolicy_async       32         7    None      6      0.270    0.296       0.300
-       16  abpolicy_async       32         7    None      6      0.270    0.296       0.300
-       17  abpolicy_async       32         7    None      6      0.268    0.295       0.300
-       18  abpolicy_async       32         7    None      6      0.268    0.296       0.300
-       19  abpolicy_async       32         7    None      6      0.265    0.296       0.300
-       20  abpolicy_async       32         5    None      6      0.270    0.296       0.200
-       21  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+        2  abpolicy_async         32         7    None      7      0.266    0.301       0.300
+        3  abpolicy_async         32         7    None      6      0.267    0.294       0.300
+        4  abpolicy_async         32         7    None      6      0.270    0.296       0.300
+        5  abpolicy_async         32         7    None      6      0.271    0.294       0.300
+        6  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+        7  abpolicy_async         32         7    None      6      0.269    0.295       0.300
+        8  abpolicy_async         32         7    None      6      0.268    0.296       0.300
+        9  abpolicy_async         32         7    None      6      0.270    0.296       0.299
+       10  abpolicy_async         32         7    None      6      0.268    0.296       0.300
+       11  abpolicy_async         32         7    None      6      0.268    0.296       0.300
+       12  abpolicy_async         32         7    None      6      0.268    0.296       0.300
+       13  abpolicy_async         32         7    None      6      0.269    0.297       0.300
+       14  abpolicy_async         32         7    None      6      0.271    0.296       0.300
+       15  abpolicy_async         32         7    None      6      0.270    0.296       0.300
+       16  abpolicy_async         32         7    None      6      0.270    0.296       0.300
+       17  abpolicy_async         32         7    None      6      0.268    0.295       0.300
+       18  abpolicy_async         32         7    None      6      0.268    0.296       0.300
+       19  abpolicy_async         32         7    None      6      0.265    0.296       0.300
+       20  abpolicy_async         32         5    None      6      0.270    0.296       0.200
+       21  abpolicy_async       None         0    None   None        n/a      n/a         n/a
 
 Pi0.5 inference metrics
 task: put red cylinder on red cube
@@ -139,29 +139,29 @@ config: abpolicy_enabled=True
 summary: total_time=7.536s, inference_calls=22, completed_chunks=22, actions_applied=147, empty_action_steps=0
 latency: avg_request=0.268s, avg_first_action=0.295s, avg_chunk_duration=0.297s, recommended_delay=7
 chunks:
-  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
         1  abpolicy_initial       32         7    None   None      0.261    0.267       0.250
-        2  abpolicy_async       32         7    None      7      0.266    0.301       0.300
-        3  abpolicy_async       32         7    None      6      0.268    0.296       0.300
-        4  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-        5  abpolicy_async       32         7    None      6      0.267    0.294       0.300
-        6  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-        7  abpolicy_async       32         7    None      6      0.266    0.295       0.300
-        8  abpolicy_async       32         7    None      6      0.268    0.296       0.300
-        9  abpolicy_async       32         7    None      6      0.267    0.295       0.300
-       10  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-       11  abpolicy_async       32         7    None      6      0.270    0.296       0.300
-       12  abpolicy_async       32         7    None      6      0.268    0.297       0.300
-       13  abpolicy_async       32         7    None      6      0.270    0.296       0.300
-       14  abpolicy_async       32         7    None      6      0.270    0.296       0.300
-       15  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-       16  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-       17  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-       18  abpolicy_async       32         7    None      6      0.271    0.294       0.300
-       19  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-       20  abpolicy_async       32         7    None      6      0.271    0.296       0.300
-       21  abpolicy_async       32         7    None      6      0.270    0.296       0.300
-       22  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+        2  abpolicy_async         32         7    None      7      0.266    0.301       0.300
+        3  abpolicy_async         32         7    None      6      0.268    0.296       0.300
+        4  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+        5  abpolicy_async         32         7    None      6      0.267    0.294       0.300
+        6  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+        7  abpolicy_async         32         7    None      6      0.266    0.295       0.300
+        8  abpolicy_async         32         7    None      6      0.268    0.296       0.300
+        9  abpolicy_async         32         7    None      6      0.267    0.295       0.300
+       10  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+       11  abpolicy_async         32         7    None      6      0.270    0.296       0.300
+       12  abpolicy_async         32         7    None      6      0.268    0.297       0.300
+       13  abpolicy_async         32         7    None      6      0.270    0.296       0.300
+       14  abpolicy_async         32         7    None      6      0.270    0.296       0.300
+       15  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+       16  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+       17  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+       18  abpolicy_async         32         7    None      6      0.271    0.294       0.300
+       19  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+       20  abpolicy_async         32         7    None      6      0.271    0.296       0.300
+       21  abpolicy_async         32         7    None      6      0.270    0.296       0.300
+       22  abpolicy_async       None         0    None   None        n/a      n/a         n/a
 
 Pi0.5 inference metrics
 task: put red cylinder on red cube
@@ -169,27 +169,27 @@ config: abpolicy_enabled=True
 summary: total_time=6.889s, inference_calls=20, completed_chunks=20, actions_applied=134, empty_action_steps=0
 latency: avg_request=0.267s, avg_first_action=0.294s, avg_chunk_duration=0.282s, recommended_delay=7
 chunks:
-  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
         1  abpolicy_initial       32         7    None   None      0.261    0.267       0.250
-        2  abpolicy_async       32         7    None      7      0.269    0.301       0.300
-        3  abpolicy_async       32         7    None      6      0.267    0.296       0.300
-        4  abpolicy_async       32         7    None      6      0.274    0.296       0.300
-        5  abpolicy_async       32         7    None      6      0.265    0.294       0.300
-        6  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-        7  abpolicy_async       32         7    None      6      0.269    0.295       0.300
-        8  abpolicy_async       32         7    None      6      0.269    0.295       0.300
-        9  abpolicy_async       32         7    None      6      0.268    0.295       0.300
-       10  abpolicy_async       32         7    None      6      0.267    0.296       0.300
-       11  abpolicy_async       32         7    None      6      0.252    0.293       0.300
-       12  abpolicy_async       32         7    None      6      0.263    0.296       0.301
-       13  abpolicy_async       32         7    None      6      0.265    0.296       0.300
-       14  abpolicy_async       32         7    None      6      0.267    0.296       0.300
-       15  abpolicy_async       32         7    None      6      0.264    0.296       0.300
-       16  abpolicy_async       32         7    None      6      0.266    0.296       0.300
-       17  abpolicy_async       32         7    None      6      0.267    0.295       0.300
-       18  abpolicy_async       32         7    None      6      0.269    0.296       0.300
-       19  abpolicy_async       32         7    None      6      0.271    0.296       0.300
-       20  abpolicy_async       32         1    None      6      0.270    0.296       0.000
+        2  abpolicy_async         32         7    None      7      0.269    0.301       0.300
+        3  abpolicy_async         32         7    None      6      0.267    0.296       0.300
+        4  abpolicy_async         32         7    None      6      0.274    0.296       0.300
+        5  abpolicy_async         32         7    None      6      0.265    0.294       0.300
+        6  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+        7  abpolicy_async         32         7    None      6      0.269    0.295       0.300
+        8  abpolicy_async         32         7    None      6      0.269    0.295       0.300
+        9  abpolicy_async         32         7    None      6      0.268    0.295       0.300
+       10  abpolicy_async         32         7    None      6      0.267    0.296       0.300
+       11  abpolicy_async         32         7    None      6      0.252    0.293       0.300
+       12  abpolicy_async         32         7    None      6      0.263    0.296       0.301
+       13  abpolicy_async         32         7    None      6      0.265    0.296       0.300
+       14  abpolicy_async         32         7    None      6      0.267    0.296       0.300
+       15  abpolicy_async         32         7    None      6      0.264    0.296       0.300
+       16  abpolicy_async         32         7    None      6      0.266    0.296       0.300
+       17  abpolicy_async         32         7    None      6      0.267    0.295       0.300
+       18  abpolicy_async         32         7    None      6      0.269    0.296       0.300
+       19  abpolicy_async         32         7    None      6      0.271    0.296       0.300
+       20  abpolicy_async         32         1    None      6      0.270    0.296       0.000
 
 Pi0.5 inference metrics
 task: put red cylinder on red cube
@@ -197,27 +197,27 @@ config: abpolicy_enabled=True
 summary: total_time=6.633s, inference_calls=20, completed_chunks=20, actions_applied=129, empty_action_steps=0
 latency: avg_request=0.266s, avg_first_action=0.294s, avg_chunk_duration=0.287s, recommended_delay=7
 chunks:
-  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
         1  abpolicy_initial       32         7    None   None      0.261    0.266       0.251
-        2  abpolicy_async       32         7    None      7      0.266    0.302       0.300
-        3  abpolicy_async       32         7    None      6      0.265    0.296       0.300
-        4  abpolicy_async       32         7    None      6      0.265    0.295       0.300
-        5  abpolicy_async       32         7    None      6      0.267    0.296       0.300
-        6  abpolicy_async       32         7    None      6      0.266    0.295       0.300
-        7  abpolicy_async       32         7    None      6      0.267    0.296       0.300
-        8  abpolicy_async       32         7    None      6      0.268    0.296       0.300
-        9  abpolicy_async       32         7    None      6      0.266    0.296       0.300
-       10  abpolicy_async       32         7    None      6      0.267    0.295       0.300
-       11  abpolicy_async       32         7    None      6      0.267    0.294       0.300
-       12  abpolicy_async       32         7    None      6      0.268    0.296       0.300
-       13  abpolicy_async       32         7    None      6      0.267    0.296       0.300
-       14  abpolicy_async       32         7    None      6      0.267    0.294       0.300
-       15  abpolicy_async       32         7    None      6      0.268    0.296       0.300
-       16  abpolicy_async       32         7    None      6      0.267    0.295       0.300
-       17  abpolicy_async       32         7    None      6      0.267    0.296       0.300
-       18  abpolicy_async       32         7    None      6      0.267    0.295       0.300
-       19  abpolicy_async       32         3    None      6      0.267    0.296       0.100
-       20  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+        2  abpolicy_async         32         7    None      7      0.266    0.302       0.300
+        3  abpolicy_async         32         7    None      6      0.265    0.296       0.300
+        4  abpolicy_async         32         7    None      6      0.265    0.295       0.300
+        5  abpolicy_async         32         7    None      6      0.267    0.296       0.300
+        6  abpolicy_async         32         7    None      6      0.266    0.295       0.300
+        7  abpolicy_async         32         7    None      6      0.267    0.296       0.300
+        8  abpolicy_async         32         7    None      6      0.268    0.296       0.300
+        9  abpolicy_async         32         7    None      6      0.266    0.296       0.300
+       10  abpolicy_async         32         7    None      6      0.267    0.295       0.300
+       11  abpolicy_async         32         7    None      6      0.267    0.294       0.300
+       12  abpolicy_async         32         7    None      6      0.268    0.296       0.300
+       13  abpolicy_async         32         7    None      6      0.267    0.296       0.300
+       14  abpolicy_async         32         7    None      6      0.267    0.294       0.300
+       15  abpolicy_async         32         7    None      6      0.268    0.296       0.300
+       16  abpolicy_async         32         7    None      6      0.267    0.295       0.300
+       17  abpolicy_async         32         7    None      6      0.267    0.296       0.300
+       18  abpolicy_async         32         7    None      6      0.267    0.295       0.300
+       19  abpolicy_async         32         3    None      6      0.267    0.296       0.100
+       20  abpolicy_async       None         0    None   None        n/a      n/a         n/a
 
 Pi0.5 inference metrics
 task: put red cylinder on red cube
@@ -225,26 +225,26 @@ config: abpolicy_enabled=True
 summary: total_time=6.424s, inference_calls=19, completed_chunks=19, actions_applied=125, empty_action_steps=0
 latency: avg_request=0.251s, avg_first_action=0.294s, avg_chunk_duration=0.294s, recommended_delay=7
 chunks:
-  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
         1  abpolicy_initial       32         7    None   None      0.250    0.256       0.250
-        2  abpolicy_async       32         7    None      7      0.255    0.302       0.300
-        3  abpolicy_async       32         7    None      6      0.249    0.296       0.300
-        4  abpolicy_async       32         7    None      6      0.250    0.296       0.300
-        5  abpolicy_async       32         7    None      6      0.249    0.296       0.300
-        6  abpolicy_async       32         7    None      6      0.248    0.294       0.300
-        7  abpolicy_async       32         7    None      6      0.247    0.296       0.300
-        8  abpolicy_async       32         7    None      6      0.250    0.295       0.300
-        9  abpolicy_async       32         7    None      6      0.265    0.296       0.300
-       10  abpolicy_async       32         7    None      6      0.262    0.293       0.300
-       11  abpolicy_async       32         7    None      6      0.250    0.296       0.300
-       12  abpolicy_async       32         7    None      6      0.248    0.294       0.300
-       13  abpolicy_async       32         7    None      6      0.247    0.296       0.300
-       14  abpolicy_async       32         7    None      6      0.248    0.295       0.299
-       15  abpolicy_async       32         7    None      6      0.251    0.296       0.301
-       16  abpolicy_async       32         7    None      6      0.248    0.296       0.300
-       17  abpolicy_async       32         7    None      6      0.248    0.296       0.300
-       18  abpolicy_async       32         6    None      6      0.247    0.297       0.250
-       19  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+        2  abpolicy_async         32         7    None      7      0.255    0.302       0.300
+        3  abpolicy_async         32         7    None      6      0.249    0.296       0.300
+        4  abpolicy_async         32         7    None      6      0.250    0.296       0.300
+        5  abpolicy_async         32         7    None      6      0.249    0.296       0.300
+        6  abpolicy_async         32         7    None      6      0.248    0.294       0.300
+        7  abpolicy_async         32         7    None      6      0.247    0.296       0.300
+        8  abpolicy_async         32         7    None      6      0.250    0.295       0.300
+        9  abpolicy_async         32         7    None      6      0.265    0.296       0.300
+       10  abpolicy_async         32         7    None      6      0.262    0.293       0.300
+       11  abpolicy_async         32         7    None      6      0.250    0.296       0.300
+       12  abpolicy_async         32         7    None      6      0.248    0.294       0.300
+       13  abpolicy_async         32         7    None      6      0.247    0.296       0.300
+       14  abpolicy_async         32         7    None      6      0.248    0.295       0.299
+       15  abpolicy_async         32         7    None      6      0.251    0.296       0.301
+       16  abpolicy_async         32         7    None      6      0.248    0.296       0.300
+       17  abpolicy_async         32         7    None      6      0.248    0.296       0.300
+       18  abpolicy_async         32         6    None      6      0.247    0.297       0.250
+       19  abpolicy_async       None         0    None   None        n/a      n/a         n/a
 
 Pi0.5 inference metrics
 task: put red cylinder on red cube
@@ -252,27 +252,27 @@ config: abpolicy_enabled=True
 summary: total_time=6.774s, inference_calls=20, completed_chunks=20, actions_applied=132, empty_action_steps=0
 latency: avg_request=0.247s, avg_first_action=0.289s, avg_chunk_duration=0.277s, recommended_delay=6
 chunks:
-  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
         1  abpolicy_initial       32         6    None   None      0.249    0.254       0.201
-        2  abpolicy_async       32         7    None      6      0.247    0.253       0.299
-        3  abpolicy_async       32         7    None      6      0.247    0.295       0.301
-        4  abpolicy_async       32         7    None      6      0.247    0.297       0.300
-        5  abpolicy_async       32         7    None      6      0.246    0.295       0.301
-        6  abpolicy_async       32         7    None      6      0.248    0.297       0.300
-        7  abpolicy_async       32         7    None      6      0.246    0.296       0.300
-        8  abpolicy_async       32         7    None      6      0.247    0.296       0.300
-        9  abpolicy_async       32         7    None      6      0.246    0.295       0.300
-       10  abpolicy_async       32         7    None      6      0.248    0.296       0.300
-       11  abpolicy_async       32         7    None      6      0.246    0.296       0.300
-       12  abpolicy_async       32         7    None      6      0.259    0.295       0.300
-       13  abpolicy_async       32         7    None      6      0.248    0.295       0.300
-       14  abpolicy_async       32         7    None      6      0.247    0.296       0.300
-       15  abpolicy_async       32         7    None      6      0.249    0.295       0.300
-       16  abpolicy_async       32         7    None      6      0.249    0.295       0.300
-       17  abpolicy_async       32         7    None      6      0.247    0.294       0.300
-       18  abpolicy_async       32         6    None      6      0.246    0.296       0.250
-       19  abpolicy_async       32         7    None      5      0.244    0.245       0.300
-       20  abpolicy_async       32         1    None      6      0.245    0.295       0.000
+        2  abpolicy_async         32         7    None      6      0.247    0.253       0.299
+        3  abpolicy_async         32         7    None      6      0.247    0.295       0.301
+        4  abpolicy_async         32         7    None      6      0.247    0.297       0.300
+        5  abpolicy_async         32         7    None      6      0.246    0.295       0.301
+        6  abpolicy_async         32         7    None      6      0.248    0.297       0.300
+        7  abpolicy_async         32         7    None      6      0.246    0.296       0.300
+        8  abpolicy_async         32         7    None      6      0.247    0.296       0.300
+        9  abpolicy_async         32         7    None      6      0.246    0.295       0.300
+       10  abpolicy_async         32         7    None      6      0.248    0.296       0.300
+       11  abpolicy_async         32         7    None      6      0.246    0.296       0.300
+       12  abpolicy_async         32         7    None      6      0.259    0.295       0.300
+       13  abpolicy_async         32         7    None      6      0.248    0.295       0.300
+       14  abpolicy_async         32         7    None      6      0.247    0.296       0.300
+       15  abpolicy_async         32         7    None      6      0.249    0.295       0.300
+       16  abpolicy_async         32         7    None      6      0.249    0.295       0.300
+       17  abpolicy_async         32         7    None      6      0.247    0.294       0.300
+       18  abpolicy_async         32         6    None      6      0.246    0.296       0.250
+       19  abpolicy_async         32         7    None      5      0.244    0.245       0.300
+       20  abpolicy_async         32         1    None      6      0.245    0.295       0.000
 
 Pi0.5 inference metrics
 task: put red cylinder on red cube
@@ -280,28 +280,28 @@ config: abpolicy_enabled=True
 summary: total_time=6.874s, inference_calls=21, completed_chunks=21, actions_applied=134, empty_action_steps=0
 latency: avg_request=0.247s, avg_first_action=0.281s, avg_chunk_duration=0.282s, recommended_delay=6
 chunks:
-  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
         1  abpolicy_initial       32         6    None   None      0.249    0.255       0.200
-        2  abpolicy_async       32         7    None      6      0.245    0.251       0.300
-        3  abpolicy_async       32         7    None      6      0.247    0.296       0.300
-        4  abpolicy_async       32         7    None      6      0.246    0.295       0.300
-        5  abpolicy_async       32         7    None      6      0.247    0.296       0.300
-        6  abpolicy_async       32         7    None      6      0.248    0.294       0.300
-        7  abpolicy_async       32         7    None      6      0.251    0.296       0.300
-        8  abpolicy_async       32         7    None      6      0.251    0.295       0.300
-        9  abpolicy_async       32         7    None      6      0.246    0.296       0.300
-       10  abpolicy_async       32         7    None      6      0.247    0.295       0.300
-       11  abpolicy_async       32         7    None      6      0.246    0.296       0.300
-       12  abpolicy_async       32         6    None      6      0.246    0.295       0.250
-       13  abpolicy_async       32         6    None      5      0.245    0.247       0.250
-       14  abpolicy_async       32         7    None      5      0.245    0.248       0.299
-       15  abpolicy_async       32         6    None      6      0.248    0.297       0.251
-       16  abpolicy_async       32         7    None      5      0.246    0.247       0.301
-       17  abpolicy_async       32         7    None      6      0.248    0.296       0.300
-       18  abpolicy_async       32         7    None      6      0.249    0.296       0.300
-       19  abpolicy_async       32         6    None      6      0.246    0.292       0.250
-       20  abpolicy_async       32         6    None      5      0.245    0.246       0.250
-       21  abpolicy_async     None         0    None   None        n/a      n/a         n/a
+        2  abpolicy_async         32         7    None      6      0.245    0.251       0.300
+        3  abpolicy_async         32         7    None      6      0.247    0.296       0.300
+        4  abpolicy_async         32         7    None      6      0.246    0.295       0.300
+        5  abpolicy_async         32         7    None      6      0.247    0.296       0.300
+        6  abpolicy_async         32         7    None      6      0.248    0.294       0.300
+        7  abpolicy_async         32         7    None      6      0.251    0.296       0.300
+        8  abpolicy_async         32         7    None      6      0.251    0.295       0.300
+        9  abpolicy_async         32         7    None      6      0.246    0.296       0.300
+       10  abpolicy_async         32         7    None      6      0.247    0.295       0.300
+       11  abpolicy_async         32         7    None      6      0.246    0.296       0.300
+       12  abpolicy_async         32         6    None      6      0.246    0.295       0.250
+       13  abpolicy_async         32         6    None      5      0.245    0.247       0.250
+       14  abpolicy_async         32         7    None      5      0.245    0.248       0.299
+       15  abpolicy_async         32         6    None      6      0.248    0.297       0.251
+       16  abpolicy_async         32         7    None      5      0.246    0.247       0.301
+       17  abpolicy_async         32         7    None      6      0.248    0.296       0.300
+       18  abpolicy_async         32         7    None      6      0.249    0.296       0.300
+       19  abpolicy_async         32         6    None      6      0.246    0.292       0.250
+       20  abpolicy_async         32         6    None      5      0.245    0.246       0.250
+       21  abpolicy_async       None         0    None   None        n/a      n/a         n/a
 
 Pi0.5 inference metrics
 task: put red cylinder on red cube
@@ -309,10 +309,10 @@ config: abpolicy_enabled=False
 summary: total_time=7.148s, inference_calls=3, completed_chunks=3, actions_applied=131, empty_action_steps=0
 latency: avg_request=0.256s, avg_first_action=0.256s, avg_chunk_duration=2.088s
 chunks:
-  request  kind         actions  executed  request_s  first_s  duration_s
-        1  sync              50        50      0.258    0.258       2.405
-        2  sync              50        50      0.254    0.255       2.405
-        3  sync              50        31      0.255    0.255       1.454
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.258    0.258       2.405
+        2  sync                   50        50      0.254    0.255       2.405
+        3  sync                   50        31      0.255    0.255       1.454
 
 Pi0.5 inference metrics
 task: put red cylinder on red cube (fail)
@@ -320,10 +320,10 @@ config: abpolicy_enabled=False
 summary: total_time=7.740s, inference_calls=3, completed_chunks=3, actions_applied=143, empty_action_steps=0
 latency: avg_request=0.254s, avg_first_action=0.254s, avg_chunk_duration=2.287s
 chunks:
-  request  kind         actions  executed  request_s  first_s  duration_s
-        1  sync              50        50      0.253    0.254       2.404
-        2  sync              50        50      0.253    0.254       2.404
-        3  sync              50        43      0.254    0.254       2.053
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.253    0.254       2.404
+        2  sync                   50        50      0.253    0.254       2.404
+        3  sync                   50        43      0.254    0.254       2.053
 
 Pi0.5 inference metrics
 task: put red cylinder on red cube (fail)
@@ -331,10 +331,10 @@ config: abpolicy_enabled=False
 summary: total_time=7.443s, inference_calls=3, completed_chunks=3, actions_applied=136, empty_action_steps=0
 latency: avg_request=0.254s, avg_first_action=0.254s, avg_chunk_duration=2.171s
 chunks:
-  request  kind         actions  executed  request_s  first_s  duration_s
-        1  sync              50        50      0.255    0.255       2.404
-        2  sync              50        50      0.254    0.254       2.406
-        3  sync              50        36      0.253    0.254       1.705
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.255    0.255       2.404
+        2  sync                   50        50      0.254    0.254       2.406
+        3  sync                   50        36      0.253    0.254       1.705
 
 Pi0.5 inference metrics
 task: put red cylinder on red cube
@@ -342,10 +342,10 @@ config: abpolicy_enabled=False
 summary: total_time=7.159s, inference_calls=3, completed_chunks=3, actions_applied=131, empty_action_steps=0
 latency: avg_request=0.258s, avg_first_action=0.258s, avg_chunk_duration=2.089s
 chunks:
-  request  kind         actions  executed  request_s  first_s  duration_s
-        1  sync              50        50      0.256    0.256       2.404
-        2  sync              50        50      0.261    0.261       2.407
-        3  sync              50        31      0.257    0.257       1.455
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.256    0.256       2.404
+        2  sync                   50        50      0.261    0.261       2.407
+        3  sync                   50        31      0.257    0.257       1.455
 
 Pi0.5 inference metrics
 task: put red cylinder on red cube
@@ -353,10 +353,10 @@ config: abpolicy_enabled=False
 summary: total_time=7.045s, inference_calls=3, completed_chunks=3, actions_applied=129, empty_action_steps=0
 latency: avg_request=0.254s, avg_first_action=0.254s, avg_chunk_duration=2.054s
 chunks:
-  request  kind         actions  executed  request_s  first_s  duration_s
-        1  sync              50        50      0.254    0.254       2.404
-        2  sync              50        50      0.253    0.253       2.406
-        3  sync              50        29      0.255    0.255       1.353
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.254    0.254       2.404
+        2  sync                   50        50      0.253    0.253       2.406
+        3  sync                   50        29      0.255    0.255       1.353
 
 Pi0.5 inference metrics
 task: put red cylinder on red cube
@@ -364,10 +364,10 @@ config: abpolicy_enabled=False
 summary: total_time=6.839s, inference_calls=3, completed_chunks=3, actions_applied=125, empty_action_steps=0
 latency: avg_request=0.254s, avg_first_action=0.254s, avg_chunk_duration=1.986s
 chunks:
-  request  kind         actions  executed  request_s  first_s  duration_s
-        1  sync              50        50      0.254    0.254       2.404
-        2  sync              50        50      0.253    0.253       2.404
-        3  sync              50        25      0.255    0.256       1.152
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.254    0.254       2.404
+        2  sync                   50        50      0.253    0.253       2.404
+        3  sync                   50        25      0.255    0.256       1.152
 
 Pi0.5 inference metrics
 task: put red cylinder on red cube (fail)
@@ -375,10 +375,10 @@ config: abpolicy_enabled=False
 summary: total_time=7.248s, inference_calls=3, completed_chunks=3, actions_applied=133, empty_action_steps=0
 latency: avg_request=0.255s, avg_first_action=0.255s, avg_chunk_duration=2.122s
 chunks:
-  request  kind         actions  executed  request_s  first_s  duration_s
-        1  sync              50        50      0.256    0.256       2.405
-        2  sync              50        50      0.254    0.254       2.407
-        3  sync              50        33      0.255    0.256       1.554
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.256    0.256       2.405
+        2  sync                   50        50      0.254    0.254       2.407
+        3  sync                   50        33      0.255    0.256       1.554
 
 Pi0.5 inference metrics
 task: put red cylinder on red cube (fail)
@@ -386,10 +386,10 @@ config: abpolicy_enabled=False
 summary: total_time=6.494s, inference_calls=3, completed_chunks=3, actions_applied=118, empty_action_steps=0
 latency: avg_request=0.254s, avg_first_action=0.254s, avg_chunk_duration=1.871s
 chunks:
-  request  kind         actions  executed  request_s  first_s  duration_s
-        1  sync              50        50      0.253    0.254       2.406
-        2  sync              50        50      0.256    0.256       2.407
-        3  sync              50        18      0.253    0.253       0.802
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.253    0.254       2.406
+        2  sync                   50        50      0.256    0.256       2.407
+        3  sync                   50        18      0.253    0.253       0.802
 
 Pi0.5 inference metrics
 task: put red cylinder on red cube
@@ -397,10 +397,10 @@ config: abpolicy_enabled=False
 summary: total_time=6.678s, inference_calls=3, completed_chunks=3, actions_applied=121, empty_action_steps=0
 latency: avg_request=0.265s, avg_first_action=0.265s, avg_chunk_duration=1.922s
 chunks:
-  request  kind         actions  executed  request_s  first_s  duration_s
-        1  sync              50        50      0.264    0.264       2.406
-        2  sync              50        50      0.265    0.265       2.407
-        3  sync              50        21      0.265    0.265       0.952
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.264    0.264       2.406
+        2  sync                   50        50      0.265    0.265       2.407
+        3  sync                   50        21      0.265    0.265       0.952
 
 Pi0.5 inference metrics
 task: put red cylinder on red cube
@@ -408,8 +408,8 @@ config: abpolicy_enabled=False
 summary: total_time=6.539s, inference_calls=3, completed_chunks=3, actions_applied=119, empty_action_steps=0
 latency: avg_request=0.254s, avg_first_action=0.254s, avg_chunk_duration=1.886s
 chunks:
-  request  kind         actions  executed  request_s  first_s  duration_s
-        1  sync              50        50      0.255    0.255       2.404
-        2  sync              50        50      0.254    0.254       2.404
-        3  sync              50        19      0.253    0.254       0.851
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.255    0.255       2.404
+        2  sync                   50        50      0.254    0.254       2.404
+        3  sync                   50        19      0.253    0.254       0.851
 

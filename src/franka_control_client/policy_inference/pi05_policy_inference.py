@@ -737,10 +737,16 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if asynchronous:
             latency_line += f", recommended_delay={summary.get('recommended_delay_steps')}"
 
-        chunk_header = "  request  kind         actions  executed  "
+        chunk_header = (
+            "  "
+            f"{'request':>7}  "
+            f"{'kind':<16}  "
+            f"{'actions':>7}  "
+            f"{'executed':>8}  "
+        )
         if asynchronous:
-            chunk_header += "pred_d  obs_d  "
-        chunk_header += "request_s  first_s  duration_s"
+            chunk_header += f"{'pred_d':>6}  {'obs_d':>5}  "
+        chunk_header += f"{'request_s':>9}  {'first_s':>7}  {'duration_s':>10}"
 
         lines = [
             "Pi0.5 inference metrics",
@@ -762,7 +768,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             chunk_line = (
                 "  "
                 f"{str(chunk.get('request_id')):>7}  "
-                f"{str(chunk.get('kind')):<11}  "
+                f"{str(chunk.get('kind')):<16}  "
                 f"{str(chunk.get('action_count')):>7}  "
                 f"{str(chunk.get('executed_action_count')):>8}  "
             )
