@@ -20,6 +20,16 @@ from lerobot.policies.rtc.configuration_rtc import RTCConfig
 from lerobot.utils.random_utils import set_seed
 from lerobot.datasets.lerobot_dataset import LeRobotDatasetMetadata
 
+
+# Camera names used by the inference client/dataset may differ from the names
+# stored in older policy checkpoints.  The keys are checkpoint feature names
+# and the values are accepted aliases in incoming observation messages.
+IMAGE_KEY_ALIASES: dict[str, tuple[str, ...]] = {
+    "observation.images.static_cam": ("observation.images.base_0_rgb",),
+    "observation.images.wrist_cam": ("observation.images.left_wrist_0_rgb",),
+}
+
+
 @dataclass
 class Pi05NodeConfig:
     checkpoint_path: str
@@ -253,9 +263,15 @@ class Pi05PolicyNode:
         }
 
         for key, shape in self._expected_image_shapes.items():
-            if key not in obs_msg:
+            source_key = key
+            if source_key not in obs_msg:
+                source_key = next(
+                    (alias for alias in IMAGE_KEY_ALIASES.get(key, ()) if alias in obs_msg),
+                    "",
+                )
+            if not source_key:
                 continue
-            rgb = self._decode_image(obs_msg[key])
+            rgb = self._decode_image(obs_msg[source_key])
             rgb = self._resize_image(rgb, shape)
             image = torch.from_numpy(np.ascontiguousarray(rgb)).permute(2, 0, 1).float() / 255.0
             observation[key] = image.unsqueeze(0)

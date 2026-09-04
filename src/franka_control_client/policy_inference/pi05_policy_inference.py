@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import sys
 import threading
 import time
 from collections import deque
@@ -11,6 +12,12 @@ from typing import Any, Deque, Dict, List, Optional
 import cv2
 import numpy as np
 import pyzlc
+
+WORKSPACE_ROOT = Path(__file__).resolve().parents[4]
+if str(WORKSPACE_ROOT) not in sys.path:
+    sys.path.insert(0, str(WORKSPACE_ROOT))
+
+from DOM_rl.inference_client.chunk_trace import ChunkTraceRecorder
 
 from .policy_inference_manager import PolicyInferenceEvent, PolicyInferenceManager
 from ..control_pair.cartesian_policy_panda_control_pair import (
@@ -49,6 +56,7 @@ class Pi05PolicyInferenceConfig:
     stop_after_release_steps: int = 0
     close_gripper_on_reset: bool = False
     metrics_path: Optional[str] = None
+    chunk_trace_dir: Optional[str] = None
     run_metadata: Optional[Dict[str, Any]] = None
     rtc_enabled: bool = False
     rtc_execution_horizon: int = 25
@@ -88,6 +96,24 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.data_collectors = data_collectors
         self.control_pair = control_pair
         self.cfg = cfg
+        self._chunk_trace = (
+            ChunkTraceRecorder(
+                Path(cfg.chunk_trace_dir),
+                action_space="franka_quat8",
+                action_names=(
+                    "ee_pos_x", "ee_pos_y", "ee_pos_z",
+                    "quat_x", "quat_y", "quat_z", "quat_w", "gripper",
+                ),
+                env_action_space="franka_quat8",
+                env_action_names=(
+                    "ee_pos_x", "ee_pos_y", "ee_pos_z",
+                    "quat_x", "quat_y", "quat_z", "quat_w", "gripper",
+                ),
+            )
+            if cfg.chunk_trace_dir
+            else None
+        )
+        self._trace_success = False
         if cfg.policy_transport == "zmq":
             if not cfg.policy_zmq_endpoint:
                 raise ValueError("policy_zmq_endpoint is required for ZMQ policy transport.")
@@ -160,6 +186,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _start_infering(self) -> None:
         self._episode_id += 1
         self._reset_metrics()
+        self._trace_success = False
+        if self._chunk_trace is not None:
+            self._chunk_trace.start_episode()
         self._action_chunk = None
         self._raw_action_chunk = None
         self._chunk_step = 0
@@ -203,6 +232,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 "transport": transport,
                 "request_time_s": request_time_s,
                 "client_observation_build_s": client_observation_build_s,
+                "observation_index": int(self._metrics_actions_applied),
                 "request_latency_s": None,
                 "action_count": None,
                 "executed_action_count": 0,
@@ -263,6 +293,19 @@ class Pi05PolicyInference(PolicyInferenceManager):
             metric["last_action_index"] = int(action_index)
             metric["executed_action_count"] = int(metric.get("executed_action_count") or 0) + 1
             metric["execution_duration_s"] = now - float(first_time)
+
+    def _record_chunk_trace(self, request_id: int, action_chunk: np.ndarray) -> None:
+        if self._chunk_trace is None:
+            return
+        with self._metrics_lock:
+            metric = self._chunk_metric_unlocked(request_id)
+            observation_index = int(metric.get("observation_index", 0)) if metric else 0
+        self._chunk_trace.record_chunk(
+            chunk_id=request_id,
+            observation={"index": observation_index},
+            generated_action=action_chunk,
+            sent_start_index=0,
+        )
 
     def _chunk_metric_unlocked(self, request_id: int) -> Optional[dict[str, Any]]:
         for metric in self._metrics_chunks:
@@ -387,6 +430,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             request_latency_s=time.perf_counter() - request_start,
             action_count=len(self._action_chunk),
         )
+        self._record_chunk_trace(request_id, self._action_chunk)
         self._active_chunk_metric_id = request_id
         self._log_action_chunk_debug(self._action_chunk)
 
@@ -459,6 +503,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
                         request_latency_s=time.perf_counter() - request_start,
                         action_count=len(chunk),
                     )
+                    self._record_chunk_trace(request_id, chunk)
         except BaseException as exc:
             with self._rtc_lock:
                 if generation == self._rtc_generation:
@@ -761,10 +806,12 @@ class Pi05PolicyInference(PolicyInferenceManager):
         )
 
     def _save_episode(self) -> None:
+        self._trace_success = True
         self._stop_infering()
         self._ui_console.log("Episode saved.")
 
     def _discard_infering(self) -> None:
+        self._trace_success = False
         self._stop_infering()
         self._ui_console.log("Episode discarded.")
 
@@ -788,6 +835,26 @@ class Pi05PolicyInference(PolicyInferenceManager):
             inference_calls = int(self._metrics_inference_calls)
             actions_applied = int(self._metrics_actions_applied)
             empty_action_steps = int(self._metrics_empty_action_steps)
+
+        if self._chunk_trace is not None:
+            executions = {
+                int(chunk["request_id"]): int(chunk.get("executed_action_count") or 0)
+                for chunk in chunks
+            }
+            starts = {
+                int(chunk["request_id"]): int(chunk.get("first_action_index") or 0)
+                for chunk in chunks
+            }
+            self._chunk_trace.finish_episode(
+                episode_index=self._episode_id,
+                observation={
+                    "episode_id": self._episode_id,
+                    "eps_name": f"episode_{self._episode_id:06d}",
+                    "success": bool(self._trace_success or self._release_confirmed),
+                    "chunk_executions": executions,
+                    "chunk_start_indices": starts,
+                },
+            )
 
         request_latencies = [
             float(chunk["request_latency_s"])
