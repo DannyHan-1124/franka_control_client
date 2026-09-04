@@ -894,3 +894,521 @@ chunks:
        24  abpolicy_async         32         3    None      5      0.243    0.246       0.100
        25  abpolicy_async       None         0    None   None        n/a      n/a         n/a
 
+----------slow left------------
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True
+summary: total_time=5.679s, inference_calls=19, completed_chunks=19, actions_applied=164, empty_action_steps=0
+latency: avg_request=0.253s, avg_first_action=0.275s, avg_chunk_duration=0.269s, recommended_delay=14
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         9    None   None      0.254    0.258       0.234
+        2  abpolicy_async         32         9    None      9      0.246    0.268       0.267
+        3  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+        4  abpolicy_async         32         9    None      8      0.242    0.264       0.267
+        5  abpolicy_async         32         9    None      8      0.240    0.263       0.267
+        6  abpolicy_async         32        15    None      8      0.238    0.263       0.467
+        7  abpolicy_async         32         9    None     14      0.450    0.464       0.267
+        8  abpolicy_async         32         9    None      8      0.248    0.263       0.267
+        9  abpolicy_async         32         9    None      8      0.240    0.264       0.267
+       10  abpolicy_async         32         9    None      8      0.240    0.263       0.267
+       11  abpolicy_async         32         9    None      8      0.240    0.264       0.267
+       12  abpolicy_async         32         9    None      8      0.241    0.263       0.267
+       13  abpolicy_async         32         9    None      8      0.239    0.263       0.267
+       14  abpolicy_async         32         9    None      8      0.239    0.264       0.267
+       15  abpolicy_async         32         9    None      8      0.237    0.264       0.267
+       16  abpolicy_async         32         9    None      8      0.240    0.264       0.267
+       17  abpolicy_async         32         9    None      8      0.239    0.264       0.267
+       18  abpolicy_async         32         5    None      8      0.239    0.264       0.133
+       19  abpolicy_async       None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True
+summary: total_time=6.271s, inference_calls=21, completed_chunks=21, actions_applied=182, empty_action_steps=0
+latency: avg_request=0.242s, avg_first_action=0.264s, avg_chunk_duration=0.254s, recommended_delay=9
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         9    None   None      0.247    0.253       0.234
+        2  abpolicy_async         32         9    None      9      0.246    0.268       0.267
+        3  abpolicy_async         32         9    None      8      0.241    0.263       0.267
+        4  abpolicy_async         32         9    None      8      0.238    0.263       0.267
+        5  abpolicy_async         32        10    None      8      0.242    0.263       0.300
+        6  abpolicy_async         32         9    None      9      0.263    0.297       0.267
+        7  abpolicy_async         32         9    None      8      0.239    0.263       0.267
+        8  abpolicy_async         32         9    None      8      0.240    0.263       0.267
+        9  abpolicy_async         32         9    None      8      0.240    0.263       0.267
+       10  abpolicy_async         32         9    None      8      0.240    0.264       0.267
+       11  abpolicy_async         32         9    None      8      0.239    0.263       0.267
+       12  abpolicy_async         32         9    None      8      0.250    0.263       0.267
+       13  abpolicy_async         32         9    None      8      0.241    0.263       0.267
+       14  abpolicy_async         32         9    None      8      0.240    0.263       0.267
+       15  abpolicy_async         32         9    None      8      0.240    0.264       0.267
+       16  abpolicy_async         32         9    None      8      0.239    0.263       0.267
+       17  abpolicy_async         32         9    None      8      0.241    0.263       0.267
+       18  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+       19  abpolicy_async         32         9    None      8      0.241    0.263       0.267
+       20  abpolicy_async         32         9    None      8      0.240    0.264       0.267
+       21  abpolicy_async         32         1    None      8      0.240    0.262       0.000
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True
+summary: total_time=5.802s, inference_calls=20, completed_chunks=20, actions_applied=168, empty_action_steps=0
+latency: avg_request=0.242s, avg_first_action=0.263s, avg_chunk_duration=0.260s, recommended_delay=9
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         9    None   None      0.246    0.250       0.234
+        2  abpolicy_async         32         9    None      9      0.238    0.268       0.267
+        3  abpolicy_async         32         9    None      8      0.238    0.263       0.267
+        4  abpolicy_async         32         9    None      8      0.241    0.263       0.267
+        5  abpolicy_async         32         9    None      8      0.252    0.263       0.267
+        6  abpolicy_async         32         9    None      8      0.238    0.263       0.267
+        7  abpolicy_async         32         9    None      8      0.239    0.263       0.267
+        8  abpolicy_async         32         9    None      8      0.238    0.263       0.267
+        9  abpolicy_async         32         9    None      8      0.242    0.263       0.267
+       10  abpolicy_async         32         9    None      8      0.240    0.264       0.267
+       11  abpolicy_async         32         9    None      8      0.241    0.263       0.267
+       12  abpolicy_async         32         9    None      8      0.258    0.263       0.267
+       13  abpolicy_async         32         9    None      8      0.241    0.263       0.267
+       14  abpolicy_async         32         9    None      8      0.241    0.263       0.267
+       15  abpolicy_async         32         9    None      8      0.242    0.263       0.266
+       16  abpolicy_async         32         9    None      8      0.239    0.263       0.267
+       17  abpolicy_async         32         9    None      8      0.240    0.263       0.267
+       18  abpolicy_async         32         9    None      8      0.240    0.263       0.267
+       19  abpolicy_async         32         6    None      8      0.239    0.264       0.167
+       20  abpolicy_async       None         0    None   None        n/a      n/a         n/a
+
+-----------------slow middle--------------------
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True
+summary: total_time=5.370s, inference_calls=18, completed_chunks=18, actions_applied=155, empty_action_steps=0
+latency: avg_request=0.254s, avg_first_action=0.273s, avg_chunk_duration=0.269s, recommended_delay=12
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         9    None   None      0.247    0.252       0.234
+        2  abpolicy_async         32         9    None      9      0.249    0.269       0.267
+        3  abpolicy_async         32         9    None      8      0.240    0.262       0.267
+        4  abpolicy_async         32         9    None      8      0.241    0.263       0.267
+        5  abpolicy_async         32         9    None      8      0.239    0.264       0.267
+        6  abpolicy_async         32         9    None      8      0.239    0.263       0.267
+        7  abpolicy_async         32         9    None      8      0.239    0.263       0.267
+        8  abpolicy_async         32        13    None      8      0.241    0.263       0.401
+        9  abpolicy_async         32         9    None     12      0.396    0.397       0.266
+       10  abpolicy_async         32         9    None      8      0.244    0.263       0.266
+       11  abpolicy_async         32         9    None      8      0.243    0.263       0.267
+       12  abpolicy_async         32         9    None      8      0.248    0.264       0.266
+       13  abpolicy_async         32         9    None      8      0.246    0.264       0.266
+       14  abpolicy_async         32         9    None      8      0.242    0.264       0.267
+       15  abpolicy_async         32        10    None      8      0.240    0.263       0.300
+       16  abpolicy_async         32         9    None      9      0.284    0.296       0.267
+       17  abpolicy_async         32         6    None      8      0.246    0.263       0.167
+       18  abpolicy_async       None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True
+summary: total_time=5.207s, inference_calls=18, completed_chunks=18, actions_applied=149, empty_action_steps=0
+latency: avg_request=0.248s, avg_first_action=0.269s, avg_chunk_duration=0.257s, recommended_delay=10
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32        10    None   None      0.284    0.289       0.267
+        2  abpolicy_async         32         9    None     10      0.273    0.302       0.267
+        3  abpolicy_async         32         9    None      8      0.243    0.263       0.267
+        4  abpolicy_async         32         9    None      8      0.243    0.264       0.267
+        5  abpolicy_async         32         9    None      8      0.238    0.264       0.267
+        6  abpolicy_async         32         9    None      8      0.239    0.264       0.267
+        7  abpolicy_async         32         9    None      8      0.239    0.263       0.267
+        8  abpolicy_async         32         9    None      8      0.240    0.264       0.267
+        9  abpolicy_async         32         9    None      8      0.252    0.262       0.267
+       10  abpolicy_async         32         9    None      8      0.240    0.263       0.267
+       11  abpolicy_async         32         9    None      8      0.238    0.263       0.267
+       12  abpolicy_async         32        10    None      8      0.240    0.263       0.300
+       13  abpolicy_async         32         9    None      9      0.286    0.297       0.267
+       14  abpolicy_async         32         9    None      8      0.242    0.263       0.267
+       15  abpolicy_async         32         9    None      8      0.239    0.263       0.267
+       16  abpolicy_async         32         9    None      8      0.240    0.263       0.267
+       17  abpolicy_async         32         3    None      8      0.238    0.263       0.066
+       18  abpolicy_async       None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True
+summary: total_time=6.579s, inference_calls=22, completed_chunks=22, actions_applied=191, empty_action_steps=0
+latency: avg_request=0.245s, avg_first_action=0.265s, avg_chunk_duration=0.255s, recommended_delay=9
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         9    None   None      0.250    0.255       0.234
+        2  abpolicy_async         32        10    None      9      0.249    0.268       0.300
+        3  abpolicy_async         32         9    None      9      0.280    0.297       0.268
+        4  abpolicy_async         32         9    None      8      0.241    0.261       0.267
+        5  abpolicy_async         32         9    None      8      0.241    0.264       0.267
+        6  abpolicy_async         32         9    None      8      0.240    0.263       0.267
+        7  abpolicy_async         32         9    None      8      0.244    0.264       0.267
+        8  abpolicy_async         32         9    None      8      0.240    0.263       0.267
+        9  abpolicy_async         32         9    None      8      0.241    0.264       0.267
+       10  abpolicy_async         32         9    None      8      0.239    0.264       0.267
+       11  abpolicy_async         32         9    None      8      0.251    0.263       0.267
+       12  abpolicy_async         32         9    None      8      0.238    0.263       0.267
+       13  abpolicy_async         32         9    None      8      0.243    0.263       0.267
+       14  abpolicy_async         32         9    None      8      0.245    0.263       0.267
+       15  abpolicy_async         32         9    None      8      0.243    0.264       0.267
+       16  abpolicy_async         32         9    None      8      0.250    0.263       0.267
+       17  abpolicy_async         32         9    None      8      0.248    0.264       0.267
+       18  abpolicy_async         32         9    None      8      0.240    0.264       0.267
+       19  abpolicy_async         32         9    None      8      0.239    0.263       0.267
+       20  abpolicy_async         32         9    None      8      0.240    0.264       0.267
+       21  abpolicy_async         32         9    None      8      0.239    0.264       0.267
+       22  abpolicy_async         32         1    None      8      0.239    0.264       0.000
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True
+summary: total_time=4.900s, inference_calls=17, completed_chunks=17, actions_applied=141, empty_action_steps=0
+latency: avg_request=0.242s, avg_first_action=0.265s, avg_chunk_duration=0.258s, recommended_delay=9
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         9    None   None      0.245    0.250       0.234
+        2  abpolicy_async         32         9    None      9      0.245    0.269       0.267
+        3  abpolicy_async         32         9    None      8      0.239    0.264       0.267
+        4  abpolicy_async         32         9    None      8      0.239    0.264       0.267
+        5  abpolicy_async         32        10    None      8      0.237    0.263       0.300
+        6  abpolicy_async         32         9    None      9      0.272    0.297       0.267
+        7  abpolicy_async         32         9    None      8      0.237    0.264       0.267
+        8  abpolicy_async         32         9    None      8      0.240    0.263       0.267
+        9  abpolicy_async         32         9    None      8      0.240    0.263       0.267
+       10  abpolicy_async         32         9    None      8      0.237    0.264       0.267
+       11  abpolicy_async         32         9    None      8      0.240    0.264       0.267
+       12  abpolicy_async         32         9    None      8      0.244    0.264       0.267
+       13  abpolicy_async         32         9    None      8      0.240    0.263       0.267
+       14  abpolicy_async         32         9    None      8      0.238    0.263       0.267
+       15  abpolicy_async         32         9    None      8      0.240    0.263       0.267
+       16  abpolicy_async         32         5    None      8      0.240    0.263       0.133
+       17  abpolicy_async       None         0    None   None        n/a      n/a         n/a
+
+-----------slow right-----------
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True
+summary: total_time=5.000s, inference_calls=17, completed_chunks=17, actions_applied=144, empty_action_steps=0
+latency: avg_request=0.241s, avg_first_action=0.263s, avg_chunk_duration=0.265s, recommended_delay=9
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         9    None   None      0.245    0.250       0.234
+        2  abpolicy_async         32         9    None      9      0.246    0.268       0.267
+        3  abpolicy_async         32         9    None      8      0.242    0.264       0.267
+        4  abpolicy_async         32         9    None      8      0.239    0.264       0.266
+        5  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+        6  abpolicy_async         32         9    None      8      0.238    0.263       0.267
+        7  abpolicy_async         32         9    None      8      0.240    0.264       0.267
+        8  abpolicy_async         32         9    None      8      0.249    0.264       0.267
+        9  abpolicy_async         32         9    None      8      0.239    0.263       0.267
+       10  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+       11  abpolicy_async         32         9    None      8      0.240    0.263       0.267
+       12  abpolicy_async         32         9    None      8      0.241    0.263       0.267
+       13  abpolicy_async         32         9    None      8      0.236    0.263       0.267
+       14  abpolicy_async         32         9    None      8      0.248    0.263       0.267
+       15  abpolicy_async         32         9    None      8      0.240    0.263       0.267
+       16  abpolicy_async         32         9    None      8      0.239    0.263       0.267
+       17  abpolicy_async       None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True
+summary: total_time=5.135s, inference_calls=18, completed_chunks=18, actions_applied=148, empty_action_steps=0
+latency: avg_request=0.240s, avg_first_action=0.263s, avg_chunk_duration=0.255s, recommended_delay=9
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         9    None   None      0.247    0.252       0.234
+        2  abpolicy_async         32         9    None      9      0.237    0.268       0.267
+        3  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+        4  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+        5  abpolicy_async         32         9    None      8      0.238    0.263       0.267
+        6  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+        7  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+        8  abpolicy_async         32         9    None      8      0.240    0.263       0.267
+        9  abpolicy_async         32         9    None      8      0.239    0.263       0.267
+       10  abpolicy_async         32         9    None      8      0.260    0.264       0.267
+       11  abpolicy_async         32         9    None      8      0.247    0.263       0.267
+       12  abpolicy_async         32         9    None      8      0.241    0.263       0.267
+       13  abpolicy_async         32         9    None      8      0.237    0.264       0.267
+       14  abpolicy_async         32         9    None      8      0.238    0.264       0.267
+       15  abpolicy_async         32         9    None      8      0.240    0.264       0.267
+       16  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+       17  abpolicy_async         32         4    None      8      0.238    0.264       0.100
+       18  abpolicy_async       None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True
+summary: total_time=5.801s, inference_calls=20, completed_chunks=20, actions_applied=168, empty_action_steps=0
+latency: avg_request=0.240s, avg_first_action=0.263s, avg_chunk_duration=0.260s, recommended_delay=9
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         9    None   None      0.245    0.250       0.234
+        2  abpolicy_async         32         9    None      9      0.240    0.268       0.267
+        3  abpolicy_async         32         9    None      8      0.238    0.263       0.267
+        4  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+        5  abpolicy_async         32         9    None      8      0.245    0.263       0.267
+        6  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+        7  abpolicy_async         32         9    None      8      0.247    0.263       0.267
+        8  abpolicy_async         32         9    None      8      0.236    0.263       0.267
+        9  abpolicy_async         32         9    None      8      0.239    0.263       0.266
+       10  abpolicy_async         32         9    None      8      0.238    0.263       0.267
+       11  abpolicy_async         32         9    None      8      0.240    0.263       0.267
+       12  abpolicy_async         32         9    None      8      0.238    0.264       0.267
+       13  abpolicy_async         32         9    None      8      0.258    0.263       0.267
+       14  abpolicy_async         32         9    None      8      0.239    0.263       0.267
+       15  abpolicy_async         32         9    None      8      0.239    0.264       0.267
+       16  abpolicy_async         32         9    None      8      0.240    0.263       0.267
+       17  abpolicy_async         32         9    None      8      0.236    0.262       0.267
+       18  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+       19  abpolicy_async         32         6    None      8      0.240    0.263       0.167
+       20  abpolicy_async       None         0    None   None        n/a      n/a         n/a
+
+----------------fast left------------------
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True
+summary: total_time=5.935s, inference_calls=20, completed_chunks=20, actions_applied=172, empty_action_steps=0
+latency: avg_request=0.237s, avg_first_action=0.263s, avg_chunk_duration=0.252s, recommended_delay=9
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         9    None   None      0.242    0.247       0.234
+        2  abpolicy_async         32         9    None      9      0.236    0.268       0.267
+        3  abpolicy_async         32         9    None      8      0.236    0.263       0.267
+        4  abpolicy_async         32         9    None      8      0.235    0.263       0.267
+        5  abpolicy_async         32         9    None      8      0.236    0.263       0.267
+        6  abpolicy_async         32         9    None      8      0.239    0.263       0.267
+        7  abpolicy_async         32         9    None      8      0.243    0.263       0.267
+        8  abpolicy_async         32         9    None      8      0.235    0.263       0.267
+        9  abpolicy_async         32         9    None      8      0.236    0.263       0.267
+       10  abpolicy_async         32         9    None      8      0.233    0.263       0.267
+       11  abpolicy_async         32         9    None      8      0.247    0.263       0.267
+       12  abpolicy_async         32         9    None      8      0.235    0.263       0.266
+       13  abpolicy_async         32         9    None      8      0.236    0.263       0.267
+       14  abpolicy_async         32         9    None      8      0.235    0.263       0.267
+       15  abpolicy_async         32         9    None      8      0.239    0.263       0.267
+       16  abpolicy_async         32         9    None      8      0.236    0.263       0.267
+       17  abpolicy_async         32         9    None      8      0.232    0.263       0.267
+       18  abpolicy_async         32         9    None      8      0.235    0.264       0.267
+       19  abpolicy_async         32         9    None      8      0.238    0.264       0.267
+       20  abpolicy_async         32         1    None      8      0.238    0.263       0.000
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True
+summary: total_time=5.197s, inference_calls=18, completed_chunks=18, actions_applied=150, empty_action_steps=0
+latency: avg_request=0.236s, avg_first_action=0.263s, avg_chunk_duration=0.259s, recommended_delay=9
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         9    None   None      0.242    0.248       0.234
+        2  abpolicy_async         32         9    None      9      0.237    0.268       0.267
+        3  abpolicy_async         32         9    None      8      0.235    0.264       0.267
+        4  abpolicy_async         32         9    None      8      0.236    0.264       0.266
+        5  abpolicy_async         32         9    None      8      0.236    0.263       0.266
+        6  abpolicy_async         32         9    None      8      0.236    0.263       0.267
+        7  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+        8  abpolicy_async         32         9    None      8      0.238    0.263       0.267
+        9  abpolicy_async         32         9    None      8      0.235    0.263       0.266
+       10  abpolicy_async         32         9    None      8      0.235    0.262       0.267
+       11  abpolicy_async         32         9    None      8      0.236    0.263       0.267
+       12  abpolicy_async         32         9    None      8      0.235    0.263       0.267
+       13  abpolicy_async         32         9    None      8      0.233    0.263       0.267
+       14  abpolicy_async         32         9    None      8      0.235    0.264       0.267
+       15  abpolicy_async         32         9    None      8      0.235    0.263       0.267
+       16  abpolicy_async         32         9    None      8      0.235    0.263       0.267
+       17  abpolicy_async         32         6    None      8      0.237    0.263       0.167
+       18  abpolicy_async       None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True
+summary: total_time=4.997s, inference_calls=17, completed_chunks=17, actions_applied=144, empty_action_steps=0
+latency: avg_request=0.238s, avg_first_action=0.263s, avg_chunk_duration=0.265s, recommended_delay=9
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         9    None   None      0.242    0.248       0.234
+        2  abpolicy_async         32         9    None      9      0.241    0.268       0.267
+        3  abpolicy_async         32         9    None      8      0.237    0.264       0.267
+        4  abpolicy_async         32         9    None      8      0.236    0.263       0.267
+        5  abpolicy_async         32         9    None      8      0.235    0.263       0.267
+        6  abpolicy_async         32         9    None      8      0.238    0.263       0.267
+        7  abpolicy_async         32         9    None      8      0.236    0.263       0.267
+        8  abpolicy_async         32         9    None      8      0.243    0.263       0.267
+        9  abpolicy_async         32         9    None      8      0.234    0.263       0.267
+       10  abpolicy_async         32         9    None      8      0.236    0.263       0.267
+       11  abpolicy_async         32         9    None      8      0.238    0.263       0.267
+       12  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+       13  abpolicy_async         32         9    None      8      0.240    0.263       0.267
+       14  abpolicy_async         32         9    None      8      0.242    0.263       0.267
+       15  abpolicy_async         32         9    None      8      0.238    0.263       0.267
+       16  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+       17  abpolicy_async       None         0    None   None        n/a      n/a         n/a
+
+-----------------fast middle-----------------
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True
+summary: total_time=5.334s, inference_calls=18, completed_chunks=18, actions_applied=154, empty_action_steps=0
+latency: avg_request=0.235s, avg_first_action=0.263s, avg_chunk_duration=0.250s, recommended_delay=9
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         9    None   None      0.244    0.248       0.234
+        2  abpolicy_async         32         9    None      9      0.235    0.268       0.267
+        3  abpolicy_async         32         9    None      8      0.234    0.264       0.267
+        4  abpolicy_async         32         9    None      8      0.234    0.263       0.267
+        5  abpolicy_async         32         9    None      8      0.233    0.263       0.267
+        6  abpolicy_async         32         9    None      8      0.236    0.263       0.267
+        7  abpolicy_async         32         9    None      8      0.235    0.263       0.267
+        8  abpolicy_async         32         9    None      8      0.237    0.264       0.267
+        9  abpolicy_async         32         9    None      8      0.238    0.264       0.267
+       10  abpolicy_async         32         9    None      8      0.236    0.264       0.267
+       11  abpolicy_async         32         9    None      8      0.235    0.263       0.267
+       12  abpolicy_async         32         9    None      8      0.235    0.264       0.267
+       13  abpolicy_async         32         9    None      8      0.235    0.263       0.267
+       14  abpolicy_async         32         9    None      8      0.235    0.264       0.267
+       15  abpolicy_async         32         9    None      8      0.235    0.264       0.267
+       16  abpolicy_async         32         9    None      8      0.235    0.263       0.267
+       17  abpolicy_async         32         9    None      8      0.234    0.264       0.267
+       18  abpolicy_async         32         1    None      8      0.234    0.264       0.000
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True
+summary: total_time=5.196s, inference_calls=18, completed_chunks=18, actions_applied=150, empty_action_steps=0
+latency: avg_request=0.236s, avg_first_action=0.262s, avg_chunk_duration=0.259s, recommended_delay=9
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         9    None   None      0.242    0.246       0.234
+        2  abpolicy_async         32         9    None      9      0.239    0.268       0.267
+        3  abpolicy_async         32         9    None      8      0.234    0.263       0.267
+        4  abpolicy_async         32         9    None      8      0.236    0.263       0.267
+        5  abpolicy_async         32         9    None      8      0.240    0.263       0.266
+        6  abpolicy_async         32         9    None      8      0.238    0.263       0.267
+        7  abpolicy_async         32         9    None      8      0.233    0.263       0.267
+        8  abpolicy_async         32         9    None      8      0.235    0.262       0.267
+        9  abpolicy_async         32         9    None      8      0.232    0.263       0.267
+       10  abpolicy_async         32         9    None      8      0.233    0.263       0.267
+       11  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+       12  abpolicy_async         32         9    None      8      0.240    0.264       0.267
+       13  abpolicy_async         32         9    None      8      0.236    0.262       0.267
+       14  abpolicy_async         32         9    None      8      0.234    0.263       0.267
+       15  abpolicy_async         32         9    None      8      0.234    0.263       0.267
+       16  abpolicy_async         32         9    None      8      0.235    0.263       0.267
+       17  abpolicy_async         32         6    None      8      0.234    0.263       0.167
+       18  abpolicy_async       None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True
+summary: total_time=4.885s, inference_calls=17, completed_chunks=17, actions_applied=140, empty_action_steps=0
+latency: avg_request=0.242s, avg_first_action=0.264s, avg_chunk_duration=0.256s, recommended_delay=9
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         9    None   None      0.264    0.270       0.234
+        2  abpolicy_async         32         9    None      9      0.258    0.268       0.267
+        3  abpolicy_async         32         9    None      8      0.244    0.263       0.267
+        4  abpolicy_async         32         9    None      8      0.244    0.263       0.267
+        5  abpolicy_async         32         9    None      8      0.233    0.263       0.267
+        6  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+        7  abpolicy_async         32         9    None      8      0.256    0.263       0.267
+        8  abpolicy_async         32         9    None      8      0.246    0.263       0.267
+        9  abpolicy_async         32         9    None      8      0.238    0.263       0.267
+       10  abpolicy_async         32         9    None      8      0.235    0.263       0.267
+       11  abpolicy_async         32         9    None      8      0.234    0.262       0.267
+       12  abpolicy_async         32         9    None      8      0.234    0.263       0.267
+       13  abpolicy_async         32         9    None      8      0.234    0.263       0.267
+       14  abpolicy_async         32         9    None      8      0.235    0.263       0.266
+       15  abpolicy_async         32         9    None      8      0.239    0.263       0.266
+       16  abpolicy_async         32         5    None      8      0.238    0.263       0.133
+       17  abpolicy_async       None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True
+summary: total_time=4.863s, inference_calls=17, completed_chunks=17, actions_applied=140, empty_action_steps=0
+latency: avg_request=0.240s, avg_first_action=0.263s, avg_chunk_duration=0.256s, recommended_delay=9
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         9    None   None      0.243    0.247       0.234
+        2  abpolicy_async         32         9    None      9      0.245    0.268       0.267
+        3  abpolicy_async         32         9    None      8      0.250    0.263       0.267
+        4  abpolicy_async         32         9    None      8      0.234    0.264       0.267
+        5  abpolicy_async         32         9    None      8      0.234    0.264       0.266
+        6  abpolicy_async         32         9    None      8      0.234    0.264       0.266
+        7  abpolicy_async         32         9    None      8      0.234    0.264       0.267
+        8  abpolicy_async         32         9    None      8      0.233    0.263       0.267
+        9  abpolicy_async         32         9    None      8      0.252    0.263       0.267
+       10  abpolicy_async         32         9    None      8      0.253    0.264       0.267
+       11  abpolicy_async         32         9    None      8      0.253    0.264       0.267
+       12  abpolicy_async         32         9    None      8      0.239    0.263       0.266
+       13  abpolicy_async         32         9    None      8      0.237    0.263       0.266
+       14  abpolicy_async         32         9    None      8      0.233    0.263       0.266
+       15  abpolicy_async         32         9    None      8      0.235    0.263       0.267
+       16  abpolicy_async         32         5    None      8      0.233    0.263       0.133
+       17  abpolicy_async       None         0    None   None        n/a      n/a         n/a
+
+---------------fast right------------------
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True
+summary: total_time=5.165s, inference_calls=18, completed_chunks=18, actions_applied=149, empty_action_steps=0
+latency: avg_request=0.236s, avg_first_action=0.263s, avg_chunk_duration=0.257s, recommended_delay=9
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         9    None   None      0.244    0.248       0.234
+        2  abpolicy_async         32         9    None      9      0.235    0.268       0.267
+        3  abpolicy_async         32         9    None      8      0.235    0.263       0.267
+        4  abpolicy_async         32         9    None      8      0.236    0.263       0.267
+        5  abpolicy_async         32         9    None      8      0.238    0.263       0.267
+        6  abpolicy_async         32         9    None      8      0.235    0.263       0.266
+        7  abpolicy_async         32         9    None      8      0.235    0.263       0.267
+        8  abpolicy_async         32         9    None      8      0.236    0.263       0.266
+        9  abpolicy_async         32         9    None      8      0.234    0.263       0.266
+       10  abpolicy_async         32         9    None      8      0.236    0.263       0.267
+       11  abpolicy_async         32         9    None      8      0.236    0.263       0.267
+       12  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+       13  abpolicy_async         32         9    None      8      0.234    0.263       0.267
+       14  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+       15  abpolicy_async         32         9    None      8      0.234    0.263       0.267
+       16  abpolicy_async         32         9    None      8      0.233    0.263       0.267
+       17  abpolicy_async         32         5    None      8      0.235    0.263       0.133
+       18  abpolicy_async       None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True
+summary: total_time=2.626s, inference_calls=9, completed_chunks=9, actions_applied=73, empty_action_steps=0
+latency: avg_request=0.237s, avg_first_action=0.262s, avg_chunk_duration=0.233s, recommended_delay=9
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         9    None   None      0.243    0.248       0.234
+        2  abpolicy_async         32         9    None      9      0.236    0.268       0.267
+        3  abpolicy_async         32         9    None      8      0.236    0.263       0.267
+        4  abpolicy_async         32         9    None      8      0.235    0.264       0.267
+        5  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+        6  abpolicy_async         32         9    None      8      0.236    0.263       0.267
+        7  abpolicy_async         32         9    None      8      0.235    0.263       0.266
+        8  abpolicy_async         32         9    None      8      0.236    0.263       0.267
+        9  abpolicy_async         32         1    None      8      0.235    0.263       0.000
+
+Pi0.5 inference metrics
+task: put red cube in bowl (fail)
+config: abpolicy_enabled=True
+summary: total_time=2.927s, inference_calls=10, completed_chunks=10, actions_applied=82, empty_action_steps=0
+latency: avg_request=0.237s, avg_first_action=0.262s, avg_chunk_duration=0.237s, recommended_delay=9
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32         9    None   None      0.243    0.249       0.234
+        2  abpolicy_async         32         9    None      9      0.236    0.269       0.267
+        3  abpolicy_async         32         9    None      8      0.236    0.264       0.267
+        4  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+        5  abpolicy_async         32         9    None      8      0.235    0.263       0.267
+        6  abpolicy_async         32         9    None      8      0.237    0.263       0.267
+        7  abpolicy_async         32         9    None      8      0.236    0.263       0.267
+        8  abpolicy_async         32         9    None      8      0.239    0.263       0.267
+        9  abpolicy_async         32         9    None      8      0.234    0.263       0.267
+       10  abpolicy_async         32         1    None      8      0.233    0.262       0.000
+
