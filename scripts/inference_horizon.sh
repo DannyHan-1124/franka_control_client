@@ -19,6 +19,7 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --policy_transport zmq \
     --policy_zmq_endpoint "${POLICY_ZMQ_ENDPOINT}" \
     --metrics_path "${REPO_ROOT}/logs/pi05_horizon_inference_metrics.jsonl" \
+    --chunk_trace_dir "${HORIZON_CHUNK_TRACE_DIR:-${REPO_ROOT}/logs/horizon_chunk_traces}" \
     --static_camera static_cam \
     --wrist_camera wrist_cam \
     --call_vla_after_actions 25 \

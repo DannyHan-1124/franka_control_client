@@ -12,8 +12,8 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-${HOME}/.cache}"
 mkdir -p "$HF_HOME" "$HF_DATASETS_CACHE" "$TRANSFORMERS_CACHE" "$XDG_CACHE_HOME"
 
 python -m franka_control_client.policy.pi05_policy_node \
-    --checkpoint_path /hkfs/work/workspace/scratch/utphd-myspace/outputs/pi05_moving_cup_10ksteps_new/checkpoints/010000/pretrained_model \
-    --dataset_path /hkfs/work/workspace/scratch/utphd-myspace/datasets/moving_cup \
+    --checkpoint_path /data/zhuoyue/realrobot_ckpt/pi05_conveyor_cube_1500steps \
+    --dataset_path /data/zhuoyue/realrobot_dataset/conveyor_cube \
     --device cuda \
     --policy_dtype bfloat16 \
     --obs_topic pi05/observation \
