@@ -14,7 +14,7 @@ export TRANSFORMERS_CACHE="${TRANSFORMERS_CACHE:-${HF_HOME}/transformers}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-${HOME}/.cache}"
 mkdir -p "$HF_HOME" "$HF_DATASETS_CACHE" "$TRANSFORMERS_CACHE" "$XDG_CACHE_HOME"
 
-CHECKPOINT_PATH="${PI05_CHECKPOINT_PATH:-/data/zhuoyue/realrobot_ckpt/pi05_conveyor_cube_1500steps}"
+CHECKPOINT_PATH="${PI05_CHECKPOINT_PATH:-/data/zhuoyue/realrobot_ckpt/0903/pi05_conveyor_cube_8_4_4_static_wrist_chunk20_lr5e05/5k}"
 DATASET_PATH="${PI05_DATASET_PATH:-/data/zhuoyue/realrobot_dataset/conveyor_cube}"
 
 python -m franka_control_client.policy.pi05_policy_horizon_node \
@@ -24,5 +24,5 @@ python -m franka_control_client.policy.pi05_policy_horizon_node \
     --policy_dtype bfloat16 \
     --default_task "put red cube in bowl" \
     --direct_zmq_bind tcp://0.0.0.0:40023 \
-    --call_vla_after_actions 10 \
-    --chunk_start_index 2 \
+    --call_vla_after_actions 20 \
+    --chunk_start_index 2

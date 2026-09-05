@@ -53,6 +53,7 @@ class DSRLNodeConfig:
     rotation: str
     use_delta_action: bool
     streaming: bool
+    chunk_start_index: int
     chunk_trace_dir: Optional[Path]
     chunk_noise_viz_dir: Optional[Path]
     wandb_project: Optional[str]
@@ -107,7 +108,7 @@ class Pi05PolicyDSRLNode:
         )
         self.wandb_run = self._init_wandb()
         self._model_lock = threading.RLock()
-        self._train_queue: queue.Queue[tuple[int, Trajectory] | None] = queue.Queue()
+        self._train_queue: queue.Queue[tuple[int, Trajectory, float] | None] = queue.Queue()
         self._stop_event = threading.Event()
         self._trainer: threading.Thread | None = None
         self._trajectory: Trajectory | None = None
@@ -267,6 +268,12 @@ class Pi05PolicyDSRLNode:
             action = action[0]
         if action.ndim != 2 or action.shape[-1] < 8:
             raise RuntimeError(f"Unexpected DSRL Franka action shape: {action.shape}")
+        sent_action = action[self.cfg.chunk_start_index :, :8]
+        if not len(sent_action):
+            raise RuntimeError(
+                f"--chunk_start_index={self.cfg.chunk_start_index} removed the entire "
+                f"predicted action chunk (length={len(action)})"
+            )
         assert self._trajectory is not None
         self._trajectory.append(
             observation,
@@ -284,13 +291,14 @@ class Pi05PolicyDSRLNode:
                 observation=observation,
                 generated_action=action[:, :8],
                 trace_action=output.recorded_action,
-                sent_start_index=0,
+                sent_start_index=self.cfg.chunk_start_index,
             )
         response = {
             "timestamp": time.time(),
-            "action": action[:, :8].tolist(),
-            "shape": [int(action.shape[0]), 8],
+            "action": sent_action.tolist(),
+            "shape": [int(sent_action.shape[0]), 8],
             "chunk_id": self._chunk_id,
+            "chunk_start_index": self.cfg.chunk_start_index,
         }
         self._chunk_id += 1
         return response
@@ -338,7 +346,9 @@ class Pi05PolicyDSRLNode:
                     "eps_name": self._trajectory.episode_name,
                     "success": success,
                     "chunk_executions": executions,
-                    "chunk_start_indices": {chunk_id: 0 for chunk_id in executions},
+                    "chunk_start_indices": {
+                        chunk_id: self.cfg.chunk_start_index for chunk_id in executions
+                    },
                 },
             )
         if self.wandb_run is not None:
@@ -351,7 +361,9 @@ class Pi05PolicyDSRLNode:
                 },
             )
         if self.cfg.run_mode == "online_train":
-            self._train_queue.put((self._episodes_completed, self._trajectory))
+            self._train_queue.put(
+                (self._episodes_completed, self._trajectory, time.perf_counter())
+            )
         logging.info(
             "Finalized episode %d: success=%s rewards=%s path=%s",
             self._episodes_completed, success, rewards, path,
@@ -392,10 +404,42 @@ class Pi05PolicyDSRLNode:
             if item is None:
                 self._train_queue.task_done()
                 break
-            episode, trajectory = item
+            episode, trajectory, enqueued_at = item
             try:
+                queue_wait_s = time.perf_counter() - enqueued_at
+                queue_size_before = self._train_queue.qsize()
+                update_step_before = self.policy_updater.update_step
                 with self._model_lock:
+                    if torch.cuda.is_available():
+                        torch.cuda.synchronize()
+                    train_started_at = time.perf_counter()
                     metrics = self.policy_updater.update([trajectory])
+                    if torch.cuda.is_available():
+                        torch.cuda.synchronize()
+                    train_duration_s = time.perf_counter() - train_started_at
+                updates_completed = self.policy_updater.update_step - update_step_before
+                metrics.update(
+                    {
+                        "duration_s": train_duration_s,
+                        "update_duration_ms": (
+                            1000.0 * train_duration_s / updates_completed
+                            if updates_completed > 0
+                            else 0.0
+                        ),
+                        "queue_wait_s": queue_wait_s,
+                        "queue_size_before": float(queue_size_before),
+                        "queue_size_after": float(self._train_queue.qsize()),
+                        "updates_per_second": (
+                            updates_completed / train_duration_s
+                            if train_duration_s > 0.0
+                            else 0.0
+                        ),
+                        "transitions_added": float(
+                            metrics.get("replay_buffer/added", 0.0)
+                        ),
+                    }
+                )
+                with self._model_lock:
                     self._maybe_save_checkpoint(episode)
                 if self.wandb_run is not None:
                     scalar_metrics = {
@@ -475,6 +519,12 @@ def _parse_args() -> DSRLNodeConfig:
     parser.add_argument("--rotation", choices=("auto", "quat", "rotvec", "euler"), default="quat")
     parser.add_argument("--delta", action="store_true")
     parser.add_argument("--streaming", action="store_true")
+    parser.add_argument(
+        "--chunk_start_index",
+        type=int,
+        default=0,
+        help="Drop the first K predicted actions before returning each chunk.",
+    )
     parser.add_argument("--chunk_trace_dir", type=Path, default=None)
     parser.add_argument("--dsrl_chunk_noise_viz_dir", type=Path, default=None)
     parser.add_argument("--wandb_project", default=None)
@@ -512,6 +562,8 @@ def _parse_args() -> DSRLNodeConfig:
     args = parser.parse_args()
     if args.save_every_episodes < 0:
         parser.error("--save_every_episodes must be >= 0")
+    if args.chunk_start_index < 0:
+        parser.error("--chunk_start_index must be >= 0")
     sac = DSRLConfig(
         gamma=args.sac_gamma, tau=args.sac_tau, update_epochs=args.sac_update_epochs,
         batch_size=args.sac_batch_size, min_buffer_size=args.sac_min_buffer_size,
@@ -535,7 +587,8 @@ def _parse_args() -> DSRLNodeConfig:
         run_mode=args.run_mode, resume_checkpoint=args.resume_checkpoint,
         save_checkpoint_dir=args.save_checkpoint_dir,
         save_every_episodes=args.save_every_episodes, checkpoint_mode=args.checkpoint_mode,
-        rotation=args.rotation, use_delta_action=args.delta, streaming=args.streaming, sac=sac,
+        rotation=args.rotation, use_delta_action=args.delta, streaming=args.streaming,
+        chunk_start_index=args.chunk_start_index, sac=sac,
         chunk_trace_dir=args.chunk_trace_dir,
         chunk_noise_viz_dir=args.dsrl_chunk_noise_viz_dir,
         wandb_project=args.wandb_project, wandb_entity=args.wandb_entity,

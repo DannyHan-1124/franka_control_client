@@ -18,9 +18,12 @@ BASE_CHECKPOINT="${PI05_CHECKPOINT_PATH:-/data/zhuoyue/realrobot_ckpt/pi05_conve
 python -m franka_control_client.policy.pi05_policy_DSRL_node \
     --weights "$BASE_CHECKPOINT" \
     --bind tcp://0.0.0.0:40023 \
-    --output_dir "${DSRL_INFERENCE_OUTPUT_DIR:-/scratch/$USER/franka_dsrl_inference_trajectories}" \
+    --output_dir "${DSRL_INFERENCE_OUTPUT_DIR:-/data/zhuoyue/franka_dsrl/inference_trajectories}" \
     --run_mode inference \
     --resume_checkpoint "$DSRL_CHECKPOINT" \
+    --chunk_start_index "${DSRL_CHUNK_START_INDEX:-0}" \
+    --chunk_trace_dir "${DSRL_CHUNK_TRACE_DIR:-/data/zhuoyue/franka_dsrl/chunk_traces}" \
+    --dsrl_chunk_noise_viz_dir "${DSRL_NOISE_VIZ_DIR:-/data/zhuoyue/franka_dsrl/noise_visualizations}" \
     --rotation quat \
     --dsrl_state_dim 8 \
     --dsrl_num_images 2

@@ -17,8 +17,6 @@ WORKSPACE_ROOT = Path(__file__).resolve().parents[4]
 if str(WORKSPACE_ROOT) not in sys.path:
     sys.path.insert(0, str(WORKSPACE_ROOT))
 
-from DOM_rl.inference_client.chunk_trace import ChunkTraceRecorder
-
 from .policy_inference_manager import PolicyInferenceEvent, PolicyInferenceManager
 from ..control_pair.cartesian_policy_panda_control_pair import (
     CartesianPolicyPandaRobotiqControlPair,
@@ -96,8 +94,13 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.data_collectors = data_collectors
         self.control_pair = control_pair
         self.cfg = cfg
-        self._chunk_trace = (
-            ChunkTraceRecorder(
+        # Chunk tracing is optional on the robot client.  Import DOM_rl lazily so
+        # the DSRL robot PC does not need the training repository installed;
+        # DSRL traces and noise visualizations are recorded by the policy node.
+        if cfg.chunk_trace_dir:
+            from DOM_rl.inference_client.chunk_trace import ChunkTraceRecorder
+
+            self._chunk_trace = ChunkTraceRecorder(
                 Path(cfg.chunk_trace_dir),
                 action_space="franka_quat8",
                 action_names=(
@@ -110,9 +113,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
                     "quat_x", "quat_y", "quat_z", "quat_w", "gripper",
                 ),
             )
-            if cfg.chunk_trace_dir
-            else None
-        )
+        else:
+            self._chunk_trace = None
         self._trace_success = False
         if cfg.policy_transport == "zmq":
             if not cfg.policy_zmq_endpoint:
