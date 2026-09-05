@@ -86,6 +86,11 @@ def _parse_args() -> argparse.Namespace:
         "instead of starting the episode with it open.",
     )
     parser.add_argument("--metrics_path", default=None)
+    parser.add_argument(
+        "--chunk_trace_dir",
+        default=None,
+        help="Optional output directory for per-episode chunk trace JSON and PNG files.",
+    )
     parser.add_argument("--robot_name", default="FrankaPanda")
     parser.add_argument("--static_camera", default="static_cam")
     parser.add_argument("--wrist_camera", default="wrist_cam")
@@ -160,6 +165,7 @@ def main() -> None:
         stop_after_release_steps=args.stop_after_release_steps,
         close_gripper_on_reset=args.close_gripper_on_reset,
         metrics_path=args.metrics_path,
+        chunk_trace_dir=args.chunk_trace_dir,
         run_metadata={
             "control_hz": args.control_hz,
             "pyzlc_name": args.pyzlc_name,

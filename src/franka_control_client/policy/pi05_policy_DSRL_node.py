@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+import os
 import queue
 import sys
 import threading
@@ -27,8 +28,16 @@ from DOM_rl.adapters.pi05_dsrl_adapter import PI05DSRLAdapter  # noqa: E402
 from DOM_rl.checkpoints import load_sac_checkpoint, save_sac_checkpoint  # noqa: E402
 from DOM_rl.config import CompactEncoderConfig, DSRLConfig, RewardConfig  # noqa: E402
 from DOM_rl.data_collect import Trajectory, TrajectoryRecorder  # noqa: E402
+from DOM_rl.inference_client.chunk_trace import ChunkTraceRecorder  # noqa: E402
 from DOM_rl.policies import SACPolicy  # noqa: E402
 from DOM_rl.reward.basic_reward import BasicSparseReward  # noqa: E402
+from DOM_rl.visualization import visualize_dsrl_chunk_noise  # noqa: E402
+
+
+IMAGE_KEY_GROUPS: tuple[tuple[str, ...], ...] = (
+    ("observation.images.static_cam", "observation.images.base_0_rgb"),
+    ("observation.images.wrist_cam", "observation.images.left_wrist_0_rgb"),
+)
 
 
 @dataclass
@@ -44,6 +53,15 @@ class DSRLNodeConfig:
     rotation: str
     use_delta_action: bool
     streaming: bool
+    chunk_trace_dir: Optional[Path]
+    chunk_noise_viz_dir: Optional[Path]
+    wandb_project: Optional[str]
+    wandb_entity: Optional[str]
+    wandb_run_name: Optional[str]
+    wandb_group: Optional[str]
+    wandb_tags: Optional[list[str]]
+    wandb_mode: str
+    wandb_dir: Path
     sac: DSRLConfig
 
 
@@ -70,6 +88,24 @@ class Pi05PolicyDSRLNode:
             )
         )
         self.recorder = TrajectoryRecorder(cfg.output_dir)
+        self.chunk_trace = (
+            ChunkTraceRecorder(
+                cfg.chunk_trace_dir,
+                action_space="franka_quat8",
+                action_names=(
+                    "ee_pos_x", "ee_pos_y", "ee_pos_z",
+                    "quat_x", "quat_y", "quat_z", "quat_w", "gripper",
+                ),
+                env_action_space="franka_quat8",
+                env_action_names=(
+                    "ee_pos_x", "ee_pos_y", "ee_pos_z",
+                    "quat_x", "quat_y", "quat_z", "quat_w", "gripper",
+                ),
+            )
+            if cfg.chunk_trace_dir is not None
+            else None
+        )
+        self.wandb_run = self._init_wandb()
         self._model_lock = threading.RLock()
         self._train_queue: queue.Queue[tuple[int, Trajectory] | None] = queue.Queue()
         self._stop_event = threading.Event()
@@ -100,6 +136,40 @@ class Pi05PolicyDSRLNode:
         self._socket.bind(cfg.bind)
         logging.info("DSRL Franka node bound to %s", cfg.bind)
 
+    def _init_wandb(self):
+        if not self.cfg.wandb_project:
+            return None
+        if self.cfg.run_mode != "online_train":
+            logging.warning("W&B is configured outside online_train mode; episode metrics only will be logged.")
+        directory = self.cfg.wandb_dir
+        directory.mkdir(parents=True, exist_ok=True)
+        os.environ.setdefault("WANDB_DIR", str(directory))
+        os.environ.setdefault("WANDB_CACHE_DIR", str(directory / "cache"))
+        try:
+            import wandb
+        except ImportError as exc:
+            raise RuntimeError(
+                "wandb is not installed; install it or omit --wandb_project"
+            ) from exc
+        run = wandb.init(
+            project=self.cfg.wandb_project,
+            entity=self.cfg.wandb_entity,
+            name=self.cfg.wandb_run_name,
+            group=self.cfg.wandb_group,
+            tags=self.cfg.wandb_tags,
+            mode=self.cfg.wandb_mode,
+            dir=str(directory),
+            config={
+                "run_mode": self.cfg.run_mode,
+                "weights": self.cfg.weights,
+                "rotation": self.cfg.rotation,
+                "sac": vars(self.cfg.sac),
+            },
+            settings=wandb.Settings(save_code=False, disable_git=True),
+        )
+        logging.info("Initialized W&B run: %s", getattr(run, "url", None))
+        return run
+
     @staticmethod
     def _decode_image(value: Any) -> np.ndarray:
         if isinstance(value, np.ndarray):
@@ -127,9 +197,38 @@ class Pi05PolicyDSRLNode:
             "task": message.get("task", ""),
             "index": int(message.get("index", self._chunk_id)),
         }
-        for key, value in message.items():
-            if key.startswith("observation.image"):
-                observation[key] = self._decode_image(value)
+        expected_input_keys_ordered = list(self.adapter.policy.config.input_features)
+        expected_input_keys = set(expected_input_keys_ordered)
+        expected_image_keys = [
+            key for key in expected_input_keys_ordered if key.startswith("observation.images.")
+        ]
+        incoming_images = {
+            key: value for key, value in message.items() if key.startswith("observation.images.")
+        }
+        mapped_images: dict[str, Any] = {}
+        for key, value in incoming_images.items():
+            if key in expected_input_keys:
+                mapped_images[key] = value
+                continue
+            for group in IMAGE_KEY_GROUPS:
+                if key in group:
+                    target_key = next(
+                        (candidate for candidate in group if candidate in expected_input_keys),
+                        None,
+                    )
+                    if target_key is not None:
+                        mapped_images[target_key] = value
+                    break
+
+        # Last-resort compatibility for checkpoints that use two custom camera
+        # names: preserve the sender's camera order when the counts agree.
+        if len(mapped_images) < len(expected_image_keys) and len(incoming_images) == len(
+            expected_image_keys
+        ):
+            mapped_images = dict(zip(expected_image_keys, incoming_images.values()))
+
+        for key, value in mapped_images.items():
+            observation[key] = self._decode_image(value)
         return observation
 
     def _start_episode(self, message: dict[str, Any]) -> None:
@@ -143,6 +242,8 @@ class Pi05PolicyDSRLNode:
             episode_name=f"episode_{int(self._episode_id):06d}",
             metadata={"action_granularity": "chunk", "source": "real_franka"},
         )
+        if self.chunk_trace is not None:
+            self.chunk_trace.start_episode()
 
     def _infer(self, message: dict[str, Any]) -> dict[str, Any]:
         episode_id = message.get("episode_id", 0)
@@ -153,7 +254,14 @@ class Pi05PolicyDSRLNode:
             self.adapter.observe_environment_step(observation)
             output = self.adapter.sample_action_with_info(observation)
         if output.action is None:
-            raise RuntimeError("DSRL adapter did not produce an action chunk")
+            expected = list(self.adapter.policy.config.input_features)
+            missing = [key for key in expected if key not in observation]
+            raise RuntimeError(
+                "DSRL adapter did not produce an action chunk; "
+                f"missing policy inputs={missing}, expected={expected}, "
+                f"received message keys={list(message)}, "
+                f"mapped observation keys={list(observation)}"
+            )
         action = np.asarray(output.action)
         if action.ndim == 3:
             action = action[0]
@@ -170,6 +278,14 @@ class Pi05PolicyDSRLNode:
             valid_action_steps=0,
             chunk_id=self._chunk_id,
         )
+        if self.chunk_trace is not None:
+            self.chunk_trace.record_chunk(
+                chunk_id=self._chunk_id,
+                observation=observation,
+                generated_action=action[:, :8],
+                trace_action=output.recorded_action,
+                sent_start_index=0,
+            )
         response = {
             "timestamp": time.time(),
             "action": action[:, :8].tolist(),
@@ -208,6 +324,32 @@ class Pi05PolicyDSRLNode:
             },
         )
         path = self.recorder.save(self._trajectory)
+        noise_viz_path = None
+        if self.cfg.chunk_noise_viz_dir is not None:
+            noise_viz_path = visualize_dsrl_chunk_noise(
+                self._trajectory, self.cfg.chunk_noise_viz_dir
+            )
+        trace_path = None
+        if self.chunk_trace is not None:
+            trace_path = self.chunk_trace.finish_episode(
+                episode_index=self._episodes_completed,
+                observation={
+                    "episode_id": self._episode_id,
+                    "eps_name": self._trajectory.episode_name,
+                    "success": success,
+                    "chunk_executions": executions,
+                    "chunk_start_indices": {chunk_id: 0 for chunk_id in executions},
+                },
+            )
+        if self.wandb_run is not None:
+            self.wandb_run.log(
+                {
+                    "episode/index": self._episodes_completed,
+                    "episode/success": int(success),
+                    "episode/chunks": len(self._trajectory.steps),
+                    "episode/executed_actions": sum(executions.values()),
+                },
+            )
         if self.cfg.run_mode == "online_train":
             self._train_queue.put((self._episodes_completed, self._trajectory))
         logging.info(
@@ -222,6 +364,26 @@ class Pi05PolicyDSRLNode:
             "ack": True,
             "success": success,
             "path": str(path),
+            "chunk_trace_path": None if trace_path is None else str(trace_path),
+            "chunk_noise_viz_path": None if noise_viz_path is None else str(noise_viz_path),
+        }
+
+    def _discard_episode(self, message: dict[str, Any]) -> dict[str, Any]:
+        episode_id = message.get("episode_id", self._episode_id)
+        self._trajectory = None
+        self._episode_id = None
+        self._chunk_id = 0
+        if self.chunk_trace is not None:
+            self.chunk_trace.start_episode()
+        with self._model_lock:
+            self.adapter.reset()
+        logging.info("Discarded DSRL episode %s without saving or training", episode_id)
+        return {
+            "timestamp": time.time(),
+            "action": [],
+            "shape": [0, 8],
+            "ack": True,
+            "discarded": True,
         }
 
     def _trainer_loop(self) -> None:
@@ -235,6 +397,15 @@ class Pi05PolicyDSRLNode:
                 with self._model_lock:
                     metrics = self.policy_updater.update([trajectory])
                     self._maybe_save_checkpoint(episode)
+                if self.wandb_run is not None:
+                    scalar_metrics = {
+                        f"train/{key}": value
+                        for key, value in metrics.items()
+                        if isinstance(value, (int, float, np.number))
+                    }
+                    scalar_metrics["train/episode"] = episode
+                    scalar_metrics["train/update_step"] = self.policy_updater.update_step
+                    self.wandb_run.log(scalar_metrics)
                 logging.info("DSRL trainer update: %s", metrics)
             except Exception:
                 logging.exception("DSRL trainer failed for %s", trajectory.episode_name)
@@ -268,6 +439,8 @@ class Pi05PolicyDSRLNode:
                 try:
                     if message.get("dsrl_event") == "episode_end":
                         response = self._finish_episode(message)
+                    elif message.get("dsrl_event") == "episode_discard":
+                        response = self._discard_episode(message)
                     else:
                         response = self._infer(message)
                 except Exception as exc:
@@ -284,6 +457,8 @@ class Pi05PolicyDSRLNode:
         if self._trainer is not None:
             self._train_queue.put(None)
             self._trainer.join(timeout=30)
+        if self.wandb_run is not None:
+            self.wandb_run.finish()
         self._socket.close(0)
 
 
@@ -300,6 +475,15 @@ def _parse_args() -> DSRLNodeConfig:
     parser.add_argument("--rotation", choices=("auto", "quat", "rotvec", "euler"), default="quat")
     parser.add_argument("--delta", action="store_true")
     parser.add_argument("--streaming", action="store_true")
+    parser.add_argument("--chunk_trace_dir", type=Path, default=None)
+    parser.add_argument("--dsrl_chunk_noise_viz_dir", type=Path, default=None)
+    parser.add_argument("--wandb_project", default=None)
+    parser.add_argument("--wandb_entity", default=None)
+    parser.add_argument("--wandb_run_name", default=None)
+    parser.add_argument("--wandb_group", default=None)
+    parser.add_argument("--wandb_tags", nargs="*", default=None)
+    parser.add_argument("--wandb_mode", choices=("online", "offline", "disabled"), default="online")
+    parser.add_argument("--wandb_dir", type=Path, default=Path("/tmp/franka_dsrl_wandb"))
     parser.add_argument("--sac_gamma", type=float, default=0.99)
     parser.add_argument("--sac_tau", type=float, default=0.005)
     parser.add_argument("--sac_update_epochs", type=int, default=20)
@@ -352,6 +536,12 @@ def _parse_args() -> DSRLNodeConfig:
         save_checkpoint_dir=args.save_checkpoint_dir,
         save_every_episodes=args.save_every_episodes, checkpoint_mode=args.checkpoint_mode,
         rotation=args.rotation, use_delta_action=args.delta, streaming=args.streaming, sac=sac,
+        chunk_trace_dir=args.chunk_trace_dir,
+        chunk_noise_viz_dir=args.dsrl_chunk_noise_viz_dir,
+        wandb_project=args.wandb_project, wandb_entity=args.wandb_entity,
+        wandb_run_name=args.wandb_run_name, wandb_group=args.wandb_group,
+        wandb_tags=args.wandb_tags, wandb_mode=args.wandb_mode,
+        wandb_dir=args.wandb_dir,
     )
 
 

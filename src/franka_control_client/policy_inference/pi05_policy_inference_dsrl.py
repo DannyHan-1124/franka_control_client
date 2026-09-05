@@ -26,10 +26,12 @@ class Pi05DSRLPolicyInference(Pi05PolicyInference):
         if cfg.policy_transport != "zmq":
             raise ValueError("DSRL real-robot inference requires policy_transport='zmq'")
         self._dsrl_chunk_executions: List[int] = []
+        self._discard_without_submission = False
         super().__init__(data_collectors, control_pair, cfg)
 
     def _start_infering(self) -> None:
         self._dsrl_chunk_executions = []
+        self._discard_without_submission = False
         super()._start_infering()
 
     def _start_chunk_metric(self, **kwargs: Any) -> int:
@@ -46,6 +48,10 @@ class Pi05DSRLPolicyInference(Pi05PolicyInference):
     def _build_observation(self, policy_kwargs: Dict[str, Any] | None = None) -> Dict[str, Any]:
         observation = super()._build_observation(policy_kwargs)
         observation["dsrl_event"] = "observation"
+        # ChunkTraceRecorder uses this as the x-axis origin of the generated
+        # chunk.  Unlike the server-side chunk id, this is the real control
+        # step at which the observation was captured.
+        observation["index"] = int(self._metrics_actions_applied)
         return observation
 
     def _handle_keypress(self, key: str) -> None:
@@ -53,7 +59,12 @@ class Pi05DSRLPolicyInference(Pi05PolicyInference):
             if key == "s":
                 self._state_machine.trigger(PolicyInferenceEvent.SAVE)
                 return
-            if key in {"f", "d"}:
+            if key == "f":
+                self._discard_without_submission = False
+                self._state_machine.trigger(PolicyInferenceEvent.DISCARD)
+                return
+            if key == "d":
+                self._discard_without_submission = True
                 self._state_machine.trigger(PolicyInferenceEvent.DISCARD)
                 return
         super()._handle_keypress(key)
@@ -62,7 +73,8 @@ class Pi05DSRLPolicyInference(Pi05PolicyInference):
         super()._on_state_enter(state)
         if state == PolicyInferenceState.INFERING:
             self._ui_console.update_hint(
-                "DSRL inferencing... Press 's' for SUCCESS, 'f' for FAILURE, or 'q' to quit"
+                "DSRL inferencing... Press 's' for SUCCESS, 'f' for FAILURE, "
+                "'d' to DISCARD, or 'q' to quit"
             )
 
     def _submit_terminal_label(self, success: bool) -> None:
@@ -87,6 +99,17 @@ class Pi05DSRLPolicyInference(Pi05PolicyInference):
         self._submit_terminal_label(True)
 
     def _discard_infering(self) -> None:
-        # In DSRL, failure is training data rather than a discarded episode.
-        self._submit_terminal_label(False)
+        if not self._discard_without_submission:
+            # A failure is retained as training data.
+            self._submit_terminal_label(False)
+            return
 
+        self._stop_infering()
+        self.policy.send_observation(
+            {"dsrl_event": "episode_discard", "episode_id": self._episode_id}
+        )
+        response = self.policy.current_action
+        if response is None or not response.get("ack"):
+            raise RuntimeError("DSRL policy node did not acknowledge trajectory discard")
+        self._ui_console.log(f"Episode {self._episode_id} discarded without saving or training.")
+        self._discard_without_submission = False
