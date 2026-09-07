@@ -21,4 +21,4 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_dsrl_franka.py" \
     --static_camera static_cam \
     --wrist_camera wrist_cam \
     --call_vla_after_actions 10 \
-    --inference_latency 2
+    --inference_latency 3
