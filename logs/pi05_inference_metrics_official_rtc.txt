@@ -1194,7 +1194,7 @@ chunks:
       267       HAS       3          25       25        11        9           0.095    0.229       0.334
 
 === Pi0.5 inference episode: 2026-09-03 15:31:31 ===
-task: put red cube in bowl
+task: put red cube in bowl (fail)
 config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=25, execution_horizon=25, fps=30
 summary: total_time=4.812s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=138, empty_action_steps=7
 latency: avg_first_action=0.101s, p95_first_action=0.121s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.735s
@@ -1380,7 +1380,7 @@ chunks:
 
 --------------fast middle---------------
 === Pi0.5 inference episode: 2026-09-03 16:56:21 ===
-task: put red cube in bowl
+task: put red cube in bowl (fail)
 config: transport=zmq, schedule=const, prefix_mode=none, execution_horizon=40, fps=30
 summary: total_time=5.797s, inference_calls=4, completed_chunks=4, prefix_chunks=0, actions_applied=147, empty_action_steps=0
 latency: avg_inference=0.263s, avg_chunk_duration=1.161s
@@ -1392,7 +1392,7 @@ chunks:
         4     const       50        27        0.267       0.836
 
 === Pi0.5 inference episode: 2026-09-03 16:57:18 ===
-task: put red cube in bowl
+task: put red cube in bowl (fail)
 config: transport=zmq, schedule=const, prefix_mode=none, execution_horizon=40, fps=30
 summary: total_time=5.387s, inference_calls=4, completed_chunks=4, prefix_chunks=0, actions_applied=135, empty_action_steps=0
 latency: avg_inference=0.260s, avg_chunk_duration=1.061s
@@ -1404,7 +1404,7 @@ chunks:
         4     const       50        15        0.256       0.435
 
 === Pi0.5 inference episode: 2026-09-03 16:57:34 ===
-task: put red cube in bowl
+task: put red cube in bowl (fail)
 config: transport=zmq, schedule=const, prefix_mode=none, execution_horizon=40, fps=30
 summary: total_time=5.394s, inference_calls=4, completed_chunks=4, prefix_chunks=0, actions_applied=135, empty_action_steps=0
 latency: avg_inference=0.262s, avg_chunk_duration=1.061s
