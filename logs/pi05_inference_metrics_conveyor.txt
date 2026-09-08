@@ -1,0 +1,422 @@
+---------slow left--------------
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=7
+summary: total_time=5.751s, inference_calls=15, completed_chunks=15, actions_applied=166, empty_action_steps=0
+latency: avg_request=0.330s, avg_first_action=0.351s, avg_chunk_duration=0.360s, recommended_delay=11
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        18    None   None      0.264    0.265       0.535
+        2  rtc_async         50        12       7     11      0.342    0.363       0.367
+        3  rtc_async         50        12      11     11      0.333    0.363       0.367
+        4  rtc_async         50        12      11     11      0.333    0.363       0.367
+        5  rtc_async         50        11      11     11      0.342    0.363       0.335
+        6  rtc_async         50        12      11     10      0.331    0.331       0.367
+        7  rtc_async         50        12      11     11      0.333    0.363       0.367
+        8  rtc_async         50        11      11     11      0.336    0.363       0.335
+        9  rtc_async         50        12      11     10      0.330    0.330       0.367
+       10  rtc_async         50        12      11     11      0.330    0.363       0.367
+       11  rtc_async         50        12      11     11      0.339    0.363       0.367
+       12  rtc_async         50        12      11     11      0.335    0.363       0.367
+       13  rtc_async         50        12      11     11      0.335    0.363       0.367
+       14  rtc_async         50         6      11     11      0.334    0.363       0.167
+       15  rtc_async       None         0      11   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=7
+summary: total_time=5.909s, inference_calls=15, completed_chunks=15, actions_applied=171, empty_action_steps=0
+latency: avg_request=0.328s, avg_first_action=0.351s, avg_chunk_duration=0.372s, recommended_delay=11
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        18    None   None      0.258    0.259       0.535
+        2  rtc_async         50        12       7     11      0.340    0.363       0.367
+        3  rtc_async         50        12      11     11      0.332    0.363       0.367
+        4  rtc_async         50        12      11     11      0.331    0.363       0.367
+        5  rtc_async         50        12      11     11      0.330    0.363       0.367
+        6  rtc_async         50        11      11     11      0.330    0.363       0.334
+        7  rtc_async         50        11      11     10      0.329    0.330       0.334
+        8  rtc_async         50        12      11     10      0.329    0.330       0.367
+        9  rtc_async         50        12      11     11      0.335    0.363       0.367
+       10  rtc_async         50        12      11     11      0.333    0.363       0.367
+       11  rtc_async         50        12      11     11      0.334    0.363       0.367
+       12  rtc_async         50        12      11     11      0.334    0.363       0.367
+       13  rtc_async         50        12      11     11      0.336    0.363       0.367
+       14  rtc_async         50        11      11     11      0.335    0.363       0.334
+       15  rtc_async       None         0      11   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl (fail)
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=7
+summary: total_time=5.642s, inference_calls=15, completed_chunks=15, actions_applied=163, empty_action_steps=0
+latency: avg_request=0.324s, avg_first_action=0.329s, avg_chunk_duration=0.327s, recommended_delay=11
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.258    0.258       0.501
+        2  rtc_async         50        11       7     10      0.328    0.330       0.334
+        3  rtc_async         50        11      10     10      0.327    0.330       0.334
+        4  rtc_async         50        11      10     10      0.329    0.330       0.334
+        5  rtc_async         50        11      10     10      0.328    0.330       0.334
+        6  rtc_async         50        11      10     10      0.328    0.330       0.334
+        7  rtc_async         50        11      10     10      0.329    0.330       0.334
+        8  rtc_async         50        11      10     10      0.328    0.330       0.334
+        9  rtc_async         50        12      10     10      0.329    0.330       0.367
+       10  rtc_async         50        11      10     11      0.331    0.363       0.334
+       11  rtc_async         50        11      11     10      0.328    0.330       0.334
+       12  rtc_async         50        11      11     10      0.328    0.330       0.334
+       13  rtc_async         50        12      11     10      0.329    0.330       0.367
+       14  rtc_async         50        11      11     11      0.331    0.363       0.334
+       15  rtc_async         50         1      11     10      0.328    0.329       0.000
+
+-------------slow middle--------------
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=7
+summary: total_time=5.311s, inference_calls=14, completed_chunks=14, actions_applied=153, empty_action_steps=0
+latency: avg_request=0.324s, avg_first_action=0.335s, avg_chunk_duration=0.357s, recommended_delay=11
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        18    None   None      0.260    0.260       0.535
+        2  rtc_async         50        12       7     11      0.330    0.363       0.367
+        3  rtc_async         50        11      11     11      0.330    0.363       0.335
+        4  rtc_async         50        12      11     10      0.329    0.330       0.368
+        5  rtc_async         50        12      11     11      0.330    0.363       0.367
+        6  rtc_async         50        11      11     11      0.331    0.363       0.334
+        7  rtc_async         50        11      11     10      0.329    0.330       0.334
+        8  rtc_async         50        11      11     10      0.329    0.330       0.334
+        9  rtc_async         50        11      11     10      0.328    0.329       0.334
+       10  rtc_async         50        11      11     10      0.328    0.329       0.334
+       11  rtc_async         50        11      11     10      0.329    0.330       0.334
+       12  rtc_async         50        11      11     10      0.329    0.330       0.334
+       13  rtc_async         50        11      11     10      0.328    0.330       0.334
+       14  rtc_async       None         0      11   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=7
+summary: total_time=5.377s, inference_calls=12, completed_chunks=12, actions_applied=155, empty_action_steps=0
+latency: avg_request=0.347s, avg_first_action=0.371s, avg_chunk_duration=0.395s, recommended_delay=17
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        18    None   None      0.259    0.259       0.535
+        2  rtc_async         50        12       7     11      0.334    0.364       0.368
+        3  rtc_async         50        12      11     11      0.334    0.365       0.367
+        4  rtc_async         50        12      11     11      0.332    0.362       0.367
+        5  rtc_async         50        12      11     11      0.332    0.363       0.367
+        6  rtc_async         50        12      11     11      0.337    0.360       0.367
+        7  rtc_async         50        12      11     11      0.336    0.363       0.367
+        8  rtc_async         50        12      11     11      0.339    0.363       0.367
+        9  rtc_async         50        18      11     11      0.335    0.363       0.568
+       10  rtc_async         50        12      11     17      0.549    0.563       0.367
+       11  rtc_async         50        17      17     11      0.335    0.363       0.534
+       12  rtc_async         50         6      17     11      0.335    0.363       0.167
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=7
+summary: total_time=5.510s, inference_calls=15, completed_chunks=15, actions_applied=159, empty_action_steps=0
+latency: avg_request=0.325s, avg_first_action=0.336s, avg_chunk_duration=0.344s, recommended_delay=11
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        18    None   None      0.258    0.258       0.535
+        2  rtc_async         50        12       7     11      0.335    0.363       0.367
+        3  rtc_async         50        11      11     11      0.331    0.362       0.334
+        4  rtc_async         50        12      11     10      0.328    0.329       0.367
+        5  rtc_async         50        12      11     11      0.333    0.363       0.367
+        6  rtc_async         50        12      11     11      0.330    0.362       0.368
+        7  rtc_async         50        11      11     11      0.341    0.363       0.334
+        8  rtc_async         50        11      11     10      0.329    0.330       0.334
+        9  rtc_async         50        11      11     10      0.329    0.330       0.334
+       10  rtc_async         50        11      11     10      0.329    0.330       0.334
+       11  rtc_async         50        11      11     10      0.328    0.329       0.334
+       12  rtc_async         50        11      11     10      0.328    0.329       0.334
+       13  rtc_async         50        11      11     10      0.327    0.329       0.334
+       14  rtc_async         50         5      11     10      0.326    0.329       0.134
+       15  rtc_async       None         0      11   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=7
+summary: total_time=5.141s, inference_calls=13, completed_chunks=13, actions_applied=148, empty_action_steps=0
+latency: avg_request=0.327s, avg_first_action=0.354s, avg_chunk_duration=0.376s, recommended_delay=11
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        18    None   None      0.258    0.258       0.534
+        2  rtc_async         50        12       7     11      0.338    0.363       0.367
+        3  rtc_async         50        12      11     11      0.330    0.363       0.367
+        4  rtc_async         50        12      11     11      0.332    0.363       0.367
+        5  rtc_async         50        12      11     11      0.330    0.363       0.367
+        6  rtc_async         50        12      11     11      0.331    0.363       0.367
+        7  rtc_async         50        12      11     11      0.331    0.363       0.367
+        8  rtc_async         50        12      11     11      0.333    0.363       0.367
+        9  rtc_async         50        12      11     11      0.334    0.363       0.367
+       10  rtc_async         50        12      11     11      0.334    0.363       0.367
+       11  rtc_async         50        12      11     11      0.334    0.363       0.367
+       12  rtc_async         50        10      11     11      0.335    0.363       0.301
+       13  rtc_async       None         0      11   None        n/a      n/a         n/a
+
+----------slow right-----------
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=7
+summary: total_time=5.252s, inference_calls=14, completed_chunks=14, actions_applied=151, empty_action_steps=0
+latency: avg_request=0.327s, avg_first_action=0.353s, avg_chunk_duration=0.352s, recommended_delay=11
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        18    None   None      0.263    0.263       0.535
+        2  rtc_async         50        12       7     11      0.339    0.363       0.367
+        3  rtc_async         50        12      11     11      0.330    0.363       0.367
+        4  rtc_async         50        12      11     11      0.331    0.363       0.367
+        5  rtc_async         50        12      11     11      0.331    0.363       0.367
+        6  rtc_async         50        11      11     11      0.331    0.363       0.334
+        7  rtc_async         50        12      11     10      0.328    0.330       0.367
+        8  rtc_async         50        12      11     11      0.334    0.363       0.367
+        9  rtc_async         50        12      11     11      0.331    0.363       0.367
+       10  rtc_async         50        12      11     11      0.332    0.363       0.367
+       11  rtc_async         50        12      11     11      0.333    0.363       0.367
+       12  rtc_async         50        12      11     11      0.333    0.363       0.367
+       13  rtc_async         50         2      11     11      0.334    0.363       0.039
+       14  rtc_async       None         0      11   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=7
+summary: total_time=5.011s, inference_calls=13, completed_chunks=13, actions_applied=144, empty_action_steps=0
+latency: avg_request=0.324s, avg_first_action=0.337s, avg_chunk_duration=0.334s, recommended_delay=11
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        18    None   None      0.260    0.260       0.535
+        2  rtc_async         50        12       7     11      0.332    0.363       0.367
+        3  rtc_async         50        11      11     11      0.330    0.362       0.334
+        4  rtc_async         50        11      11     10      0.329    0.329       0.334
+        5  rtc_async         50        12      11     10      0.327    0.329       0.367
+        6  rtc_async         50        12      11     11      0.331    0.363       0.367
+        7  rtc_async         50        12      11     11      0.330    0.363       0.367
+        8  rtc_async         50        11      11     11      0.330    0.362       0.335
+        9  rtc_async         50        11      11     10      0.328    0.330       0.334
+       10  rtc_async         50        11      11     10      0.329    0.330       0.334
+       11  rtc_async         50        11      11     10      0.328    0.329       0.334
+       12  rtc_async         50        11      11     10      0.328    0.329       0.334
+       13  rtc_async         50         1      11     10      0.329    0.330       0.000
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=7
+summary: total_time=4.440s, inference_calls=12, completed_chunks=12, actions_applied=127, empty_action_steps=0
+latency: avg_request=0.323s, avg_first_action=0.335s, avg_chunk_duration=0.349s, recommended_delay=11
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        18    None   None      0.259    0.259       0.535
+        2  rtc_async         50        11       7     11      0.329    0.363       0.334
+        3  rtc_async         50        11      11     10      0.328    0.330       0.334
+        4  rtc_async         50        11      11     10      0.329    0.330       0.334
+        5  rtc_async         50        11      11     10      0.329    0.330       0.334
+        6  rtc_async         50        12      11     10      0.330    0.330       0.367
+        7  rtc_async         50        12      11     11      0.330    0.363       0.367
+        8  rtc_async         50        11      11     11      0.330    0.363       0.334
+        9  rtc_async         50        11      11     10      0.329    0.330       0.334
+       10  rtc_async         50        12      11     10      0.327    0.330       0.367
+       11  rtc_async         50         7      11     11      0.329    0.363       0.200
+       12  rtc_async       None         0      11   None        n/a      n/a         n/a
+
+----------fast left---------
+Pi0.5 inference metrics
+task: put red cube in bowl (fail)
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=7
+summary: total_time=3.507s, inference_calls=10, completed_chunks=10, actions_applied=99, empty_action_steps=0
+latency: avg_request=0.321s, avg_first_action=0.322s, avg_chunk_duration=0.330s, recommended_delay=10
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.261    0.261       0.501
+        2  rtc_async         50        11       7     10      0.329    0.330       0.334
+        3  rtc_async         50        11      10     10      0.327    0.328       0.334
+        4  rtc_async         50        11      10     10      0.328    0.330       0.334
+        5  rtc_async         50        11      10     10      0.328    0.330       0.334
+        6  rtc_async         50        11      10     10      0.329    0.329       0.334
+        7  rtc_async         50        11      10     10      0.328    0.330       0.334
+        8  rtc_async         50        11      10     10      0.328    0.329       0.334
+        9  rtc_async         50         5      10     10      0.328    0.329       0.134
+       10  rtc_async       None         0      10   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl (fail)
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=7
+summary: total_time=5.580s, inference_calls=15, completed_chunks=15, actions_applied=161, empty_action_steps=0
+latency: avg_request=0.325s, avg_first_action=0.344s, avg_chunk_duration=0.348s, recommended_delay=11
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        18    None   None      0.260    0.260       0.535
+        2  rtc_async         50        12       7     11      0.332    0.363       0.367
+        3  rtc_async         50        11      11     11      0.331    0.363       0.335
+        4  rtc_async         50        11      11     10      0.328    0.330       0.335
+        5  rtc_async         50        12      11     10      0.328    0.330       0.367
+        6  rtc_async         50        11      11     11      0.331    0.363       0.335
+        7  rtc_async         50        11      11     10      0.328    0.331       0.334
+        8  rtc_async         50        11      11     10      0.327    0.329       0.334
+        9  rtc_async         50        12      11     10      0.329    0.329       0.367
+       10  rtc_async         50        12      11     11      0.332    0.363       0.367
+       11  rtc_async         50        12      11     11      0.332    0.363       0.367
+       12  rtc_async         50        12      11     11      0.331    0.363       0.367
+       13  rtc_async         50        12      11     11      0.331    0.363       0.367
+       14  rtc_async         50         4      11     11      0.330    0.363       0.100
+       15  rtc_async       None         0      11   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl (fail)
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=7
+summary: total_time=5.197s, inference_calls=13, completed_chunks=13, actions_applied=149, empty_action_steps=0
+latency: avg_request=0.342s, avg_first_action=0.356s, avg_chunk_duration=0.379s, recommended_delay=11
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        18    None   None      0.279    0.279       0.535
+        2  rtc_async         50        12       7     11      0.359    0.363       0.367
+        3  rtc_async         50        12      11     11      0.336    0.363       0.368
+        4  rtc_async         50        12      11     11      0.336    0.363       0.368
+        5  rtc_async         50        12      11     11      0.346    0.364       0.367
+        6  rtc_async         50        12      11     11      0.360    0.363       0.368
+        7  rtc_async         50        12      11     11      0.344    0.363       0.367
+        8  rtc_async         50        12      11     11      0.347    0.363       0.367
+        9  rtc_async         50        12      11     11      0.347    0.363       0.367
+       10  rtc_async         50        12      11     11      0.353    0.363       0.367
+       11  rtc_async         50        12      11     11      0.338    0.363       0.367
+       12  rtc_async         50        11      11     11      0.360    0.363       0.334
+       13  rtc_async       None         0      11   None        n/a      n/a         n/a
+
+-----------fast middle------------
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=7
+summary: total_time=4.745s, inference_calls=12, completed_chunks=12, actions_applied=136, empty_action_steps=0
+latency: avg_request=0.330s, avg_first_action=0.354s, avg_chunk_duration=0.376s, recommended_delay=11
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        18    None   None      0.262    0.262       0.535
+        2  rtc_async         50        12       7     11      0.339    0.364       0.367
+        3  rtc_async         50        12      11     11      0.336    0.363       0.367
+        4  rtc_async         50        12      11     11      0.337    0.363       0.367
+        5  rtc_async         50        12      11     11      0.330    0.363       0.367
+        6  rtc_async         50        12      11     11      0.337    0.363       0.367
+        7  rtc_async         50        12      11     11      0.339    0.363       0.367
+        8  rtc_async         50        12      11     11      0.339    0.363       0.367
+        9  rtc_async         50        12      11     11      0.338    0.363       0.367
+       10  rtc_async         50        12      11     11      0.337    0.363       0.368
+       11  rtc_async         50        10      11     11      0.342    0.361       0.301
+       12  rtc_async       None         0      11   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=7
+summary: total_time=4.875s, inference_calls=13, completed_chunks=13, actions_applied=140, empty_action_steps=0
+latency: avg_request=0.324s, avg_first_action=0.340s, avg_chunk_duration=0.353s, recommended_delay=11
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        18    None   None      0.259    0.259       0.535
+        2  rtc_async         50        12       7     11      0.335    0.363       0.367
+        3  rtc_async         50        12      11     11      0.334    0.363       0.367
+        4  rtc_async         50        11      11     11      0.330    0.363       0.334
+        5  rtc_async         50        11      11     10      0.328    0.330       0.334
+        6  rtc_async         50        11      11     10      0.328    0.329       0.334
+        7  rtc_async         50        11      11     10      0.328    0.329       0.334
+        8  rtc_async         50        12      11     10      0.327    0.329       0.367
+        9  rtc_async         50        12      11     11      0.331    0.363       0.367
+       10  rtc_async         50        11      11     11      0.333    0.363       0.334
+       11  rtc_async         50        12      11     10      0.328    0.329       0.367
+       12  rtc_async         50         7      11     11      0.332    0.362       0.200
+       13  rtc_async       None         0      11   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=7
+summary: total_time=4.715s, inference_calls=12, completed_chunks=12, actions_applied=135, empty_action_steps=0
+latency: avg_request=0.332s, avg_first_action=0.354s, avg_chunk_duration=0.373s, recommended_delay=11
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        18    None   None      0.267    0.268       0.535
+        2  rtc_async         50        12       7     11      0.357    0.363       0.367
+        3  rtc_async         50        12      11     11      0.350    0.362       0.367
+        4  rtc_async         50        12      11     11      0.340    0.363       0.367
+        5  rtc_async         50        12      11     11      0.335    0.363       0.367
+        6  rtc_async         50        12      11     11      0.336    0.362       0.367
+        7  rtc_async         50        12      11     11      0.330    0.362       0.367
+        8  rtc_async         50        12      11     11      0.334    0.363       0.367
+        9  rtc_async         50        12      11     11      0.330    0.363       0.367
+       10  rtc_async         50        12      11     11      0.338    0.363       0.367
+       11  rtc_async         50         9      11     11      0.337    0.363       0.267
+       12  rtc_async       None         0      11   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl (fail)
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=7
+summary: total_time=4.847s, inference_calls=13, completed_chunks=13, actions_applied=139, empty_action_steps=0
+latency: avg_request=0.332s, avg_first_action=0.351s, avg_chunk_duration=0.351s, recommended_delay=11
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        18    None   None      0.259    0.259       0.535
+        2  rtc_async         50        11       7     11      0.333    0.363       0.334
+        3  rtc_async         50        12      11     10      0.329    0.329       0.367
+        4  rtc_async         50        12      11     11      0.332    0.363       0.367
+        5  rtc_async         50        12      11     11      0.330    0.363       0.367
+        6  rtc_async         50        12      11     11      0.332    0.363       0.367
+        7  rtc_async         50        12      11     11      0.341    0.363       0.367
+        8  rtc_async         50        12      11     11      0.341    0.363       0.368
+        9  rtc_async         50        12      11     11      0.341    0.363       0.367
+       10  rtc_async         50        12      11     11      0.345    0.362       0.367
+       11  rtc_async         50        12      11     11      0.350    0.363       0.368
+       12  rtc_async         50         2      11     11      0.351    0.363       0.038
+       13  rtc_async       None         0      11   None        n/a      n/a         n/a
+ 
+ ---------fast right-----------
+ Pi0.5 inference metrics
+task: put red cube in bowl (fail)
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=7
+summary: total_time=3.407s, inference_calls=9, completed_chunks=9, actions_applied=96, empty_action_steps=0
+latency: avg_request=0.323s, avg_first_action=0.338s, avg_chunk_duration=0.363s, recommended_delay=11
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        18    None   None      0.261    0.261       0.535
+        2  rtc_async         50        11       7     11      0.333    0.362       0.334
+        3  rtc_async         50        11      11     10      0.329    0.330       0.334
+        4  rtc_async         50        11      11     10      0.328    0.330       0.334
+        5  rtc_async         50        12      11     10      0.328    0.330       0.367
+        6  rtc_async         50        12      11     11      0.331    0.363       0.367
+        7  rtc_async         50        12      11     11      0.334    0.363       0.367
+        8  rtc_async         50         9      11     11      0.344    0.363       0.267
+        9  rtc_async       None         0      11   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl (fail)
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=7
+summary: total_time=3.136s, inference_calls=9, completed_chunks=9, actions_applied=88, empty_action_steps=0
+latency: avg_request=0.321s, avg_first_action=0.325s, avg_chunk_duration=0.330s, recommended_delay=11
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        18    None   None      0.258    0.258       0.535
+        2  rtc_async         50        11       7     11      0.338    0.363       0.334
+        3  rtc_async         50        11      11     10      0.329    0.330       0.334
+        4  rtc_async         50        11      11     10      0.328    0.330       0.334
+        5  rtc_async         50        11      11     10      0.328    0.330       0.334
+        6  rtc_async         50        11      11     10      0.328    0.330       0.334
+        7  rtc_async         50        11      11     10      0.329    0.329       0.334
+        8  rtc_async         50         4      11     10      0.327    0.330       0.100
+        9  rtc_async       None         0      11   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl (fail)
+config: rtc_enabled=True, rtc_execution_horizon=5, rtc_delay_steps=7
+summary: total_time=4.942s, inference_calls=13, completed_chunks=13, actions_applied=142, empty_action_steps=0
+latency: avg_request=0.325s, avg_first_action=0.346s, avg_chunk_duration=0.359s, recommended_delay=11
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        18    None   None      0.260    0.261       0.535
+        2  rtc_async         50        11       7     11      0.330    0.363       0.334
+        3  rtc_async         50        11      11     10      0.329    0.330       0.334
+        4  rtc_async         50        12      11     10      0.329    0.330       0.367
+        5  rtc_async         50        12      11     11      0.330    0.363       0.367
+        6  rtc_async         50        11      11     11      0.332    0.363       0.334
+        7  rtc_async         50        12      11     10      0.327    0.330       0.367
+        8  rtc_async         50        12      11     11      0.331    0.363       0.367
+        9  rtc_async         50        12      11     11      0.331    0.363       0.367
+       10  rtc_async         50        12      11     11      0.332    0.363       0.367
+       11  rtc_async         50        12      11     11      0.334    0.363       0.367
+       12  rtc_async         50         7      11     11      0.335    0.363       0.200
+       13  rtc_async       None         0      11   None        n/a      n/a         n/a

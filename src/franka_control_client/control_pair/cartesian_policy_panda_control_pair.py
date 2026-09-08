@@ -22,7 +22,7 @@ DEFAULT_POSITION3 = [-0.0776, 0.5898, 0.0743, -1.7098, -0.0104, 2.6200, -1.4712]
 # moving cup starting position
 DEFAULT_POSITION4 = (0.0, -0.4603, 0.0131, -2.9605, -0.0014, 2.5054, 0.0235)
 
-MAX_POSITION_COMMAND_STEP_M: float = 0.01
+MAX_POSITION_COMMAND_STEP_M: float = 0.02
 
 
 class CartesianPolicyPandaRobotiqControlPair(ControlPair):
