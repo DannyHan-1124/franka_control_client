@@ -1,0 +1,11 @@
+FASTER, s = 5, d = 3
+1. success
+2. success
+3. failure
+4. success
+5. failure
+6. success
+7. success
+8. success
+9. failure
+10. success
