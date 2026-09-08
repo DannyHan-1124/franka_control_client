@@ -1,0 +1,301 @@
+-------------slow left----------------
+=== Pi0.5 inference episode: 2026-09-08 19:03:15 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=10, fps=30
+summary: total_time=5.212s, inference_calls=9, observations_published=9, completed_chunks=9, prefix_chunks=0, actions_applied=149, empty_action_steps=8, stale_actions_dropped=72, actions_overwritten=192
+latency: avg_first_action=0.263s, avg_final=0.263s, avg_chunk_duration=0.519s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       21     const       0       50        18        2           0.263    0.263       0.568
+       22     const       0       50        18        2           0.263    0.263       0.568
+       23     const       0       50        18        2           0.263    0.263       0.568
+       24     const       0       50        18        2           0.263    0.263       0.568
+       25     const       0       50        18        2           0.263    0.263       0.568
+       26     const       0       50        18        2           0.262    0.263       0.568
+       27     const       0       50        18        2           0.263    0.263       0.568
+       28     const       0       50        18        2           0.263    0.263       0.568
+       29     const       0       50         5        2           0.263    0.263       0.133
+
+=== Pi0.5 inference episode: 2026-09-08 19:03:31 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=10, fps=30
+summary: total_time=5.418s, inference_calls=9, observations_published=10, completed_chunks=9, prefix_chunks=0, actions_applied=155, empty_action_steps=8, stale_actions_dropped=72, actions_overwritten=192
+latency: avg_first_action=0.263s, avg_final=0.263s, avg_chunk_duration=0.542s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       30     const       0       50        18        2           0.263    0.263       0.568
+       31     const       0       50        18        2           0.263    0.263       0.568
+       32     const       0       50        18        2           0.263    0.263       0.568
+       33     const       0       50        18        2           0.263    0.263       0.568
+       34     const       0       50        18        2           0.264    0.264       0.568
+       35     const       0       50        18        2           0.263    0.263       0.568
+       36     const       0       50        18        2           0.263    0.263       0.568
+       37     const       0       50        18        2           0.263    0.263       0.568
+       38     const       0       50        11        2           0.263    0.263       0.338
+
+=== Pi0.5 inference episode: 2026-09-08 19:03:49 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=10, fps=30
+summary: total_time=5.279s, inference_calls=9, observations_published=9, completed_chunks=9, prefix_chunks=0, actions_applied=151, empty_action_steps=8, stale_actions_dropped=72, actions_overwritten=192
+latency: avg_first_action=0.263s, avg_final=0.263s, avg_chunk_duration=0.527s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       40     const       0       50        18        2           0.263    0.263       0.568
+       41     const       0       50        18        2           0.262    0.263       0.568
+       42     const       0       50        18        2           0.263    0.263       0.568
+       43     const       0       50        18        2           0.263    0.263       0.568
+       44     const       0       50        18        2           0.263    0.263       0.568
+       45     const       0       50        18        2           0.263    0.263       0.568
+       46     const       0       50        18        2           0.262    0.263       0.568
+       47     const       0       50        18        2           0.263    0.263       0.568
+       48     const       0       50         7        2           0.263    0.263       0.200
+
+------------slow middle-----------------
+=== Pi0.5 inference episode: 2026-09-08 19:04:07 ===
+task: put red cube in bowl (fail)
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=10, fps=30
+summary: total_time=3.107s, inference_calls=5, observations_published=6, completed_chunks=5, prefix_chunks=0, actions_applied=86, empty_action_steps=8, stale_actions_dropped=40, actions_overwritten=96
+latency: avg_first_action=0.263s, avg_final=0.263s, avg_chunk_duration=0.541s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       49     const       0       50        18        2           0.263    0.263       0.568
+       50     const       0       50        18        2           0.263    0.263       0.568
+       51     const       0       50        18        2           0.263    0.263       0.568
+       52     const       0       50        18        2           0.263    0.263       0.568
+       53     const       0       50        14        2           0.263    0.263       0.434
+
+=== Pi0.5 inference episode: 2026-09-08 19:04:28 ===
+task: put red cube in bowl (fail)
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=10, fps=30
+summary: total_time=3.274s, inference_calls=6, observations_published=6, completed_chunks=6, prefix_chunks=0, actions_applied=91, empty_action_steps=8, stale_actions_dropped=48, actions_overwritten=120
+latency: avg_first_action=0.263s, avg_final=0.263s, avg_chunk_duration=0.473s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       55     const       0       50        18        2           0.263    0.263       0.568
+       56     const       0       50        18        2           0.263    0.263       0.568
+       57     const       0       50        18        2           0.261    0.261       0.568
+       58     const       0       50        18        2           0.263    0.263       0.568
+       59     const       0       50        18        2           0.263    0.263       0.568
+       60     const       0       50         1        2           0.263    0.263       0.000
+
+=== Pi0.5 inference episode: 2026-09-08 19:05:20 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=10, fps=30
+summary: total_time=4.711s, inference_calls=8, observations_published=8, completed_chunks=8, prefix_chunks=0, actions_applied=134, empty_action_steps=8, stale_actions_dropped=64, actions_overwritten=168
+latency: avg_first_action=0.263s, avg_final=0.263s, avg_chunk_duration=0.526s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       61     const       0       50        18        2           0.263    0.263       0.568
+       62     const       0       50        18        2           0.263    0.263       0.568
+       63     const       0       50        18        2           0.263    0.263       0.568
+       64     const       0       50        18        2           0.263    0.263       0.568
+       65     const       0       50        18        2           0.263    0.263       0.568
+       66     const       0       50        18        2           0.262    0.262       0.568
+       67     const       0       50        18        2           0.262    0.263       0.568
+       68     const       0       50         8        2           0.263    0.263       0.234
+
+=== Pi0.5 inference episode: 2026-09-08 19:05:38 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=10, fps=30
+summary: total_time=4.945s, inference_calls=8, observations_published=9, completed_chunks=8, prefix_chunks=0, actions_applied=141, empty_action_steps=8, stale_actions_dropped=64, actions_overwritten=168
+latency: avg_first_action=0.263s, avg_final=0.263s, avg_chunk_duration=0.555s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       69     const       0       50        18        2           0.263    0.263       0.568
+       70     const       0       50        18        2           0.263    0.263       0.568
+       71     const       0       50        18        2           0.263    0.263       0.568
+       72     const       0       50        18        2           0.263    0.263       0.568
+       73     const       0       50        18        2           0.263    0.263       0.568
+       74     const       0       50        18        2           0.263    0.263       0.568
+       75     const       0       50        18        2           0.263    0.263       0.568
+       76     const       0       50        15        2           0.263    0.263       0.467
+
+-----------slow right
+=== Pi0.5 inference episode: 2026-09-08 19:07:39 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=10, fps=30
+summary: total_time=4.712s, inference_calls=8, observations_published=8, completed_chunks=8, prefix_chunks=0, actions_applied=134, empty_action_steps=8, stale_actions_dropped=64, actions_overwritten=168
+latency: avg_first_action=0.262s, avg_final=0.263s, avg_chunk_duration=0.526s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       85     const       0       50        18        2           0.263    0.263       0.568
+       86     const       0       50        18        2           0.262    0.262       0.568
+       87     const       0       50        18        2           0.262    0.262       0.568
+       88     const       0       50        18        2           0.262    0.263       0.568
+       89     const       0       50        18        2           0.262    0.263       0.568
+       90     const       0       50        18        2           0.262    0.262       0.568
+       91     const       0       50        18        2           0.263    0.263       0.568
+       92     const       0       50         8        2           0.262    0.263       0.234
+
+=== Pi0.5 inference episode: 2026-09-08 19:07:54 ===
+task: put red cube in bowl (fail)
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=10, fps=30
+summary: total_time=2.907s, inference_calls=5, observations_published=5, completed_chunks=5, prefix_chunks=0, actions_applied=79, empty_action_steps=8, stale_actions_dropped=40, actions_overwritten=96
+latency: avg_first_action=0.263s, avg_final=0.263s, avg_chunk_duration=0.494s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       93     const       0       50        18        2           0.263    0.263       0.568
+       94     const       0       50        18        2           0.263    0.263       0.568
+       95     const       0       50        18        2           0.263    0.263       0.568
+       96     const       0       50        18        2           0.263    0.263       0.568
+       97     const       0       50         7        2           0.263    0.263       0.200
+
+=== Pi0.5 inference episode: 2026-09-08 19:08:15 ===
+task: put red cube in bowl (fail)
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=10, fps=30
+summary: total_time=3.341s, inference_calls=6, observations_published=6, completed_chunks=6, prefix_chunks=0, actions_applied=92, empty_action_steps=8, stale_actions_dropped=48, actions_overwritten=120
+latency: avg_first_action=0.263s, avg_final=0.263s, avg_chunk_duration=0.479s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       98     const       0       50        18        2           0.263    0.263       0.568
+       99     const       0       50        18        2           0.262    0.263       0.568
+      100     const       0       50        18        2           0.263    0.263       0.568
+      101     const       0       50        18        2           0.263    0.263       0.568
+      102     const       0       50        18        2           0.263    0.263       0.568
+      103     const       0       50         2        2           0.263    0.263       0.033
+
+------------fast left----------------
+=== Pi0.5 inference episode: 2026-09-08 19:17:02 ===
+task: put red cube in bowl (fail)
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=10, fps=30
+summary: total_time=3.275s, inference_calls=6, observations_published=6, completed_chunks=6, prefix_chunks=0, actions_applied=91, empty_action_steps=8, stale_actions_dropped=48, actions_overwritten=120
+latency: avg_first_action=0.262s, avg_final=0.263s, avg_chunk_duration=0.473s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       36     const       0       50        18        2           0.262    0.263       0.568
+       37     const       0       50        18        2           0.263    0.263       0.568
+       38     const       0       50        18        2           0.262    0.262       0.568
+       39     const       0       50        18        2           0.262    0.263       0.568
+       40     const       0       50        18        2           0.262    0.262       0.568
+       41     const       0       50         1        2           0.262    0.263       0.000
+
+=== Pi0.5 inference episode: 2026-09-08 19:17:39 ===
+task: put red cube in bowl (fail)
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=10, fps=30
+summary: total_time=3.576s, inference_calls=6, observations_published=6, completed_chunks=6, prefix_chunks=0, actions_applied=99, empty_action_steps=8, stale_actions_dropped=48, actions_overwritten=120
+latency: avg_first_action=0.263s, avg_final=0.263s, avg_chunk_duration=0.518s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       42     const       0       50        18        2           0.263    0.263       0.568
+       43     const       0       50        18        2           0.262    0.263       0.568
+       44     const       0       50        18        2           0.263    0.263       0.568
+       45     const       0       50        18        2           0.263    0.263       0.568
+       46     const       0       50        18        2           0.263    0.263       0.568
+       47     const       0       50         9        2           0.263    0.263       0.267
+
+=== Pi0.5 inference episode: 2026-09-08 19:18:01 ===
+task: put red cube in bowl (fail)
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=10, fps=30
+summary: total_time=3.875s, inference_calls=6, observations_published=7, completed_chunks=6, prefix_chunks=0, actions_applied=108, empty_action_steps=8, stale_actions_dropped=48, actions_overwritten=120
+latency: avg_first_action=0.263s, avg_final=0.263s, avg_chunk_duration=0.568s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       48     const       0       50        18        2           0.263    0.263       0.568
+       49     const       0       50        18        2           0.263    0.263       0.568
+       50     const       0       50        18        2           0.263    0.263       0.568
+       51     const       0       50        18        2           0.263    0.263       0.568
+       52     const       0       50        18        2           0.263    0.263       0.568
+       53     const       0       50        18        2           0.263    0.263       0.568
+
+-----------fast middle--------------
+=== Pi0.5 inference episode: 2026-09-08 19:18:19 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=10, fps=30
+summary: total_time=4.578s, inference_calls=8, observations_published=8, completed_chunks=8, prefix_chunks=0, actions_applied=130, empty_action_steps=8, stale_actions_dropped=64, actions_overwritten=168
+latency: avg_first_action=0.262s, avg_final=0.262s, avg_chunk_duration=0.509s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       55     const       0       50        18        2           0.261    0.261       0.568
+       56     const       0       50        18        2           0.262    0.262       0.568
+       57     const       0       50        18        2           0.263    0.263       0.568
+       58     const       0       50        18        2           0.262    0.262       0.568
+       59     const       0       50        18        2           0.262    0.262       0.568
+       60     const       0       50        18        2           0.262    0.263       0.568
+       61     const       0       50        18        2           0.262    0.263       0.568
+       62     const       0       50         4        2           0.263    0.263       0.100
+
+=== Pi0.5 inference episode: 2026-09-08 19:18:32 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=10, fps=30
+summary: total_time=4.577s, inference_calls=8, observations_published=8, completed_chunks=8, prefix_chunks=0, actions_applied=130, empty_action_steps=8, stale_actions_dropped=64, actions_overwritten=168
+latency: avg_first_action=0.262s, avg_final=0.262s, avg_chunk_duration=0.509s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       63     const       0       50        18        2           0.263    0.263       0.568
+       64     const       0       50        18        2           0.263    0.263       0.568
+       65     const       0       50        18        2           0.262    0.263       0.568
+       66     const       0       50        18        2           0.262    0.262       0.568
+       67     const       0       50        18        2           0.261    0.261       0.568
+       68     const       0       50        18        2           0.263    0.263       0.568
+       69     const       0       50        18        2           0.262    0.262       0.568
+       70     const       0       50         4        2           0.263    0.263       0.100
+
+=== Pi0.5 inference episode: 2026-09-08 19:18:45 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=10, fps=30
+summary: total_time=4.611s, inference_calls=8, observations_published=8, completed_chunks=8, prefix_chunks=0, actions_applied=131, empty_action_steps=8, stale_actions_dropped=64, actions_overwritten=168
+latency: avg_first_action=0.263s, avg_final=0.263s, avg_chunk_duration=0.513s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       71     const       0       50        18        2           0.262    0.263       0.568
+       72     const       0       50        18        2           0.262    0.262       0.568
+       73     const       0       50        18        2           0.263    0.263       0.568
+       74     const       0       50        18        2           0.263    0.263       0.568
+       75     const       0       50        18        2           0.263    0.263       0.568
+       76     const       0       50        18        2           0.262    0.262       0.568
+       77     const       0       50        18        2           0.263    0.263       0.568
+       78     const       0       50         5        2           0.262    0.262       0.133
+
+=== Pi0.5 inference episode: 2026-09-08 19:18:59 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=10, fps=30
+summary: total_time=4.545s, inference_calls=7, observations_published=8, completed_chunks=7, prefix_chunks=0, actions_applied=129, empty_action_steps=8, stale_actions_dropped=56, actions_overwritten=144
+latency: avg_first_action=0.263s, avg_final=0.263s, avg_chunk_duration=0.582s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       79     const       0       50        18        2           0.263    0.263       0.568
+       80     const       0       50        18        2           0.263    0.263       0.568
+       81     const       0       50        18        2           0.263    0.263       0.568
+       82     const       0       50        18        2           0.263    0.263       0.568
+       83     const       0       50        18        2           0.263    0.263       0.568
+       84     const       0       50        18        2           0.262    0.262       0.568
+       85     const       0       50        21        2           0.263    0.263       0.668
+
+------------fast right----------
+=== Pi0.5 inference episode: 2026-09-08 19:19:22 ===
+task: put red cube in bowl (fail)
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=10, fps=30
+summary: total_time=3.007s, inference_calls=5, observations_published=5, completed_chunks=5, prefix_chunks=0, actions_applied=82, empty_action_steps=8, stale_actions_dropped=40, actions_overwritten=96
+latency: avg_first_action=0.263s, avg_final=0.263s, avg_chunk_duration=0.514s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       87     const       0       50        18        2           0.263    0.263       0.568
+       88     const       0       50        18        2           0.262    0.263       0.568
+       89     const       0       50        18        2           0.263    0.263       0.568
+       90     const       0       50        18        2           0.262    0.263       0.568
+       91     const       0       50        10        2           0.263    0.263       0.300
+
+=== Pi0.5 inference episode: 2026-09-08 19:19:40 ===
+task: put red cube in bowl (fail)
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=10, fps=30
+summary: total_time=2.673s, inference_calls=5, observations_published=5, completed_chunks=5, prefix_chunks=0, actions_applied=73, empty_action_steps=8, stale_actions_dropped=40, actions_overwritten=96
+latency: avg_first_action=0.263s, avg_final=0.263s, avg_chunk_duration=0.454s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       92     const       0       50        18        2           0.263    0.263       0.568
+       93     const       0       50        18        2           0.263    0.263       0.568
+       94     const       0       50        18        2           0.263    0.263       0.568
+       95     const       0       50        18        2           0.263    0.263       0.568
+       96     const       0       50         1        2           0.263    0.263       0.000
+
+=== Pi0.5 inference episode: 2026-09-08 19:20:02 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=10, fps=30
+summary: total_time=2.372s, inference_calls=4, observations_published=4, completed_chunks=4, prefix_chunks=0, actions_applied=63, empty_action_steps=8, stale_actions_dropped=32, actions_overwritten=72
+latency: avg_first_action=0.263s, avg_final=0.263s, avg_chunk_duration=0.493s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       97     const       0       50        18        2           0.262    0.262       0.568
+       98     const       0       50        18        2           0.263    0.263       0.568
+       99     const       0       50        18        2           0.263    0.263       0.568
+      100     const       0       50         9        2           0.263    0.263       0.267
