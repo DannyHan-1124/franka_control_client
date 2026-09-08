@@ -1,0 +1,11 @@
+DynamicVLA, W = 10
+1. success
+2. failure
+3. success
+4. success
+5. success
+6. success
+7. failure
+8. success
+9. success
+10. success
