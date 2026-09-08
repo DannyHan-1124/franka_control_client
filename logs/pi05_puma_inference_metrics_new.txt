@@ -1,5 +1,6 @@
+----------slow left---------------
 Pi0.5 PUMA inference metrics
-task: put red cube in bowl (fail)
+task: put red cube in bowl
 summary: total_time=4.745s, inference_calls=4, completed_chunks=4, actions_applied=106, empty_action_steps=0
 latency: avg_request=0.328s, avg_first_action=0.329s, avg_chunk_duration=0.831s, avg_observation_build=0.005s
 chunks:
@@ -33,6 +34,7 @@ chunks:
         4       50        35      0.321    0.321       1.107  
         5       50         9      0.321    0.321       0.239  
 
+----------slow middle---------------
 Pi0.5 PUMA inference metrics
 task: put red cube in bowl
 summary: total_time=6.407s, inference_calls=5, completed_chunks=5, actions_applied=148, empty_action_steps=0
@@ -46,7 +48,7 @@ chunks:
         5       50         8      0.322    0.322       0.205  
 
 Pi0.5 PUMA inference metrics
-task: put red cube in bowl (fail)
+task: put red cube in bowl
 summary: total_time=5.517s, inference_calls=4, completed_chunks=4, actions_applied=129, empty_action_steps=0
 latency: avg_request=0.337s, avg_first_action=0.337s, avg_chunk_duration=1.016s, avg_observation_build=0.005s
 chunks:
@@ -57,7 +59,7 @@ chunks:
         4       50        24      0.322    0.322       0.741  
 
 Pi0.5 PUMA inference metrics
-task: put red cube in bowl (fail)
+task: put red cube in bowl
 summary: total_time=6.366s, inference_calls=5, completed_chunks=5, actions_applied=147, empty_action_steps=0
 latency: avg_request=0.325s, avg_first_action=0.325s, avg_chunk_duration=0.920s, avg_observation_build=0.005s
 chunks:
@@ -69,7 +71,7 @@ chunks:
         5       50         7      0.320    0.320       0.172  
 
 Pi0.5 PUMA inference metrics
-task: put red cube in bowl
+task: put red cube in bowl (fail)
 summary: total_time=6.233s, inference_calls=5, completed_chunks=5, actions_applied=143, empty_action_steps=0
 latency: avg_request=0.325s, avg_first_action=0.325s, avg_chunk_duration=0.894s, avg_observation_build=0.005s
 chunks:
@@ -80,8 +82,9 @@ chunks:
         4       50        35      0.322    0.322       1.107  
         5       50         3      0.321    0.321       0.038  
 
+----------slow right---------------
 Pi0.5 PUMA inference metrics
-task: put red cube in bowl (fail)
+task: put red cube in bowl
 summary: total_time=5.711s, inference_calls=4, completed_chunks=4, actions_applied=136, empty_action_steps=0
 latency: avg_request=0.327s, avg_first_action=0.327s, avg_chunk_duration=1.074s, avg_observation_build=0.005s
 chunks:
@@ -113,6 +116,7 @@ chunks:
         3       50        35      0.319    0.319       1.107  
         4       50        34      0.320    0.321       1.074  
 
+-----------fast left--------------
 Pi0.5 PUMA inference metrics
 task: put red cube in bowl (fail)
 summary: total_time=6.596s, inference_calls=5, completed_chunks=5, actions_applied=154, empty_action_steps=0
@@ -147,6 +151,7 @@ chunks:
         3       50        35      0.321    0.321       1.107  
         4       50         1      0.320    0.320       0.000  
 
+----------fast middle---------------
 Pi0.5 PUMA inference metrics
 task: put red cube in bowl (fail)
 summary: total_time=4.734s, inference_calls=4, completed_chunks=4, actions_applied=106, empty_action_steps=0
@@ -168,6 +173,7 @@ chunks:
         2       50        35      0.319    0.320       1.107  
         3       50        35      0.319    0.319       1.107  
         4       50         1      0.320    0.320       0.000  
+
 Pi0.5 PUMA inference metrics
 task: put red cube in bowl (fail)
 summary: total_time=6.732s, inference_calls=5, completed_chunks=5, actions_applied=158, empty_action_steps=0
@@ -191,6 +197,7 @@ chunks:
         3       50        35      0.318    0.318       1.107  
         4       50        27      0.319    0.320       0.840  
 
+---------fast right------------
 Pi0.5 PUMA inference metrics
 task: put red cube in bowl (fail)
 summary: total_time=5.669s, inference_calls=4, completed_chunks=4, actions_applied=135, empty_action_steps=0
@@ -223,4 +230,3 @@ chunks:
         2       50        35      0.319    0.320       1.107  
         3       50        35      0.319    0.319       1.107  
         4       50         1      0.321    0.321       0.000  
-
