@@ -1,0 +1,23 @@
+rtc-enabled, s_min = 5
+1. success
+2. success
+3. success
+4. success
+5. success
+6. success
+7. success
+8. failure
+9. success
+10. success
+
+baseline pi05
+1. failure
+2. failure
+3. failure
+4. failure
+5. success
+6. success
+7. failure
+8. failure
+9. failure
+10. failure
