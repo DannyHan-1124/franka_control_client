@@ -1,0 +1,43 @@
+rtc-enabled, s = 25
+1. failure
+2. success
+3. success
+4. success
+5. success
+6. failure
+7- failure
+8. failure
+9. success
+10. success
+11. success
+12. failure
+13. success
+14. success
+15. success
+16. failure
+17. success
+18. success
+19. success
+20. failure
+
+rtc-enabled, s = 40
+1. success
+2. success
+3. success
+4. failure
+5. success
+6. success
+7. success
+8. success
+9. success
+10. failure
+11. success
+12. failure
+13. success
+14. success
+15. success
+16. success
+17. success
+18. success
+19. success
+20. success
