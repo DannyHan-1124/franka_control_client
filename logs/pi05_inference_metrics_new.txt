@@ -1195,7 +1195,7 @@ chunks:
        13  rtc_async         50         2       7      7      0.322    0.345       0.050
 
 Pi0.5 inference metrics
-task: put red cylinder on red cube
+task: put red cylinder on red cube (fail)
 config: rtc_enabled=True, rtc_execution_horizon=25, rtc_delay_steps=7
 summary: total_time=6.622s, inference_calls=6, completed_chunks=6, actions_applied=129, empty_action_steps=0
 latency: avg_request=0.317s, avg_first_action=0.328s, avg_chunk_duration=1.232s, recommended_delay=7
@@ -1263,7 +1263,7 @@ chunks:
         6  rtc_async       None         0       7   None        n/a      n/a         n/a
 
 Pi0.5 inference metrics
-task: put red cylinder on red cube
+task: put red cylinder on red cube (fail)
 config: rtc_enabled=True, rtc_execution_horizon=25, rtc_delay_steps=7
 summary: total_time=6.922s, inference_calls=6, completed_chunks=6, actions_applied=135, empty_action_steps=0
 latency: avg_request=0.318s, avg_first_action=0.331s, avg_chunk_duration=1.069s, recommended_delay=7
@@ -1277,7 +1277,7 @@ chunks:
         6  rtc_async         50         3       7      7      0.333    0.346       0.100
 
 Pi0.5 inference metrics
-task: put red cylinder on red cube
+task: put red cylinder on red cube (fail)
 config: rtc_enabled=True, rtc_execution_horizon=25, rtc_delay_steps=7
 summary: total_time=6.569s, inference_calls=6, completed_chunks=6, actions_applied=128, empty_action_steps=0
 latency: avg_request=0.315s, avg_first_action=0.328s, avg_chunk_duration=1.222s, recommended_delay=7
@@ -1291,7 +1291,7 @@ chunks:
         6  rtc_async       None         0       7   None        n/a      n/a         n/a
 
 Pi0.5 inference metrics
-task: put red cylinder on red cube
+task: put red cylinder on red cube (fail)
 config: rtc_enabled=True, rtc_execution_horizon=25, rtc_delay_steps=7
 summary: total_time=7.821s, inference_calls=7, completed_chunks=7, actions_applied=153, empty_action_steps=0
 latency: avg_request=0.317s, avg_first_action=0.331s, avg_chunk_duration=1.218s, recommended_delay=7
@@ -1348,7 +1348,7 @@ chunks:
         6  rtc_async       None         0       7   None        n/a      n/a         n/a
 
 Pi0.5 inference metrics
-task: put red cylinder on red cube
+task: put red cylinder on red cube (fail)
 config: rtc_enabled=True, rtc_execution_horizon=25, rtc_delay_steps=7
 summary: total_time=6.619s, inference_calls=6, completed_chunks=6, actions_applied=129, empty_action_steps=0
 latency: avg_request=0.316s, avg_first_action=0.328s, avg_chunk_duration=1.232s, recommended_delay=7
@@ -1403,7 +1403,7 @@ chunks:
         6  rtc_async       None         0       7   None        n/a      n/a         n/a
 
 Pi0.5 inference metrics
-task: put red cylinder on red cube
+task: put red cylinder on red cube (fail)
 config: rtc_enabled=True, rtc_execution_horizon=25, rtc_delay_steps=7
 summary: total_time=6.669s, inference_calls=6, completed_chunks=6, actions_applied=130, empty_action_steps=0
 latency: avg_request=0.318s, avg_first_action=0.328s, avg_chunk_duration=1.242s, recommended_delay=7
@@ -1459,7 +1459,7 @@ chunks:
         6  rtc_async       None         0       7   None        n/a      n/a         n/a
 
 Pi0.5 inference metrics
-task: put red cylinder on red cube
+task: put red cylinder on red cube (fail)
 config: rtc_enabled=True, rtc_execution_horizon=25, rtc_delay_steps=7
 summary: total_time=6.521s, inference_calls=6, completed_chunks=6, actions_applied=127, empty_action_steps=0
 latency: avg_request=0.315s, avg_first_action=0.328s, avg_chunk_duration=1.212s, recommended_delay=7
@@ -1509,7 +1509,7 @@ chunks:
         4  rtc_async         50         2       7      7      0.331    0.345       0.050
 
 Pi0.5 inference metrics
-task: put red cylinder on red cube
+task: put red cylinder on red cube (fail)
 config: rtc_enabled=True, rtc_execution_horizon=40, rtc_delay_steps=7
 summary: total_time=6.419s, inference_calls=4, completed_chunks=4, actions_applied=125, empty_action_steps=0
 latency: avg_request=0.309s, avg_first_action=0.315s, avg_chunk_duration=2.020s, recommended_delay=7
@@ -1581,7 +1581,7 @@ chunks:
         4  rtc_async         50         1       7      7      0.330    0.346       0.000
 
 Pi0.5 inference metrics
-task: put red cylinder on red cube
+task: put red cylinder on red cube (fail)
 config: rtc_enabled=True, rtc_execution_horizon=40, rtc_delay_steps=7
 summary: total_time=6.920s, inference_calls=4, completed_chunks=4, actions_applied=135, empty_action_steps=0
 latency: avg_request=0.314s, avg_first_action=0.323s, avg_chunk_duration=1.627s, recommended_delay=7
@@ -1605,7 +1605,7 @@ chunks:
         4  rtc_async         50         2       7      7      0.335    0.345       0.050
 
 Pi0.5 inference metrics
-task: put red cylinder on red cube
+task: put red cylinder on red cube (fail)
 config: rtc_enabled=True, rtc_execution_horizon=40, rtc_delay_steps=7
 summary: total_time=6.369s, inference_calls=4, completed_chunks=4, actions_applied=124, empty_action_steps=0
 latency: avg_request=0.308s, avg_first_action=0.316s, avg_chunk_duration=2.003s, recommended_delay=7
