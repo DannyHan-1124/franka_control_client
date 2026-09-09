@@ -503,3 +503,486 @@ chunks:
       150     const       0       50        10        2           0.246    0.246       0.451
       151     const       0       50        10        2           0.245    0.245       0.451
       152     const       0       50         4        2           0.245    0.245       0.150
+
+=== Pi0.5 inference episode: 2026-09-09 16:33:48 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=5, fps=20
+summary: total_time=7.865s, inference_calls=16, observations_published=16, completed_chunks=16, prefix_chunks=0, actions_applied=152, empty_action_steps=6, stale_actions_dropped=81, actions_overwritten=524
+latency: avg_first_action=0.249s, avg_final=0.249s, avg_chunk_duration=0.426s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+        5     const       0       50        10        2           0.296    0.296       0.450
+        6     const       0       50        10        2           0.246    0.246       0.451
+        7     const       0       50        10        2           0.246    0.246       0.451
+        8     const       0       50        10        2           0.246    0.246       0.451
+        9     const       0       50        10        2           0.246    0.246       0.451
+       10     const       0       50        10        2           0.246    0.246       0.451
+       11     const       0       50        10        2           0.245    0.246       0.451
+       12     const       0       50        10        2           0.246    0.246       0.450
+       13     const       0       50        10        2           0.246    0.246       0.451
+       14     const       0       50        10        2           0.246    0.246       0.451
+       15     const       0       50        10        2           0.246    0.246       0.451
+       16     const       0       50        10        2           0.246    0.246       0.451
+       17     const       0       50        10        2           0.246    0.246       0.451
+       18     const       0       50        10        2           0.246    0.247       0.451
+       19     const       0       50        10        2           0.246    0.246       0.450
+       20     const       0       50         2        2           0.246    0.246       0.050
+
+=== Pi0.5 inference episode: 2026-09-09 16:34:05 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=5, fps=20
+summary: total_time=9.015s, inference_calls=18, observations_published=18, completed_chunks=18, prefix_chunks=0, actions_applied=175, empty_action_steps=6, stale_actions_dropped=91, actions_overwritten=594
+latency: avg_first_action=0.249s, avg_final=0.249s, avg_chunk_duration=0.437s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       21     const       0       50        10        2           0.296    0.296       0.450
+       22     const       0       50        10        2           0.246    0.246       0.451
+       23     const       0       50        10        2           0.246    0.246       0.451
+       24     const       0       50        10        2           0.246    0.246       0.451
+       25     const       0       50        10        2           0.246    0.246       0.451
+       26     const       0       50        10        2           0.246    0.246       0.451
+       27     const       0       50        10        2           0.246    0.246       0.451
+       28     const       0       50        10        2           0.245    0.245       0.451
+       29     const       0       50        10        2           0.246    0.246       0.450
+       30     const       0       50        10        2           0.246    0.246       0.450
+       31     const       0       50        10        2           0.246    0.246       0.450
+       32     const       0       50        10        2           0.246    0.246       0.451
+       33     const       0       50        10        2           0.246    0.246       0.451
+       34     const       0       50        10        2           0.244    0.244       0.451
+       35     const       0       50        10        2           0.246    0.246       0.450
+       36     const       0       50        10        2           0.246    0.246       0.451
+       37     const       0       50        10        2           0.246    0.246       0.450
+       38     const       0       50         5        2           0.246    0.246       0.200
+
+=== Pi0.5 inference episode: 2026-09-09 16:34:27 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=5, fps=20
+summary: total_time=7.813s, inference_calls=16, observations_published=16, completed_chunks=16, prefix_chunks=0, actions_applied=151, empty_action_steps=6, stale_actions_dropped=81, actions_overwritten=524
+latency: avg_first_action=0.249s, avg_final=0.249s, avg_chunk_duration=0.422s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       39     const       0       50        10        2           0.296    0.296       0.451
+       40     const       0       50        10        2           0.246    0.246       0.450
+       41     const       0       50        10        2           0.246    0.246       0.450
+       42     const       0       50        10        2           0.246    0.246       0.451
+       43     const       0       50        10        2           0.246    0.246       0.451
+       44     const       0       50        10        2           0.246    0.246       0.451
+       45     const       0       50        10        2           0.246    0.246       0.451
+       46     const       0       50        10        2           0.246    0.246       0.450
+       47     const       0       50        10        2           0.246    0.246       0.451
+       48     const       0       50        10        2           0.246    0.246       0.450
+       49     const       0       50        10        2           0.246    0.246       0.451
+       50     const       0       50        10        2           0.246    0.246       0.451
+       51     const       0       50        10        2           0.246    0.246       0.450
+       52     const       0       50        10        2           0.246    0.246       0.450
+       53     const       0       50        10        2           0.246    0.246       0.450
+       54     const       0       50         1        2           0.246    0.246       0.000
+
+=== Pi0.5 inference episode: 2026-09-09 16:34:46 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=5, fps=20
+summary: total_time=7.963s, inference_calls=16, observations_published=16, completed_chunks=16, prefix_chunks=0, actions_applied=154, empty_action_steps=6, stale_actions_dropped=81, actions_overwritten=524
+latency: avg_first_action=0.249s, avg_final=0.249s, avg_chunk_duration=0.432s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       55     const       0       50        10        2           0.296    0.296       0.451
+       56     const       0       50        10        2           0.245    0.246       0.451
+       57     const       0       50        10        2           0.245    0.245       0.451
+       58     const       0       50        10        2           0.246    0.246       0.450
+       59     const       0       50        10        2           0.246    0.246       0.451
+       60     const       0       50        10        2           0.245    0.246       0.451
+       61     const       0       50        10        2           0.245    0.245       0.450
+       62     const       0       50        10        2           0.244    0.245       0.450
+       63     const       0       50        10        2           0.245    0.246       0.450
+       64     const       0       50        10        2           0.245    0.246       0.450
+       65     const       0       50        10        2           0.245    0.246       0.450
+       66     const       0       50        10        2           0.245    0.246       0.450
+       67     const       0       50        10        2           0.245    0.246       0.450
+       68     const       0       50        10        2           0.245    0.245       0.450
+       69     const       0       50        10        2           0.246    0.246       0.450
+       70     const       0       50         4        2           0.245    0.245       0.150
+
+=== Pi0.5 inference episode: 2026-09-09 16:35:20 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=5, fps=20
+summary: total_time=7.614s, inference_calls=15, observations_published=16, completed_chunks=15, prefix_chunks=0, actions_applied=147, empty_action_steps=6, stale_actions_dropped=76, actions_overwritten=489
+latency: avg_first_action=0.249s, avg_final=0.250s, avg_chunk_duration=0.441s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       71     const       0       50        10        2           0.297    0.297       0.450
+       72     const       0       50        10        2           0.246    0.246       0.450
+       73     const       0       50        10        2           0.246    0.246       0.451
+       74     const       0       50        10        2           0.246    0.246       0.450
+       75     const       0       50        10        2           0.246    0.246       0.450
+       76     const       0       50        10        2           0.246    0.246       0.451
+       77     const       0       50        10        2           0.246    0.246       0.450
+       78     const       0       50        10        2           0.246    0.246       0.450
+       79     const       0       50        10        2           0.246    0.246       0.450
+       80     const       0       50        10        2           0.246    0.246       0.451
+       81     const       0       50        10        2           0.246    0.246       0.450
+       82     const       0       50        10        2           0.246    0.247       0.450
+       83     const       0       50        10        2           0.246    0.246       0.451
+       84     const       0       50        10        2           0.246    0.246       0.450
+       85     const       0       50         7        2           0.246    0.246       0.300
+
+=== Pi0.5 inference episode: 2026-09-09 16:35:36 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=5, fps=20
+summary: total_time=7.713s, inference_calls=15, observations_published=16, completed_chunks=15, prefix_chunks=0, actions_applied=149, empty_action_steps=6, stale_actions_dropped=76, actions_overwritten=489
+latency: avg_first_action=0.249s, avg_final=0.249s, avg_chunk_duration=0.447s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       87     const       0       50        10        2           0.296    0.296       0.451
+       88     const       0       50        10        2           0.246    0.246       0.450
+       89     const       0       50        10        2           0.246    0.246       0.450
+       90     const       0       50        10        2           0.246    0.246       0.450
+       91     const       0       50        10        2           0.246    0.246       0.450
+       92     const       0       50        10        2           0.246    0.246       0.451
+       93     const       0       50        10        2           0.246    0.246       0.451
+       94     const       0       50        10        2           0.246    0.246       0.450
+       95     const       0       50        10        2           0.246    0.246       0.450
+       96     const       0       50        10        2           0.246    0.246       0.450
+       97     const       0       50        10        2           0.246    0.246       0.450
+       98     const       0       50        10        2           0.246    0.246       0.451
+       99     const       0       50        10        2           0.246    0.246       0.450
+      100     const       0       50        10        2           0.246    0.246       0.450
+      101     const       0       50         9        2           0.245    0.245       0.401
+
+=== Pi0.5 inference episode: 2026-09-09 16:35:53 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=5, fps=20
+summary: total_time=7.264s, inference_calls=14, observations_published=15, completed_chunks=14, prefix_chunks=0, actions_applied=140, empty_action_steps=6, stale_actions_dropped=71, actions_overwritten=454
+latency: avg_first_action=0.250s, avg_final=0.250s, avg_chunk_duration=0.451s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+      103     const       0       50        10        2           0.296    0.296       0.451
+      104     const       0       50        10        2           0.247    0.247       0.451
+      105     const       0       50        10        2           0.246    0.247       0.450
+      106     const       0       50        10        2           0.246    0.246       0.451
+      107     const       0       50        10        2           0.246    0.247       0.450
+      108     const       0       50        10        2           0.246    0.246       0.451
+      109     const       0       50        10        2           0.246    0.246       0.451
+      110     const       0       50        10        2           0.247    0.247       0.450
+      111     const       0       50        10        2           0.246    0.246       0.450
+      112     const       0       50        10        2           0.246    0.246       0.451
+      113     const       0       50        10        2           0.246    0.246       0.450
+      114     const       0       50        10        2           0.246    0.246       0.450
+      115     const       0       50        10        2           0.246    0.246       0.450
+      116     const       0       50        10        2           0.246    0.246       0.450
+
+=== Pi0.5 inference episode: 2026-09-09 16:36:12 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=5, fps=20
+summary: total_time=7.512s, inference_calls=15, observations_published=15, completed_chunks=15, prefix_chunks=0, actions_applied=145, empty_action_steps=6, stale_actions_dropped=76, actions_overwritten=489
+latency: avg_first_action=0.249s, avg_final=0.249s, avg_chunk_duration=0.434s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+      118     const       0       50        10        2           0.296    0.296       0.450
+      119     const       0       50        10        2           0.246    0.246       0.450
+      120     const       0       50        10        2           0.246    0.246       0.451
+      121     const       0       50        10        2           0.245    0.246       0.451
+      122     const       0       50        10        2           0.246    0.246       0.451
+      123     const       0       50        10        2           0.246    0.246       0.450
+      124     const       0       50        10        2           0.246    0.246       0.450
+      125     const       0       50        10        2           0.246    0.246       0.450
+      126     const       0       50        10        2           0.245    0.245       0.451
+      127     const       0       50        10        2           0.246    0.246       0.451
+      128     const       0       50        10        2           0.246    0.246       0.451
+      129     const       0       50        10        2           0.246    0.246       0.451
+      130     const       0       50        10        2           0.246    0.246       0.451
+      131     const       0       50        10        2           0.245    0.245       0.451
+      132     const       0       50         5        2           0.246    0.246       0.200
+
+=== Pi0.5 inference episode: 2026-09-09 16:36:28 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=5, fps=20
+summary: total_time=7.262s, inference_calls=14, observations_published=15, completed_chunks=14, prefix_chunks=0, actions_applied=140, empty_action_steps=6, stale_actions_dropped=71, actions_overwritten=454
+latency: avg_first_action=0.249s, avg_final=0.249s, avg_chunk_duration=0.450s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+      133     const       0       50        10        2           0.296    0.296       0.450
+      134     const       0       50        10        2           0.246    0.246       0.450
+      135     const       0       50        10        2           0.246    0.246       0.450
+      136     const       0       50        10        2           0.246    0.246       0.451
+      137     const       0       50        10        2           0.245    0.246       0.450
+      138     const       0       50        10        2           0.245    0.245       0.450
+      139     const       0       50        10        2           0.246    0.246       0.451
+      140     const       0       50        10        2           0.246    0.246       0.450
+      141     const       0       50        10        2           0.246    0.246       0.450
+      142     const       0       50        10        2           0.246    0.246       0.450
+      143     const       0       50        10        2           0.246    0.246       0.450
+      144     const       0       50        10        2           0.246    0.246       0.450
+      145     const       0       50        10        2           0.246    0.246       0.450
+      146     const       0       50        10        2           0.246    0.246       0.450
+
+=== Pi0.5 inference episode: 2026-09-09 16:36:49 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=5, fps=20
+summary: total_time=6.618s, inference_calls=13, observations_published=14, completed_chunks=13, prefix_chunks=0, actions_applied=127, empty_action_steps=6, stale_actions_dropped=67, actions_overwritten=417
+latency: avg_first_action=0.254s, avg_final=0.254s, avg_chunk_duration=0.439s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+      148     const       0       50        10        2           0.296    0.296       0.451
+      149     const       0       50        10        2           0.246    0.246       0.452
+      150     const       0       50        10        2           0.246    0.246       0.450
+      151     const       0       50        10        2           0.246    0.246       0.451
+      152     const       0       50        10        2           0.246    0.246       0.451
+      153     const       0       50        10        2           0.246    0.246       0.451
+      154     const       0       50        10        2           0.246    0.247       0.451
+      155     const       0       50        10        2           0.246    0.246       0.450
+      156     const       0       50        11        2           0.246    0.246       0.501
+      157     const       0       50        10        2           0.296    0.296       0.451
+      158     const       0       50        10        2           0.246    0.246       0.451
+      159     const       0       50        10        2           0.246    0.246       0.450
+      160     const       0       50         6        2           0.244    0.245       0.255
+
+
+=== Pi0.5 inference episode: 2026-09-09 17:23:05 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=25, fps=20
+summary: total_time=5.910s, inference_calls=4, observations_published=4, completed_chunks=4, prefix_chunks=0, actions_applied=113, empty_action_steps=6, stale_actions_dropped=24, actions_overwritten=39
+latency: avg_first_action=0.296s, avg_final=0.296s, avg_chunk_duration=1.364s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+        2     const       0       50        31        2           0.296    0.296       1.502
+        3     const       0       50        31        2           0.296    0.296       1.502
+        4     const       0       50        31        2           0.296    0.296       1.502
+        5     const       0       50        20        2           0.296    0.296       0.951
+
+=== Pi0.5 inference episode: 2026-09-09 17:23:23 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=25, fps=20
+summary: total_time=6.511s, inference_calls=5, observations_published=5, completed_chunks=5, prefix_chunks=0, actions_applied=125, empty_action_steps=6, stale_actions_dropped=30, actions_overwritten=52
+latency: avg_first_action=0.296s, avg_final=0.296s, avg_chunk_duration=1.202s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+        6     const       0       50        31        2           0.297    0.297       1.502
+        7     const       0       50        31        2           0.296    0.296       1.503
+        8     const       0       50        31        2           0.296    0.297       1.502
+        9     const       0       50        31        2           0.296    0.296       1.502
+       10     const       0       50         1        2           0.296    0.296       0.000
+
+=== Pi0.5 inference episode: 2026-09-09 17:23:55 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=25, fps=20
+summary: total_time=6.511s, inference_calls=5, observations_published=5, completed_chunks=5, prefix_chunks=0, actions_applied=125, empty_action_steps=6, stale_actions_dropped=30, actions_overwritten=52
+latency: avg_first_action=0.296s, avg_final=0.296s, avg_chunk_duration=1.202s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       11     const       0       50        31        2           0.296    0.296       1.502
+       12     const       0       50        31        2           0.296    0.296       1.502
+       13     const       0       50        31        2           0.296    0.296       1.502
+       14     const       0       50        31        2           0.295    0.295       1.502
+       15     const       0       50         1        2           0.296    0.296       0.000
+
+=== Pi0.5 inference episode: 2026-09-09 17:24:12 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=25, fps=20
+summary: total_time=6.511s, inference_calls=5, observations_published=5, completed_chunks=5, prefix_chunks=0, actions_applied=125, empty_action_steps=6, stale_actions_dropped=30, actions_overwritten=52
+latency: avg_first_action=0.296s, avg_final=0.296s, avg_chunk_duration=1.202s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       16     const       0       50        31        2           0.296    0.296       1.502
+       17     const       0       50        31        2           0.296    0.296       1.502
+       18     const       0       50        31        2           0.296    0.296       1.503
+       19     const       0       50        31        2           0.296    0.296       1.502
+       20     const       0       50         1        2           0.296    0.296       0.000
+
+=== Pi0.5 inference episode: 2026-09-09 17:24:32 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=25, fps=20
+summary: total_time=6.461s, inference_calls=5, observations_published=5, completed_chunks=5, prefix_chunks=0, actions_applied=124, empty_action_steps=6, stale_actions_dropped=29, actions_overwritten=53
+latency: avg_first_action=0.286s, avg_final=0.286s, avg_chunk_duration=1.192s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       21     const       0       50        31        2           0.296    0.296       1.502
+       22     const       0       50        31        2           0.296    0.296       1.502
+       23     const       0       50        31        2           0.296    0.296       1.502
+       24     const       0       50        30        2           0.296    0.296       1.452
+       25     const       0       50         1        2           0.246    0.246       0.000
+
+=== Pi0.5 inference episode: 2026-09-09 17:24:54 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=25, fps=20
+summary: total_time=6.562s, inference_calls=5, observations_published=5, completed_chunks=5, prefix_chunks=0, actions_applied=126, empty_action_steps=6, stale_actions_dropped=30, actions_overwritten=52
+latency: avg_first_action=0.296s, avg_final=0.296s, avg_chunk_duration=1.212s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       26     const       0       50        31        2           0.296    0.296       1.502
+       27     const       0       50        31        2           0.296    0.296       1.503
+       28     const       0       50        31        2           0.296    0.296       1.503
+       29     const       0       50        31        2           0.295    0.296       1.502
+       30     const       0       50         2        2           0.296    0.296       0.050
+
+=== Pi0.5 inference episode: 2026-09-09 17:25:13 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=25, fps=20
+summary: total_time=6.110s, inference_calls=4, observations_published=4, completed_chunks=4, prefix_chunks=0, actions_applied=117, empty_action_steps=6, stale_actions_dropped=24, actions_overwritten=39
+latency: avg_first_action=0.296s, avg_final=0.296s, avg_chunk_duration=1.414s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       31     const       0       50        31        2           0.296    0.296       1.502
+       32     const       0       50        31        2           0.295    0.295       1.502
+       33     const       0       50        31        2           0.296    0.296       1.502
+       34     const       0       50        24        2           0.295    0.295       1.151
+
+=== Pi0.5 inference episode: 2026-09-09 17:25:31 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=25, fps=20
+summary: total_time=6.362s, inference_calls=4, observations_published=5, completed_chunks=4, prefix_chunks=0, actions_applied=122, empty_action_steps=6, stale_actions_dropped=24, actions_overwritten=39
+latency: avg_first_action=0.296s, avg_final=0.296s, avg_chunk_duration=1.478s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       35     const       0       50        31        2           0.296    0.296       1.503
+       36     const       0       50        31        2           0.296    0.296       1.502
+       37     const       0       50        31        2           0.295    0.296       1.502
+       38     const       0       50        29        2           0.296    0.296       1.403
+
+=== Pi0.5 inference episode: 2026-09-09 17:25:47 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=25, fps=20
+summary: total_time=6.511s, inference_calls=5, observations_published=5, completed_chunks=5, prefix_chunks=0, actions_applied=125, empty_action_steps=6, stale_actions_dropped=30, actions_overwritten=52
+latency: avg_first_action=0.296s, avg_final=0.296s, avg_chunk_duration=1.202s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       40     const       0       50        31        2           0.296    0.296       1.502
+       41     const       0       50        31        2           0.296    0.296       1.502
+       42     const       0       50        31        2           0.296    0.296       1.502
+       43     const       0       50        31        2           0.296    0.296       1.502
+       44     const       0       50         1        2           0.295    0.295       0.000
+
+=== Pi0.5 inference episode: 2026-09-09 17:26:10 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=25, fps=20
+summary: total_time=6.163s, inference_calls=4, observations_published=4, completed_chunks=4, prefix_chunks=0, actions_applied=118, empty_action_steps=6, stale_actions_dropped=24, actions_overwritten=39
+latency: avg_first_action=0.296s, avg_final=0.296s, avg_chunk_duration=1.428s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       45     const       0       50        31        2           0.296    0.297       1.502
+       46     const       0       50        31        2           0.295    0.295       1.504
+       47     const       0       50        31        2           0.296    0.297       1.503
+       48     const       0       50        25        2           0.296    0.296       1.202
+
+=== Pi0.5 inference episode: 2026-09-09 17:26:27 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=25, fps=20
+summary: total_time=6.160s, inference_calls=4, observations_published=4, completed_chunks=4, prefix_chunks=0, actions_applied=118, empty_action_steps=6, stale_actions_dropped=24, actions_overwritten=39
+latency: avg_first_action=0.296s, avg_final=0.296s, avg_chunk_duration=1.427s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       49     const       0       50        31        2           0.296    0.296       1.502
+       50     const       0       50        31        2           0.296    0.296       1.502
+       51     const       0       50        31        2           0.296    0.296       1.502
+       52     const       0       50        25        2           0.296    0.296       1.202
+
+=== Pi0.5 inference episode: 2026-09-09 17:26:58 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=25, fps=20
+summary: total_time=6.111s, inference_calls=4, observations_published=4, completed_chunks=4, prefix_chunks=0, actions_applied=117, empty_action_steps=6, stale_actions_dropped=24, actions_overwritten=39
+latency: avg_first_action=0.296s, avg_final=0.296s, avg_chunk_duration=1.415s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       53     const       0       50        31        2           0.296    0.296       1.502
+       54     const       0       50        31        2           0.296    0.296       1.502
+       55     const       0       50        31        2           0.296    0.296       1.502
+       56     const       0       50        24        2           0.296    0.296       1.152
+
+=== Pi0.5 inference episode: 2026-09-09 17:27:13 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=25, fps=20
+summary: total_time=5.860s, inference_calls=4, observations_published=4, completed_chunks=4, prefix_chunks=0, actions_applied=112, empty_action_steps=6, stale_actions_dropped=24, actions_overwritten=39
+latency: avg_first_action=0.296s, avg_final=0.296s, avg_chunk_duration=1.352s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       57     const       0       50        31        2           0.296    0.296       1.502
+       58     const       0       50        31        2           0.296    0.296       1.502
+       59     const       0       50        31        2           0.296    0.296       1.502
+       60     const       0       50        19        2           0.296    0.296       0.901
+
+=== Pi0.5 inference episode: 2026-09-09 17:27:31 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=25, fps=20
+summary: total_time=5.961s, inference_calls=4, observations_published=4, completed_chunks=4, prefix_chunks=0, actions_applied=114, empty_action_steps=6, stale_actions_dropped=24, actions_overwritten=39
+latency: avg_first_action=0.296s, avg_final=0.296s, avg_chunk_duration=1.377s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       61     const       0       50        31        2           0.296    0.296       1.502
+       62     const       0       50        31        2           0.295    0.295       1.502
+       63     const       0       50        31        2           0.296    0.297       1.502
+       64     const       0       50        21        2           0.296    0.296       1.002
+
+=== Pi0.5 inference episode: 2026-09-09 17:27:48 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=25, fps=20
+summary: total_time=6.512s, inference_calls=5, observations_published=5, completed_chunks=5, prefix_chunks=0, actions_applied=125, empty_action_steps=6, stale_actions_dropped=30, actions_overwritten=52
+latency: avg_first_action=0.296s, avg_final=0.296s, avg_chunk_duration=1.202s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       65     const       0       50        31        2           0.296    0.296       1.502
+       66     const       0       50        31        2           0.296    0.296       1.503
+       67     const       0       50        31        2           0.296    0.297       1.502
+       68     const       0       50        31        2           0.296    0.296       1.502
+       69     const       0       50         1        2           0.296    0.296       0.000
+
+=== Pi0.5 inference episode: 2026-09-09 17:28:06 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=25, fps=20
+summary: total_time=6.310s, inference_calls=4, observations_published=5, completed_chunks=4, prefix_chunks=0, actions_applied=121, empty_action_steps=6, stale_actions_dropped=24, actions_overwritten=39
+latency: avg_first_action=0.296s, avg_final=0.296s, avg_chunk_duration=1.465s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       70     const       0       50        31        2           0.296    0.296       1.502
+       71     const       0       50        31        2           0.295    0.295       1.502
+       72     const       0       50        31        2           0.296    0.296       1.502
+       73     const       0       50        28        2           0.295    0.296       1.352
+
+=== Pi0.5 inference episode: 2026-09-09 17:28:24 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=25, fps=20
+summary: total_time=6.510s, inference_calls=5, observations_published=5, completed_chunks=5, prefix_chunks=0, actions_applied=125, empty_action_steps=6, stale_actions_dropped=30, actions_overwritten=52
+latency: avg_first_action=0.296s, avg_final=0.296s, avg_chunk_duration=1.202s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       75     const       0       50        31        2           0.296    0.296       1.502
+       76     const       0       50        31        2           0.296    0.296       1.502
+       77     const       0       50        31        2           0.295    0.296       1.502
+       78     const       0       50        31        2           0.296    0.296       1.502
+       79     const       0       50         1        2           0.296    0.296       0.000
+
+=== Pi0.5 inference episode: 2026-09-09 17:28:43 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=25, fps=20
+summary: total_time=6.461s, inference_calls=5, observations_published=5, completed_chunks=5, prefix_chunks=0, actions_applied=124, empty_action_steps=6, stale_actions_dropped=29, actions_overwritten=53
+latency: avg_first_action=0.286s, avg_final=0.286s, avg_chunk_duration=1.192s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       80     const       0       50        31        2           0.296    0.296       1.502
+       81     const       0       50        31        2           0.296    0.296       1.502
+       82     const       0       50        31        2           0.296    0.296       1.502
+       83     const       0       50        30        2           0.295    0.295       1.452
+       84     const       0       50         1        2           0.246    0.246       0.000
+
+=== Pi0.5 inference episode: 2026-09-09 17:28:59 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=25, fps=20
+summary: total_time=6.310s, inference_calls=4, observations_published=5, completed_chunks=4, prefix_chunks=0, actions_applied=121, empty_action_steps=6, stale_actions_dropped=24, actions_overwritten=39
+latency: avg_first_action=0.296s, avg_final=0.296s, avg_chunk_duration=1.464s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       85     const       0       50        31        2           0.296    0.296       1.502
+       86     const       0       50        31        2           0.296    0.296       1.502
+       87     const       0       50        31        2           0.296    0.296       1.502
+       88     const       0       50        28        2           0.296    0.296       1.352
+
+=== Pi0.5 inference episode: 2026-09-09 17:29:18 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, continuous_min_execute_steps=25, fps=20
+summary: total_time=6.511s, inference_calls=5, observations_published=5, completed_chunks=5, prefix_chunks=0, actions_applied=125, empty_action_steps=6, stale_actions_dropped=30, actions_overwritten=52
+latency: avg_first_action=0.296s, avg_final=0.296s, avg_chunk_duration=1.202s
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+       90     const       0       50        31        2           0.296    0.296       1.502
+       91     const       0       50        31        2           0.296    0.296       1.502
+       92     const       0       50        31        2           0.296    0.296       1.502
+       93     const       0       50        31        2           0.296    0.296       1.502
+       94     const       0       50         1        2           0.296    0.296       0.000
