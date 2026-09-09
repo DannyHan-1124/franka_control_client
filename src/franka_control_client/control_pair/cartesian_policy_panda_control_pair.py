@@ -28,7 +28,7 @@ DEFAULT_POSITION4 = (0.0, -0.4603, 0.0131, -2.9605, -0.0014, 2.5054, 0.0235)
 # table tennis starting position
 DEFAULT_POSITION5 = (0.0, 0.4195, 0.4311, -1.8333, -1.1522, 1.2765, 2.3814)
 
-MAX_POSITION_COMMAND_STEP_M: float = 0.015
+MAX_POSITION_COMMAND_STEP_M: float = 0.013
 
 
 class CartesianPolicyPandaRobotiqControlPair(ControlPair):
