@@ -8,6 +8,7 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --task "put red cylinder on red cube" \
     --stop_after_first_release \
+    --close_gripper_on_reset \
     --pyzlc_name policy_inference \
     --pyzlc_host 141.3.53.25 \
     --pyzlc_group_name robot_lab_robotiq_202 \

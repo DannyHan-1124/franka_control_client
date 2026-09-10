@@ -27,6 +27,8 @@ from ..policy.policy import DirectZmqPolicy, RemotePolicy
 IMAGE_SIZE = (224, 224)
 STATE_DIM = 8
 ACTION_DIM = 8
+RESET_SETTLE_SECONDS = 3.0
+RESET_GRIPPER_OPEN_SECONDS = 2.0
 
 @dataclass
 class Pi05PolicyInferenceConfig:
@@ -41,6 +43,7 @@ class Pi05PolicyInferenceConfig:
     chunk_replan_steps: int = 50
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
+    close_gripper_on_reset: bool = False
     metrics_path: Optional[str] = None
     run_metadata: Optional[Dict[str, Any]] = None
     puma_history_steps: int = 4
@@ -323,6 +326,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "action_topic": self.cfg.action_topic,
             "fps": int(self.fps),
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),
+            "close_gripper_on_reset": bool(self.cfg.close_gripper_on_reset),
             "puma_history_steps": int(self.cfg.puma_history_steps),
             "puma_history_stride": int(self.cfg.puma_history_stride),
             "total_time_s": time.perf_counter() - self._metrics_start_perf,
@@ -402,16 +406,31 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _reset_arm(self) -> None:
         self._ui_console.log("Resetting robot arm position...")
         try:
+            # go_home() leaves the Robotiq gripper open so the scene can be
+            # loaded before starting the next episode.
             self.control_pair.go_home()
-            time.sleep(3.0)
+            if not self.cfg.close_gripper_on_reset:
+                time.sleep(RESET_SETTLE_SECONDS)
+                self.control_pair.reset_action()
+                self._ui_console.log("Robot arm reset to home position.")
+                return
+
             self.control_pair.reset_action()
-            self._ui_console.log("Robot arm reset to home position.")
+            self._ui_console.log(
+                "Gripper is open; insert the object. Closing in "
+                f"{RESET_GRIPPER_OPEN_SECONDS:g} seconds..."
+            )
+            time.sleep(RESET_GRIPPER_OPEN_SECONDS)
+            self.control_pair.gripper.close()
+            self._ui_console.log("Robot arm reset to home position and gripper closed.")
         except Exception as exc:
             self._ui_console.log(f"Failed to reset arm: {exc}")
 
     def _build_observation(self) -> Dict[str, Any]:
         static_rgb = self._capture_rgb(self.static_cam)
         wrist_rgb = self._capture_rgb(self.wrist_cam)
+        # Match the wrist-camera orientation used by the moving_cup dataset.
+        wrist_rgb = cv2.rotate(wrist_rgb, cv2.ROTATE_180)
         self._puma_static_history.append(static_rgb)
         history_indices = [
             max(0, len(self._puma_static_history) - 1 - offset)
