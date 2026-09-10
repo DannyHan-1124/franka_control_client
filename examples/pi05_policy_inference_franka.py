@@ -50,6 +50,11 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--abpolicy_last_point_weight", type=float, default=0.05)
     parser.add_argument("--stop_after_first_release", action="store_true")
     parser.add_argument("--stop_after_release_steps", type=int, default=0)
+    parser.add_argument(
+        "--close_gripper_on_reset",
+        action="store_true",
+        help="After going home, wait for the object to be inserted and close the gripper.",
+    )
     parser.add_argument("--metrics_path", default=None)
     parser.add_argument("--robot_name", default="FrankaPanda")
     parser.add_argument("--static_camera", default="static_cam")
@@ -104,6 +109,7 @@ def main() -> None:
         abpolicy_last_point_weight=args.abpolicy_last_point_weight,
         stop_after_first_release=args.stop_after_first_release,
         stop_after_release_steps=args.stop_after_release_steps,
+        close_gripper_on_reset=args.close_gripper_on_reset,
         metrics_path=args.metrics_path,
         run_metadata={
             "control_hz": args.control_hz,

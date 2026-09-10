@@ -32,6 +32,8 @@ from .bspline import (
 IMAGE_SIZE = (224, 224)
 STATE_DIM = 8
 ACTION_DIM = 8
+RESET_SETTLE_SECONDS = 3.0
+RESET_GRIPPER_OPEN_SECONDS = 2.0
 
 
 @dataclass
@@ -47,6 +49,7 @@ class Pi05PolicyInferenceConfig:
     chunk_replan_steps: int = 50
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
+    close_gripper_on_reset: bool = False
     metrics_path: Optional[str] = None
     run_metadata: Optional[Dict[str, Any]] = None
     abpolicy_enabled: bool = False
@@ -649,6 +652,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "fps": int(self.fps),
             "abpolicy_enabled": bool(self.cfg.abpolicy_enabled),
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),
+            "close_gripper_on_reset": bool(self.cfg.close_gripper_on_reset),
             "total_time_s": total_time_s,
             "inference_calls": inference_calls,
             "completed_chunks": len(chunks),
@@ -790,10 +794,23 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _reset_arm(self) -> None:
         self._ui_console.log("Resetting robot arm position...")
         try:
+            # go_home() leaves the gripper open so the object can be inserted
+            # before starting the next episode.
             self.control_pair.go_home()
-            time.sleep(3.0)
+            if not self.cfg.close_gripper_on_reset:
+                time.sleep(RESET_SETTLE_SECONDS)
+                self.control_pair.reset_action()
+                self._ui_console.log("Robot arm reset to home position.")
+                return
+
             self.control_pair.reset_action()
-            self._ui_console.log("Robot arm reset to home position.")
+            self._ui_console.log(
+                "Gripper is open; insert the object. Closing in "
+                f"{RESET_GRIPPER_OPEN_SECONDS:g} seconds..."
+            )
+            time.sleep(RESET_GRIPPER_OPEN_SECONDS)
+            self.control_pair.gripper.close()
+            self._ui_console.log("Robot arm reset to home position and gripper closed.")
         except Exception as exc:
             self._ui_console.log(f"Failed to reset arm: {exc}")
 
