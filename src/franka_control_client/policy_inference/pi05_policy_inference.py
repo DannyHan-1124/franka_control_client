@@ -817,6 +817,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _build_observation(self) -> Dict[str, Any]:
         static_rgb = self._capture_rgb(self.static_cam)
         wrist_rgb = self._capture_rgb(self.wrist_cam)
+        # Match the wrist-camera orientation used during training
+        wrist_rgb = cv2.rotate(wrist_rgb, cv2.ROTATE_180)
         obs = {
             "observation.images.base_0_rgb": _encode_rgb_image(static_rgb),
             "observation.images.left_wrist_0_rgb": _encode_rgb_image(wrist_rgb),
