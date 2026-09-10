@@ -11,6 +11,7 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --task "put red cylinder on red cube" \
     --fps 20 \
     --stop_after_first_release \
+    --close_gripper_on_reset \
     --robot_name FrankaPanda \
     --pyzlc_name policy_inference \
     --pyzlc_host 141.3.53.25 \

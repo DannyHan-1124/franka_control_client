@@ -26,6 +26,8 @@ from ..policy.policy import StreamingZmqPolicy
 IMAGE_SIZE = (224, 224)
 STATE_DIM = 8
 ACTION_DIM = 8
+RESET_SETTLE_SECONDS = 3.0
+RESET_GRIPPER_OPEN_SECONDS = 2.0
 
 @dataclass
 class Pi05PolicyInferenceConfig:
@@ -40,6 +42,7 @@ class Pi05PolicyInferenceConfig:
     continuous_min_execute_steps: int = 0
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
+    close_gripper_on_reset: bool = False
     task_after_first_release: Optional[str] = None
     metrics_path: Optional[str] = None
 
@@ -441,6 +444,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "continuous_min_execute_steps": int(self.cfg.continuous_min_execute_steps),
             "fps": int(self.cfg.fps),
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),
+            "close_gripper_on_reset": bool(self.cfg.close_gripper_on_reset),
             "total_time_s": total_time_s,
             "inference_calls": self._metrics_inference_calls,
             "observations_published": self._metrics_observations_published,
@@ -586,10 +590,21 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._ui_console.log("Resetting robot arm position...")
         try:
             self.control_pair.go_home()
-            time.sleep(3.0)
+            if not self.cfg.close_gripper_on_reset:
+                time.sleep(RESET_SETTLE_SECONDS)
+                self.control_pair.reset_action()
+                self._open_gripper()
+                self._ui_console.log("Robot arm reset to home position.")
+                return
+
             self.control_pair.reset_action()
-            self._open_gripper()
-            self._ui_console.log("Robot arm reset to home position.")
+            self._ui_console.log(
+                "Gripper is open; insert the object. Closing in "
+                f"{RESET_GRIPPER_OPEN_SECONDS:g} seconds..."
+            )
+            time.sleep(RESET_GRIPPER_OPEN_SECONDS)
+            self.control_pair.gripper.close()
+            self._ui_console.log("Robot arm reset to home position and gripper closed.")
         except Exception as exc:
             self._ui_console.log(f"Failed to reset arm: {exc}")
 
@@ -614,6 +629,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _build_observation(self) -> Dict[str, Any]:
         static_rgb = self._capture_rgb(self.static_cam)
         wrist_rgb = self._capture_rgb(self.wrist_cam)
+        # Match the wrist-camera orientation used during training.
+        wrist_rgb = cv2.rotate(wrist_rgb, cv2.ROTATE_180)
         obs = {
             "observation.images.base_0_rgb": _encode_rgb_image(static_rgb),
             "observation.images.left_wrist_0_rgb": _encode_rgb_image(wrist_rgb),
