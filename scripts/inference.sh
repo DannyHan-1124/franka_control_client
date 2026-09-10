@@ -15,6 +15,7 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --policy_transport zmq \
     --fps 20 \
     --policy_zmq_endpoint tcp://127.0.0.1:17725 \
+    --chunk_replan_steps 35 \
     --metrics_path "${REPO_ROOT}/logs/pi05_puma_inference_metrics_static.jsonl" \
     --static_camera static_cam \
     --wrist_camera wrist_cam
