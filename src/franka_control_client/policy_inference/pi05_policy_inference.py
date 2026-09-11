@@ -59,6 +59,7 @@ class Pi05PolicyInferenceConfig:
     max_position_step_m: float = 0.0
     max_rotation_step_rad: float = 0.0
     execution_horizon: int = 50
+    first_execution_horizon: int = 0
     gripper_open_confirm_steps: int = 1
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
@@ -97,20 +98,27 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.cfg = cfg
         if cfg.execution_horizon <= 0:
             raise ValueError("execution_horizon must be positive.")
+        if cfg.first_execution_horizon < 0:
+            raise ValueError("first_execution_horizon must be non-negative.")
+        first_horizon = cfg.first_execution_horizon or cfg.execution_horizon
+        if first_horizon > MODEL_ACTION_HORIZON:
+            raise ValueError(
+                f"first_execution_horizon must not exceed the model action horizon ({MODEL_ACTION_HORIZON})."
+            )
         if cfg.delay < 0:
             raise ValueError("delay must be non-negative.")
         if cfg.early_stop_actions < 0:
             raise ValueError("early_stop_actions must be non-negative.")
-        if 0 < cfg.early_stop_actions < cfg.execution_horizon:
+        if 0 < cfg.early_stop_actions < max(cfg.execution_horizon, first_horizon):
             raise ValueError(
-                "early_stop_actions must be 0 (disabled) or at least execution_horizon "
+                "early_stop_actions must be 0 (disabled) or at least both execution horizons "
                 "so the next delay prefix remains available."
             )
         if cfg.early_stop_actions > 0 and cfg.policy_transport != "streaming_zmq":
             raise ValueError("early_stop_actions requires policy_transport=streaming_zmq.")
         if cfg.policy_transport == "streaming_zmq":
-            if cfg.delay > cfg.execution_horizon:
-                raise ValueError("official_rtc requires delay <= execution_horizon.")
+            if cfg.delay > min(cfg.execution_horizon, first_horizon):
+                raise ValueError("official_rtc requires delay <= both execution horizons.")
             if cfg.execution_horizon + cfg.delay > MODEL_ACTION_HORIZON:
                 raise ValueError(
                     "official_rtc requires execution_horizon + delay <= "
@@ -240,6 +248,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._current_request_id: Optional[int] = None
         self._current_model_offset = 0
         self._current_step = 0
+        self._current_is_first_chunk = True
         self._current_final = False
         self._next_actions: dict[int, np.ndarray] = {}
         self._next_request_id: Optional[int] = None
@@ -354,7 +363,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if self._next_request_id is not None:
             return False
 
-        horizon = int(self.cfg.execution_horizon)
+        horizon = self._current_execution_horizon()
         current_is_full = all(idx in self._current_actions for idx in range(horizon))
         if not current_is_full:
             return False
@@ -392,7 +401,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 prefix_steps = int(self.cfg.delay)
                 prefix_start_index = (
                     self._current_model_offset
-                    + int(self.cfg.execution_horizon)
+                    + self._current_execution_horizon()
                     - prefix_steps
                 )
                 policy_kwargs = obs.setdefault("policy_kwargs", {})
@@ -459,7 +468,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _drain_streaming_updates(self) -> None:
         if self._streaming_policy is None:
             return
-        horizon = int(self.cfg.execution_horizon)
         for msg in self._streaming_policy.recv_action_updates():
             request_id = int(msg.get("request_id", -1))
             # A request starts as "next", then becomes "current" after the buffer swap.
@@ -504,6 +512,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 if target == "current"
                 else self._next_actions
             )
+            horizon = (
+                self._current_execution_horizon()
+                if target == "current"
+                else int(self.cfg.execution_horizon)
+            )
             accepted_indices: list[int] = []
             accepted_actions: list[np.ndarray] = []
             for model_idx, action in zip(indices, actions, strict=True):
@@ -533,7 +546,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
     def _pop_next_stream_action(self) -> Optional[np.ndarray]:
         if self._current_request_id is None:
             return None
-        horizon = int(self.cfg.execution_horizon)
+        horizon = self._current_execution_horizon()
 
         # The first chunk is obtained synchronously before moving.
         if self._current_step == 0 and self._metrics_actions_applied == 0:
@@ -570,12 +583,18 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._current_model_offset = self._next_model_offset
             self._current_final = self._next_final
             self._current_step = 0
+            self._current_is_first_chunk = False
             self._next_actions = {}
             self._next_request_id = None
             self._next_model_offset = 0
             self._next_final = False
 
         return action
+
+    def _current_execution_horizon(self) -> int:
+        if self._current_is_first_chunk and self.cfg.first_execution_horizon > 0:
+            return int(self.cfg.first_execution_horizon)
+        return int(self.cfg.execution_horizon)
 
     def _log_stream_wait_state(self, reason: str) -> None:
         now = time.perf_counter()
@@ -886,6 +905,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "faster_prefix_mode": "official_rtc" if self._streaming_policy is not None else "none",
             "fps": int(self.cfg.fps),
             "execution_horizon": int(self.cfg.execution_horizon),
+            "first_execution_horizon": int(
+                self.cfg.first_execution_horizon or self.cfg.execution_horizon
+            ),
             "gripper_open_confirm_steps": int(self.cfg.gripper_open_confirm_steps),
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),
             "total_time_s": total_time_s,
@@ -973,6 +995,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             )
         config_parts.extend(
             [
+                f"first_execution_horizon={summary.get('first_execution_horizon')}",
                 f"execution_horizon={summary.get('execution_horizon')}",
                 f"fps={summary.get('fps')}",
             ]

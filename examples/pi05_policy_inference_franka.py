@@ -63,6 +63,12 @@ def _parse_args() -> argparse.Namespace:
         help="Actions executed from each chunk before requesting the next inference.",
     )
     parser.add_argument(
+        "--first_execution_horizon",
+        type=int,
+        default=0,
+        help="Actions executed from the first chunk only; 0 uses --execution_horizon.",
+    )
+    parser.add_argument(
         "--gripper_open_confirm_steps",
         type=int,
         default=1,
@@ -158,6 +164,7 @@ def main() -> None:
         max_position_step_m=args.max_position_step_m,
         max_rotation_step_rad=args.max_rotation_step_rad,
         execution_horizon=args.execution_horizon,
+        first_execution_horizon=args.first_execution_horizon,
         gripper_open_confirm_steps=args.gripper_open_confirm_steps,
         stop_after_first_release=args.stop_after_first_release,
         stop_after_release_steps=args.stop_after_release_steps,

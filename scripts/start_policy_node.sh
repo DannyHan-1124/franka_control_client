@@ -3,7 +3,7 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WORKSPACE_ROOT="$(cd "${REPO_ROOT}/.." && pwd)"
-export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot/src"
+export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot-faster/src"
 
 # Keep Hugging Face's generated Arrow/dataset files off the quota-limited home
 # filesystem. Respect explicit overrides when the caller already supplied them.
