@@ -196,14 +196,19 @@ class Pi05PolicyInference(PolicyInferenceManager):
             time.sleep(sleep_time)
 
     def _should_publish_replan_observation(self) -> bool:
+        # A positive execution horizon serializes requests until the pending
+        # chunk arrives. This is especially important for the first request:
+        # publishing again here would supersede it in DynamicVLA's latest-value
+        # mailbox before it can become the executing chunk.
+        if self._stream_pending_request_id is not None:
+            return False
+
         request_id = self._stream_execution_window_request_id
         if request_id is None:
             return True
         min_execute_steps = self._execution_horizon_for_request(request_id)
         if min_execute_steps <= 0:
             return True
-        if self._stream_pending_request_id is not None:
-            return False
         metric = self._metrics_stream_chunks.get(request_id)
         executed_steps = int(metric.get("executed_action_count") or 0) if metric else 0
         if executed_steps >= min_execute_steps:
