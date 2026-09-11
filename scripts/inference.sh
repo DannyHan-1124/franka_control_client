@@ -19,6 +19,7 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --policy_zmq_endpoint tcp://127.0.0.1:17726 \
     --metrics_path "${REPO_ROOT}/logs/pi05_inference_metrics_c.jsonl" \
     --first_execution_horizon 30 \
+    --continuous_min_execute_steps 5 \
     --static_camera static_cam \
     --wrist_camera wrist_cam
 
