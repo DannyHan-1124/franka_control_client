@@ -9,9 +9,8 @@ export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot/src:${PYTHONPATH:-
 # pgrep -af 'ssh.*(-L)'
 
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
-    --task "put cylinder in moving cup" \
+    --task "put red cylinder on red cube" \
     --stop_after_first_release \
-    --close_gripper_on_reset \
     --fps 20 \
     --control_hz 100 \
     --robot_name FrankaPanda \
@@ -21,6 +20,7 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --pyzlc_group_port 7725 \
     --policy_transport zmq \
     --policy_zmq_endpoint tcp://127.0.0.1:17725 \
+    --metrics_path "${REPO_ROOT}/logs/abpolicy_inference_metrics_std.jsonl" \
     --abpolicy_enabled \
     --first_execution_horizon 20 \
     --static_camera static_cam \
