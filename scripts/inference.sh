@@ -11,6 +11,7 @@ export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot/src"
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --task "put red cube in bowl" \
     --stop_after_first_release \
+    --close_gripper_on_reset \
     --fps 30 \
     --robot_name FrankaPanda \
     --pyzlc_name policy_inference \

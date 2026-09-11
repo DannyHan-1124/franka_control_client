@@ -76,6 +76,11 @@ def _parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--stop_after_first_release", action="store_true", help="Stop the episode after the first confirmed release.")
     parser.add_argument("--stop_after_release_steps", type=int, default=0, help="Extra policy steps to run after release before stopping.")
+    parser.add_argument(
+        "--close_gripper_on_reset",
+        action="store_true",
+        help="After going home, wait for the object to be inserted and close the gripper.",
+    )
     parser.add_argument("--debug_image_dir", default=None, help="Directory for saved camera debug frames.")
     parser.add_argument("--debug_image_interval", type=int, default=25, help="Save one debug image pair every N policy steps.")
     parser.add_argument("--metrics_path", default=None, help="Append per-episode metrics as JSONL to this path.")
@@ -168,6 +173,7 @@ def main() -> None:
         gripper_open_confirm_steps=args.gripper_open_confirm_steps,
         stop_after_first_release=args.stop_after_first_release,
         stop_after_release_steps=args.stop_after_release_steps,
+        close_gripper_on_reset=args.close_gripper_on_reset,
         debug_image_dir=args.debug_image_dir,
         debug_image_interval=args.debug_image_interval,
         metrics_path=args.metrics_path,
