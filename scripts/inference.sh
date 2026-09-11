@@ -8,18 +8,17 @@ export PYTHONPATH="${REPO_ROOT}/src:${PYTHONPATH:-}"
 # pgrep -af 'ssh.*(-L)'
 
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
-    --task "put cylinder in moving cup" \
+    --task "put red cylinder on red cube" \
     --fps 20 \
     --stop_after_first_release \
-    --close_gripper_on_reset \
     --robot_name FrankaPanda \
     --pyzlc_name policy_inference \
     --pyzlc_host 141.3.53.25 \
     --pyzlc_group_name robot_lab_robotiq_202 \
     --pyzlc_group_port 7725 \
     --policy_zmq_endpoint tcp://127.0.0.1:17726 \
-    --first_execution_horizon 25 \
-    --continuous_min_execute_steps 25 \
+    --metrics_path "${REPO_ROOT}/logs/pi05_inference_metrics_c.jsonl" \
+    --first_execution_horizon 30 \
     --static_camera static_cam \
     --wrist_camera wrist_cam
 

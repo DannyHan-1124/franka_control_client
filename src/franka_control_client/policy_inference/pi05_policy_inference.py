@@ -67,8 +67,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.data_collectors = data_collectors
         self.control_pair = control_pair
         self.cfg = cfg
-        if cfg.first_execution_horizon < 0:
-            raise ValueError("first_execution_horizon must be non-negative.")
         if cfg.policy_transport != "streaming_zmq":
             raise ValueError("official DynamicVLA inference requires policy_transport=streaming_zmq.")
         self._initial_task = cfg.task
@@ -647,7 +645,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         static_rgb = self._capture_rgb(self.static_cam)
         wrist_rgb = self._capture_rgb(self.wrist_cam)
         # Match the wrist-camera orientation used during training.
-        wrist_rgb = cv2.rotate(wrist_rgb, cv2.ROTATE_180)
+        # wrist_rgb = cv2.rotate(wrist_rgb, cv2.ROTATE_180)
         obs = {
             "observation.images.base_0_rgb": _encode_rgb_image(static_rgb),
             "observation.images.left_wrist_0_rgb": _encode_rgb_image(wrist_rgb),
