@@ -40,6 +40,7 @@ class Pi05PolicyInferenceConfig:
     policy_zmq_endpoint: Optional[str] = None
     policy_zmq_timeout_ms: int = 30000
     continuous_min_execute_steps: int = 0
+    first_execution_horizon: int = 0
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
     close_gripper_on_reset: bool = False
@@ -66,6 +67,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.data_collectors = data_collectors
         self.control_pair = control_pair
         self.cfg = cfg
+        if cfg.first_execution_horizon < 0:
+            raise ValueError("first_execution_horizon must be non-negative.")
         if cfg.policy_transport != "streaming_zmq":
             raise ValueError("official DynamicVLA inference requires policy_transport=streaming_zmq.")
         self._initial_task = cfg.task
@@ -120,6 +123,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._stream_action_sources: dict[int, tuple[int, int]] = {}
         self._stream_pending_request_id: Optional[int] = None
         self._stream_execution_window_request_id: Optional[int] = None
+        self._stream_first_request_id: Optional[int] = None
         self._reset_metrics()
 
         self.register_start_infering_event(self.control_pair.start_control_pair)
@@ -142,6 +146,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._stream_action_sources = {}
         self._stream_pending_request_id = None
         self._stream_execution_window_request_id = None
+        self._stream_first_request_id = None
         self.task = self._initial_task
         current_action = self.policy.current_action
         self._last_action_timestamp = (
@@ -193,15 +198,14 @@ class Pi05PolicyInference(PolicyInferenceManager):
             time.sleep(sleep_time)
 
     def _should_publish_replan_observation(self) -> bool:
-        min_execute_steps = int(self.cfg.continuous_min_execute_steps)
+        request_id = self._stream_execution_window_request_id
+        if request_id is None:
+            return True
+        min_execute_steps = self._execution_horizon_for_request(request_id)
         if min_execute_steps <= 0:
             return True
         if self._stream_pending_request_id is not None:
             return False
-
-        request_id = self._stream_execution_window_request_id
-        if request_id is None:
-            return True
         metric = self._metrics_stream_chunks.get(request_id)
         executed_steps = int(metric.get("executed_action_count") or 0) if metric else 0
         if executed_steps >= min_execute_steps:
@@ -228,7 +232,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
         obs.setdefault("policy_kwargs", {})["delay"] = 0
         request_time = time.perf_counter()
         request_id = self._streaming_policy.publish_latest_observation(obs)
-        if self.cfg.continuous_min_execute_steps > 0:
+        if self._stream_first_request_id is None:
+            self._stream_first_request_id = request_id
+        if self._execution_horizon_for_request(request_id) > 0:
             self._stream_pending_request_id = request_id
         self._metrics_observations_published += 1
         self._stream_request_start_steps[request_id] = observation_step
@@ -312,12 +318,19 @@ class Pi05PolicyInference(PolicyInferenceManager):
                     metric["final_latency_s"] = time.perf_counter() - float(metric["request_time_s"])
                     self._metrics_chunks.append(dict(metric))
             if indices:
-                if self.cfg.continuous_min_execute_steps > 0:
-                    self._stream_execution_window_request_id = request_id
+                self._stream_execution_window_request_id = request_id
                 pyzlc.info(
                     "Received streamed Pi0.5 actions: "
                     f"request_id={request_id}, indices={indices}, final={bool(msg.get('final'))}"
                 )
+
+    def _execution_horizon_for_request(self, request_id: int) -> int:
+        if (
+            request_id == self._stream_first_request_id
+            and self.cfg.first_execution_horizon > 0
+        ):
+            return int(self.cfg.first_execution_horizon)
+        return int(self.cfg.continuous_min_execute_steps)
 
     def _pop_next_continuous_stream_action(self) -> Optional[np.ndarray]:
         action = self._stream_action_buffer.pop(self._stream_global_step, None)
@@ -442,6 +455,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "streaming_mode": "continuous",
             "continuous_strategy": "official_dynamicvla",
             "continuous_min_execute_steps": int(self.cfg.continuous_min_execute_steps),
+            "first_execution_horizon": int(
+                self.cfg.first_execution_horizon or self.cfg.continuous_min_execute_steps
+            ),
             "fps": int(self.cfg.fps),
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),
             "close_gripper_on_reset": bool(self.cfg.close_gripper_on_reset),
@@ -531,6 +547,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             f"schedule={summary.get('schedule')}",
             f"streaming_mode={summary.get('streaming_mode')}",
             f"continuous_strategy={summary.get('continuous_strategy')}",
+            f"first_execution_horizon={summary.get('first_execution_horizon')}",
             f"continuous_min_execute_steps={summary.get('continuous_min_execute_steps')}",
         ]
         config_parts.extend(

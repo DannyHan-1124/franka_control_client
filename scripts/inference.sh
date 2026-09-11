@@ -18,6 +18,7 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --pyzlc_group_name robot_lab_robotiq_202 \
     --pyzlc_group_port 7725 \
     --policy_zmq_endpoint tcp://127.0.0.1:17726 \
+    --first_execution_horizon 25 \
     --continuous_min_execute_steps 25 \
     --static_camera static_cam \
     --wrist_camera wrist_cam

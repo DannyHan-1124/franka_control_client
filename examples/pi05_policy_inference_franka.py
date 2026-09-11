@@ -47,6 +47,12 @@ def _parse_args() -> argparse.Namespace:
             "requesting the next replan; 0 preserves immediate continuous replanning."
         ),
     )
+    parser.add_argument(
+        "--first_execution_horizon",
+        type=int,
+        default=0,
+        help="Actions executed from the first chunk only; 0 uses --continuous_min_execute_steps.",
+    )
     parser.add_argument("--stop_after_first_release", action="store_true", help="Stop the episode after the first confirmed release.")
     parser.add_argument("--stop_after_release_steps", type=int, default=0, help="Extra policy steps to run after release before stopping.")
     parser.add_argument(
@@ -100,6 +106,7 @@ def main() -> None:
         policy_zmq_endpoint=args.policy_zmq_endpoint,
         policy_zmq_timeout_ms=args.policy_zmq_timeout_ms,
         continuous_min_execute_steps=args.continuous_min_execute_steps,
+        first_execution_horizon=args.first_execution_horizon,
         stop_after_first_release=args.stop_after_first_release,
         stop_after_release_steps=args.stop_after_release_steps,
         close_gripper_on_reset=args.close_gripper_on_reset,
