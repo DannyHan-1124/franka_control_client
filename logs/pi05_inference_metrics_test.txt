@@ -1,0 +1,652 @@
+
+=== Pi0.5 inference episode: 2026-09-11 13:53:35 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=5.180s, inference_calls=10, completed_chunks=10, prefix_chunks=9, actions_applied=149, empty_action_steps=7
+latency: avg_first_action=0.099s, p95_first_action=0.115s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.520s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0          30       30        30        9           0.128    0.228       0.969
+        2       HAS       3          30       30        15        9           0.096    0.229       0.468
+        3       HAS       3          30       30        15        9           0.096    0.230       0.468
+        4       HAS       3          30       30        15        9           0.095    0.229       0.468
+        5       HAS       3          30       30        15        9           0.096    0.229       0.468
+        6       HAS       3          30       30        15        9           0.095    0.229       0.468
+        7       HAS       3          30       30        15        9           0.096    0.229       0.468
+        8       HAS       3          30       30        15        9           0.096    0.230       0.468
+        9       HAS       3          30       30        14        9           0.096    0.229       0.434
+       10       HAS       3          30        0         0        0             n/a      n/a         n/a
+
+=== Pi0.5 inference episode: 2026-09-11 14:01:22 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=5, fps=30
+summary: total_time=2.974s, inference_calls=2, completed_chunks=2, prefix_chunks=1, actions_applied=32, empty_action_steps=57
+latency: avg_first_action=0.946s, p95_first_action=1.682s, recommended_delay=51, avg_final=1.898s, avg_chunk_duration=0.501s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0          30       30        30        9           1.764    1.898       0.969
+        2       HAS       3          30        8         2        4           0.128      n/a       0.033
+
+=== Pi0.5 inference episode: 2026-09-11 14:02:00 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=5, fps=30
+summary: total_time=6.320s, inference_calls=24, completed_chunks=24, prefix_chunks=23, actions_applied=140, empty_action_steps=50
+latency: avg_first_action=0.098s, p95_first_action=0.126s, recommended_delay=4, avg_final=0.232s, avg_chunk_duration=0.176s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        3       HAS       0          30       30        30        9           0.129    0.262       0.969
+        4       HAS       3          30       30         5        9           0.129    0.262       0.138
+        5       HAS       3          30       30         5        9           0.095    0.229       0.138
+        6       HAS       3          30       30         5        9           0.096    0.230       0.138
+        7       HAS       3          30       30         5        9           0.096    0.229       0.139
+        8       HAS       3          30       30         5        9           0.095    0.229       0.167
+        9       HAS       3          30       30         5        9           0.096    0.229       0.138
+       10       HAS       3          30       30         5        9           0.096    0.229       0.139
+       11       HAS       3          30       30         5        9           0.095    0.229       0.140
+       12       HAS       3          30       30         5        9           0.094    0.228       0.138
+       13       HAS       3          30       30         5        9           0.095    0.229       0.138
+       14       HAS       3          30       30         5        9           0.096    0.229       0.138
+       15       HAS       3          30       30         5        9           0.096    0.229       0.138
+       16       HAS       3          30       30         5        9           0.096    0.229       0.139
+       17       HAS       3          30       30         5        9           0.095    0.229       0.138
+       18       HAS       3          30       30         5        9           0.095    0.229       0.139
+       19       HAS       3          30       30         5        9           0.095    0.229       0.139
+       20       HAS       3          30       30         5        9           0.095    0.229       0.139
+       21       HAS       3          30       30         5        9           0.095    0.229       0.139
+       22       HAS       3          30       30         5        9           0.095    0.229       0.138
+       23       HAS       3          30       30         5        9           0.096    0.229       0.139
+       24       HAS       3          30       30         5        9           0.095    0.229       0.140
+       25       HAS       3          30       30         5        9           0.094    0.228       0.139
+       26       HAS       3          30        0         0        0             n/a      n/a         n/a
+
+=== Pi0.5 inference episode: 2026-09-11 14:02:22 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=5, fps=30
+summary: total_time=6.253s, inference_calls=24, completed_chunks=24, prefix_chunks=23, actions_applied=140, empty_action_steps=48
+latency: avg_first_action=0.097s, p95_first_action=0.096s, recommended_delay=3, avg_final=0.229s, avg_chunk_duration=0.174s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       27       HAS       0          30       30        30        9           0.129    0.229       0.969
+       28       HAS       3          30       30         5        9           0.096    0.230       0.134
+       29       HAS       3          30       30         5        9           0.096    0.229       0.138
+       30       HAS       3          30       30         5        9           0.096    0.229       0.138
+       31       HAS       3          30       30         5        9           0.096    0.230       0.138
+       32       HAS       3          30       30         5        9           0.096    0.229       0.138
+       33       HAS       3          30       30         5        9           0.096    0.229       0.138
+       34       HAS       3          30       30         5        9           0.096    0.230       0.139
+       35       HAS       3          30       30         5        9           0.095    0.229       0.138
+       36       HAS       3          30       30         5        9           0.096    0.229       0.138
+       37       HAS       3          30       30         5        9           0.096    0.229       0.138
+       38       HAS       3          30       30         5        9           0.096    0.230       0.138
+       39       HAS       3          30       30         5        9           0.096    0.230       0.138
+       40       HAS       3          30       30         5        9           0.096    0.229       0.138
+       41       HAS       3          30       30         5        9           0.096    0.229       0.138
+       42       HAS       3          30       30         5        9           0.096    0.229       0.138
+       43       HAS       3          30       30         5        9           0.096    0.229       0.138
+       44       HAS       3          30       30         5        9           0.096    0.229       0.138
+       45       HAS       3          30       30         5        9           0.095    0.229       0.138
+       46       HAS       3          30       30         5        9           0.096    0.229       0.138
+       47       HAS       3          30       30         5        9           0.096    0.229       0.138
+       48       HAS       3          30       30         5        9           0.095    0.229       0.139
+       49       HAS       3          30       30         5        9           0.095    0.229       0.139
+       50       HAS       3          30        0         0        0             n/a      n/a         n/a
+
+=== Pi0.5 inference episode: 2026-09-11 14:03:09 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=5.548s, inference_calls=10, completed_chunks=10, prefix_chunks=9, actions_applied=160, empty_action_steps=7
+latency: avg_first_action=0.099s, p95_first_action=0.114s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.501s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0          30       30        30        9           0.129    0.229       0.969
+        2       HAS       3          30       30        15        9           0.095    0.229       0.468
+        3       HAS       3          30       30        15        9           0.095    0.229       0.468
+        4       HAS       3          30       30        15        9           0.096    0.229       0.468
+        5       HAS       3          30       30        15        9           0.095    0.229       0.468
+        6       HAS       3          30       30        15        9           0.095    0.229       0.468
+        7       HAS       3          30       30        15        9           0.096    0.229       0.468
+        8       HAS       3          30       30        15        9           0.096    0.230       0.468
+        9       HAS       3          30       30        15        9           0.096    0.229       0.468
+       10       HAS       3          30       30        10        9           0.096    0.229       0.301
+
+=== Pi0.5 inference episode: 2026-09-11 14:04:27 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=5.547s, inference_calls=10, completed_chunks=10, prefix_chunks=9, actions_applied=160, empty_action_steps=7
+latency: avg_first_action=0.102s, p95_first_action=0.129s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.501s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       11       HAS       0          30       30        30        9           0.129    0.230       0.969
+       12       HAS       3          30       30        15        9           0.129    0.229       0.468
+       13       HAS       3          30       30        15        9           0.096    0.229       0.468
+       14       HAS       3          30       30        15        9           0.096    0.229       0.468
+       15       HAS       3          30       30        15        9           0.095    0.229       0.468
+       16       HAS       3          30       30        15        9           0.095    0.229       0.468
+       17       HAS       3          30       30        15        9           0.096    0.229       0.468
+       18       HAS       3          30       30        15        9           0.095    0.229       0.468
+       19       HAS       3          30       30        15        9           0.095    0.229       0.468
+       20       HAS       3          30       30        10        9           0.095    0.229       0.301
+
+=== Pi0.5 inference episode: 2026-09-11 14:05:39 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=6.416s, inference_calls=12, completed_chunks=12, prefix_chunks=11, actions_applied=186, empty_action_steps=7
+latency: avg_first_action=0.101s, p95_first_action=0.129s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.484s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       21       HAS       0          30       30        30        9           0.129    0.229       0.969
+       22       HAS       3          30       30        15        9           0.129    0.230       0.468
+       23       HAS       3          30       30        15        9           0.096    0.230       0.468
+       24       HAS       3          30       30        15        9           0.096    0.229       0.468
+       25       HAS       3          30       30        15        9           0.096    0.229       0.468
+       26       HAS       3          30       30        15        9           0.096    0.229       0.468
+       27       HAS       3          30       30        15        9           0.096    0.229       0.468
+       28       HAS       3          30       30        15        9           0.096    0.229       0.468
+       29       HAS       3          30       30        15        9           0.096    0.230       0.468
+       30       HAS       3          30       30        15        9           0.096    0.229       0.468
+       31       HAS       3          30       30        15        9           0.096    0.229       0.468
+       32       HAS       3          30       30         6        9           0.096    0.229       0.167
+
+=== Pi0.5 inference episode: 2026-09-11 14:06:02 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=5.815s, inference_calls=11, completed_chunks=11, prefix_chunks=10, actions_applied=168, empty_action_steps=7
+latency: avg_first_action=0.104s, p95_first_action=0.129s, recommended_delay=4, avg_final=0.232s, avg_chunk_duration=0.477s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       33       HAS       0          30       30        30        9           0.127    0.228       0.969
+       34       HAS       3          30       30        15        9           0.129    0.229       0.468
+       35       HAS       3          30       30        15        9           0.096    0.229       0.468
+       36       HAS       3          30       30        15        9           0.095    0.229       0.468
+       37       HAS       3          30       30        15        9           0.096    0.229       0.468
+       38       HAS       3          30       30        15        9           0.096    0.229       0.468
+       39       HAS       3          30       30        15        9           0.096    0.229       0.468
+       40       HAS       3          30       30        15        9           0.129    0.262       0.468
+       41       HAS       3          30       30        15        9           0.095    0.229       0.468
+       42       HAS       3          30       30        15        9           0.095    0.229       0.468
+       43       HAS       3          30       24         3        7           0.095      n/a       0.067
+
+=== Pi0.5 inference episode: 2026-09-11 14:06:18 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=6.182s, inference_calls=11, completed_chunks=11, prefix_chunks=10, actions_applied=174, empty_action_steps=12
+latency: avg_first_action=0.111s, p95_first_action=0.179s, recommended_delay=6, avg_final=0.244s, avg_chunk_duration=0.495s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       44       HAS       0          30       30        30        9           0.263    0.396       0.969
+       45       HAS       3          30       30        15        9           0.096    0.230       0.468
+       46       HAS       3          30       30        15        9           0.095    0.229       0.468
+       47       HAS       3          30       30        15        9           0.096    0.230       0.468
+       48       HAS       3          30       30        15        9           0.095    0.229       0.468
+       49       HAS       3          30       30        15        9           0.096    0.229       0.468
+       50       HAS       3          30       30        15        9           0.096    0.230       0.468
+       51       HAS       3          30       30        15        9           0.096    0.229       0.468
+       52       HAS       3          30       30        15        9           0.095    0.229       0.468
+       53       HAS       3          30       30        15        9           0.096    0.229       0.468
+       54       HAS       3          30       30         9        9           0.096    0.229       0.267
+
+=== Pi0.5 inference episode: 2026-09-11 14:06:36 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=5.381s, inference_calls=10, completed_chunks=10, prefix_chunks=9, actions_applied=153, empty_action_steps=9
+latency: avg_first_action=0.099s, p95_first_action=0.114s, recommended_delay=4, avg_final=0.237s, avg_chunk_duration=0.478s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       55       HAS       0          30       30        30        9           0.129    0.296       0.969
+       56       HAS       3          30       30        15        9           0.096    0.229       0.468
+       57       HAS       3          30       30        15        9           0.095    0.229       0.468
+       58       HAS       3          30       30        15        9           0.096    0.230       0.468
+       59       HAS       3          30       30        15        9           0.095    0.229       0.468
+       60       HAS       3          30       30        15        9           0.095    0.229       0.468
+       61       HAS       3          30       30        15        9           0.096    0.229       0.468
+       62       HAS       3          30       30        15        9           0.095    0.229       0.468
+       63       HAS       3          30       30        15        9           0.095    0.229       0.468
+       64       HAS       3          30       24         3        7           0.095      n/a       0.067
+
+=== Pi0.5 inference episode: 2026-09-11 14:06:50 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=5.714s, inference_calls=11, completed_chunks=11, prefix_chunks=10, actions_applied=165, empty_action_steps=7
+latency: avg_first_action=0.099s, p95_first_action=0.113s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.518s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       65       HAS       0          30       30        30        9           0.129    0.229       0.969
+       66       HAS       3          30       30        15        9           0.095    0.229       0.468
+       67       HAS       3          30       30        15        9           0.096    0.230       0.468
+       68       HAS       3          30       30        15        9           0.096    0.230       0.468
+       69       HAS       3          30       30        15        9           0.096    0.229       0.468
+       70       HAS       3          30       30        15        9           0.096    0.229       0.468
+       71       HAS       3          30       30        15        9           0.096    0.229       0.468
+       72       HAS       3          30       30        15        9           0.096    0.229       0.468
+       73       HAS       3          30       30        15        9           0.096    0.229       0.468
+       74       HAS       3          30       30        15        9           0.096    0.230       0.468
+       75       HAS       3          30        1         0        1           0.096      n/a         n/a
+
+=== Pi0.5 inference episode: 2026-09-11 14:07:06 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=5.117s, inference_calls=10, completed_chunks=10, prefix_chunks=9, actions_applied=147, empty_action_steps=7
+latency: avg_first_action=0.099s, p95_first_action=0.116s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.513s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       76       HAS       0          30       30        30        9           0.129    0.229       0.969
+       77       HAS       3          30       30        15        9           0.096    0.229       0.468
+       78       HAS       3          30       30        15        9           0.096    0.229       0.468
+       79       HAS       3          30       30        15        9           0.095    0.229       0.468
+       80       HAS       3          30       30        15        9           0.096    0.229       0.468
+       81       HAS       3          30       30        15        9           0.096    0.230       0.468
+       82       HAS       3          30       30        15        9           0.096    0.230       0.468
+       83       HAS       3          30       30        15        9           0.096    0.229       0.468
+       84       HAS       3          30       30        12        9           0.096    0.230       0.372
+       85       HAS       3          30        0         0        0             n/a      n/a         n/a
+
+=== Pi0.5 inference episode: 2026-09-11 14:07:39 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=5.916s, inference_calls=11, completed_chunks=11, prefix_chunks=10, actions_applied=171, empty_action_steps=7
+latency: avg_first_action=0.099s, p95_first_action=0.112s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.486s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       86       HAS       0          30       30        30        9           0.128    0.228       0.969
+       87       HAS       3          30       30        15        9           0.096    0.229       0.469
+       88       HAS       3          30       30        15        9           0.096    0.229       0.468
+       89       HAS       3          30       30        15        9           0.096    0.230       0.468
+       90       HAS       3          30       30        15        9           0.095    0.229       0.468
+       91       HAS       3          30       30        15        9           0.096    0.229       0.468
+       92       HAS       3          30       30        15        9           0.095    0.229       0.468
+       93       HAS       3          30       30        15        9           0.096    0.229       0.468
+       94       HAS       3          30       30        15        9           0.096    0.229       0.468
+       95       HAS       3          30       30        15        9           0.096    0.229       0.468
+       96       HAS       3          30       30         6        9           0.096    0.229       0.167
+
+=== Pi0.5 inference episode: 2026-09-11 14:07:56 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=3.745s, inference_calls=7, completed_chunks=7, prefix_chunks=6, actions_applied=106, empty_action_steps=7
+latency: avg_first_action=0.105s, p95_first_action=0.129s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.473s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       97       HAS       0          30       30        30        9           0.129    0.229       0.969
+       98       HAS       3          30       30        15        9           0.129    0.229       0.468
+       99       HAS       3          30       30        15        9           0.096    0.230       0.468
+      100       HAS       3          30       30        15        9           0.095    0.229       0.469
+      101       HAS       3          30       30        15        9           0.096    0.230       0.468
+      102       HAS       3          30       30        15        9           0.096    0.230       0.468
+      103       HAS       3          30        4         1        3           0.096      n/a       0.000
+
+=== Pi0.5 inference episode: 2026-09-11 14:08:33 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=3.744s, inference_calls=7, completed_chunks=7, prefix_chunks=6, actions_applied=106, empty_action_steps=7
+latency: avg_first_action=0.096s, p95_first_action=0.096s, recommended_delay=3, avg_final=0.229s, avg_chunk_duration=0.473s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+      104       HAS       0          30       30        30        9           0.096    0.229       0.969
+      105       HAS       3          30       30        15        9           0.096    0.230       0.468
+      106       HAS       3          30       30        15        9           0.096    0.230       0.468
+      107       HAS       3          30       30        15        9           0.095    0.229       0.468
+      108       HAS       3          30       30        15        9           0.096    0.230       0.468
+      109       HAS       3          30       30        15        9           0.096    0.229       0.468
+      110       HAS       3          30        4         1        3           0.096      n/a       0.000
+
+=== Pi0.5 inference episode: 2026-09-11 14:08:48 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=4.845s, inference_calls=9, completed_chunks=9, prefix_chunks=8, actions_applied=139, empty_action_steps=7
+latency: avg_first_action=0.095s, p95_first_action=0.096s, recommended_delay=3, avg_final=0.229s, avg_chunk_duration=0.483s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+      111       HAS       0          30       30        30        9           0.096    0.229       0.969
+      112       HAS       3          30       30        15        9           0.095    0.229       0.468
+      113       HAS       3          30       30        15        9           0.096    0.229       0.468
+      114       HAS       3          30       30        15        9           0.095    0.228       0.468
+      115       HAS       3          30       30        15        9           0.095    0.229       0.468
+      116       HAS       3          30       30        15        9           0.095    0.229       0.468
+      117       HAS       3          30       30        15        9           0.095    0.229       0.468
+      118       HAS       3          30       30        15        9           0.095    0.228       0.468
+      119       HAS       3          30       30         4        9           0.095    0.229       0.100
+
+=== Pi0.5 inference episode: 2026-09-11 14:09:11 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=4.878s, inference_calls=9, completed_chunks=9, prefix_chunks=8, actions_applied=140, empty_action_steps=7
+latency: avg_first_action=0.096s, p95_first_action=0.096s, recommended_delay=3, avg_final=0.229s, avg_chunk_duration=0.486s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+      120       HAS       0          30       30        30        9           0.096    0.230       0.969
+      121       HAS       3          30       30        15        9           0.096    0.229       0.468
+      122       HAS       3          30       30        15        9           0.096    0.230       0.468
+      123       HAS       3          30       30        15        9           0.096    0.229       0.468
+      124       HAS       3          30       30        15        9           0.096    0.229       0.468
+      125       HAS       3          30       30        15        9           0.096    0.229       0.468
+      126       HAS       3          30       30        15        9           0.095    0.229       0.468
+      127       HAS       3          30       30        15        9           0.095    0.229       0.468
+      128       HAS       3          30       30         5        9           0.096    0.229       0.134
+
+=== Pi0.5 inference episode: 2026-09-11 14:09:26 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=5.080s, inference_calls=9, completed_chunks=9, prefix_chunks=8, actions_applied=146, empty_action_steps=7
+latency: avg_first_action=0.095s, p95_first_action=0.096s, recommended_delay=3, avg_final=0.229s, avg_chunk_duration=0.509s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+      129       HAS       0          30       30        30        9           0.096    0.229       0.969
+      130       HAS       3          30       30        15        9           0.096    0.229       0.468
+      131       HAS       3          30       30        15        9           0.096    0.229       0.468
+      132       HAS       3          30       30        15        9           0.095    0.229       0.468
+      133       HAS       3          30       30        15        9           0.095    0.229       0.468
+      134       HAS       3          30       30        15        9           0.095    0.228       0.468
+      135       HAS       3          30       30        15        9           0.095    0.229       0.468
+      136       HAS       3          30       30        15        9           0.096    0.229       0.468
+      137       HAS       3          30       30        11        9           0.096    0.229       0.334
+
+=== Pi0.5 inference episode: 2026-09-11 14:09:39 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=4.712s, inference_calls=9, completed_chunks=9, prefix_chunks=8, actions_applied=135, empty_action_steps=7
+latency: avg_first_action=0.099s, p95_first_action=0.116s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.530s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+      138       HAS       0          30       30        30        9           0.129    0.230       0.969
+      139       HAS       3          30       30        15        9           0.096    0.229       0.468
+      140       HAS       3          30       30        15        9           0.096    0.229       0.468
+      141       HAS       3          30       30        15        9           0.094    0.228       0.468
+      142       HAS       3          30       30        15        9           0.096    0.229       0.468
+      143       HAS       3          30       30        15        9           0.095    0.229       0.468
+      144       HAS       3          30       30        15        9           0.095    0.229       0.468
+      145       HAS       3          30       30        15        9           0.095    0.229       0.468
+      146       HAS       3          30        1         0        1           0.096      n/a         n/a
+
+=== Pi0.5 inference episode: 2026-09-11 14:09:52 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=2.741s, inference_calls=5, completed_chunks=5, prefix_chunks=4, actions_applied=76, empty_action_steps=7
+latency: avg_first_action=0.095s, p95_first_action=0.096s, recommended_delay=3, avg_final=0.229s, avg_chunk_duration=0.474s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+      147       HAS       0          30       30        30        9           0.096    0.229       0.969
+      148       HAS       3          30       30        15        9           0.095    0.229       0.468
+      149       HAS       3          30       30        15        9           0.095    0.229       0.468
+      150       HAS       3          30       30        15        9           0.095    0.229       0.468
+      151       HAS       3          30        4         1        3           0.095      n/a       0.000
+
+=== Pi0.5 inference episode: 2026-09-11 14:10:08 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=4.711s, inference_calls=9, completed_chunks=9, prefix_chunks=8, actions_applied=135, empty_action_steps=7
+latency: avg_first_action=0.096s, p95_first_action=0.096s, recommended_delay=3, avg_final=0.229s, avg_chunk_duration=0.530s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+      152       HAS       0          30       30        30        9           0.096    0.229       0.969
+      153       HAS       3          30       30        15        9           0.096    0.230       0.468
+      154       HAS       3          30       30        15        9           0.096    0.230       0.468
+      155       HAS       3          30       30        15        9           0.095    0.229       0.468
+      156       HAS       3          30       30        15        9           0.095    0.229       0.468
+      157       HAS       3          30       30        15        9           0.095    0.229       0.468
+      158       HAS       3          30       30        15        9           0.096    0.229       0.468
+      159       HAS       3          30       30        15        9           0.095    0.229       0.468
+      160       HAS       3          30        1         0        1           0.096      n/a         n/a
+
+=== Pi0.5 inference episode: 2026-09-11 14:10:21 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=3.745s, inference_calls=7, completed_chunks=7, prefix_chunks=6, actions_applied=106, empty_action_steps=7
+latency: avg_first_action=0.096s, p95_first_action=0.096s, recommended_delay=3, avg_final=0.229s, avg_chunk_duration=0.473s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+      161       HAS       0          30       30        30        9           0.095    0.229       0.969
+      162       HAS       3          30       30        15        9           0.095    0.228       0.468
+      163       HAS       3          30       30        15        9           0.096    0.229       0.469
+      164       HAS       3          30       30        15        9           0.096    0.230       0.468
+      165       HAS       3          30       30        15        9           0.096    0.230       0.468
+      166       HAS       3          30       30        15        9           0.096    0.229       0.468
+      167       HAS       3          30        4         1        3           0.096      n/a       0.000
+
+=== Pi0.5 inference episode: 2026-09-11 14:11:22 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=5.119s, inference_calls=10, completed_chunks=10, prefix_chunks=9, actions_applied=147, empty_action_steps=7
+latency: avg_first_action=0.096s, p95_first_action=0.096s, recommended_delay=3, avg_final=0.229s, avg_chunk_duration=0.513s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+      168       HAS       0          30       30        30        9           0.095    0.229       0.970
+      169       HAS       3          30       30        15        9           0.096    0.230       0.468
+      170       HAS       3          30       30        15        9           0.096    0.229       0.468
+      171       HAS       3          30       30        15        9           0.095    0.229       0.468
+      172       HAS       3          30       30        15        9           0.096    0.230       0.468
+      173       HAS       3          30       30        15        9           0.096    0.229       0.468
+      174       HAS       3          30       30        15        9           0.096    0.229       0.468
+      175       HAS       3          30       30        15        9           0.096    0.230       0.468
+      176       HAS       3          30       30        12        9           0.095    0.229       0.372
+      177       HAS       3          30        0         0        0             n/a      n/a         n/a
+
+=== Pi0.5 inference episode: 2026-09-11 14:11:37 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=4.579s, inference_calls=8, completed_chunks=8, prefix_chunks=7, actions_applied=131, empty_action_steps=7
+latency: avg_first_action=0.095s, p95_first_action=0.096s, recommended_delay=3, avg_final=0.229s, avg_chunk_duration=0.514s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+      178       HAS       0          30       30        30        9           0.096    0.230       0.969
+      179       HAS       3          30       30        15        9           0.096    0.229       0.468
+      180       HAS       3          30       30        15        9           0.096    0.230       0.468
+      181       HAS       3          30       30        15        9           0.095    0.229       0.468
+      182       HAS       3          30       30        15        9           0.095    0.229       0.468
+      183       HAS       3          30       30        15        9           0.095    0.229       0.468
+      184       HAS       3          30       30        15        9           0.095    0.229       0.468
+      185       HAS       3          30       30        11        9           0.095    0.228       0.334
+
+=== Pi0.5 inference episode: 2026-09-11 14:12:14 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=1.337s, inference_calls=2, completed_chunks=2, prefix_chunks=1, actions_applied=33, empty_action_steps=7
+latency: avg_first_action=0.112s, p95_first_action=0.127s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.518s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+      186       HAS       0          30       30        30        9           0.129    0.229       0.969
+      187       HAS       3          30       18         3        6           0.095      n/a       0.067
+
+=== Pi0.5 inference episode: 2026-09-11 14:12:26 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=2.740s, inference_calls=5, completed_chunks=5, prefix_chunks=4, actions_applied=76, empty_action_steps=7
+latency: avg_first_action=0.096s, p95_first_action=0.096s, recommended_delay=3, avg_final=0.229s, avg_chunk_duration=0.474s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+      188       HAS       0          30       30        30        9           0.096    0.229       0.969
+      189       HAS       3          30       30        15        9           0.095    0.229       0.468
+      190       HAS       3          30       30        15        9           0.095    0.229       0.468
+      191       HAS       3          30       30        15        9           0.096    0.230       0.468
+      192       HAS       3          30        4         1        3           0.096      n/a       0.000
+
+=== Pi0.5 inference episode: 2026-09-11 14:13:10 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=2.740s, inference_calls=5, completed_chunks=5, prefix_chunks=4, actions_applied=76, empty_action_steps=7
+latency: avg_first_action=0.096s, p95_first_action=0.096s, recommended_delay=3, avg_final=0.229s, avg_chunk_duration=0.474s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+      193       HAS       0          30       30        30        9           0.096    0.229       0.969
+      194       HAS       3          30       30        15        9           0.096    0.229       0.468
+      195       HAS       3          30       30        15        9           0.096    0.229       0.468
+      196       HAS       3          30       30        15        9           0.095    0.229       0.468
+      197       HAS       3          30        4         1        3           0.096      n/a       0.000
+
+=== Pi0.5 inference episode: 2026-09-11 14:13:53 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=5.281s, inference_calls=10, completed_chunks=10, prefix_chunks=9, actions_applied=152, empty_action_steps=7
+latency: avg_first_action=0.099s, p95_first_action=0.114s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.475s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+      198       HAS       0          30       30        30        9           0.128    0.229       0.969
+      199       HAS       3          30       30        15        9           0.095    0.229       0.468
+      200       HAS       3          30       30        15        9           0.096    0.229       0.468
+      201       HAS       3          30       30        15        9           0.095    0.229       0.468
+      202       HAS       3          30       30        15        9           0.095    0.229       0.468
+      203       HAS       3          30       30        15        9           0.096    0.230       0.468
+      204       HAS       3          30       30        15        9           0.096    0.229       0.468
+      205       HAS       3          30       30        15        9           0.095    0.229       0.468
+      206       HAS       3          30       30        15        9           0.096    0.229       0.468
+      207       HAS       3          30       13         2        5           0.096      n/a       0.033
+
+=== Pi0.5 inference episode: 2026-09-11 14:14:11 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=5.012s, inference_calls=9, completed_chunks=9, prefix_chunks=8, actions_applied=144, empty_action_steps=7
+latency: avg_first_action=0.099s, p95_first_action=0.116s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.501s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+      208       HAS       0          30       30        30        9           0.129    0.229       0.969
+      209       HAS       3          30       30        15        9           0.096    0.230       0.468
+      210       HAS       3          30       30        15        9           0.096    0.229       0.468
+      211       HAS       3          30       30        15        9           0.096    0.229       0.468
+      212       HAS       3          30       30        15        9           0.096    0.229       0.468
+      213       HAS       3          30       30        15        9           0.095    0.229       0.468
+      214       HAS       3          30       30        15        9           0.096    0.230       0.468
+      215       HAS       3          30       30        15        9           0.096    0.230       0.468
+      216       HAS       3          30       30         9        9           0.096    0.229       0.267
+
+=== Pi0.5 inference episode: 2026-09-11 14:14:30 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=15, fps=30
+summary: total_time=2.742s, inference_calls=5, completed_chunks=5, prefix_chunks=4, actions_applied=76, empty_action_steps=7
+latency: avg_first_action=0.096s, p95_first_action=0.096s, recommended_delay=3, avg_final=0.229s, avg_chunk_duration=0.475s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+      217       HAS       0          30       30        30        9           0.096    0.229       0.970
+      218       HAS       3          30       30        15        9           0.096    0.230       0.468
+      219       HAS       3          30       30        15        9           0.096    0.229       0.468
+      220       HAS       3          30       30        15        9           0.096    0.229       0.468
+      221       HAS       3          30        4         1        3           0.096      n/a       0.000
+
+=== Pi0.5 inference episode: 2026-09-11 14:16:45 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=25, fps=30
+summary: total_time=5.447s, inference_calls=7, completed_chunks=7, prefix_chunks=6, actions_applied=157, empty_action_steps=7
+latency: avg_first_action=0.105s, p95_first_action=0.129s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.716s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0          30       30        30        9           0.128    0.228       0.969
+        2       HAS       3          30       30        25        9           0.129    0.229       0.802
+        3       HAS       3          30       30        25        9           0.096    0.229       0.802
+        4       HAS       3          30       30        25        9           0.095    0.229       0.802
+        5       HAS       3          30       30        25        9           0.096    0.229       0.802
+        6       HAS       3          30       30        25        9           0.095    0.229       0.802
+        7       HAS       3          30        8         2        4           0.095      n/a       0.033
+
+=== Pi0.5 inference episode: 2026-09-11 14:17:03 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=25, fps=30
+summary: total_time=2.909s, inference_calls=4, completed_chunks=4, prefix_chunks=3, actions_applied=81, empty_action_steps=7
+latency: avg_first_action=0.096s, p95_first_action=0.096s, recommended_delay=3, avg_final=0.229s, avg_chunk_duration=0.643s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        8       HAS       0          30       30        30        9           0.095    0.229       0.969
+        9       HAS       3          30       30        25        9           0.096    0.229       0.802
+       10       HAS       3          30       30        25        9           0.095    0.229       0.803
+       11       HAS       3          30        4         1        3           0.096      n/a       0.000
+
+=== Pi0.5 inference episode: 2026-09-11 14:17:49 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=25, fps=30
+summary: total_time=5.179s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=149, empty_action_steps=7
+latency: avg_first_action=0.101s, p95_first_action=0.120s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.796s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       12       HAS       0          30       30        30        9           0.128    0.228       0.969
+       13       HAS       3          30       30        25        9           0.096    0.230       0.802
+       14       HAS       3          30       30        25        9           0.096    0.230       0.802
+       15       HAS       3          30       30        25        9           0.096    0.230       0.802
+       16       HAS       3          30       30        25        9           0.096    0.229       0.802
+       17       HAS       3          30       30        19        9           0.096    0.230       0.601
+
+=== Pi0.5 inference episode: 2026-09-11 14:18:06 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=25, fps=30
+summary: total_time=2.907s, inference_calls=4, completed_chunks=4, prefix_chunks=3, actions_applied=81, empty_action_steps=7
+latency: avg_first_action=0.104s, p95_first_action=0.124s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.643s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       18       HAS       0          30       30        30        9           0.129    0.229       0.969
+       19       HAS       3          30       30        25        9           0.095    0.229       0.802
+       20       HAS       3          30       30        25        9           0.095    0.229       0.802
+       21       HAS       3          30        4         1        3           0.096      n/a       0.000
+
+=== Pi0.5 inference episode: 2026-09-11 14:18:53 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=25, fps=30
+summary: total_time=2.907s, inference_calls=4, completed_chunks=4, prefix_chunks=3, actions_applied=81, empty_action_steps=7
+latency: avg_first_action=0.104s, p95_first_action=0.124s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.643s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       22       HAS       0          30       30        30        9           0.129    0.229       0.969
+       23       HAS       3          30       30        25        9           0.095    0.229       0.802
+       24       HAS       3          30       30        25        9           0.096    0.229       0.802
+       25       HAS       3          30        4         1        3           0.096      n/a       0.000
+
+=== Pi0.5 inference episode: 2026-09-11 14:19:33 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=25, fps=30
+summary: total_time=2.908s, inference_calls=4, completed_chunks=4, prefix_chunks=3, actions_applied=81, empty_action_steps=7
+latency: avg_first_action=0.096s, p95_first_action=0.096s, recommended_delay=3, avg_final=0.229s, avg_chunk_duration=0.643s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       26       HAS       0          30       30        30        9           0.096    0.229       0.969
+       27       HAS       3          30       30        25        9           0.095    0.229       0.802
+       28       HAS       3          30       30        25        9           0.095    0.229       0.802
+       29       HAS       3          30        2         1        2           0.096      n/a       0.000
+
+=== Pi0.5 inference episode: 2026-09-11 14:20:14 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=25, fps=30
+summary: total_time=4.880s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=139, empty_action_steps=7
+latency: avg_first_action=0.101s, p95_first_action=0.121s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.741s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       30       HAS       0          30       30        30        9           0.129    0.229       0.969
+       31       HAS       3          30       30        25        9           0.095    0.229       0.802
+       32       HAS       3          30       30        25        9           0.094    0.228       0.802
+       33       HAS       3          30       30        25        9           0.095    0.229       0.802
+       34       HAS       3          30       30        25        9           0.096    0.229       0.803
+       35       HAS       3          30       30         9        9           0.096    0.229       0.267
+
+=== Pi0.5 inference episode: 2026-09-11 14:20:40 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=25, fps=30
+summary: total_time=5.214s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=150, empty_action_steps=7
+latency: avg_first_action=0.101s, p95_first_action=0.120s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.802s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       36       HAS       0          30       30        30        9           0.128    0.229       0.969
+       37       HAS       3          30       30        25        9           0.096    0.229       0.802
+       38       HAS       3          30       30        25        9           0.095    0.229       0.802
+       39       HAS       3          30       30        25        9           0.096    0.229       0.802
+       40       HAS       3          30       30        25        9           0.095    0.229       0.802
+       41       HAS       3          30       30        20        9           0.095    0.229       0.635
+
+=== Pi0.5 inference episode: 2026-09-11 14:21:01 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=25, fps=30
+summary: total_time=5.146s, inference_calls=6, completed_chunks=6, prefix_chunks=5, actions_applied=148, empty_action_steps=7
+latency: avg_first_action=0.096s, p95_first_action=0.096s, recommended_delay=3, avg_final=0.229s, avg_chunk_duration=0.791s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       42       HAS       0          30       30        30        9           0.096    0.229       0.969
+       43       HAS       3          30       30        25        9           0.095    0.229       0.802
+       44       HAS       3          30       30        25        9           0.095    0.229       0.802
+       45       HAS       3          30       30        25        9           0.096    0.230       0.802
+       46       HAS       3          30       30        25        9           0.096    0.229       0.802
+       47       HAS       3          30       30        18        9           0.095    0.229       0.568
+
+=== Pi0.5 inference episode: 2026-09-11 14:21:26 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=25, fps=30
+summary: total_time=2.907s, inference_calls=4, completed_chunks=4, prefix_chunks=3, actions_applied=81, empty_action_steps=7
+latency: avg_first_action=0.104s, p95_first_action=0.124s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.643s
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       48       HAS       0          30       30        30        9           0.096    0.229       0.969
+       49       HAS       3          30       30        25        9           0.129    0.229       0.802
+       50       HAS       3          30       30        25        9           0.095    0.229       0.802
+       51       HAS       3          30        4         1        3           0.096      n/a       0.000
