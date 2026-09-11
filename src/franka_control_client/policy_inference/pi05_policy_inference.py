@@ -47,6 +47,7 @@ class Pi05PolicyInferenceConfig:
     policy_zmq_endpoint: Optional[str] = None
     policy_zmq_timeout_ms: int = 30000
     chunk_replan_steps: int = 50
+    first_execution_horizon: int = 0
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
     close_gripper_on_reset: bool = False
@@ -74,6 +75,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.data_collectors = data_collectors
         self.control_pair = control_pair
         self.cfg = cfg
+        if cfg.first_execution_horizon < 0:
+            raise ValueError("first_execution_horizon must be non-negative.")
         if cfg.policy_transport == "zmq":
             if not cfg.policy_zmq_endpoint:
                 raise ValueError("policy_zmq_endpoint is required for ZMQ policy transport.")
@@ -134,6 +137,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._abpolicy_metadata: Optional[Dict[str, Any]] = None
         self._abpolicy_next_control_points: Optional[np.ndarray] = None
         self._abpolicy_next_metadata: Optional[Dict[str, Any]] = None
+        self._abpolicy_is_first_chunk = True
         self._metrics_lock = threading.Lock()
         self._reset_metrics()
 
@@ -153,6 +157,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._abpolicy_metadata = None
         self._abpolicy_next_control_points = None
         self._abpolicy_next_metadata = None
+        self._abpolicy_is_first_chunk = True
         self._reset_abpolicy_state()
         current_action = self.policy.current_action
         self._last_action_timestamp = (
@@ -366,6 +371,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
         )
         start_step = metadata["past_action_steps"]
         self._action_chunk = trajectory[start_step:]
+        if self.cfg.first_execution_horizon > len(self._action_chunk):
+            raise ValueError(
+                "first_execution_horizon exceeds the reconstructed first trajectory: "
+                f"{self.cfg.first_execution_horizon} > {len(self._action_chunk)}"
+            )
         self._abpolicy_control_points = control_points
         self._abpolicy_metadata = metadata
         self._chunk_step = 0
@@ -446,6 +456,13 @@ class Pi05PolicyInference(PolicyInferenceManager):
                     self._abpolicy_inflight = False
 
     def _maybe_swap_to_abpolicy_chunk(self) -> None:
+        if (
+            self._abpolicy_is_first_chunk
+            and self.cfg.first_execution_horizon > 0
+            and self._chunk_step < self.cfg.first_execution_horizon
+        ):
+            return
+
         with self._abpolicy_lock:
             control_points = self._abpolicy_next_control_points
             metadata = self._abpolicy_next_metadata
@@ -481,6 +498,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         )
         self._action_chunk = trajectory[n_prefix:]
         self._chunk_step = 0
+        self._abpolicy_is_first_chunk = False
         self._abpolicy_control_points = refitted
         self._abpolicy_metadata = metadata
         self._active_chunk_metric_id = metric_id
@@ -651,6 +669,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "action_topic": self.cfg.action_topic,
             "fps": int(self.fps),
             "abpolicy_enabled": bool(self.cfg.abpolicy_enabled),
+            "first_execution_horizon": int(self.cfg.first_execution_horizon),
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),
             "close_gripper_on_reset": bool(self.cfg.close_gripper_on_reset),
             "total_time_s": total_time_s,
@@ -729,6 +748,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         chunks = record["chunks"]
         config_items = [
             f"abpolicy_enabled={summary.get('abpolicy_enabled')}",
+            f"first_execution_horizon={summary.get('first_execution_horizon')}",
         ]
         asynchronous = summary.get("abpolicy_enabled")
 

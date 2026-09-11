@@ -43,6 +43,12 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--policy_zmq_timeout_ms", type=int, default=30000)
     parser.add_argument("--chunk_replan_steps", type=int, default=50)
     parser.add_argument(
+        "--first_execution_horizon",
+        type=int,
+        default=0,
+        help="Reconstructed actions executed from the first ABPolicy trajectory before switching; 0 switches as soon as the next trajectory is ready.",
+    )
+    parser.add_argument(
         "--abpolicy_enabled",
         action="store_true",
         help="Execute asynchronous B-spline control points with continuity-constrained refitting.",
@@ -105,6 +111,7 @@ def main() -> None:
         policy_zmq_endpoint=args.policy_zmq_endpoint,
         policy_zmq_timeout_ms=args.policy_zmq_timeout_ms,
         chunk_replan_steps=args.chunk_replan_steps,
+        first_execution_horizon=args.first_execution_horizon,
         abpolicy_enabled=args.abpolicy_enabled,
         abpolicy_last_point_weight=args.abpolicy_last_point_weight,
         stop_after_first_release=args.stop_after_first_release,
