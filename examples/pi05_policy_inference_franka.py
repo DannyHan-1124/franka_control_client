@@ -54,6 +54,16 @@ def _parse_args() -> argparse.Namespace:
         help="Execute asynchronous B-spline control points with continuity-constrained refitting.",
     )
     parser.add_argument("--abpolicy_last_point_weight", type=float, default=0.05)
+    parser.add_argument(
+        "--mpq_library",
+        default=None,
+        help="MPQ library for postprocessing baseline pi0.5 absolute action chunks.",
+    )
+    parser.add_argument("--mpq_delta", type=float, default=0.25)
+    parser.add_argument("--mpq_gripper_weight", type=float, default=5.0)
+    parser.add_argument("--mpq_metric_horizon", type=int, default=20)
+    parser.add_argument("--mpq_rung", choices=("raw_gram", "yaw", "yaw_warp_scale"), default="yaw")
+    parser.add_argument("--mpq_device", default="cpu")
     parser.add_argument("--stop_after_first_release", action="store_true")
     parser.add_argument("--stop_after_release_steps", type=int, default=0)
     parser.add_argument(
@@ -114,6 +124,12 @@ def main() -> None:
         first_execution_horizon=args.first_execution_horizon,
         abpolicy_enabled=args.abpolicy_enabled,
         abpolicy_last_point_weight=args.abpolicy_last_point_weight,
+        mpq_library=args.mpq_library,
+        mpq_delta=args.mpq_delta,
+        mpq_gripper_weight=args.mpq_gripper_weight,
+        mpq_metric_horizon=args.mpq_metric_horizon,
+        mpq_rung=args.mpq_rung,
+        mpq_device=args.mpq_device,
         stop_after_first_release=args.stop_after_first_release,
         stop_after_release_steps=args.stop_after_release_steps,
         close_gripper_on_reset=args.close_gripper_on_reset,

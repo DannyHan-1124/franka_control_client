@@ -27,6 +27,7 @@ from .bspline import (
     rebuild_trajectory,
     refit_control_point_prefix,
 )
+from .mpq_postprocessor import MPQCartesianPostprocessor
 
 
 IMAGE_SIZE = (224, 224)
@@ -55,6 +56,12 @@ class Pi05PolicyInferenceConfig:
     run_metadata: Optional[Dict[str, Any]] = None
     abpolicy_enabled: bool = False
     abpolicy_last_point_weight: float = 0.05
+    mpq_library: Optional[str] = None
+    mpq_delta: float = 0.25
+    mpq_gripper_weight: float = 5.0
+    mpq_metric_horizon: int = 20
+    mpq_rung: str = "yaw"
+    mpq_device: str = "cpu"
 
 
 class Pi05PolicyInference(PolicyInferenceManager):
@@ -77,6 +84,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.cfg = cfg
         if cfg.first_execution_horizon < 0:
             raise ValueError("first_execution_horizon must be non-negative.")
+        if cfg.abpolicy_enabled and cfg.mpq_library:
+            raise ValueError("MPQ currently supports baseline raw action chunks, not ABPolicy control points.")
+        if cfg.mpq_delta < 0:
+            raise ValueError("mpq_delta must be non-negative.")
         if cfg.policy_transport == "zmq":
             if not cfg.policy_zmq_endpoint:
                 raise ValueError("policy_zmq_endpoint is required for ZMQ policy transport.")
@@ -93,6 +104,19 @@ class Pi05PolicyInference(PolicyInferenceManager):
             )
         else:
             raise ValueError(f"Unsupported policy transport: {cfg.policy_transport!r}")
+
+        self.mpq = (
+            MPQCartesianPostprocessor(
+                cfg.mpq_library,
+                delta=cfg.mpq_delta,
+                gripper_weight=cfg.mpq_gripper_weight,
+                metric_horizon=cfg.mpq_metric_horizon,
+                rung=cfg.mpq_rung,
+                device=cfg.mpq_device,
+            )
+            if cfg.mpq_library
+            else None
+        )
 
         self.static_cam: Optional[ImageDataWrapper] = None
         self.wrist_cam: Optional[ImageDataWrapper] = None
@@ -174,6 +198,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._metrics_actions_applied = 0
         self._metrics_empty_action_steps = 0
         self._metrics_chunks: list[dict[str, Any]] = []
+        self._metrics_mpq_assignments: list[dict[str, Any]] = []
         self._active_chunk_metric_id: Optional[int] = None
 
     def _start_chunk_metric(
@@ -285,6 +310,21 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 timestamp = float(action_msg["timestamp"])
                 if timestamp != self._last_action_timestamp:
                     self._action_chunk = self._parse_action_payload(action_msg["action"])
+                    if self.mpq is not None:
+                        mpq_start = time.perf_counter()
+                        mpq_result = self.mpq.process(
+                            self._action_chunk,
+                            np.asarray(observation["observation.state"], dtype=np.float64),
+                        )
+                        self._action_chunk = mpq_result.actions
+                        self._metrics_mpq_assignments.append(
+                            {
+                                "request_id": request_id,
+                                "library_indices": list(mpq_result.library_indices),
+                                "residual_ratios": list(mpq_result.residual_ratios),
+                                "duration_s": time.perf_counter() - mpq_start,
+                            }
+                        )
                     self._chunk_step = 0
                     self._last_action_timestamp = timestamp
                     self._finish_chunk_metric(
@@ -669,6 +709,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "action_topic": self.cfg.action_topic,
             "fps": int(self.fps),
             "abpolicy_enabled": bool(self.cfg.abpolicy_enabled),
+            "mpq_enabled": self.mpq is not None,
+            "mpq_library": self.cfg.mpq_library,
+            "mpq_delta": self.cfg.mpq_delta if self.mpq is not None else None,
+            "mpq_assignments": list(self._metrics_mpq_assignments),
             "first_execution_horizon": int(self.cfg.first_execution_horizon),
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),
             "close_gripper_on_reset": bool(self.cfg.close_gripper_on_reset),
@@ -749,6 +793,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
         config_items = [
             f"abpolicy_enabled={summary.get('abpolicy_enabled')}",
             f"first_execution_horizon={summary.get('first_execution_horizon')}",
+            f"mpq_enabled={summary.get('mpq_enabled')}",
+            f"mpq_delta={summary.get('mpq_delta')}",
         ]
         asynchronous = summary.get("abpolicy_enabled")
 
