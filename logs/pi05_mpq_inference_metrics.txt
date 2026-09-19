@@ -1,0 +1,416 @@
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=2.766s, inference_calls=1, completed_chunks=1, actions_applied=1, empty_action_steps=0
+latency: avg_request=2.760s, avg_first_action=2.760s, avg_chunk_duration=0.000s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50         1      2.760    2.760       0.000
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=2.987s, inference_calls=2, completed_chunks=2, actions_applied=51, empty_action_steps=0
+latency: avg_request=0.261s, avg_first_action=0.261s, avg_chunk_duration=1.203s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.261    0.261       2.406
+        2  sync                   50         1      0.260    0.260       0.000
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=5.081s, inference_calls=2, completed_chunks=2, actions_applied=93, empty_action_steps=0
+latency: avg_request=0.257s, avg_first_action=0.257s, avg_chunk_duration=2.229s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.257    0.257       2.404
+        2  sync                   50        43      0.257    0.257       2.054
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=4.831s, inference_calls=2, completed_chunks=2, actions_applied=88, empty_action_steps=0
+latency: avg_request=0.257s, avg_first_action=0.257s, avg_chunk_duration=2.104s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.258    0.259       2.405
+        2  sync                   50        38      0.255    0.255       1.803
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=False, mpq_delta=None
+summary: total_time=6.936s, inference_calls=3, completed_chunks=3, actions_applied=127, empty_action_steps=0
+latency: avg_request=0.253s, avg_first_action=0.253s, avg_chunk_duration=2.020s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.254    0.255       2.404
+        2  sync                   50        50      0.253    0.253       2.405
+        3  sync                   50        27      0.250    0.251       1.252
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=False, mpq_delta=None
+summary: total_time=7.636s, inference_calls=3, completed_chunks=3, actions_applied=141, empty_action_steps=0
+latency: avg_request=0.253s, avg_first_action=0.253s, avg_chunk_duration=2.254s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.253    0.253       2.404
+        2  sync                   50        50      0.252    0.253       2.405
+        3  sync                   50        41      0.253    0.253       1.954
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=8.410s, inference_calls=4, completed_chunks=4, actions_applied=151, empty_action_steps=0
+latency: avg_request=0.256s, avg_first_action=0.256s, avg_chunk_duration=1.804s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.261    0.261       2.404
+        2  sync                   50        50      0.255    0.256       2.404
+        3  sync                   50        50      0.255    0.255       2.406
+        4  sync                   50         1      0.254    0.254       0.000
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=4.377s, inference_calls=2, completed_chunks=2, actions_applied=79, empty_action_steps=0
+latency: avg_request=0.255s, avg_first_action=0.256s, avg_chunk_duration=1.879s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.256    0.256       2.404
+        2  sync                   50        29      0.255    0.255       1.353
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=5.689s, inference_calls=3, completed_chunks=3, actions_applied=101, empty_action_steps=0
+latency: avg_request=0.255s, avg_first_action=0.255s, avg_chunk_duration=1.603s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.256    0.257       2.404
+        2  sync                   50        50      0.254    0.254       2.404
+        3  sync                   50         1      0.254    0.255       0.000
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=7.143s, inference_calls=3, completed_chunks=3, actions_applied=130, empty_action_steps=0
+latency: avg_request=0.256s, avg_first_action=0.256s, avg_chunk_duration=2.070s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.256    0.256       2.405
+        2  sync                   50        50      0.256    0.256       2.404
+        3  sync                   50        30      0.255    0.255       1.403
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=5.692s, inference_calls=3, completed_chunks=3, actions_applied=101, empty_action_steps=0
+latency: avg_request=0.255s, avg_first_action=0.256s, avg_chunk_duration=1.603s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.258    0.259       2.404
+        2  sync                   50        50      0.255    0.255       2.405
+        3  sync                   50         1      0.253    0.254       0.000
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=12.627s, inference_calls=5, completed_chunks=5, actions_applied=231, empty_action_steps=0
+latency: avg_request=0.256s, avg_first_action=0.256s, avg_chunk_duration=2.214s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.260    0.260       2.406
+        2  sync                   50        50      0.254    0.254       2.405
+        3  sync                   50        50      0.253    0.254       2.405
+        4  sync                   50        50      0.256    0.256       2.405
+        5  sync                   50        31      0.255    0.255       1.452
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=4.530s, inference_calls=2, completed_chunks=2, actions_applied=82, empty_action_steps=0
+latency: avg_request=0.256s, avg_first_action=0.257s, avg_chunk_duration=1.954s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.257    0.257       2.405
+        2  sync                   50        32      0.256    0.257       1.502
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=9.056s, inference_calls=4, completed_chunks=4, actions_applied=164, empty_action_steps=0
+latency: avg_request=0.255s, avg_first_action=0.255s, avg_chunk_duration=1.954s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.256    0.256       2.404
+        2  sync                   50        50      0.255    0.255       2.405
+        3  sync                   50        50      0.255    0.255       2.405
+        4  sync                   50        14      0.255    0.256       0.601
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=False, mpq_delta=None
+summary: total_time=10.142s, inference_calls=4, completed_chunks=4, actions_applied=186, empty_action_steps=0
+latency: avg_request=0.251s, avg_first_action=0.251s, avg_chunk_duration=2.229s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.252    0.252       2.405
+        2  sync                   50        50      0.250    0.250       2.404
+        3  sync                   50        50      0.251    0.251       2.404
+        4  sync                   50        36      0.251    0.251       1.704
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=False, mpq_delta=None
+summary: total_time=9.338s, inference_calls=4, completed_chunks=4, actions_applied=170, empty_action_steps=0
+latency: avg_request=0.251s, avg_first_action=0.251s, avg_chunk_duration=2.029s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.253    0.253       2.404
+        2  sync                   50        50      0.251    0.251       2.404
+        3  sync                   50        50      0.249    0.250       2.405
+        4  sync                   50        20      0.249    0.249       0.902
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=8.657s, inference_calls=8, completed_chunks=8, actions_applied=141, empty_action_steps=0
+latency: avg_request=0.244s, avg_first_action=0.244s, avg_chunk_duration=0.789s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        20      0.258    0.259       0.902
+        2  sync                   50        20      0.242    0.242       0.902
+        3  sync                   50        20      0.242    0.242       0.902
+        4  sync                   50        20      0.242    0.242       0.902
+        5  sync                   50        20      0.242    0.243       0.903
+        6  sync                   50        20      0.240    0.241       0.902
+        7  sync                   50        20      0.243    0.243       0.901
+        8  sync                   50         1      0.244    0.244       0.000
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=7.502s, inference_calls=7, completed_chunks=7, actions_applied=121, empty_action_steps=0
+latency: avg_request=0.251s, avg_first_action=0.251s, avg_chunk_duration=0.773s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        20      0.255    0.255       0.901
+        2  sync                   50        20      0.244    0.244       0.902
+        3  sync                   50        20      0.253    0.254       0.901
+        4  sync                   50        20      0.248    0.248       0.902
+        5  sync                   50        20      0.253    0.253       0.901
+        6  sync                   50        20      0.251    0.251       0.902
+        7  sync                   50         1      0.254    0.254       0.000
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=7.243s, inference_calls=3, completed_chunks=3, actions_applied=132, empty_action_steps=0
+latency: avg_request=0.255s, avg_first_action=0.255s, avg_chunk_duration=2.104s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.258    0.258       2.404
+        2  sync                   50        50      0.254    0.254       2.404
+        3  sync                   50        32      0.254    0.254       1.502
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=9.500s, inference_calls=4, completed_chunks=4, actions_applied=173, empty_action_steps=0
+latency: avg_request=0.254s, avg_first_action=0.254s, avg_chunk_duration=2.066s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.254    0.254       2.404
+        2  sync                   50        50      0.253    0.254       2.404
+        3  sync                   50        50      0.253    0.253       2.404
+        4  sync                   50        23      0.254    0.255       1.052
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=8.950s, inference_calls=4, completed_chunks=4, actions_applied=162, empty_action_steps=0
+latency: avg_request=0.254s, avg_first_action=0.254s, avg_chunk_duration=1.929s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.255    0.255       2.404
+        2  sync                   50        50      0.254    0.254       2.405
+        3  sync                   50        50      0.254    0.254       2.404
+        4  sync                   50        12      0.254    0.254       0.501
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=9.604s, inference_calls=4, completed_chunks=4, actions_applied=175, empty_action_steps=0
+latency: avg_request=0.254s, avg_first_action=0.255s, avg_chunk_duration=2.091s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.255    0.256       2.404
+        2  sync                   50        50      0.254    0.255       2.404
+        3  sync                   50        50      0.254    0.254       2.405
+        4  sync                   50        25      0.254    0.254       1.152
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=7.097s, inference_calls=3, completed_chunks=3, actions_applied=130, empty_action_steps=0
+latency: avg_request=0.256s, avg_first_action=0.256s, avg_chunk_duration=2.071s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.259    0.259       2.404
+        2  sync                   50        50      0.255    0.255       2.405
+        3  sync                   50        30      0.255    0.255       1.403
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=7.090s, inference_calls=3, completed_chunks=3, actions_applied=130, empty_action_steps=0
+latency: avg_request=0.254s, avg_first_action=0.254s, avg_chunk_duration=2.071s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.254    0.254       2.405
+        2  sync                   50        50      0.254    0.254       2.406
+        3  sync                   50        30      0.254    0.254       1.402
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=6.742s, inference_calls=3, completed_chunks=3, actions_applied=122, empty_action_steps=0
+latency: avg_request=0.255s, avg_first_action=0.255s, avg_chunk_duration=1.938s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.257    0.257       2.406
+        2  sync                   50        50      0.254    0.254       2.405
+        3  sync                   50        22      0.254    0.254       1.002
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=4.476s, inference_calls=2, completed_chunks=2, actions_applied=81, empty_action_steps=0
+latency: avg_request=0.254s, avg_first_action=0.255s, avg_chunk_duration=1.928s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.255    0.256       2.404
+        2  sync                   50        31      0.253    0.254       1.453
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=7.039s, inference_calls=3, completed_chunks=3, actions_applied=129, empty_action_steps=0
+latency: avg_request=0.254s, avg_first_action=0.254s, avg_chunk_duration=2.054s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.255    0.256       2.404
+        2  sync                   50        50      0.254    0.254       2.405
+        3  sync                   50        29      0.254    0.254       1.353
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=False, mpq_delta=None
+summary: total_time=6.779s, inference_calls=3, completed_chunks=3, actions_applied=124, empty_action_steps=0
+latency: avg_request=0.251s, avg_first_action=0.251s, avg_chunk_duration=1.970s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.252    0.252       2.404
+        2  sync                   50        50      0.251    0.251       2.404
+        3  sync                   50        24      0.250    0.250       1.103
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=False, mpq_delta=None
+summary: total_time=6.876s, inference_calls=3, completed_chunks=3, actions_applied=126, empty_action_steps=0
+latency: avg_request=0.250s, avg_first_action=0.250s, avg_chunk_duration=2.004s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.251    0.251       2.404
+        2  sync                   50        50      0.250    0.250       2.404
+        3  sync                   50        26      0.250    0.250       1.202
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=False, mpq_delta=None
+summary: total_time=7.179s, inference_calls=3, completed_chunks=3, actions_applied=132, empty_action_steps=0
+latency: avg_request=0.250s, avg_first_action=0.250s, avg_chunk_duration=2.104s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.252    0.252       2.404
+        2  sync                   50        50      0.250    0.250       2.407
+        3  sync                   50        32      0.249    0.250       1.503
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=False, mpq_delta=None
+summary: total_time=7.328s, inference_calls=3, completed_chunks=3, actions_applied=135, empty_action_steps=0
+latency: avg_request=0.250s, avg_first_action=0.250s, avg_chunk_duration=2.154s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.251    0.252       2.404
+        2  sync                   50        50      0.251    0.251       2.404
+        3  sync                   50        35      0.249    0.249       1.653
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=False, mpq_delta=None
+summary: total_time=7.329s, inference_calls=3, completed_chunks=3, actions_applied=135, empty_action_steps=0
+latency: avg_request=0.251s, avg_first_action=0.251s, avg_chunk_duration=2.154s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.252    0.252       2.405
+        2  sync                   50        50      0.250    0.250       2.404
+        3  sync                   50        35      0.250    0.250       1.653
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=False, mpq_delta=None
+summary: total_time=6.527s, inference_calls=3, completed_chunks=3, actions_applied=119, empty_action_steps=0
+latency: avg_request=0.250s, avg_first_action=0.250s, avg_chunk_duration=1.887s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.251    0.251       2.405
+        2  sync                   50        50      0.250    0.250       2.405
+        3  sync                   50        19      0.250    0.250       0.852
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=False, mpq_delta=None
+summary: total_time=7.580s, inference_calls=3, completed_chunks=3, actions_applied=140, empty_action_steps=0
+latency: avg_request=0.250s, avg_first_action=0.250s, avg_chunk_duration=2.237s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.252    0.252       2.404
+        2  sync                   50        50      0.250    0.250       2.405
+        3  sync                   50        40      0.249    0.250       1.903
+
+Pi0.5 inference metrics
+task: put green cylinder on blue cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=False, mpq_delta=None
+summary: total_time=7.183s, inference_calls=3, completed_chunks=3, actions_applied=132, empty_action_steps=0
+latency: avg_request=0.252s, avg_first_action=0.252s, avg_chunk_duration=2.104s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.253    0.253       2.404
+        2  sync                   50        50      0.250    0.251       2.405
+        3  sync                   50        32      0.251    0.252       1.503
+
+Pi0.5 inference metrics
+task: put green cylinder on blue cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=False, mpq_delta=None
+summary: total_time=7.480s, inference_calls=3, completed_chunks=3, actions_applied=138, empty_action_steps=0
+latency: avg_request=0.251s, avg_first_action=0.251s, avg_chunk_duration=2.204s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.252    0.252       2.404
+        2  sync                   50        50      0.250    0.251       2.405
+        3  sync                   50        38      0.250    0.250       1.803
+
+Pi0.5 inference metrics
+task: put green cylinder on blue cube
+config: abpolicy_enabled=False, first_execution_horizon=0, mpq_enabled=True, mpq_delta=0.25
+summary: total_time=4.334s, inference_calls=2, completed_chunks=2, actions_applied=78, empty_action_steps=0
+latency: avg_request=0.257s, avg_first_action=0.258s, avg_chunk_duration=1.853s
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.261    0.261       2.404
+        2  sync                   50        28      0.254    0.254       1.303
+

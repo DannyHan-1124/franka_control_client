@@ -5,7 +5,9 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WORKSPACE_ROOT="$(cd "${REPO_ROOT}/.." && pwd)"
 export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/mpq:${PYTHONPATH:-}"
 
-MPQ_LIBRARY="${MPQ_LIBRARY:-${WORKSPACE_ROOT}/mpq/libraries/cylinder_full_yaw_k256_g5.pt}"
+MPQ_LIBRARY="${MPQ_LIBRARY:-${WORKSPACE_ROOT}/mpq/libraries/cylinder_full_h50_yaw_k256_g5.pt}"
+# cylinder_full_yaw_k256_g5.pt
+# cylinder_full_h50_yaw_k256_g5.pt
 if [[ ! -f "${MPQ_LIBRARY}" ]]; then
     echo "MPQ library not found: ${MPQ_LIBRARY}" >&2
     echo "Build it with ${WORKSPACE_ROOT}/mpq/scripts/build_cylinder_full_library.sh" >&2
@@ -16,7 +18,7 @@ fi
 # pgrep -af 'ssh.*(-L)'
 
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
-    --task "put red cylinder on red cube" \
+    --task "put green cylinder on blue cube" \
     --stop_after_first_release \
     --fps 20 \
     --control_hz 100 \
@@ -35,3 +37,5 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --mpq_device "${MPQ_DEVICE:-cpu}" \
     --static_camera static_cam \
     --wrist_camera wrist_cam
+
+#   --mpq_library "${MPQ_LIBRARY}" \
