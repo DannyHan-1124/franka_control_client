@@ -18,6 +18,8 @@ import torch
 
 from lerobot.utils.random_utils import set_seed
 
+from DOM_rl.inference_client.chunk_trace import ChunkTraceRecorder
+
 from franka_control_client.policy.pi05_policy_node import Pi05NodeConfig, Pi05PolicyNode
 
 
@@ -41,6 +43,7 @@ class Pi05AACNodeConfig(Pi05NodeConfig):
     aac_entropy_log: Optional[str]
     aac_log_entropy_values: bool
     chunk_start_index: int
+    chunk_trace_dir: Optional[Path]
 
 
 class Pi05PolicyAACNode(Pi05PolicyNode):
@@ -52,6 +55,23 @@ class Pi05PolicyAACNode(Pi05PolicyNode):
         self._aac_episode_id: Any = object()
         self._aac_inference_id = 0
         super().__init__(cfg)
+        self._chunk_trace = (
+            ChunkTraceRecorder(
+                cfg.chunk_trace_dir,
+                action_space="franka_quat8",
+                action_names=(
+                    "ee_pos_x", "ee_pos_y", "ee_pos_z",
+                    "quat_x", "quat_y", "quat_z", "quat_w", "gripper",
+                ),
+                env_action_space="franka_quat8",
+                env_action_names=(
+                    "ee_pos_x", "ee_pos_y", "ee_pos_z",
+                    "quat_x", "quat_y", "quat_z", "quat_w", "gripper",
+                ),
+            )
+            if cfg.chunk_trace_dir is not None
+            else None
+        )
         self.aac = AACPI05(
             self.policy,
             postprocessor=self.postprocessor,
@@ -89,6 +109,34 @@ class Pi05PolicyAACNode(Pi05PolicyNode):
             self.aac.reset()
             self._aac_episode_id = episode_id
             self._aac_inference_id = 0
+            if self._chunk_trace is not None:
+                self._chunk_trace.start_episode()
+
+    def _finish_trace_episode(self, message: Dict[str, Any]) -> Dict[str, Any]:
+        trace_path = None
+        if self._chunk_trace is not None:
+            episode_id = int(message.get("episode_id", 0))
+            success = bool(message.get("success", False))
+            outcome_label = "success" if success else "fail"
+            trace_path = self._chunk_trace.finish_episode(
+                episode_index=episode_id,
+                observation={
+                    "episode_id": episode_id,
+                    "eps_name": f"episode_{episode_id:06d}_{outcome_label}",
+                    "success": success,
+                    "chunk_executions": message.get("chunk_executions", {}),
+                    "chunk_start_indices": message.get("chunk_start_indices", {}),
+                },
+            )
+            if trace_path is not None:
+                print(f"Saved policy-side AAC chunk trace to {trace_path}", flush=True)
+        return {
+            "timestamp": time.time(),
+            "action": [],
+            "shape": [0, 8],
+            "ack": True,
+            "chunk_trace_path": None if trace_path is None else str(trace_path),
+        }
 
     def _log_prediction(self, prediction: Any) -> None:
         total = np.asarray(prediction.entropy["total"], dtype=float)
@@ -117,6 +165,9 @@ class Pi05PolicyAACNode(Pi05PolicyNode):
         self._aac_inference_id += 1
 
     def _predict_action_msg(self, obs_msg: Dict[str, Any]) -> Dict[str, Any]:
+        if obs_msg.get("trace_event") == "episode_end":
+            return self._finish_trace_episode(obs_msg)
+
         self._maybe_reset_episode(obs_msg)
         observation = self.preprocessor(self._build_observation(obs_msg))
         current_state = np.asarray(obs_msg["observation.state"], dtype=np.float32).reshape(-1)
@@ -134,6 +185,14 @@ class Pi05PolicyAACNode(Pi05PolicyNode):
                 f"--chunk_start_index={start} removed AAC horizon={prediction.horizon}"
             )
         actions = selected[0].detach().float().cpu().numpy()
+        if self._chunk_trace is not None:
+            chunk_id = int(obs_msg.get("trace_chunk_id", self._aac_inference_id))
+            self._chunk_trace.record_chunk(
+                chunk_id=chunk_id,
+                observation={"index": obs_msg.get("index")},
+                generated_action=actions,
+                sent_start_index=0,
+            )
         return {
             "timestamp": time.time(),
             "action": actions.tolist(),
@@ -187,6 +246,12 @@ def _parse_args() -> Pi05AACNodeConfig:
     parser.add_argument("--aac_entropy_log", default=None)
     parser.add_argument("--aac_log_entropy_values", action="store_true")
     parser.add_argument("--chunk_start_index", type=int, default=0)
+    parser.add_argument(
+        "--chunk_trace_dir",
+        type=Path,
+        default=None,
+        help="Policy-side output directory for per-episode chunk trace JSON and PNG files.",
+    )
     args = parser.parse_args()
     if args.rtc_enabled:
         parser.error("AAC and RTC cannot be enabled together")

@@ -19,6 +19,7 @@ class Pi05DSRLPolicyInference(Pi05PolicyInference):
 
     Keys while an episode is running:
       s: finish as success (terminal reward 1)
+      d: discard without saving
       f: finish as failure (terminal reward 0)
     """
 

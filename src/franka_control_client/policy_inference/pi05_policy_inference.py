@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 import threading
 import time
@@ -17,7 +18,11 @@ WORKSPACE_ROOT = Path(__file__).resolve().parents[4]
 if str(WORKSPACE_ROOT) not in sys.path:
     sys.path.insert(0, str(WORKSPACE_ROOT))
 
-from .policy_inference_manager import PolicyInferenceEvent, PolicyInferenceManager
+from .policy_inference_manager import (
+    PolicyInferenceEvent,
+    PolicyInferenceManager,
+    PolicyInferenceState,
+)
 from ..control_pair.cartesian_policy_panda_control_pair import (
     CartesianPolicyPandaRobotiqControlPair,
 )
@@ -116,6 +121,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
         else:
             self._chunk_trace = None
         self._trace_success = False
+        self._trace_outcome: Optional[str] = None
+        debug_camera_dir = os.environ.get("PI05_CAMERA_DEBUG_DIR")
+        self._camera_debug_dir = Path(debug_camera_dir) if debug_camera_dir else None
+        self._camera_debug_saved: set[str] = set()
         if cfg.policy_transport == "zmq":
             if not cfg.policy_zmq_endpoint:
                 raise ValueError("policy_zmq_endpoint is required for ZMQ policy transport.")
@@ -189,6 +198,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._episode_id += 1
         self._reset_metrics()
         self._trace_success = False
+        self._trace_outcome = None
         if self._chunk_trace is not None:
             self._chunk_trace.start_episode()
         self._action_chunk = None
@@ -417,6 +427,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
             client_observation_build_s=observation_build_s,
             kind="horizon_initial",
         )
+        observation["trace_chunk_id"] = request_id
+        observation["index"] = int(self._metrics_actions_applied)
         self.policy.send_observation(observation)
         action_msg = self.policy.current_action
         if action_msg is None:
@@ -470,6 +482,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
             configured_horizon=horizon,
             predicted_delay_steps=latency,
         )
+        observation["trace_chunk_id"] = request_id
+        observation["index"] = int(self._metrics_actions_applied)
         threading.Thread(
             target=self._horizon_request_worker,
             args=(observation, generation, request_id, request_start),
@@ -809,17 +823,83 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
     def _save_episode(self) -> None:
         self._trace_success = True
+        self._trace_outcome = "success"
         self._stop_infering()
         self._ui_console.log("Episode saved.")
 
     def _discard_infering(self) -> None:
         self._trace_success = False
+        if self._trace_outcome != "fail":
+            self._trace_outcome = "discard"
         self._stop_infering()
-        self._ui_console.log("Episode discarded.")
+        if self._trace_outcome == "fail":
+            self._ui_console.log("Episode saved as FAILURE.")
+        else:
+            self._ui_console.log("Episode discarded without saving a chunk trace.")
+
+    def _handle_keypress(self, key: str) -> None:
+        if self._state_machine.state == PolicyInferenceState.INFERING:
+            if key == "f":
+                self._trace_outcome = "fail"
+                self._state_machine.trigger(PolicyInferenceEvent.DISCARD)
+                return
+            if key == "d":
+                self._trace_outcome = "discard"
+                self._state_machine.trigger(PolicyInferenceEvent.DISCARD)
+                return
+        super()._handle_keypress(key)
+
+    def _on_state_enter(self, state: PolicyInferenceState) -> None:
+        super()._on_state_enter(state)
+        if state == PolicyInferenceState.INFERING:
+            self._ui_console.update_hint(
+                "Inferencing... Press 's' for SUCCESS, 'f' for FAILURE, "
+                "'d' to DISCARD, or 'q' to quit"
+            )
 
     def _stop_infering(self) -> None:
         self._report_metrics()
         super()._stop_infering()
+
+    def _trace_is_success(self) -> bool:
+        """Return the terminal label, with an explicit keyboard label taking priority."""
+        if self._trace_outcome is not None:
+            return self._trace_outcome == "success"
+        return bool(self._release_confirmed)
+
+    def _finish_policy_side_chunk_trace(self, chunks: list[dict[str, Any]]) -> None:
+        """Tell the horizon policy node to persist its current episode trace."""
+        executions = {
+            int(chunk["request_id"]): int(chunk.get("executed_action_count") or 0)
+            for chunk in chunks
+        }
+        starts = {
+            int(chunk["request_id"]): int(chunk.get("first_action_index") or 0)
+            for chunk in chunks
+        }
+        policy = DirectZmqPolicy(
+            self.cfg.policy_name,
+            endpoint=self.cfg.policy_zmq_endpoint or "",
+            timeout_ms=self.cfg.policy_zmq_timeout_ms,
+        )
+        try:
+            success = self._trace_is_success()
+            policy.send_observation(
+                {
+                    "trace_event": "episode_end",
+                    "episode_id": self._episode_id,
+                    "success": success,
+                    "chunk_executions": executions,
+                    "chunk_start_indices": starts,
+                }
+            )
+            response = policy.current_action
+            if response is None or not response.get("ack"):
+                raise RuntimeError("Policy node did not acknowledge chunk trace completion")
+        except Exception as exc:
+            pyzlc.error(f"Failed to finalize policy-side chunk trace: {exc}")
+        finally:
+            policy.close()
 
     def _report_metrics(self) -> None:
         if self._metrics_reported:
@@ -832,13 +912,27 @@ class Pi05PolicyInference(PolicyInferenceManager):
             if self._metrics_start_perf is not None
             else 0.0
         )
+        if self.cfg.call_vla_after_actions is not None:
+            # A horizon request uses its own REQ socket.  Let it finish before
+            # sending episode_end so the REP server records the final chunk
+            # before it flushes the trace.
+            deadline = time.perf_counter() + self.cfg.policy_zmq_timeout_ms / 1000.0
+            while time.perf_counter() < deadline:
+                with self._rtc_lock:
+                    if not self._rtc_inflight:
+                        break
+                time.sleep(0.01)
         with self._metrics_lock:
             chunks = [dict(chunk) for chunk in self._metrics_chunks]
             inference_calls = int(self._metrics_inference_calls)
             actions_applied = int(self._metrics_actions_applied)
             empty_action_steps = int(self._metrics_empty_action_steps)
 
-        if self._chunk_trace is not None:
+        trace_discarded = self._trace_outcome == "discard"
+        trace_success = self._trace_is_success()
+        trace_label = "success" if trace_success else "fail"
+
+        if self._chunk_trace is not None and not trace_discarded:
             executions = {
                 int(chunk["request_id"]): int(chunk.get("executed_action_count") or 0)
                 for chunk in chunks
@@ -851,12 +945,19 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 episode_index=self._episode_id,
                 observation={
                     "episode_id": self._episode_id,
-                    "eps_name": f"episode_{self._episode_id:06d}",
-                    "success": bool(self._trace_success or self._release_confirmed),
+                    "eps_name": f"episode_{self._episode_id:06d}_{trace_label}",
+                    "success": trace_success,
                     "chunk_executions": executions,
                     "chunk_start_indices": starts,
                 },
             )
+
+        if (
+            self.cfg.call_vla_after_actions is not None
+            and self.cfg.policy_transport == "zmq"
+            and not trace_discarded
+        ):
+            self._finish_policy_side_chunk_trace(chunks)
 
         request_latencies = [
             float(chunk["request_latency_s"])
@@ -1089,7 +1190,35 @@ class Pi05PolicyInference(PolicyInferenceManager):
         # The live camera message field is named rgb_data, but the observed
         # channel order is BGR. Convert to true RGB before sending to PI0.5.
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        self._save_camera_color_debug_once(cam.hw_name, frame, frame_rgb)
         return cv2.resize(frame_rgb, IMAGE_SIZE, interpolation=cv2.INTER_AREA)
+
+    def _save_camera_color_debug_once(
+        self,
+        camera_name: str,
+        frame_as_received: np.ndarray,
+        frame_after_bgr2rgb: np.ndarray,
+    ) -> None:
+        """Optionally save one before/after pair without changing inference input."""
+        if self._camera_debug_dir is None or camera_name in self._camera_debug_saved:
+            return
+        self._camera_debug_dir.mkdir(parents=True, exist_ok=True)
+        safe_name = "".join(
+            char if char.isalnum() or char in "._-" else "_" for char in camera_name
+        )
+        before_path = self._camera_debug_dir / f"{safe_name}_as_received.png"
+        after_path = self._camera_debug_dir / f"{safe_name}_after_bgr2rgb.png"
+        if not cv2.imwrite(str(before_path), frame_as_received):
+            pyzlc.error(f"Failed to save camera debug image: {before_path}")
+            return
+        if not cv2.imwrite(str(after_path), frame_after_bgr2rgb):
+            pyzlc.error(f"Failed to save camera debug image: {after_path}")
+            return
+        self._camera_debug_saved.add(camera_name)
+        pyzlc.info(
+            f"Saved one-shot camera color debug pair for {camera_name}: "
+            f"{before_path}, {after_path}"
+        )
 
     def _build_state_vector(self) -> np.ndarray:
         arm_state = self.arm_wrapper.capture_step()

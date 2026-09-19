@@ -1737,3 +1737,79 @@ chunks:
        11  horizon_async       10         8      0.104    0.145       0.355
        12  horizon_async     None         0        n/a      n/a         n/a
 
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=False
+summary: total_time=14.724s, inference_calls=30, completed_chunks=30, actions_applied=289, empty_action_steps=0
+latency: avg_request=0.111s, avg_first_action=0.151s, avg_chunk_duration=0.447s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  horizon_initial       18        10      0.292    0.292       0.401
+        2  horizon_async       18        10      0.105    0.146       0.451
+        3  horizon_async       18        10      0.104    0.145       0.451
+        4  horizon_async       18        10      0.105    0.145       0.451
+        5  horizon_async       18        10      0.104    0.146       0.451
+        6  horizon_async       18        10      0.104    0.146       0.451
+        7  horizon_async       18        10      0.103    0.146       0.451
+        8  horizon_async       18        10      0.103    0.146       0.451
+        9  horizon_async       18        10      0.105    0.146       0.451
+       10  horizon_async       18        10      0.103    0.146       0.451
+       11  horizon_async       18        10      0.113    0.146       0.450
+       12  horizon_async       18        10      0.104    0.146       0.450
+       13  horizon_async       18        10      0.104    0.146       0.451
+       14  horizon_async       18        10      0.103    0.146       0.451
+       15  horizon_async       18        10      0.104    0.146       0.451
+       16  horizon_async       18        10      0.103    0.146       0.451
+       17  horizon_async       18        10      0.104    0.145       0.451
+       18  horizon_async       18        10      0.105    0.145       0.451
+       19  horizon_async       18        10      0.104    0.146       0.451
+       20  horizon_async       18        10      0.104    0.146       0.451
+       21  horizon_async       18        10      0.103    0.146       0.451
+       22  horizon_async       18        10      0.104    0.146       0.451
+       23  horizon_async       18        10      0.104    0.146       0.451
+       24  horizon_async       18        10      0.104    0.146       0.451
+       25  horizon_async       18        10      0.104    0.146       0.451
+       26  horizon_async       18        10      0.104    0.146       0.450
+       27  horizon_async       18        10      0.104    0.146       0.451
+       28  horizon_async       18        10      0.104    0.146       0.450
+       29  horizon_async       18         9      0.104    0.146       0.400
+       30  horizon_async     None         0        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=False
+summary: total_time=14.840s, inference_calls=30, completed_chunks=30, actions_applied=295, empty_action_steps=0
+latency: avg_request=0.104s, avg_first_action=0.145s, avg_chunk_duration=0.441s
+chunks:
+  request  kind         actions  executed  request_s  first_s  duration_s
+        1  horizon_initial       18        10      0.110    0.110       0.401
+        2  horizon_async       18        10      0.104    0.146       0.451
+        3  horizon_async       18        10      0.103    0.146       0.451
+        4  horizon_async       18        10      0.104    0.146       0.451
+        5  horizon_async       18        10      0.104    0.146       0.451
+        6  horizon_async       18        10      0.104    0.146       0.451
+        7  horizon_async       18        10      0.103    0.146       0.450
+        8  horizon_async       18        10      0.104    0.146       0.451
+        9  horizon_async       18        10      0.103    0.146       0.451
+       10  horizon_async       18        10      0.104    0.146       0.451
+       11  horizon_async       18        10      0.103    0.146       0.450
+       12  horizon_async       18        10      0.105    0.146       0.451
+       13  horizon_async       18        10      0.104    0.146       0.451
+       14  horizon_async       18        10      0.104    0.146       0.450
+       15  horizon_async       18        10      0.103    0.147       0.450
+       16  horizon_async       18        10      0.103    0.146       0.451
+       17  horizon_async       18        10      0.103    0.146       0.451
+       18  horizon_async       18        10      0.103    0.146       0.451
+       19  horizon_async       18        10      0.104    0.146       0.451
+       20  horizon_async       18        10      0.103    0.146       0.451
+       21  horizon_async       18        10      0.104    0.146       0.451
+       22  horizon_async       18        10      0.104    0.146       0.451
+       23  horizon_async       18        10      0.103    0.146       0.450
+       24  horizon_async       18        10      0.103    0.146       0.451
+       25  horizon_async       18        10      0.103    0.146       0.451
+       26  horizon_async       18        10      0.103    0.146       0.451
+       27  horizon_async       18        10      0.104    0.146       0.451
+       28  horizon_async       18        10      0.103    0.146       0.451
+       29  horizon_async       18        10      0.103    0.146       0.451
+       30  horizon_async       18         5      0.105    0.146       0.200
+

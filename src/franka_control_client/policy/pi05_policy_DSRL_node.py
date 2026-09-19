@@ -321,10 +321,15 @@ class Pi05PolicyDSRLNode:
             trajectory=self._trajectory,
         )
         self._episodes_completed += 1
+        outcome_label = "success" if success else "fail"
+        # Keep the operator's keyboard judgement in every artifact filename.
+        # TrajectoryRecorder, ChunkTraceRecorder, and the noise visualizer all
+        # derive their output stem from trajectory.episode_name.
+        episode_name = f"episode_{self._episodes_completed:06d}_{outcome_label}"
         self._trajectory.finalize(
             rewards=rewards,
             success=success,
-            episode_name=f"episode_{self._episodes_completed:06d}",
+            episode_name=episode_name,
             metadata={
                 "keyboard_label": "success" if success else "failure",
                 "chunk_executions": executions,
