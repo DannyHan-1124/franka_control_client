@@ -57,11 +57,15 @@ class Pi05PolicyInferenceConfig:
     abpolicy_enabled: bool = False
     abpolicy_last_point_weight: float = 0.05
     mpq_library: Optional[str] = None
-    mpq_delta: float = 0.25
+    mpq_delta: float = 0.0
     mpq_gripper_weight: float = 5.0
     mpq_metric_horizon: int = 20
     mpq_rung: str = "yaw"
     mpq_device: str = "cpu"
+    mpq_bound_floor: float = 0.0
+    mpq_radius_multiplier: float = 0.5
+    mpq_radius_quantile: float = 0.9
+    mpq_clip_gripper: bool = False
 
 
 class Pi05PolicyInference(PolicyInferenceManager):
@@ -88,6 +92,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
             raise ValueError("MPQ currently supports baseline raw action chunks, not ABPolicy control points.")
         if cfg.mpq_delta < 0:
             raise ValueError("mpq_delta must be non-negative.")
+        if cfg.mpq_bound_floor < 0 or cfg.mpq_radius_multiplier < 0:
+            raise ValueError("MPQ bound floor and radius multiplier must be non-negative.")
         if cfg.policy_transport == "zmq":
             if not cfg.policy_zmq_endpoint:
                 raise ValueError("policy_zmq_endpoint is required for ZMQ policy transport.")
@@ -113,6 +119,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 metric_horizon=cfg.mpq_metric_horizon,
                 rung=cfg.mpq_rung,
                 device=cfg.mpq_device,
+                bound_floor=cfg.mpq_bound_floor,
+                radius_multiplier=cfg.mpq_radius_multiplier,
+                radius_quantile=cfg.mpq_radius_quantile,
+                clip_gripper=cfg.mpq_clip_gripper,
             )
             if cfg.mpq_library
             else None
@@ -322,6 +332,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
                                 "request_id": request_id,
                                 "library_indices": list(mpq_result.library_indices),
                                 "residual_ratios": list(mpq_result.residual_ratios),
+                                "saturations": list(mpq_result.saturations),
+                                "residual_caps": list(mpq_result.residual_caps),
+                                "quantized_steps": mpq_result.quantized_steps,
                                 "duration_s": time.perf_counter() - mpq_start,
                             }
                         )
@@ -712,6 +725,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "mpq_enabled": self.mpq is not None,
             "mpq_library": self.cfg.mpq_library,
             "mpq_delta": self.cfg.mpq_delta if self.mpq is not None else None,
+            "mpq_radius_multiplier": (
+                self.cfg.mpq_radius_multiplier if self.mpq is not None else None
+            ),
+            "mpq_radius_quantile": self.cfg.mpq_radius_quantile if self.mpq is not None else None,
             "mpq_assignments": list(self._metrics_mpq_assignments),
             "first_execution_horizon": int(self.cfg.first_execution_horizon),
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),

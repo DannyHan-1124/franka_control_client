@@ -59,11 +59,15 @@ def _parse_args() -> argparse.Namespace:
         default=None,
         help="MPQ library for postprocessing baseline pi0.5 absolute action chunks.",
     )
-    parser.add_argument("--mpq_delta", type=float, default=0.25)
+    parser.add_argument("--mpq_delta", type=float, default=0.0)
     parser.add_argument("--mpq_gripper_weight", type=float, default=5.0)
     parser.add_argument("--mpq_metric_horizon", type=int, default=20)
     parser.add_argument("--mpq_rung", choices=("raw_gram", "yaw", "yaw_warp_scale"), default="yaw")
     parser.add_argument("--mpq_device", default="cpu")
+    parser.add_argument("--mpq_bound_floor", type=float, default=0.0)
+    parser.add_argument("--mpq_radius_multiplier", type=float, default=0.5)
+    parser.add_argument("--mpq_radius_quantile", type=float, default=0.9)
+    parser.add_argument("--mpq_clip_gripper", action="store_true")
     parser.add_argument("--stop_after_first_release", action="store_true")
     parser.add_argument("--stop_after_release_steps", type=int, default=0)
     parser.add_argument(
@@ -130,6 +134,10 @@ def main() -> None:
         mpq_metric_horizon=args.mpq_metric_horizon,
         mpq_rung=args.mpq_rung,
         mpq_device=args.mpq_device,
+        mpq_bound_floor=args.mpq_bound_floor,
+        mpq_radius_multiplier=args.mpq_radius_multiplier,
+        mpq_radius_quantile=args.mpq_radius_quantile,
+        mpq_clip_gripper=args.mpq_clip_gripper,
         stop_after_first_release=args.stop_after_first_release,
         stop_after_release_steps=args.stop_after_release_steps,
         close_gripper_on_reset=args.close_gripper_on_reset,

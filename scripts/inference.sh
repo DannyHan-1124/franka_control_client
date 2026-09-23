@@ -32,7 +32,9 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --metrics_path "${REPO_ROOT}/logs/pi05_mpq_inference_metrics.jsonl" \
     --chunk_replan_steps 50 \
     --mpq_library "${MPQ_LIBRARY}" \
-    --mpq_delta "${MPQ_DELTA:-0.25}" \
+    --mpq_delta "${MPQ_DELTA:-0.0}" \
+    --mpq_radius_multiplier "${MPQ_RADIUS_MULTIPLIER:-0.5}" \
+    --mpq_radius_quantile "${MPQ_RADIUS_QUANTILE:-0.9}" \
     --mpq_metric_horizon 20 \
     --mpq_device "${MPQ_DEVICE:-cpu}" \
     --static_camera static_cam \
