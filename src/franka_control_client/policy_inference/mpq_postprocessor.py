@@ -8,6 +8,22 @@ from typing import Any
 import numpy as np
 
 
+def select_mpq_anchor(
+    measured_state: np.ndarray,
+    last_commanded_action: np.ndarray | None,
+) -> tuple[np.ndarray, str]:
+    """Use measured pose initially, then preserve continuity from the last command."""
+    measured = np.asarray(measured_state, dtype=np.float64).reshape(-1)
+    if measured.size < 7:
+        raise ValueError("MPQ measured-state anchor must contain xyz and an xyzw quaternion")
+    if last_commanded_action is None:
+        return measured, "measured_pose"
+    commanded = np.asarray(last_commanded_action, dtype=np.float64).reshape(-1)
+    if commanded.size < 7:
+        raise ValueError("MPQ commanded-pose anchor must contain xyz and an xyzw quaternion")
+    return commanded, "last_commanded_pose"
+
+
 @dataclass(frozen=True)
 class MPQResult:
     actions: np.ndarray

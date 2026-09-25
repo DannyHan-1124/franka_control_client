@@ -27,7 +27,7 @@ from .bspline import (
     rebuild_trajectory,
     refit_control_point_prefix,
 )
-from .mpq_postprocessor import MPQCartesianPostprocessor
+from .mpq_postprocessor import MPQCartesianPostprocessor, select_mpq_anchor
 
 
 IMAGE_SIZE = (224, 224)
@@ -322,9 +322,15 @@ class Pi05PolicyInference(PolicyInferenceManager):
                     self._action_chunk = self._parse_action_payload(action_msg["action"])
                     if self.mpq is not None:
                         mpq_start = time.perf_counter()
+                        measured_state = np.asarray(
+                            observation["observation.state"], dtype=np.float64
+                        )
+                        mpq_anchor, anchor_source = select_mpq_anchor(
+                            measured_state, self._last_sanitized_action
+                        )
                         mpq_result = self.mpq.process(
                             self._action_chunk,
-                            np.asarray(observation["observation.state"], dtype=np.float64),
+                            mpq_anchor,
                         )
                         self._action_chunk = mpq_result.actions
                         self._metrics_mpq_assignments.append(
@@ -335,6 +341,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
                                 "saturations": list(mpq_result.saturations),
                                 "residual_caps": list(mpq_result.residual_caps),
                                 "quantized_steps": mpq_result.quantized_steps,
+                                "anchor_source": anchor_source,
+                                "anchor_position_tracking_error_m": float(
+                                    np.linalg.norm(mpq_anchor[:3] - measured_state[:3])
+                                ),
                                 "duration_s": time.perf_counter() - mpq_start,
                             }
                         )

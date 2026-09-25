@@ -35,7 +35,7 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --mpq_delta "${MPQ_DELTA:-0.0}" \
     --mpq_radius_multiplier "${MPQ_RADIUS_MULTIPLIER:-0.5}" \
     --mpq_radius_quantile "${MPQ_RADIUS_QUANTILE:-0.9}" \
-    --mpq_metric_horizon 20 \
+    --mpq_metric_horizon 50 \
     --mpq_device "${MPQ_DEVICE:-cpu}" \
     --static_camera static_cam \
     --wrist_camera wrist_cam
