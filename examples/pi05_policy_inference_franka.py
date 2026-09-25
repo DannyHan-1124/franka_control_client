@@ -66,7 +66,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--mpq_device", default="cpu")
     parser.add_argument("--mpq_bound_floor", type=float, default=0.0)
     parser.add_argument("--mpq_radius_multiplier", type=float, default=0.5)
-    parser.add_argument("--mpq_radius_quantile", type=float, default=0.9)
+    parser.add_argument("--mpq_radius_quantile", type=float, default=0.75)
     parser.add_argument("--mpq_clip_gripper", action="store_true")
     parser.add_argument("--stop_after_first_release", action="store_true")
     parser.add_argument("--stop_after_release_steps", type=int, default=0)

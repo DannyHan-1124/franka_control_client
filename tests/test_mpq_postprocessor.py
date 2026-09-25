@@ -8,7 +8,7 @@ from franka_control_client.policy_inference.mpq_postprocessor import (
     MPQCartesianPostprocessor,
     select_mpq_anchor,
 )
-from mpq import UniformBSpline, absolute_to_base_deltas
+from mpq import AbsoluteConfig, UniformBSpline, absolute_config_path, to_deltas
 
 
 def test_postprocessor_returns_absolute_cartesian_chunk(tmp_path) -> None:
@@ -22,11 +22,19 @@ def test_postprocessor_returns_absolute_cartesian_chunk(tmp_path) -> None:
         ],
         dtype=np.float32,
     )
-    deltas = absolute_to_base_deltas(actions, reference[:7]).astype(np.float32)
+    config = AbsoluteConfig(
+        quat_order="xyzw",
+        pos_scale=0.0106,
+        rot_scale=0.0914,
+        gripper_open=0.0,
+        gripper_closed=1.0,
+    )
+    deltas = to_deltas(actions, reference[:7], config).astype(np.float32)
     spline = UniformBSpline(num_basis=4)
     library = spline.fit(torch.from_numpy(deltas[None]))
     library_path = tmp_path / "library.pt"
     torch.save(library, library_path)
+    config.save(absolute_config_path(str(library_path)))
 
     processor = MPQCartesianPostprocessor(
         str(library_path), delta=float("inf"), metric_horizon=len(actions)

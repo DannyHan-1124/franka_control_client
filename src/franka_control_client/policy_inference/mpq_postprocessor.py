@@ -35,7 +35,7 @@ class MPQResult:
 
 
 class MPQCartesianPostprocessor:
-    """Adapt absolute 8-D Cartesian chunks to and from MPQ's 7-D format."""
+    """Apply the author's normalized absolute-command MPQ wrapper."""
 
     def __init__(
         self,
@@ -52,13 +52,13 @@ class MPQCartesianPostprocessor:
         clip_gripper: bool = False,
     ) -> None:
         try:
-            from mpq import MPQ
+            from mpq import AbsoluteMPQ
         except ImportError as exc:
             raise ImportError(
                 "MPQ is enabled but the mpq package is unavailable. Install it with "
                 "`pip install -e /path/to/mpq` or add the repository to PYTHONPATH."
             ) from exc
-        self._layer: Any = MPQ(
+        self._layer: Any = AbsoluteMPQ(
             library,
             delta=delta,
             gripper_weight=gripper_weight,
@@ -75,23 +75,24 @@ class MPQCartesianPostprocessor:
             raise ValueError("metric_horizon must be positive")
 
     def process(self, actions: np.ndarray, reference_state: np.ndarray) -> MPQResult:
-        from mpq import absolute_to_base_deltas, base_deltas_to_absolute
-
         actions = np.asarray(actions, dtype=np.float64)
         reference_state = np.asarray(reference_state, dtype=np.float64).reshape(-1)
-        deltas = absolute_to_base_deltas(actions, reference_state[:7])
-        self._layer.reset_telemetry()
-        quantized = deltas.astype(np.float32, copy=True)
-        quantized_steps = (len(deltas) // self._block_horizon) * self._block_horizon
-        if quantized_steps:
-            blocks = quantized[:quantized_steps].reshape(-1, self._block_horizon, 7)
-            quantized[:quantized_steps] = self._layer.quantize(blocks).reshape(-1, 7)
-        result = base_deltas_to_absolute(np.asarray(quantized), reference_state[:7])
+        if actions.ndim != 2 or actions.shape[1] != 8:
+            raise ValueError(f"expected an absolute action chunk shaped [T, 8], got {actions.shape}")
+        if len(actions) < self._block_horizon:
+            raise ValueError(
+                f"policy returned {len(actions)} actions, fewer than MPQ horizon {self._block_horizon}"
+            )
+        # The rerun library contains one 20-step primitive. Quantize only the
+        # first 20 policy targets and return only those targets for execution.
+        chunk = actions[:self._block_horizon]
+        self._layer.mpq.reset_telemetry()
+        result = self._layer.quantize(chunk, reference_state[:7])
         return MPQResult(
             actions=result,
-            library_indices=tuple(self._layer.trace),
-            residual_ratios=tuple(self._layer.ratios),
-            saturations=tuple(self._layer.sats),
-            residual_caps=tuple(self._layer.caps),
-            quantized_steps=quantized_steps,
+            library_indices=tuple(self._layer.mpq.trace),
+            residual_ratios=tuple(self._layer.mpq.ratios),
+            saturations=tuple(self._layer.mpq.sats),
+            residual_caps=tuple(self._layer.mpq.caps),
+            quantized_steps=self._block_horizon,
         )

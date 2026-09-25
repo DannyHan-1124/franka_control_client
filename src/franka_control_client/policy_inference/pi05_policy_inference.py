@@ -64,7 +64,7 @@ class Pi05PolicyInferenceConfig:
     mpq_device: str = "cpu"
     mpq_bound_floor: float = 0.0
     mpq_radius_multiplier: float = 0.5
-    mpq_radius_quantile: float = 0.9
+    mpq_radius_quantile: float = 0.75
     mpq_clip_gripper: bool = False
 
 
@@ -94,6 +94,12 @@ class Pi05PolicyInference(PolicyInferenceManager):
             raise ValueError("mpq_delta must be non-negative.")
         if cfg.mpq_bound_floor < 0 or cfg.mpq_radius_multiplier < 0:
             raise ValueError("MPQ bound floor and radius multiplier must be non-negative.")
+        if cfg.mpq_library and cfg.fps != 20:
+            raise ValueError("The cylinder MPQ rerun library requires --fps 20.")
+        if cfg.mpq_library and cfg.mpq_metric_horizon != 20:
+            raise ValueError("The cylinder MPQ rerun library requires --mpq_metric_horizon 20.")
+        if cfg.mpq_library and not 1 <= cfg.chunk_replan_steps <= 20:
+            raise ValueError("MPQ chunk_replan_steps must be between 1 and the 20-step library horizon.")
         if cfg.policy_transport == "zmq":
             if not cfg.policy_zmq_endpoint:
                 raise ValueError("policy_zmq_endpoint is required for ZMQ policy transport.")

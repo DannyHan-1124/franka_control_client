@@ -3,14 +3,12 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WORKSPACE_ROOT="$(cd "${REPO_ROOT}/.." && pwd)"
-export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/mpq:${PYTHONPATH:-}"
+export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/mpq_cylinder_rerun:${PYTHONPATH:-}"
 
-MPQ_LIBRARY="${MPQ_LIBRARY:-${WORKSPACE_ROOT}/mpq/libraries/cylinder_full_h50_yaw_k256_g5.pt}"
-# cylinder_full_yaw_k256_g5.pt
-# cylinder_full_h50_yaw_k256_g5.pt
+MPQ_LIBRARY="${MPQ_LIBRARY:-${WORKSPACE_ROOT}/mpq_cylinder_rerun/libraries/cylinder_yaw_k256_g5.pt}"
 if [[ ! -f "${MPQ_LIBRARY}" ]]; then
     echo "MPQ library not found: ${MPQ_LIBRARY}" >&2
-    echo "Build it with ${WORKSPACE_ROOT}/mpq/scripts/build_cylinder_full_library.sh" >&2
+    echo "Expected the author's cylinder rerun kit under ${WORKSPACE_ROOT}/mpq_cylinder_rerun" >&2
     exit 1
 fi
 
@@ -30,12 +28,12 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --policy_transport zmq \
     --policy_zmq_endpoint tcp://127.0.0.1:17725 \
     --metrics_path "${REPO_ROOT}/logs/pi05_mpq_inference_metrics.jsonl" \
-    --chunk_replan_steps 50 \
+    --chunk_replan_steps 20 \
     --mpq_library "${MPQ_LIBRARY}" \
     --mpq_delta "${MPQ_DELTA:-0.0}" \
     --mpq_radius_multiplier "${MPQ_RADIUS_MULTIPLIER:-0.5}" \
-    --mpq_radius_quantile "${MPQ_RADIUS_QUANTILE:-0.9}" \
-    --mpq_metric_horizon 50 \
+    --mpq_radius_quantile "${MPQ_RADIUS_QUANTILE:-0.75}" \
+    --mpq_metric_horizon 20 \
     --mpq_device "${MPQ_DEVICE:-cpu}" \
     --static_camera static_cam \
     --wrist_camera wrist_cam
