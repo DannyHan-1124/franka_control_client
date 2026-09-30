@@ -9,7 +9,7 @@ export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot/src:${PYTHONPATH:-
 # pgrep -af 'ssh.*(-L)'
 
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
-    --task "put cylinder in moving cup" \
+    --task "put red cylinder on red cube" \
     --fps 20 \
     --stop_after_first_release \
     --pyzlc_name policy_inference \
