@@ -233,14 +233,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._metrics_empty_action_steps = 0
         self._metrics_chunks: list[dict[str, Any]] = []
         self._metrics_stream_chunks: dict[int, dict[str, Any]] = {}
-        self._metrics_boundary_discontinuities: list[dict[str, Any]] = []
-        self._metrics_last_applied_request_id: Optional[int] = None
-        self._metrics_last_applied_action: Optional[np.ndarray] = None
-        self._metrics_within_chunk_position_steps: list[float] = []
-        self._metrics_within_chunk_rotation_steps: list[float] = []
-        self._metrics_last_position_delta: Optional[np.ndarray] = None
-        self._metrics_last_rotation_delta: Optional[np.ndarray] = None
-        self._metrics_pending_boundary_context: Optional[dict[str, Any]] = None
+        # Episode-level boundary/interior metric from Wang (2026). This is
+        # populated only by the streaming FASTER execution path.
+        self._metrics_paper_actions: list[np.ndarray] = []
+        self._metrics_paper_chunk_boundaries: list[int] = []
+        self._metrics_paper_last_request_id: Optional[int] = None
         self._metrics_start_perf = time.perf_counter()
         self._metrics_start_wall = time.time()
         self._last_observation_profile: dict[str, float] = {}
@@ -313,7 +310,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 if self._metrics_chunks
                 else None
             )
-            self._record_applied_action_boundary(request_id, sanitized_action)
+            self._record_paper_discontinuity_action(request_id, sanitized_action)
             self._last_sanitized_action = sanitized_action.copy()
             self.control_pair.update_action(sanitized_action)
             self._metrics_actions_applied += 1
@@ -345,7 +342,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         action = self._pop_next_stream_action()
         if action is not None:
             sanitized_action = self._sanitize_action(action)
-            self._record_applied_action_boundary(source_request_id, sanitized_action)
+            self._record_paper_discontinuity_action(source_request_id, sanitized_action)
             self._last_sanitized_action = sanitized_action.copy()
             self.control_pair.update_action(sanitized_action)
             self._metrics_actions_applied += 1
@@ -635,173 +632,23 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 chunk.update(metric)
                 break
 
-    def _record_applied_action_boundary(
+    def _record_paper_discontinuity_action(
         self,
         request_id: Optional[int],
         action: np.ndarray,
     ) -> None:
-        """Measure the jump between consecutively executed policy chunks."""
-        current = np.asarray(action, dtype=np.float64)
-        previous = self._metrics_last_applied_action
-        previous_request_id = self._metrics_last_applied_request_id
-
-        if previous is not None and request_id == previous_request_id:
-            position_delta = current[:3] - previous[:3]
-            rotation_delta = _quat_delta_rotvec(previous[3:7], current[3:7])
-
-            pending = self._metrics_pending_boundary_context
-            if pending is not None and pending.get("request_id") == request_id:
-                boundary = pending["boundary"]
-                previous_position_delta = pending.get("previous_position_delta")
-                previous_rotation_delta = pending.get("previous_rotation_delta")
-                post_step_m = float(np.linalg.norm(position_delta))
-                post_rotation_deg = float(np.degrees(np.linalg.norm(rotation_delta)))
-                boundary["post_boundary_position_step_m"] = post_step_m
-                boundary["post_boundary_rotation_step_deg"] = post_rotation_deg
-                boundary["post_boundary_position_step_ratio"] = _safe_ratio(
-                    post_step_m,
-                    pending.get("baseline_position_step_m"),
-                )
-                post_position_ratio = boundary["post_boundary_position_step_ratio"]
-                boundary["post_boundary_low_motion"] = (
-                    post_position_ratio is not None and post_position_ratio < 0.25
-                )
-                boundary["post_boundary_rotation_step_ratio"] = _safe_ratio(
-                    post_rotation_deg,
-                    pending.get("baseline_rotation_step_deg"),
-                )
-                if previous_position_delta is not None:
-                    boundary["post_boundary_direction_change_deg"] = _vector_angle_deg(
-                        previous_position_delta,
-                        position_delta,
-                    )
-                    boundary["post_boundary_linear_velocity_change_m_s"] = float(
-                        np.linalg.norm(position_delta - previous_position_delta) * self.cfg.fps
-                    )
-                if previous_rotation_delta is not None:
-                    boundary["post_boundary_angular_velocity_change_deg_s"] = float(
-                        np.degrees(np.linalg.norm(rotation_delta - previous_rotation_delta))
-                        * self.cfg.fps
-                    )
-                metric = self._metrics_stream_chunks.get(int(request_id))
-                if metric is None:
-                    metric = next(
-                        (
-                            chunk
-                            for chunk in self._metrics_chunks
-                            if chunk.get("request_id") == request_id
-                        ),
-                        None,
-                    )
-                if metric is not None:
-                    metric["boundary_discontinuity"] = dict(boundary)
-                self._metrics_pending_boundary_context = None
-
-            self._metrics_within_chunk_position_steps.append(float(np.linalg.norm(position_delta)))
-            self._metrics_within_chunk_rotation_steps.append(
-                float(np.degrees(np.linalg.norm(rotation_delta)))
-            )
-            self._metrics_last_position_delta = position_delta
-            self._metrics_last_rotation_delta = rotation_delta
-
-        elif (
-            previous is not None
+        """Record actions and real buffer replacements for the paper metric."""
+        if self._streaming_policy is None:
+            return
+        if (
+            self._metrics_paper_actions
             and request_id is not None
-            and previous_request_id is not None
-            and request_id != previous_request_id
+            and self._metrics_paper_last_request_id is not None
+            and request_id != self._metrics_paper_last_request_id
         ):
-            position_delta = current[:3] - previous[:3]
-            rotation_delta = _quat_delta_rotvec(previous[3:7], current[3:7])
-            position_jump_m = float(np.linalg.norm(position_delta))
-            baseline_position_step_m = _median(self._metrics_within_chunk_position_steps)
-            baseline_rotation_step_deg = _median(self._metrics_within_chunk_rotation_steps)
-
-            previous_quat = previous[3:7]
-            current_quat = current[3:7]
-            previous_norm = float(np.linalg.norm(previous_quat))
-            current_norm = float(np.linalg.norm(current_quat))
-            if previous_norm > 0.0 and current_norm > 0.0:
-                quat_dot = float(
-                    np.clip(
-                        abs(np.dot(previous_quat / previous_norm, current_quat / current_norm)),
-                        0.0,
-                        1.0,
-                    )
-                )
-                rotation_jump_deg = float(np.degrees(2.0 * np.arccos(quat_dot)))
-            else:
-                rotation_jump_deg = None
-
-            boundary = {
-                "from_request_id": int(previous_request_id),
-                "to_request_id": int(request_id),
-                "position_jump_m": position_jump_m,
-                "rotation_jump_deg": rotation_jump_deg,
-                "baseline_position_step_m": baseline_position_step_m,
-                "position_jump_ratio": _safe_ratio(position_jump_m, baseline_position_step_m),
-                "baseline_rotation_step_deg": baseline_rotation_step_deg,
-                "rotation_jump_ratio": _safe_ratio(rotation_jump_deg, baseline_rotation_step_deg),
-            }
-            if self._metrics_last_position_delta is not None:
-                direction_change_deg = _vector_angle_deg(
-                    self._metrics_last_position_delta,
-                    position_delta,
-                )
-                boundary["direction_change_deg"] = direction_change_deg
-                boundary["backtracking"] = (
-                    direction_change_deg is not None and direction_change_deg > 90.0
-                )
-                boundary["linear_velocity_change_m_s"] = float(
-                    np.linalg.norm(position_delta - self._metrics_last_position_delta) * self.cfg.fps
-                )
-            else:
-                boundary["direction_change_deg"] = None
-                boundary["backtracking"] = None
-                boundary["linear_velocity_change_m_s"] = None
-            if self._metrics_last_rotation_delta is not None:
-                boundary["angular_velocity_change_deg_s"] = float(
-                    np.degrees(np.linalg.norm(rotation_delta - self._metrics_last_rotation_delta))
-                    * self.cfg.fps
-                )
-            else:
-                boundary["angular_velocity_change_deg_s"] = None
-            self._metrics_boundary_discontinuities.append(boundary)
-            self._metrics_pending_boundary_context = {
-                "request_id": request_id,
-                "boundary": boundary,
-                "previous_position_delta": (
-                    self._metrics_last_position_delta.copy()
-                    if self._metrics_last_position_delta is not None
-                    else None
-                ),
-                "previous_rotation_delta": (
-                    self._metrics_last_rotation_delta.copy()
-                    if self._metrics_last_rotation_delta is not None
-                    else None
-                ),
-                "baseline_position_step_m": baseline_position_step_m,
-                "baseline_rotation_step_deg": baseline_rotation_step_deg,
-            }
-            metric = self._metrics_stream_chunks.get(int(request_id))
-            if metric is None:
-                metric = next(
-                    (
-                        chunk
-                        for chunk in self._metrics_chunks
-                        if chunk.get("request_id") == request_id
-                    ),
-                    None,
-                )
-            if metric is not None:
-                metric["boundary_discontinuity"] = dict(boundary)
-
-            self._metrics_within_chunk_position_steps = []
-            self._metrics_within_chunk_rotation_steps = []
-            self._metrics_last_position_delta = None
-            self._metrics_last_rotation_delta = None
-
-        self._metrics_last_applied_request_id = request_id
-        self._metrics_last_applied_action = current.copy()
+            self._metrics_paper_chunk_boundaries.append(len(self._metrics_paper_actions))
+        self._metrics_paper_actions.append(np.asarray(action, dtype=np.float64).copy())
+        self._metrics_paper_last_request_id = request_id
 
     def _should_request_action_chunk(self) -> bool:
         if self._action_chunk is None:
@@ -926,12 +773,17 @@ class Pi05PolicyInference(PolicyInferenceManager):
             # Direct ZMQ returns one complete chunk per blocking request.
             summary["avg_inference_latency_s"] = _mean(request_latencies)
         else:
+            discontinuity = _boundary_discontinuity_metrics(
+                self._metrics_paper_actions,
+                self._metrics_paper_chunk_boundaries,
+            )
             summary.update(
                 {
                     "avg_first_action_latency_s": _mean(first_action_latencies),
                     "p95_first_action_latency_s": p95_first_action_latency_s,
                     "recommended_delay": recommended_delay,
                     "avg_final_latency_s": _mean(final_latencies),
+                    "boundary_discontinuity": discontinuity,
                 }
             )
         if self.cfg.faster_infer_time_schedule.upper() == "HAS":
@@ -1028,6 +880,15 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 f"recommended_delay={summary.get('recommended_delay')}, "
                 f"avg_final={_format_optional(summary.get('avg_final_latency_s'))}s, "
                 f"avg_chunk_duration={_format_optional(summary.get('avg_chunk_execution_duration_s'))}s"
+            )
+            discontinuity = summary.get("boundary_discontinuity") or {}
+            lines.extend(
+                [
+                    "boundary discontinuity (second action difference):",
+                    _format_discontinuity_text("position", discontinuity.get("position")),
+                    _format_discontinuity_text("rotation", discontinuity.get("rotation")),
+                    _format_discontinuity_text("gripper", discontinuity.get("gripper")),
+                ]
             )
             lines.extend([
                 "chunks:",
@@ -1460,47 +1321,116 @@ def _mean(values: List[float]) -> Optional[float]:
     return float(sum(values) / len(values))
 
 
-def _median(values: List[float]) -> Optional[float]:
-    if not values:
-        return None
-    return float(np.median(np.asarray(values, dtype=np.float64)))
+def _boundary_discontinuity_metrics(
+    executed_actions: List[np.ndarray], chunk_boundaries: List[int]
+) -> Dict[str, Any]:
+    """Compute the event-aligned boundary/interior metric used on ABPolicy."""
+    actions = np.asarray(executed_actions, dtype=np.float64)
+    empty_component = {
+        "boundary_mean": None,
+        "interior_mean": None,
+        "contrast": None,
+        "boundary_samples": 0,
+        "interior_samples": 0,
+    }
+    result: Dict[str, Any] = {
+        "definition": "mean_boundary_second_difference_minus_mean_interior_second_difference",
+        "boundary_offsets": [0, 1],
+        "interior_offsets": [2, 3, 4],
+        "chunk_boundary_count": len(chunk_boundaries),
+        "position": dict(empty_component),
+        "rotation": dict(empty_component),
+        "gripper": dict(empty_component),
+    }
+    if actions.ndim != 2 or actions.shape[0] < 3 or actions.shape[1] < ACTION_DIM:
+        return result
+
+    position_second_difference = np.full(len(actions), np.nan, dtype=np.float64)
+    rotation_second_difference = np.full(len(actions), np.nan, dtype=np.float64)
+    gripper_second_difference = np.full(len(actions), np.nan, dtype=np.float64)
+    position_second_difference[2:] = np.linalg.norm(
+        actions[2:, :3] - 2.0 * actions[1:-1, :3] + actions[:-2, :3], axis=-1
+    )
+    gripper_second_difference[2:] = np.abs(
+        actions[2:, 7] - 2.0 * actions[1:-1, 7] + actions[:-2, 7]
+    )
+    rotation_increments = np.asarray(
+        [
+            _quat_local_delta_rotvec(actions[index - 1, 3:7], actions[index, 3:7])
+            for index in range(1, len(actions))
+        ]
+    )
+    rotation_second_difference[2:] = np.linalg.norm(
+        rotation_increments[1:] - rotation_increments[:-1], axis=-1
+    )
+
+    valid_boundaries = sorted({int(index) for index in chunk_boundaries if 0 <= index < len(actions)})
+    boundary_indices: set[int] = set()
+    interior_indices: set[int] = set()
+    for boundary_number, boundary in enumerate(valid_boundaries):
+        next_boundary = (
+            valid_boundaries[boundary_number + 1]
+            if boundary_number + 1 < len(valid_boundaries)
+            else len(actions)
+        )
+        boundary_indices.update(
+            index for index in (boundary, boundary + 1) if 2 <= index < len(actions)
+        )
+        interior_indices.update(
+            index
+            for index in (boundary + 2, boundary + 3, boundary + 4)
+            if 2 <= index < next_boundary and index < len(actions)
+        )
+    interior_indices.difference_update(boundary_indices)
+
+    def summarize(values: np.ndarray) -> Dict[str, Any]:
+        boundary_values = [
+            float(values[index])
+            for index in sorted(boundary_indices)
+            if np.isfinite(values[index])
+        ]
+        interior_values = [
+            float(values[index])
+            for index in sorted(interior_indices)
+            if np.isfinite(values[index])
+        ]
+        boundary_mean = _mean(boundary_values)
+        interior_mean = _mean(interior_values)
+        return {
+            "boundary_mean": boundary_mean,
+            "interior_mean": interior_mean,
+            "contrast": (
+                boundary_mean - interior_mean
+                if boundary_mean is not None and interior_mean is not None
+                else None
+            ),
+            "boundary_samples": len(boundary_values),
+            "interior_samples": len(interior_values),
+        }
+
+    result["position"] = summarize(position_second_difference)
+    result["rotation"] = summarize(rotation_second_difference)
+    result["gripper"] = summarize(gripper_second_difference)
+    return result
 
 
-def _safe_ratio(numerator: Optional[float], denominator: Optional[float]) -> Optional[float]:
-    if numerator is None or denominator is None or denominator <= 1e-12:
-        return None
-    return float(numerator / denominator)
-
-
-def _vector_angle_deg(first: np.ndarray, second: np.ndarray) -> Optional[float]:
-    first_arr = np.asarray(first, dtype=np.float64)
-    second_arr = np.asarray(second, dtype=np.float64)
-    denominator = float(np.linalg.norm(first_arr) * np.linalg.norm(second_arr))
-    if denominator <= 1e-12:
-        return None
-    cosine = float(np.clip(np.dot(first_arr, second_arr) / denominator, -1.0, 1.0))
-    return float(np.degrees(np.arccos(cosine)))
-
-
-def _quat_delta_rotvec(previous: np.ndarray, current: np.ndarray) -> np.ndarray:
-    """Return the shortest relative xyzw-quaternion rotation as a rotation vector."""
+def _quat_local_delta_rotvec(previous: np.ndarray, current: np.ndarray) -> np.ndarray:
+    """Return log(conjugate(previous) * current) for xyzw quaternions."""
     q0 = _normalize_quat(previous)
     q1 = _normalize_quat(current)
     if np.dot(q0, q1) < 0.0:
         q1 = -q1
-
     x0, y0, z0, w0 = q0
     x1, y1, z1, w1 = q1
-    # q_delta = q1 * conjugate(q0)
     vector = np.asarray(
         [
-            -w1 * x0 + x1 * w0 - y1 * z0 + z1 * y0,
-            -w1 * y0 + x1 * z0 + y1 * w0 - z1 * x0,
-            -w1 * z0 - x1 * y0 + y1 * x0 + z1 * w0,
+            w0 * x1 - x0 * w1 - y0 * z1 + z0 * y1,
+            w0 * y1 + x0 * z1 - y0 * w1 - z0 * x1,
+            w0 * z1 - x0 * y1 + y0 * x1 - z0 * w1,
         ],
         dtype=np.float64,
     )
-    scalar = float(w1 * w0 + x1 * x0 + y1 * y0 + z1 * z0)
+    scalar = float(w0 * w1 + x0 * x1 + y0 * y1 + z0 * z1)
     vector_norm = float(np.linalg.norm(vector))
     if vector_norm <= 1e-12:
         return np.zeros(3, dtype=np.float64)
@@ -1508,18 +1438,19 @@ def _quat_delta_rotvec(previous: np.ndarray, current: np.ndarray) -> np.ndarray:
     return vector * (angle / vector_norm)
 
 
-def _boundary_values(boundaries: List[Dict[str, Any]], key: str) -> List[float]:
-    return [
-        float(item[key])
-        for item in boundaries
-        if item.get(key) is not None
-    ]
+def _format_discontinuity_text(name: str, values: Any) -> str:
+    values = values if isinstance(values, dict) else {}
+    return (
+        f"  {name}: boundary={_format_optional(values.get('boundary_mean'))}, "
+        f"interior={_format_optional(values.get('interior_mean'))}, "
+        f"contrast={_format_optional(values.get('contrast'))}, "
+        f"samples={values.get('boundary_samples', 0)}/{values.get('interior_samples', 0)}"
+    )
 
 
 def _without_time_profile(chunk: Dict[str, Any]) -> Dict[str, Any]:
     """Remove detailed profiling payloads while retaining user-facing latencies."""
     profile_keys = {
-        "boundary_discontinuity",
         "client_observation_build_s",
         "client_observation_profile",
         "client_send_s",
