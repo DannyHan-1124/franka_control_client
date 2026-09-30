@@ -1,0 +1,175 @@
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=6.529s, inference_calls=13, completed_chunks=13, actions_applied=127, empty_action_steps=0
+latency: avg_request=0.335s, avg_first_action=0.348s, avg_chunk_duration=0.476s, recommended_delay=8
+boundary discontinuity (second action difference):
+  position: boundary=0.006, interior=0.002, contrast=0.005, samples=22/33
+  rotation: boundary=0.011, interior=0.003, contrast=0.008, samples=22/33
+  gripper: boundary=0.091, interior=0.000, contrast=0.091, samples=22/33
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.263    0.264       0.751
+        2  rtc_async         50        10       7      7      0.340    0.346       0.451
+        3  rtc_async         50        10       7      7      0.335    0.346       0.451
+        4  rtc_async         50        10       7      7      0.331    0.346       0.450
+        5  rtc_async         50        10       7      7      0.332    0.346       0.451
+        6  rtc_async         50        11       7      7      0.333    0.346       0.501
+        7  rtc_async         50        10       7      8      0.379    0.396       0.450
+        8  rtc_async         50         9       8      8      0.376    0.396       0.400
+        9  rtc_async         50        10       8      7      0.330    0.346       0.451
+       10  rtc_async         50        10       8      7      0.332    0.346       0.451
+       11  rtc_async         50        10       8      7      0.336    0.346       0.450
+       12  rtc_async         50        10       8      7      0.334    0.346       0.451
+       13  rtc_async       None         0       8   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=6.475s, inference_calls=13, completed_chunks=13, actions_applied=126, empty_action_steps=0
+latency: avg_request=0.328s, avg_first_action=0.339s, avg_chunk_duration=0.472s, recommended_delay=7
+boundary discontinuity (second action difference):
+  position: boundary=0.006, interior=0.001, contrast=0.005, samples=22/33
+  rotation: boundary=0.011, interior=0.003, contrast=0.007, samples=22/33
+  gripper: boundary=0.091, interior=0.000, contrast=0.091, samples=22/33
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.259    0.259       0.751
+        2  rtc_async         50        10       7      7      0.339    0.345       0.450
+        3  rtc_async         50        10       7      7      0.333    0.347       0.451
+        4  rtc_async         50        10       7      7      0.334    0.347       0.451
+        5  rtc_async         50        10       7      7      0.331    0.346       0.451
+        6  rtc_async         50        10       7      7      0.336    0.347       0.451
+        7  rtc_async         50        10       7      7      0.336    0.345       0.451
+        8  rtc_async         50        10       7      7      0.337    0.346       0.451
+        9  rtc_async         50        10       7      7      0.334    0.346       0.451
+       10  rtc_async         50        10       7      7      0.333    0.346       0.451
+       11  rtc_async         50        10       7      7      0.336    0.346       0.451
+       12  rtc_async         50         9       7      7      0.330    0.346       0.401
+       13  rtc_async       None         0       7   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=6.377s, inference_calls=13, completed_chunks=13, actions_applied=124, empty_action_steps=0
+latency: avg_request=0.325s, avg_first_action=0.339s, avg_chunk_duration=0.463s, recommended_delay=7
+boundary discontinuity (second action difference):
+  position: boundary=0.006, interior=0.002, contrast=0.004, samples=22/33
+  rotation: boundary=0.013, interior=0.003, contrast=0.010, samples=22/33
+  gripper: boundary=0.045, interior=0.000, contrast=0.045, samples=22/33
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.260    0.260       0.751
+        2  rtc_async         50        10       7      7      0.333    0.346       0.451
+        3  rtc_async         50        10       7      7      0.332    0.346       0.450
+        4  rtc_async         50        10       7      7      0.330    0.346       0.451
+        5  rtc_async         50        10       7      7      0.332    0.346       0.451
+        6  rtc_async         50        10       7      7      0.330    0.346       0.451
+        7  rtc_async         50        10       7      7      0.331    0.346       0.451
+        8  rtc_async         50        10       7      7      0.332    0.346       0.450
+        9  rtc_async         50        10       7      7      0.329    0.346       0.451
+       10  rtc_async         50        10       7      7      0.328    0.346       0.451
+       11  rtc_async         50        10       7      7      0.329    0.346       0.451
+       12  rtc_async         50         7       7      7      0.330    0.346       0.300
+       13  rtc_async       None         0       7   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=6.228s, inference_calls=13, completed_chunks=13, actions_applied=121, empty_action_steps=0
+latency: avg_request=0.326s, avg_first_action=0.339s, avg_chunk_duration=0.451s, recommended_delay=7
+boundary discontinuity (second action difference):
+  position: boundary=0.005, interior=0.002, contrast=0.003, samples=22/32
+  rotation: boundary=0.010, interior=0.003, contrast=0.006, samples=22/32
+  gripper: boundary=0.045, interior=0.031, contrast=0.014, samples=22/32
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.258    0.258       0.751
+        2  rtc_async         50        10       7      7      0.334    0.346       0.450
+        3  rtc_async         50        10       7      7      0.331    0.346       0.451
+        4  rtc_async         50        10       7      7      0.330    0.346       0.450
+        5  rtc_async         50        10       7      7      0.331    0.346       0.451
+        6  rtc_async         50        10       7      7      0.332    0.346       0.451
+        7  rtc_async         50        10       7      7      0.331    0.346       0.450
+        8  rtc_async         50        10       7      7      0.331    0.346       0.451
+        9  rtc_async         50        10       7      7      0.333    0.346       0.451
+       10  rtc_async         50        10       7      7      0.333    0.346       0.450
+       11  rtc_async         50        10       7      7      0.335    0.345       0.450
+       12  rtc_async         50         4       7      7      0.333    0.346       0.155
+       13  rtc_async       None         0       7   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=6.424s, inference_calls=13, completed_chunks=13, actions_applied=125, empty_action_steps=0
+latency: avg_request=0.326s, avg_first_action=0.339s, avg_chunk_duration=0.467s, recommended_delay=7
+boundary discontinuity (second action difference):
+  position: boundary=0.005, interior=0.002, contrast=0.004, samples=22/33
+  rotation: boundary=0.012, interior=0.003, contrast=0.009, samples=22/33
+  gripper: boundary=0.045, interior=0.000, contrast=0.045, samples=22/33
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.259    0.259       0.751
+        2  rtc_async         50        10       7      7      0.342    0.346       0.451
+        3  rtc_async         50        10       7      7      0.329    0.346       0.451
+        4  rtc_async         50        10       7      7      0.329    0.346       0.451
+        5  rtc_async         50        10       7      7      0.332    0.346       0.451
+        6  rtc_async         50        10       7      7      0.330    0.346       0.451
+        7  rtc_async         50        10       7      7      0.330    0.346       0.451
+        8  rtc_async         50        10       7      7      0.330    0.345       0.451
+        9  rtc_async         50        10       7      7      0.331    0.346       0.451
+       10  rtc_async         50        10       7      7      0.331    0.346       0.451
+       11  rtc_async         50        10       7      7      0.332    0.345       0.450
+       12  rtc_async         50         8       7      7      0.332    0.346       0.350
+       13  rtc_async       None         0       7   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=6.231s, inference_calls=13, completed_chunks=13, actions_applied=121, empty_action_steps=0
+latency: avg_request=0.326s, avg_first_action=0.339s, avg_chunk_duration=0.451s, recommended_delay=7
+boundary discontinuity (second action difference):
+  position: boundary=0.005, interior=0.002, contrast=0.003, samples=22/32
+  rotation: boundary=0.011, interior=0.004, contrast=0.007, samples=22/32
+  gripper: boundary=0.091, interior=0.031, contrast=0.060, samples=22/32
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.259    0.259       0.751
+        2  rtc_async         50        10       7      7      0.338    0.346       0.451
+        3  rtc_async         50        10       7      7      0.330    0.346       0.451
+        4  rtc_async         50        10       7      7      0.332    0.347       0.451
+        5  rtc_async         50        10       7      7      0.332    0.346       0.451
+        6  rtc_async         50        10       7      7      0.332    0.346       0.451
+        7  rtc_async         50        10       7      7      0.331    0.346       0.451
+        8  rtc_async         50        10       7      7      0.331    0.346       0.451
+        9  rtc_async         50        10       7      7      0.331    0.346       0.451
+       10  rtc_async         50        10       7      7      0.332    0.346       0.451
+       11  rtc_async         50        10       7      7      0.332    0.346       0.450
+       12  rtc_async         50         4       7      7      0.331    0.346       0.155
+       13  rtc_async       None         0       7   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: rtc_enabled=True, rtc_execution_horizon=10, rtc_delay_steps=7
+summary: total_time=6.325s, inference_calls=13, completed_chunks=13, actions_applied=123, empty_action_steps=0
+latency: avg_request=0.325s, avg_first_action=0.338s, avg_chunk_duration=0.459s, recommended_delay=7
+boundary discontinuity (second action difference):
+  position: boundary=0.006, interior=0.002, contrast=0.005, samples=22/33
+  rotation: boundary=0.011, interior=0.003, contrast=0.008, samples=22/33
+  gripper: boundary=0.091, interior=0.000, contrast=0.091, samples=22/33
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        17    None   None      0.260    0.260       0.751
+        2  rtc_async         50        10       7      7      0.341    0.346       0.451
+        3  rtc_async         50        10       7      7      0.330    0.345       0.451
+        4  rtc_async         50        10       7      7      0.329    0.345       0.451
+        5  rtc_async         50        10       7      7      0.331    0.345       0.451
+        6  rtc_async         50        10       7      7      0.330    0.345       0.451
+        7  rtc_async         50        10       7      7      0.331    0.345       0.451
+        8  rtc_async         50        10       7      7      0.330    0.345       0.450
+        9  rtc_async         50        10       7      7      0.331    0.345       0.451
+       10  rtc_async         50        10       7      7      0.331    0.346       0.450
+       11  rtc_async         50        10       7      7      0.330    0.345       0.451
+       12  rtc_async         50         6       7      7      0.330    0.346       0.250
+       13  rtc_async       None         0       7   None        n/a      n/a         n/a
+

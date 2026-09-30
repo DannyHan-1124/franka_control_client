@@ -74,7 +74,7 @@ class CartesianPolicyPandaRobotiqControlPair(ControlPair):
         self.control_reset()
 
     def go_home(self) -> None:
-        self.panda_arm.move_franka_arm_to_joint_position(DEFAULT_POSITION4)
+        self.panda_arm.move_franka_arm_to_joint_position(DEFAULT_POSITION)
         self.gripper.send_grasp_command(
             position=0.0,
             speed=GRIPPER_SPEED,

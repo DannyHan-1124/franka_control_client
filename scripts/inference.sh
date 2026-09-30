@@ -18,9 +18,12 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --pyzlc_group_port 7725 \
     --policy_transport zmq \
     --policy_zmq_endpoint tcp://127.0.0.1:17725 \
+    --metrics_path "${REPO_ROOT}/logs/discontinuity_metrics.jsonl" \
+    --rtc_enabled \
+    --rtc_execution_horizon 10 \
+    --rtc_delay_steps 7 \
     --static_camera static_cam \
     --wrist_camera wrist_cam \
-    --close_gripper_on_reset \
 
 #   --metrics_path "${REPO_ROOT}/logs/pi05_inference_metrics_new.jsonl" \
 #   --rtc_enabled \
