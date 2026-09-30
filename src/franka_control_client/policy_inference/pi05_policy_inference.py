@@ -964,7 +964,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         wrist_start = time.perf_counter()
         wrist_rgb = self._capture_rgb(self.wrist_cam)
         # Match the wrist-camera orientation used during training.
-        wrist_rgb = cv2.rotate(wrist_rgb, cv2.ROTATE_180)
+        # wrist_rgb = cv2.rotate(wrist_rgb, cv2.ROTATE_180)
         wrist_camera_s = time.perf_counter() - wrist_start
         self._maybe_save_debug_images(static_rgb, wrist_rgb)
         encode_start = time.perf_counter()
