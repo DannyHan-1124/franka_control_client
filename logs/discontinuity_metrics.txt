@@ -1,0 +1,140 @@
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.285s, inference_calls=3, completed_chunks=3, actions_applied=128, empty_action_steps=0
+latency: avg_request=0.351s, avg_first_action=0.351s, avg_chunk_duration=2.042s, avg_observation_build=0.004s
+boundary discontinuity (second action difference):
+  position: boundary=0.007, interior=0.003, contrast=0.004, samples=4/6
+  rotation: boundary=0.019, interior=0.004, contrast=0.015, samples=4/6
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=4/6
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        50      0.352    0.352       2.410  
+        2       50        50      0.351    0.352       2.409  
+        3       50        28      0.350    0.350       1.307  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.474s, inference_calls=3, completed_chunks=3, actions_applied=132, empty_action_steps=0
+latency: avg_request=0.347s, avg_first_action=0.347s, avg_chunk_duration=2.108s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.010, interior=0.004, contrast=0.006, samples=4/6
+  rotation: boundary=0.019, interior=0.005, contrast=0.014, samples=4/6
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=4/6
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        50      0.349    0.349       2.408  
+        2       50        50      0.347    0.348       2.409  
+        3       50        32      0.345    0.345       1.507  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.276s, inference_calls=3, completed_chunks=3, actions_applied=128, empty_action_steps=0
+latency: avg_request=0.348s, avg_first_action=0.348s, avg_chunk_duration=2.041s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.004, interior=0.003, contrast=0.001, samples=4/6
+  rotation: boundary=0.019, interior=0.005, contrast=0.014, samples=4/6
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=4/6
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        50      0.346    0.346       2.409  
+        2       50        50      0.350    0.350       2.409  
+        3       50        28      0.348    0.348       1.307  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.381s, inference_calls=3, completed_chunks=3, actions_applied=130, empty_action_steps=0
+latency: avg_request=0.349s, avg_first_action=0.349s, avg_chunk_duration=2.076s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.006, interior=0.004, contrast=0.001, samples=4/6
+  rotation: boundary=0.014, interior=0.005, contrast=0.010, samples=4/6
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=4/6
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        50      0.350    0.351       2.409  
+        2       50        50      0.349    0.349       2.410  
+        3       50        30      0.347    0.348       1.408  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.425s, inference_calls=3, completed_chunks=3, actions_applied=131, empty_action_steps=0
+latency: avg_request=0.348s, avg_first_action=0.348s, avg_chunk_duration=2.092s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.007, interior=0.002, contrast=0.005, samples=4/6
+  rotation: boundary=0.013, interior=0.006, contrast=0.008, samples=4/6
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=4/6
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        50      0.346    0.346       2.409  
+        2       50        50      0.349    0.349       2.409  
+        3       50        31      0.349    0.349       1.457  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.382s, inference_calls=3, completed_chunks=3, actions_applied=130, empty_action_steps=0
+latency: avg_request=0.350s, avg_first_action=0.350s, avg_chunk_duration=2.075s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.006, interior=0.003, contrast=0.003, samples=4/6
+  rotation: boundary=0.014, interior=0.005, contrast=0.009, samples=4/6
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=4/6
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        50      0.351    0.351       2.409  
+        2       50        50      0.349    0.349       2.410  
+        3       50        30      0.350    0.350       1.407  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.433s, inference_calls=3, completed_chunks=3, actions_applied=131, empty_action_steps=0
+latency: avg_request=0.350s, avg_first_action=0.350s, avg_chunk_duration=2.092s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.007, interior=0.003, contrast=0.004, samples=4/6
+  rotation: boundary=0.023, interior=0.003, contrast=0.020, samples=4/6
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=4/6
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        50      0.351    0.351       2.409  
+        2       50        50      0.350    0.350       2.408  
+        3       50        31      0.348    0.348       1.458  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.327s, inference_calls=3, completed_chunks=3, actions_applied=129, empty_action_steps=0
+latency: avg_request=0.348s, avg_first_action=0.348s, avg_chunk_duration=2.059s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.003, interior=0.002, contrast=0.001, samples=4/6
+  rotation: boundary=0.021, interior=0.005, contrast=0.016, samples=4/6
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=4/6
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        50      0.348    0.349       2.409  
+        2       50        50      0.347    0.347       2.409  
+        3       50        29      0.348    0.348       1.357  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.468s, inference_calls=3, completed_chunks=3, actions_applied=132, empty_action_steps=0
+latency: avg_request=0.345s, avg_first_action=0.345s, avg_chunk_duration=2.108s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.003, interior=0.004, contrast=-0.001, samples=4/6
+  rotation: boundary=0.011, interior=0.005, contrast=0.005, samples=4/6
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=4/6
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        50      0.348    0.349       2.409  
+        2       50        50      0.343    0.343       2.409  
+        3       50        32      0.343    0.343       1.507  
+
+Pi0.5 PUMA inference metrics
+task: put red cylinder on red cube
+summary: total_time=7.375s, inference_calls=3, completed_chunks=3, actions_applied=130, empty_action_steps=0
+latency: avg_request=0.348s, avg_first_action=0.348s, avg_chunk_duration=2.075s, avg_observation_build=0.004s
+boundary discontinuity (second action difference):
+  position: boundary=0.006, interior=0.004, contrast=0.002, samples=4/6
+  rotation: boundary=0.017, interior=0.004, contrast=0.013, samples=4/6
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=4/6
+chunks:
+  request  actions  executed  request_s  first_s  duration_s  error
+        1       50        50      0.349    0.349       2.408  
+        2       50        50      0.349    0.350       2.409  
+        3       50        30      0.346    0.347       1.407  
+

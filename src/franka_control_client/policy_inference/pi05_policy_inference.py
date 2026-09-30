@@ -460,7 +460,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         static_rgb = self._capture_rgb(self.static_cam)
         wrist_rgb = self._capture_rgb(self.wrist_cam)
         # Match the wrist-camera orientation used by the moving_cup dataset.
-        wrist_rgb = cv2.rotate(wrist_rgb, cv2.ROTATE_180)
+        # wrist_rgb = cv2.rotate(wrist_rgb, cv2.ROTATE_180)
         self._puma_static_history.append(static_rgb)
         history_indices = [
             max(0, len(self._puma_static_history) - 1 - offset)
