@@ -46,7 +46,8 @@ def test_metrics_text_columns_align_for_all_chunk_kinds(tmp_path):
 
     inference._write_metrics_text(path, record)
     lines = path.read_text().splitlines()
-    header, initial, asynchronous = lines[6:9]
+    chunks_index = lines.index("chunks:")
+    header, initial, asynchronous = lines[chunks_index + 1 : chunks_index + 4]
 
     assert len(header) == len(initial) == len(asynchronous)
     assert initial.index("0.100") == asynchronous.index("0.100")

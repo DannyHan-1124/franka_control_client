@@ -23,7 +23,10 @@ from ..policy.policy import DirectZmqPolicy, RemotePolicy
 from .bspline import (
     bspline_basis,
     cartesian_to_packed_rotvec,
+    normalize_quaternion,
     packed_rotvec_to_cartesian,
+    quaternion_multiply,
+    quaternion_to_rotation_vector,
     rebuild_trajectory,
     refit_control_point_prefix,
 )
@@ -175,6 +178,20 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._metrics_empty_action_steps = 0
         self._metrics_chunks: list[dict[str, Any]] = []
         self._active_chunk_metric_id: Optional[int] = None
+        self._metrics_executed_actions: list[np.ndarray] = []
+        self._metrics_chunk_boundaries: list[int] = []
+        self._metrics_pending_chunk_boundary = False
+
+    def _mark_next_action_as_chunk_boundary(self) -> None:
+        """Mark the next applied action as the first action of a replacement chunk."""
+        if self._metrics_executed_actions:
+            self._metrics_pending_chunk_boundary = True
+
+    def _record_discontinuity_action(self, action: np.ndarray) -> None:
+        if self._metrics_pending_chunk_boundary:
+            self._metrics_chunk_boundaries.append(len(self._metrics_executed_actions))
+            self._metrics_pending_chunk_boundary = False
+        self._metrics_executed_actions.append(np.asarray(action, dtype=np.float64).copy())
 
     def _start_chunk_metric(
         self,
@@ -284,6 +301,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             if action_msg is not None:
                 timestamp = float(action_msg["timestamp"])
                 if timestamp != self._last_action_timestamp:
+                    self._mark_next_action_as_chunk_boundary()
                     self._action_chunk = self._parse_action_payload(action_msg["action"])
                     self._chunk_step = 0
                     self._last_action_timestamp = timestamp
@@ -302,6 +320,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._last_sanitized_action = sanitized_action.copy()
             self.control_pair.update_action(sanitized_action)
             self._executed_action_history.append(sanitized_action.copy())
+            self._record_discontinuity_action(sanitized_action)
             self._metrics_actions_applied += 1
             self._record_active_chunk_action_execution(self._chunk_step - 1)
             self._maybe_stop_after_release()
@@ -341,6 +360,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._last_sanitized_action = sanitized_action.copy()
             self.control_pair.update_action(sanitized_action)
             self._executed_action_history.append(sanitized_action.copy())
+            self._record_discontinuity_action(sanitized_action)
             self._metrics_actions_applied += 1
             self._record_active_chunk_action_execution(self._chunk_step - 1)
             self._maybe_stop_after_release()
@@ -496,6 +516,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         trajectory = packed_rotvec_to_cartesian(
             packed_trajectory, metadata["reference_quaternion_xyzw"]
         )
+        self._mark_next_action_as_chunk_boundary()
         self._action_chunk = trajectory[n_prefix:]
         self._chunk_step = 0
         self._abpolicy_is_first_chunk = False
@@ -630,6 +651,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
             actions_applied = int(self._metrics_actions_applied)
             empty_action_steps = int(self._metrics_empty_action_steps)
 
+        discontinuity = _boundary_discontinuity_metrics(
+            self._metrics_executed_actions,
+            self._metrics_chunk_boundaries,
+        )
+
         request_latencies = [
             float(chunk["request_latency_s"])
             for chunk in chunks
@@ -677,6 +703,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "completed_chunks": len(chunks),
             "actions_applied": actions_applied,
             "empty_action_steps": empty_action_steps,
+            "boundary_discontinuity": discontinuity,
             "avg_request_latency_s": _mean(request_latencies),
             "avg_first_action_latency_s": _mean(first_action_latencies),
             "avg_chunk_execution_duration_s": _mean(execution_durations),
@@ -705,6 +732,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
         )
         if asynchronous:
             metrics_msg += f", recommended_delay={summary['recommended_delay_steps']}"
+        position_discontinuity = discontinuity["position"]
+        metrics_msg += (
+            ", boundary_position_contrast="
+            f"{_format_optional(position_discontinuity['contrast'])}"
+        )
         pyzlc.info(metrics_msg)
         for chunk in chunks:
             chunk_msg = (
@@ -761,6 +793,14 @@ class Pi05PolicyInference(PolicyInferenceManager):
         if asynchronous:
             latency_line += f", recommended_delay={summary.get('recommended_delay_steps')}"
 
+        discontinuity = summary.get("boundary_discontinuity") or {}
+        discontinuity_lines = [
+            "boundary discontinuity (second action difference):",
+            _format_discontinuity_text("position", discontinuity.get("position")),
+            _format_discontinuity_text("rotation", discontinuity.get("rotation")),
+            _format_discontinuity_text("gripper", discontinuity.get("gripper")),
+        ]
+
         chunk_header = (
             "  "
             f"{'request':>7}  "
@@ -785,6 +825,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 f"empty_action_steps={summary.get('empty_action_steps')}"
             ),
             latency_line,
+            *discontinuity_lines,
             "chunks:",
             chunk_header,
         ]
@@ -995,6 +1036,108 @@ def _mean(values: List[float]) -> Optional[float]:
     if not values:
         return None
     return float(sum(values) / len(values))
+
+
+def _boundary_discontinuity_metrics(
+    executed_actions: List[np.ndarray], chunk_boundaries: List[int]
+) -> Dict[str, Any]:
+    """Compute the paper's boundary-minus-interior second-action-difference metric.
+
+    A boundary index is the first action supplied by a replacement chunk. Because
+    replanning is asynchronous, samples are aligned to actual replacements instead
+    of a fixed ``t mod K`` phase. Translation, rotation, and gripper are kept
+    separate because their units and geometry are different.
+    """
+    actions = np.asarray(executed_actions, dtype=np.float64)
+    empty_component = {
+        "boundary_mean": None,
+        "interior_mean": None,
+        "contrast": None,
+        "boundary_samples": 0,
+        "interior_samples": 0,
+    }
+    result: Dict[str, Any] = {
+        "definition": "mean_boundary_second_difference_minus_mean_interior_second_difference",
+        "boundary_offsets": [0, 1],
+        "interior_offsets": [2, 3, 4],
+        "chunk_boundary_count": len(chunk_boundaries),
+        "position": dict(empty_component),
+        "rotation": dict(empty_component),
+        "gripper": dict(empty_component),
+    }
+    if actions.ndim != 2 or actions.shape[0] < 3 or actions.shape[1] < ACTION_DIM:
+        return result
+
+    # These arrays are indexed by the endpoint t of the three-action stencil.
+    position_second_difference = np.full(len(actions), np.nan, dtype=np.float64)
+    gripper_second_difference = np.full(len(actions), np.nan, dtype=np.float64)
+    position_second_difference[2:] = np.linalg.norm(
+        actions[2:, :3] - 2.0 * actions[1:-1, :3] + actions[:-2, :3], axis=-1
+    )
+    gripper_second_difference[2:] = np.abs(
+        actions[2:, 7] - 2.0 * actions[1:-1, 7] + actions[:-2, 7]
+    )
+
+    quaternions = normalize_quaternion(actions[:, 3:7])
+    previous_conjugates = np.concatenate((-quaternions[:-1, :3], quaternions[:-1, 3:4]), axis=-1)
+    relative_rotations = quaternion_multiply(previous_conjugates, quaternions[1:])
+    rotation_increments = quaternion_to_rotation_vector(relative_rotations)
+    rotation_second_difference = np.full(len(actions), np.nan, dtype=np.float64)
+    rotation_second_difference[2:] = np.linalg.norm(
+        rotation_increments[1:] - rotation_increments[:-1], axis=-1
+    )
+
+    valid_boundaries = sorted({int(index) for index in chunk_boundaries if 0 <= index < len(actions)})
+    boundary_indices: set[int] = set()
+    interior_indices: set[int] = set()
+    for boundary_number, boundary in enumerate(valid_boundaries):
+        next_boundary = (
+            valid_boundaries[boundary_number + 1]
+            if boundary_number + 1 < len(valid_boundaries)
+            else len(actions)
+        )
+        boundary_indices.update(
+            index for index in (boundary, boundary + 1) if 2 <= index < len(actions)
+        )
+        interior_indices.update(
+            index
+            for index in (boundary + 2, boundary + 3, boundary + 4)
+            if 2 <= index < next_boundary and index < len(actions)
+        )
+    # A very short chunk can make a sample part of the following boundary window.
+    interior_indices.difference_update(boundary_indices)
+
+    def summarize(values: np.ndarray) -> Dict[str, Any]:
+        boundary_values = [float(values[index]) for index in sorted(boundary_indices) if np.isfinite(values[index])]
+        interior_values = [float(values[index]) for index in sorted(interior_indices) if np.isfinite(values[index])]
+        boundary_mean = _mean(boundary_values)
+        interior_mean = _mean(interior_values)
+        return {
+            "boundary_mean": boundary_mean,
+            "interior_mean": interior_mean,
+            "contrast": (
+                boundary_mean - interior_mean
+                if boundary_mean is not None and interior_mean is not None
+                else None
+            ),
+            "boundary_samples": len(boundary_values),
+            "interior_samples": len(interior_values),
+        }
+
+    result["position"] = summarize(position_second_difference)
+    result["rotation"] = summarize(rotation_second_difference)
+    result["gripper"] = summarize(gripper_second_difference)
+    return result
+
+
+def _format_discontinuity_text(name: str, values: Any) -> str:
+    values = values if isinstance(values, dict) else {}
+    return (
+        f"  {name}: boundary={_format_optional(values.get('boundary_mean'))}, "
+        f"interior={_format_optional(values.get('interior_mean'))}, "
+        f"contrast={_format_optional(values.get('contrast'))}, "
+        f"samples={values.get('boundary_samples', 0)}/{values.get('interior_samples', 0)}"
+    )
 
 
 def _format_optional(value: Any) -> str:
