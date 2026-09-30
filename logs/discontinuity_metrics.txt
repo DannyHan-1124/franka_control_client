@@ -328,4 +328,93 @@ chunks:
         1  sync                   50        50      0.257    0.257       2.404
         2  sync                   50        50      0.256    0.256       2.404
         3  sync                   50        24      0.255    0.256       1.102
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0
+summary: total_time=6.648s, inference_calls=3, completed_chunks=3, actions_applied=121, empty_action_steps=0
+latency: avg_request=0.257s, avg_first_action=0.257s, avg_chunk_duration=1.920s
+boundary discontinuity (second action difference):
+  position: boundary=0.008, interior=0.002, contrast=0.006, samples=4/6
+  rotation: boundary=0.016, interior=0.006, contrast=0.010, samples=4/6
+  gripper: boundary=0.000, interior=0.333, contrast=-0.333, samples=4/6
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.258    0.258       2.404
+        2  sync                   50        50      0.257    0.257       2.404
+        3  sync                   50        21      0.257    0.258       0.952
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0
+summary: total_time=6.598s, inference_calls=3, completed_chunks=3, actions_applied=120, empty_action_steps=0
+latency: avg_request=0.258s, avg_first_action=0.258s, avg_chunk_duration=1.903s
+boundary discontinuity (second action difference):
+  position: boundary=0.006, interior=0.002, contrast=0.004, samples=4/6
+  rotation: boundary=0.016, interior=0.004, contrast=0.013, samples=4/6
+  gripper: boundary=0.250, interior=0.167, contrast=0.083, samples=4/6
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.257    0.258       2.404
+        2  sync                   50        50      0.257    0.257       2.404
+        3  sync                   50        20      0.258    0.258       0.902
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0
+summary: total_time=6.747s, inference_calls=3, completed_chunks=3, actions_applied=123, empty_action_steps=0
+latency: avg_request=0.257s, avg_first_action=0.257s, avg_chunk_duration=1.953s
+boundary discontinuity (second action difference):
+  position: boundary=0.008, interior=0.003, contrast=0.005, samples=4/6
+  rotation: boundary=0.026, interior=0.005, contrast=0.021, samples=4/6
+  gripper: boundary=0.000, interior=0.333, contrast=-0.333, samples=4/6
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.257    0.258       2.404
+        2  sync                   50        50      0.257    0.258       2.404
+        3  sync                   50        23      0.256    0.257       1.052
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0
+summary: total_time=6.847s, inference_calls=3, completed_chunks=3, actions_applied=125, empty_action_steps=0
+latency: avg_request=0.257s, avg_first_action=0.258s, avg_chunk_duration=1.987s
+boundary discontinuity (second action difference):
+  position: boundary=0.011, interior=0.004, contrast=0.007, samples=4/6
+  rotation: boundary=0.022, interior=0.006, contrast=0.016, samples=4/6
+  gripper: boundary=0.000, interior=0.167, contrast=-0.167, samples=4/6
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.258    0.259       2.404
+        2  sync                   50        50      0.257    0.257       2.404
+        3  sync                   50        25      0.257    0.257       1.152
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0
+summary: total_time=6.548s, inference_calls=3, completed_chunks=3, actions_applied=119, empty_action_steps=0
+latency: avg_request=0.257s, avg_first_action=0.257s, avg_chunk_duration=1.887s
+boundary discontinuity (second action difference):
+  position: boundary=0.007, interior=0.002, contrast=0.005, samples=4/6
+  rotation: boundary=0.027, interior=0.003, contrast=0.023, samples=4/6
+  gripper: boundary=0.250, interior=0.167, contrast=0.083, samples=4/6
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.258    0.258       2.405
+        2  sync                   50        50      0.255    0.256       2.405
+        3  sync                   50        19      0.258    0.258       0.852
+
+Pi0.5 inference metrics
+task: put red cylinder on red cube
+config: abpolicy_enabled=False, first_execution_horizon=0
+summary: total_time=6.546s, inference_calls=3, completed_chunks=3, actions_applied=119, empty_action_steps=0
+latency: avg_request=0.257s, avg_first_action=0.257s, avg_chunk_duration=1.887s
+boundary discontinuity (second action difference):
+  position: boundary=0.009, interior=0.003, contrast=0.006, samples=4/6
+  rotation: boundary=0.026, interior=0.006, contrast=0.020, samples=4/6
+  gripper: boundary=0.250, interior=0.167, contrast=0.083, samples=4/6
+chunks:
+  request  kind              actions  executed  request_s  first_s  duration_s
+        1  sync                   50        50      0.258    0.258       2.405
+        2  sync                   50        50      0.255    0.255       2.405
+        3  sync                   50        19      0.257    0.257       0.852
 
