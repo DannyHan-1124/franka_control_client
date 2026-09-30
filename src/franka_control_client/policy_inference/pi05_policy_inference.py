@@ -150,6 +150,23 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._metrics_empty_action_steps = 0
         self._metrics_chunks: list[dict[str, Any]] = []
         self._active_chunk_metric_id: Optional[int] = None
+        self._metrics_discontinuity_actions: list[np.ndarray] = []
+        self._metrics_discontinuity_boundaries: list[int] = []
+        self._metrics_pending_discontinuity_boundary = False
+
+    def _mark_next_action_as_discontinuity_boundary(self) -> None:
+        if self._metrics_discontinuity_actions:
+            self._metrics_pending_discontinuity_boundary = True
+
+    def _record_discontinuity_action(self, action: np.ndarray) -> None:
+        if self._metrics_pending_discontinuity_boundary:
+            self._metrics_discontinuity_boundaries.append(
+                len(self._metrics_discontinuity_actions)
+            )
+            self._metrics_pending_discontinuity_boundary = False
+        self._metrics_discontinuity_actions.append(
+            np.asarray(action, dtype=np.float64).copy()
+        )
 
     def _start_chunk_metric(self, request_time_s: float, observation_build_s: float) -> int:
         self._metrics_inference_calls += 1
@@ -225,6 +242,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             if action_msg is not None:
                 timestamp = float(action_msg["timestamp"])
                 if timestamp != self._last_action_timestamp:
+                    self._mark_next_action_as_discontinuity_boundary()
                     self._action_chunk = self._parse_action_payload(action_msg["action"])
                     self._chunk_step = 0
                     self._last_action_timestamp = timestamp
@@ -241,6 +259,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             sanitized_action = self._sanitize_action(action)
             self._last_sanitized_action = sanitized_action.copy()
             self.control_pair.update_action(sanitized_action)
+            self._record_discontinuity_action(sanitized_action)
             self._metrics_actions_applied += 1
             self._record_active_chunk_action_execution(self._chunk_step - 1)
             self._maybe_stop_after_release()
@@ -317,6 +336,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
             for chunk in chunks
             if chunk["client_observation_build_s"] is not None
         ]
+        discontinuity = _boundary_discontinuity_metrics(
+            self._metrics_discontinuity_actions,
+            self._metrics_discontinuity_boundaries,
+        )
         summary = {
             "task": self.task,
             "policy_name": self.cfg.policy_name,
@@ -338,6 +361,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "avg_first_action_latency_s": _mean(first_action_latencies),
             "avg_chunk_execution_duration_s": _mean(execution_durations),
             "avg_client_observation_build_s": _mean(observation_build_times),
+            "boundary_discontinuity": discontinuity,
             "run_metadata": self.cfg.run_metadata or {},
         }
         pyzlc.info(
@@ -349,7 +373,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
             f"empty_action_steps={summary['empty_action_steps']}, "
             f"avg_request_latency={_format_optional(summary['avg_request_latency_s'])}s, "
             f"avg_first_action_latency={_format_optional(summary['avg_first_action_latency_s'])}s, "
-            f"avg_chunk_duration={_format_optional(summary['avg_chunk_execution_duration_s'])}s"
+            f"avg_chunk_duration={_format_optional(summary['avg_chunk_execution_duration_s'])}s, "
+            "boundary_position_contrast="
+            f"{_format_optional(discontinuity['position']['contrast'])}"
         )
         if self.cfg.metrics_path:
             self._write_metrics(summary, chunks)
@@ -385,6 +411,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 f"avg_chunk_duration={_format_optional(summary['avg_chunk_execution_duration_s'])}s, "
                 f"avg_observation_build={_format_optional(summary['avg_client_observation_build_s'])}s"
             ),
+            "boundary discontinuity (second action difference):",
+            _format_discontinuity_text("position", summary["boundary_discontinuity"]["position"]),
+            _format_discontinuity_text("rotation", summary["boundary_discontinuity"]["rotation"]),
+            _format_discontinuity_text("gripper", summary["boundary_discontinuity"]["gripper"]),
             "chunks:",
             "  request  actions  executed  request_s  first_s  duration_s  error",
         ]
@@ -597,6 +627,138 @@ def _mean(values: List[float]) -> Optional[float]:
     if not values:
         return None
     return float(sum(values) / len(values))
+
+
+def _boundary_discontinuity_metrics(
+    executed_actions: List[np.ndarray], chunk_boundaries: List[int]
+) -> Dict[str, Any]:
+    """Compute the event-aligned boundary/interior second-difference metric."""
+    actions = np.asarray(executed_actions, dtype=np.float64)
+    empty_component = {
+        "boundary_mean": None,
+        "interior_mean": None,
+        "contrast": None,
+        "boundary_samples": 0,
+        "interior_samples": 0,
+    }
+    result: Dict[str, Any] = {
+        "definition": "mean_boundary_second_difference_minus_mean_interior_second_difference",
+        "boundary_offsets": [0, 1],
+        "interior_offsets": [2, 3, 4],
+        "chunk_boundary_count": len(chunk_boundaries),
+        "position": dict(empty_component),
+        "rotation": dict(empty_component),
+        "gripper": dict(empty_component),
+    }
+    if actions.ndim != 2 or actions.shape[0] < 3 or actions.shape[1] < ACTION_DIM:
+        return result
+
+    position_second_difference = np.full(len(actions), np.nan, dtype=np.float64)
+    rotation_second_difference = np.full(len(actions), np.nan, dtype=np.float64)
+    gripper_second_difference = np.full(len(actions), np.nan, dtype=np.float64)
+    position_second_difference[2:] = np.linalg.norm(
+        actions[2:, :3] - 2.0 * actions[1:-1, :3] + actions[:-2, :3], axis=-1
+    )
+    gripper_second_difference[2:] = np.abs(
+        actions[2:, 7] - 2.0 * actions[1:-1, 7] + actions[:-2, 7]
+    )
+    rotation_increments = np.asarray(
+        [
+            _quat_local_delta_rotvec(actions[index - 1, 3:7], actions[index, 3:7])
+            for index in range(1, len(actions))
+        ]
+    )
+    rotation_second_difference[2:] = np.linalg.norm(
+        rotation_increments[1:] - rotation_increments[:-1], axis=-1
+    )
+
+    valid_boundaries = sorted({int(index) for index in chunk_boundaries if 0 <= index < len(actions)})
+    boundary_indices: set[int] = set()
+    interior_indices: set[int] = set()
+    for boundary_number, boundary in enumerate(valid_boundaries):
+        next_boundary = (
+            valid_boundaries[boundary_number + 1]
+            if boundary_number + 1 < len(valid_boundaries)
+            else len(actions)
+        )
+        boundary_indices.update(
+            index for index in (boundary, boundary + 1) if 2 <= index < len(actions)
+        )
+        interior_indices.update(
+            index
+            for index in (boundary + 2, boundary + 3, boundary + 4)
+            if 2 <= index < next_boundary and index < len(actions)
+        )
+    interior_indices.difference_update(boundary_indices)
+
+    def summarize(values: np.ndarray) -> Dict[str, Any]:
+        boundary_values = [
+            float(values[index])
+            for index in sorted(boundary_indices)
+            if np.isfinite(values[index])
+        ]
+        interior_values = [
+            float(values[index])
+            for index in sorted(interior_indices)
+            if np.isfinite(values[index])
+        ]
+        boundary_mean = _mean(boundary_values)
+        interior_mean = _mean(interior_values)
+        return {
+            "boundary_mean": boundary_mean,
+            "interior_mean": interior_mean,
+            "contrast": (
+                boundary_mean - interior_mean
+                if boundary_mean is not None and interior_mean is not None
+                else None
+            ),
+            "boundary_samples": len(boundary_values),
+            "interior_samples": len(interior_values),
+        }
+
+    result["position"] = summarize(position_second_difference)
+    result["rotation"] = summarize(rotation_second_difference)
+    result["gripper"] = summarize(gripper_second_difference)
+    return result
+
+
+def _quat_local_delta_rotvec(previous: np.ndarray, current: np.ndarray) -> np.ndarray:
+    """Return log(conjugate(previous) * current) for xyzw quaternions."""
+    q0 = _normalize_quaternion(previous)
+    q1 = _normalize_quaternion(current)
+    if np.dot(q0, q1) < 0.0:
+        q1 = -q1
+    x0, y0, z0, w0 = q0
+    x1, y1, z1, w1 = q1
+    vector = np.asarray(
+        [
+            w0 * x1 - x0 * w1 - y0 * z1 + z0 * y1,
+            w0 * y1 + x0 * z1 - y0 * w1 - z0 * x1,
+            w0 * z1 - x0 * y1 + y0 * x1 - z0 * w1,
+        ],
+        dtype=np.float64,
+    )
+    scalar = float(w0 * w1 + x0 * x1 + y0 * y1 + z0 * z1)
+    vector_norm = float(np.linalg.norm(vector))
+    if vector_norm <= 1e-12:
+        return np.zeros(3, dtype=np.float64)
+    angle = 2.0 * np.arctan2(vector_norm, max(scalar, 0.0))
+    return vector * (angle / vector_norm)
+
+
+def _normalize_quaternion(quaternion: np.ndarray) -> np.ndarray:
+    quaternion = np.asarray(quaternion, dtype=np.float64)
+    return quaternion / max(float(np.linalg.norm(quaternion)), 1e-12)
+
+
+def _format_discontinuity_text(name: str, values: Any) -> str:
+    values = values if isinstance(values, dict) else {}
+    return (
+        f"  {name}: boundary={_format_optional(values.get('boundary_mean'))}, "
+        f"interior={_format_optional(values.get('interior_mean'))}, "
+        f"contrast={_format_optional(values.get('contrast'))}, "
+        f"samples={values.get('boundary_samples', 0)}/{values.get('interior_samples', 0)}"
+    )
 
 
 def _format_optional(value: Any) -> str:
