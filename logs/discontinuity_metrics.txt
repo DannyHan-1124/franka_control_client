@@ -189,3 +189,287 @@ chunks:
        88     const       0       50        10        2           0.246    0.246       0.450
        89     const       0       50        10        2           0.245    0.245       0.450
        90     const       0       50         6        2           0.245    0.245       0.255
+
+=== Pi0.5 inference episode: 2026-10-01 18:28:52 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, first_execution_horizon=0, continuous_min_execute_steps=0, fps=20
+summary: total_time=3.756s, inference_calls=14, observations_published=75, completed_chunks=14, prefix_chunks=0, actions_applied=62, empty_action_steps=13, stale_actions_dropped=85, actions_overwritten=511
+latency: avg_first_action=0.300s, avg_final=0.300s, avg_chunk_duration=0.172s
+boundary discontinuity (second action difference):
+  position: boundary=0.008, interior=0.001, contrast=0.007, samples=26/31
+  rotation: boundary=0.011, interior=0.003, contrast=0.008, samples=26/31
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=26/31
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+        1     const       0       50         5        2           0.645    0.645       0.200
+       13     const       0       50         5        2           0.296    0.296       0.201
+       18     const       0       50         4        2           0.296    0.296       0.149
+       23     const       0       50         5        2           0.246    0.246       0.200
+       27     const       0       50         4        2           0.296    0.296       0.150
+       32     const       0       50         5        2           0.246    0.246       0.200
+       36     const       0       50         4        2           0.295    0.295       0.150
+       41     const       0       50         5        2           0.246    0.246       0.200
+       45     const       0       50         4        2           0.296    0.296       0.151
+       50     const       0       50         5        2           0.246    0.246       0.201
+       54     const       0       50         4        2           0.295    0.295       0.148
+       59     const       0       50         5        2           0.250    0.251       0.201
+       63     const       0       50         4        2           0.296    0.296       0.151
+       68     const       0       50         3        2           0.250    0.250       0.100
+
+=== Pi0.5 inference episode: 2026-10-01 18:29:52 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, first_execution_horizon=20, continuous_min_execute_steps=0, fps=20
+summary: total_time=6.616s, inference_calls=24, observations_published=108, completed_chunks=24, prefix_chunks=0, actions_applied=127, empty_action_steps=6, stale_actions_dropped=138, actions_overwritten=892
+latency: avg_first_action=0.284s, avg_final=0.284s, avg_chunk_duration=0.215s
+boundary discontinuity (second action difference):
+  position: boundary=0.008, interior=0.003, contrast=0.005, samples=45/57
+  rotation: boundary=0.013, interior=0.003, contrast=0.010, samples=45/57
+  gripper: boundary=0.067, interior=0.000, contrast=0.067, samples=45/57
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+        1     const       0       50        25        2           0.294    0.295       1.207
+        2     const       0       50         5        2           0.245    0.245       0.200
+        6     const       0       50         4        2           0.295    0.295       0.150
+       11     const       0       50         5        2           0.250    0.251       0.199
+       15     const       0       50         5        2           0.296    0.296       0.200
+       20     const       0       50         4        2           0.296    0.296       0.150
+       24     const       0       50         5        2           0.295    0.295       0.199
+       29     const       0       50         4        2           0.296    0.296       0.150
+       34     const       0       50         5        2           0.245    0.246       0.200
+       38     const       0       50         4        2           0.296    0.296       0.150
+       43     const       0       50         5        2           0.246    0.246       0.200
+       47     const       0       50         5        2           0.296    0.296       0.200
+       52     const       0       50         4        2           0.295    0.295       0.149
+       56     const       0       50         5        2           0.295    0.295       0.202
+       61     const       0       50         4        2           0.296    0.296       0.150
+       65     const       0       50         5        2           0.296    0.296       0.200
+       70     const       0       50         4        2           0.296    0.296       0.149
+       75     const       0       50         5        2           0.246    0.246       0.200
+       79     const       0       50         4        2           0.296    0.296       0.151
+       84     const       0       50         5        2           0.250    0.250       0.200
+       88     const       0       50         5        2           0.295    0.295       0.201
+       93     const       0       50         4        2           0.296    0.296       0.150
+       97     const       0       50         5        2           0.296    0.296       0.200
+      102     const       0       50         1        2           0.296    0.296       0.000
+
+=== Pi0.5 inference episode: 2026-10-01 18:30:08 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, first_execution_horizon=20, continuous_min_execute_steps=0, fps=20
+summary: total_time=6.066s, inference_calls=21, observations_published=97, completed_chunks=21, prefix_chunks=0, actions_applied=116, empty_action_steps=6, stale_actions_dropped=119, actions_overwritten=775
+latency: avg_first_action=0.279s, avg_final=0.280s, avg_chunk_duration=0.227s
+boundary discontinuity (second action difference):
+  position: boundary=0.005, interior=0.002, contrast=0.003, samples=40/51
+  rotation: boundary=0.010, interior=0.003, contrast=0.007, samples=40/51
+  gripper: boundary=0.000, interior=0.059, contrast=-0.059, samples=40/51
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+      109     const       0       50        25        2           0.296    0.296       1.207
+      110     const       0       50         5        2           0.246    0.246       0.200
+      114     const       0       50         4        2           0.296    0.296       0.150
+      119     const       0       50         5        2           0.250    0.251       0.201
+      123     const       0       50         4        2           0.296    0.296       0.149
+      128     const       0       50         5        2           0.250    0.250       0.200
+      132     const       0       50         5        2           0.295    0.296       0.200
+      137     const       0       50         4        2           0.296    0.296       0.151
+      141     const       0       50         5        2           0.295    0.295       0.200
+      146     const       0       50         4        2           0.295    0.295       0.149
+      150     const       0       50         5        2           0.295    0.296       0.200
+      155     const       0       50         4        2           0.296    0.296       0.151
+      159     const       0       50         5        2           0.297    0.297       0.200
+      164     const       0       50         4        2           0.295    0.295       0.150
+      169     const       0       50         5        2           0.246    0.246       0.200
+      173     const       0       50         4        2           0.296    0.296       0.150
+      178     const       0       50         5        2           0.245    0.245       0.200
+      182     const       0       50         4        2           0.295    0.295       0.149
+      187     const       0       50         5        2           0.246    0.246       0.200
+      191     const       0       50         4        2           0.296    0.296       0.149
+      196     const       0       50         5        2           0.246    0.246       0.200
+
+=== Pi0.5 inference episode: 2026-10-01 18:30:26 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, first_execution_horizon=20, continuous_min_execute_steps=0, fps=20
+summary: total_time=4.513s, inference_calls=15, observations_published=66, completed_chunks=15, prefix_chunks=0, actions_applied=85, empty_action_steps=6, stale_actions_dropped=85, actions_overwritten=536
+latency: avg_first_action=0.280s, avg_final=0.280s, avg_chunk_duration=0.234s
+boundary discontinuity (second action difference):
+  position: boundary=0.007, interior=0.001, contrast=0.006, samples=27/33
+  rotation: boundary=0.010, interior=0.002, contrast=0.009, samples=27/33
+  gripper: boundary=0.074, interior=0.030, contrast=0.044, samples=27/33
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+      206     const       0       50        25        2           0.296    0.296       1.207
+      207     const       0       50         5        2           0.246    0.246       0.200
+      211     const       0       50         4        2           0.296    0.296       0.150
+      216     const       0       50         5        2           0.251    0.252       0.200
+      220     const       0       50         4        2           0.296    0.296       0.149
+      225     const       0       50         5        2           0.249    0.249       0.201
+      229     const       0       50         4        2           0.296    0.296       0.150
+      234     const       0       50         5        2           0.251    0.251       0.200
+      238     const       0       50         5        2           0.296    0.296       0.200
+      243     const       0       50         4        2           0.296    0.296       0.150
+      247     const       0       50         5        2           0.296    0.296       0.200
+      252     const       0       50         4        2           0.296    0.296       0.150
+      256     const       0       50         5        2           0.296    0.297       0.200
+      261     const       0       50         4        2           0.296    0.296       0.150
+      266     const       0       50         1        2           0.246    0.246       0.000
+
+=== Pi0.5 inference episode: 2026-10-01 18:31:08 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, first_execution_horizon=20, continuous_min_execute_steps=0, fps=20
+summary: total_time=3.611s, inference_calls=11, observations_published=48, completed_chunks=11, prefix_chunks=0, actions_applied=67, empty_action_steps=6, stale_actions_dropped=62, actions_overwritten=377
+latency: avg_first_action=0.278s, avg_final=0.278s, avg_chunk_duration=0.255s
+boundary discontinuity (second action difference):
+  position: boundary=0.007, interior=0.001, contrast=0.005, samples=19/23
+  rotation: boundary=0.009, interior=0.002, contrast=0.007, samples=19/23
+  gripper: boundary=0.105, interior=0.043, contrast=0.062, samples=19/23
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+      382     const       0       50        25        2           0.296    0.296       1.206
+      383     const       0       50         5        2           0.246    0.246       0.200
+      387     const       0       50         4        2           0.296    0.296       0.150
+      392     const       0       50         5        2           0.251    0.251       0.200
+      396     const       0       50         5        2           0.296    0.296       0.200
+      401     const       0       50         4        2           0.296    0.296       0.150
+      405     const       0       50         5        2           0.296    0.296       0.200
+      410     const       0       50         4        2           0.296    0.296       0.150
+      415     const       0       50         5        2           0.246    0.246       0.200
+      419     const       0       50         4        2           0.296    0.296       0.150
+      424     const       0       50         1        2           0.246    0.246       0.000
+
+=== Pi0.5 inference episode: 2026-10-01 18:31:43 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, first_execution_horizon=20, continuous_min_execute_steps=0, fps=20
+summary: total_time=6.415s, inference_calls=23, observations_published=104, completed_chunks=23, prefix_chunks=0, actions_applied=123, empty_action_steps=6, stale_actions_dropped=129, actions_overwritten=856
+latency: avg_first_action=0.277s, avg_final=0.277s, avg_chunk_duration=0.218s
+boundary discontinuity (second action difference):
+  position: boundary=0.008, interior=0.002, contrast=0.006, samples=44/54
+  rotation: boundary=0.014, interior=0.003, contrast=0.011, samples=44/54
+  gripper: boundary=0.045, interior=0.019, contrast=0.027, samples=44/54
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+      430     const       0       50        25        2           0.296    0.296       1.206
+      431     const       0       50         5        2           0.246    0.246       0.200
+      435     const       0       50         4        2           0.296    0.296       0.151
+      440     const       0       50         5        2           0.249    0.249       0.201
+      444     const       0       50         4        2           0.295    0.295       0.149
+      449     const       0       50         5        2           0.250    0.251       0.201
+      453     const       0       50         5        2           0.296    0.296       0.200
+      458     const       0       50         4        2           0.295    0.296       0.149
+      462     const       0       50         5        2           0.296    0.296       0.200
+      467     const       0       50         4        2           0.296    0.296       0.150
+      471     const       0       50         5        2           0.296    0.296       0.201
+      476     const       0       50         4        2           0.296    0.296       0.150
+      481     const       0       50         5        2           0.245    0.245       0.201
+      485     const       0       50         4        2           0.296    0.296       0.150
+      490     const       0       50         5        2           0.245    0.245       0.200
+      494     const       0       50         4        2           0.296    0.296       0.150
+      499     const       0       50         5        2           0.246    0.246       0.200
+      503     const       0       50         4        2           0.296    0.296       0.150
+      508     const       0       50         5        2           0.246    0.246       0.200
+      512     const       0       50         4        2           0.296    0.296       0.150
+      517     const       0       50         5        2           0.246    0.246       0.200
+      521     const       0       50         4        2           0.296    0.296       0.151
+      526     const       0       50         3        2           0.250    0.251       0.100
+
+=== Pi0.5 inference episode: 2026-10-01 18:31:57 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, first_execution_horizon=20, continuous_min_execute_steps=0, fps=20
+summary: total_time=6.767s, inference_calls=24, observations_published=111, completed_chunks=24, prefix_chunks=0, actions_applied=130, empty_action_steps=6, stale_actions_dropped=134, actions_overwritten=896
+latency: avg_first_action=0.275s, avg_final=0.276s, avg_chunk_duration=0.221s
+boundary discontinuity (second action difference):
+  position: boundary=0.004, interior=0.002, contrast=0.003, samples=46/59
+  rotation: boundary=0.009, interior=0.002, contrast=0.007, samples=46/59
+  gripper: boundary=0.022, interior=0.034, contrast=-0.012, samples=46/59
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+      534     const       0       50        25        2           0.296    0.296       1.206
+      535     const       0       50         5        2           0.251    0.251       0.200
+      539     const       0       50         5        2           0.296    0.296       0.200
+      544     const       0       50         4        2           0.296    0.296       0.149
+      548     const       0       50         5        2           0.295    0.295       0.199
+      553     const       0       50         4        2           0.296    0.296       0.151
+      558     const       0       50         5        2           0.246    0.246       0.200
+      562     const       0       50         4        2           0.294    0.295       0.150
+      567     const       0       50         5        2           0.246    0.246       0.201
+      571     const       0       50         4        2           0.296    0.296       0.151
+      576     const       0       50         5        2           0.249    0.250       0.201
+      580     const       0       50         4        2           0.296    0.296       0.150
+      585     const       0       50         5        2           0.251    0.251       0.200
+      589     const       0       50         5        2           0.296    0.296       0.200
+      594     const       0       50         4        2           0.295    0.296       0.150
+      599     const       0       50         5        2           0.246    0.246       0.200
+      603     const       0       50         4        2           0.296    0.296       0.151
+      608     const       0       50         5        2           0.246    0.246       0.200
+      612     const       0       50         4        2           0.295    0.295       0.150
+      617     const       0       50         5        2           0.246    0.246       0.200
+      621     const       0       50         4        2           0.296    0.296       0.150
+      626     const       0       50         5        2           0.246    0.246       0.201
+      630     const       0       50         4        2           0.296    0.296       0.150
+      635     const       0       50         5        2           0.246    0.246       0.201
+
+=== Pi0.5 inference episode: 2026-10-01 18:32:31 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, first_execution_horizon=20, continuous_min_execute_steps=0, fps=20
+summary: total_time=6.215s, inference_calls=22, observations_published=100, completed_chunks=22, prefix_chunks=0, actions_applied=119, empty_action_steps=6, stale_actions_dropped=124, actions_overwritten=816
+latency: avg_first_action=0.278s, avg_final=0.278s, avg_chunk_duration=0.221s
+boundary discontinuity (second action difference):
+  position: boundary=0.005, interior=0.002, contrast=0.003, samples=42/52
+  rotation: boundary=0.009, interior=0.003, contrast=0.007, samples=42/52
+  gripper: boundary=0.000, interior=0.058, contrast=-0.058, samples=42/52
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+      770     const       0       50        25        2           0.296    0.296       1.207
+      771     const       0       50         5        2           0.246    0.246       0.200
+      775     const       0       50         4        2           0.295    0.296       0.149
+      780     const       0       50         5        2           0.246    0.246       0.200
+      784     const       0       50         4        2           0.296    0.296       0.151
+      789     const       0       50         5        2           0.250    0.250       0.200
+      793     const       0       50         5        2           0.295    0.295       0.199
+      798     const       0       50         4        2           0.296    0.296       0.151
+      802     const       0       50         5        2           0.296    0.296       0.200
+      807     const       0       50         4        2           0.295    0.295       0.149
+      812     const       0       50         5        2           0.246    0.246       0.200
+      816     const       0       50         4        2           0.296    0.296       0.151
+      821     const       0       50         5        2           0.246    0.246       0.200
+      825     const       0       50         4        2           0.295    0.296       0.150
+      830     const       0       50         5        2           0.246    0.247       0.200
+      834     const       0       50         4        2           0.296    0.296       0.150
+      839     const       0       50         5        2           0.245    0.246       0.200
+      843     const       0       50         4        2           0.295    0.296       0.149
+      848     const       0       50         5        2           0.251    0.251       0.201
+      852     const       0       50         5        2           0.296    0.296       0.200
+      857     const       0       50         4        2           0.295    0.295       0.150
+      861     const       0       50         3        2           0.295    0.295       0.099
+
+=== Pi0.5 inference episode: 2026-10-01 18:32:49 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=const, streaming_mode=continuous, continuous_strategy=official_dynamicvla, first_execution_horizon=20, continuous_min_execute_steps=0, fps=20
+summary: total_time=6.115s, inference_calls=22, observations_published=98, completed_chunks=22, prefix_chunks=0, actions_applied=117, empty_action_steps=6, stale_actions_dropped=123, actions_overwritten=816
+latency: avg_first_action=0.276s, avg_final=0.276s, avg_chunk_duration=0.216s
+boundary discontinuity (second action difference):
+  position: boundary=0.007, interior=0.002, contrast=0.005, samples=41/51
+  rotation: boundary=0.013, interior=0.003, contrast=0.010, samples=41/51
+  gripper: boundary=0.049, interior=0.020, contrast=0.029, samples=41/51
+chunks:
+  request  schedule  prefix  emitted  executed  updates  first_action_s  final_s  duration_s
+      870     const       0       50        25        2           0.296    0.296       1.206
+      871     const       0       50         5        2           0.246    0.246       0.201
+      875     const       0       50         4        2           0.296    0.296       0.150
+      880     const       0       50         5        2           0.245    0.246       0.200
+      884     const       0       50         4        2           0.296    0.296       0.150
+      889     const       0       50         5        2           0.251    0.251       0.200
+      893     const       0       50         5        2           0.296    0.297       0.200
+      898     const       0       50         4        2           0.296    0.296       0.150
+      903     const       0       50         5        2           0.246    0.246       0.200
+      907     const       0       50         4        2           0.296    0.296       0.150
+      912     const       0       50         5        2           0.246    0.246       0.201
+      916     const       0       50         4        2           0.296    0.296       0.150
+      921     const       0       50         5        2           0.246    0.246       0.200
+      925     const       0       50         4        2           0.296    0.296       0.149
+      930     const       0       50         5        2           0.250    0.250       0.200
+      934     const       0       50         5        2           0.296    0.296       0.200
+      939     const       0       50         4        2           0.296    0.296       0.150
+      943     const       0       50         5        2           0.296    0.296       0.200
+      948     const       0       50         4        2           0.296    0.296       0.150
+      953     const       0       50         5        2           0.246    0.246       0.200
+      957     const       0       50         4        2           0.296    0.296       0.150
+      962     const       0       50         1        2           0.246    0.247       0.000
