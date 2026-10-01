@@ -806,6 +806,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
         chunks: List[Dict[str, Any]],
     ) -> None:
         path = Path(self.cfg.metrics_path)
+        if not path.suffix:
+            path = path.with_suffix(".jsonl")
         path.parent.mkdir(parents=True, exist_ok=True)
         record = {
             "type": "pi05_inference_episode",

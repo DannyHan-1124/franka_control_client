@@ -19,7 +19,7 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --pyzlc_group_port 7725 \
     --policy_transport streaming_zmq \
     --policy_zmq_endpoint tcp://127.0.0.1:17726 \
-    --metrics_path "${REPO_ROOT}/logs/discontinuity_metrics" \
+    --metrics_path "${REPO_ROOT}/logs/discontinuity_metrics.jsonl" \
     --first_execution_horizon 30 \
     --execution_horizon 5 \
     --faster_infer_time_schedule HAS \
