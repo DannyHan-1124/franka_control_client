@@ -323,3 +323,387 @@ chunks:
        28       HAS       3          25       25        25        9           0.095    0.245       1.202
        29       HAS       3          25       25        25        9           0.095    0.246       1.202
        30       HAS       3          25       25         7        9           0.095    0.246       0.300
+
+=== Pi0.5 inference episode: 2026-10-01 17:55:32 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=5, first_execution_horizon=5, execution_horizon=5, fps=20
+summary: total_time=6.562s, inference_calls=27, completed_chunks=27, prefix_chunks=26, actions_applied=129, empty_action_steps=3
+latency: avg_first_action=0.097s, p95_first_action=0.096s, recommended_delay=2, avg_final=0.148s, avg_chunk_duration=0.198s
+boundary discontinuity (second action difference):
+  position: boundary=0.007, interior=0.008, contrast=-0.001, samples=50/74
+  rotation: boundary=0.012, interior=0.012, contrast=0.000, samples=50/74
+  gripper: boundary=0.040, interior=0.014, contrast=0.026, samples=50/74
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        4       HAS       0           5        5         5        4           0.146    0.146       0.200
+        5       HAS       3           5        5         5        5           0.096    0.196       0.201
+        6       HAS       3           5        5         5        5           0.095    0.145       0.201
+        7       HAS       3           5        5         5        5           0.096    0.146       0.200
+        8       HAS       3           5        5         5        5           0.095    0.146       0.201
+        9       HAS       3           5        5         5        5           0.094    0.144       0.200
+       10       HAS       3           5        5         5        5           0.096    0.146       0.200
+       11       HAS       3           5        5         5        5           0.096    0.146       0.200
+       12       HAS       3           5        5         5        5           0.096    0.146       0.200
+       13       HAS       3           5        5         5        5           0.096    0.146       0.201
+       14       HAS       3           5        5         5        5           0.096    0.146       0.201
+       15       HAS       3           5        5         5        5           0.096    0.146       0.200
+       16       HAS       3           5        5         5        5           0.095    0.146       0.201
+       17       HAS       3           5        5         5        5           0.096    0.146       0.200
+       18       HAS       3           5        5         5        5           0.096    0.146       0.200
+       19       HAS       3           5        5         5        5           0.096    0.146       0.200
+       20       HAS       3           5        5         5        5           0.096    0.146       0.200
+       21       HAS       3           5        5         5        5           0.094    0.145       0.200
+       22       HAS       3           5        5         5        5           0.096    0.146       0.200
+       23       HAS       3           5        5         5        5           0.095    0.146       0.200
+       24       HAS       3           5        5         5        5           0.096    0.146       0.200
+       25       HAS       3           5        5         5        5           0.096    0.146       0.200
+       26       HAS       3           5        5         5        5           0.095    0.145       0.200
+       27       HAS       3           5        5         5        5           0.096    0.146       0.200
+       28       HAS       3           5        5         5        5           0.096    0.146       0.200
+       29       HAS       3           5        5         4        5           0.096    0.146       0.150
+       30       HAS       3           5        1         0        1           0.096      n/a         n/a
+
+=== Pi0.5 inference episode: 2026-10-01 17:55:48 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=5, first_execution_horizon=5, execution_horizon=5, fps=20
+summary: total_time=6.662s, inference_calls=27, completed_chunks=27, prefix_chunks=26, actions_applied=131, empty_action_steps=3
+latency: avg_first_action=0.097s, p95_first_action=0.096s, recommended_delay=2, avg_final=0.146s, avg_chunk_duration=0.193s
+boundary discontinuity (second action difference):
+  position: boundary=0.006, interior=0.007, contrast=-0.001, samples=51/75
+  rotation: boundary=0.012, interior=0.014, contrast=-0.002, samples=51/75
+  gripper: boundary=0.039, interior=0.013, contrast=0.026, samples=51/75
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       31       HAS       0           5        5         5        4           0.146    0.146       0.200
+       32       HAS       3           5        5         5        5           0.096    0.146       0.200
+       33       HAS       3           5        5         5        5           0.096    0.146       0.200
+       34       HAS       3           5        5         5        5           0.096    0.146       0.200
+       35       HAS       3           5        5         5        5           0.096    0.146       0.201
+       36       HAS       3           5        5         5        5           0.096    0.146       0.200
+       37       HAS       3           5        5         5        5           0.096    0.146       0.200
+       38       HAS       3           5        5         5        5           0.096    0.146       0.200
+       39       HAS       3           5        5         5        5           0.095    0.145       0.200
+       40       HAS       3           5        5         5        5           0.096    0.146       0.200
+       41       HAS       3           5        5         5        5           0.095    0.145       0.200
+       42       HAS       3           5        5         5        5           0.096    0.146       0.200
+       43       HAS       3           5        5         5        5           0.096    0.146       0.201
+       44       HAS       3           5        5         5        5           0.096    0.146       0.200
+       45       HAS       3           5        5         5        5           0.095    0.145       0.200
+       46       HAS       3           5        5         5        5           0.095    0.145       0.200
+       47       HAS       3           5        5         5        5           0.096    0.146       0.200
+       48       HAS       3           5        5         5        5           0.095    0.146       0.200
+       49       HAS       3           5        5         5        5           0.095    0.145       0.200
+       50       HAS       3           5        5         5        5           0.095    0.145       0.200
+       51       HAS       3           5        5         5        5           0.095    0.145       0.200
+       52       HAS       3           5        5         5        5           0.095    0.145       0.200
+       53       HAS       3           5        5         5        5           0.096    0.146       0.201
+       54       HAS       3           5        5         5        5           0.096    0.146       0.200
+       55       HAS       3           5        5         5        5           0.096    0.146       0.200
+       56       HAS       3           5        5         5        5           0.096    0.146       0.200
+       57       HAS       3           5        5         1        5           0.096    0.146       0.000
+
+=== Pi0.5 inference episode: 2026-10-01 17:56:03 ===
+task: put red cylinder on red cube
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=5, first_execution_horizon=5, execution_horizon=5, fps=20
+summary: total_time=6.812s, inference_calls=28, completed_chunks=28, prefix_chunks=27, actions_applied=134, empty_action_steps=3
+latency: avg_first_action=0.097s, p95_first_action=0.096s, recommended_delay=2, avg_final=0.146s, avg_chunk_duration=0.199s
+boundary discontinuity (second action difference):
+  position: boundary=0.007, interior=0.007, contrast=-0.000, samples=52/77
+  rotation: boundary=0.012, interior=0.011, contrast=0.001, samples=52/77
+  gripper: boundary=0.000, interior=0.039, contrast=-0.039, samples=52/77
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       58       HAS       0           5        5         5        4           0.146    0.146       0.200
+       59       HAS       3           5        5         5        5           0.096    0.146       0.200
+       60       HAS       3           5        5         5        5           0.096    0.146       0.201
+       61       HAS       3           5        5         5        5           0.096    0.146       0.200
+       62       HAS       3           5        5         5        5           0.095    0.145       0.200
+       63       HAS       3           5        5         5        5           0.094    0.144       0.201
+       64       HAS       3           5        5         5        5           0.096    0.146       0.200
+       65       HAS       3           5        5         5        5           0.095    0.146       0.200
+       66       HAS       3           5        5         5        5           0.096    0.146       0.200
+       67       HAS       3           5        5         5        5           0.096    0.146       0.200
+       68       HAS       3           5        5         5        5           0.096    0.146       0.200
+       69       HAS       3           5        5         5        5           0.095    0.145       0.200
+       70       HAS       3           5        5         5        5           0.096    0.146       0.200
+       71       HAS       3           5        5         5        5           0.096    0.146       0.200
+       72       HAS       3           5        5         5        5           0.096    0.146       0.200
+       73       HAS       3           5        5         5        5           0.095    0.145       0.200
+       74       HAS       3           5        5         5        5           0.095    0.145       0.200
+       75       HAS       3           5        5         5        5           0.095    0.146       0.200
+       76       HAS       3           5        5         5        5           0.096    0.146       0.200
+       77       HAS       3           5        5         5        5           0.095    0.145       0.200
+       78       HAS       3           5        5         5        5           0.096    0.146       0.200
+       79       HAS       3           5        5         5        5           0.094    0.144       0.200
+       80       HAS       3           5        5         5        5           0.096    0.146       0.200
+       81       HAS       3           5        5         5        5           0.096    0.146       0.200
+       82       HAS       3           5        5         5        5           0.096    0.146       0.200
+       83       HAS       3           5        5         5        5           0.095    0.145       0.200
+       84       HAS       3           5        5         4        5           0.095    0.145       0.150
+       85       HAS       3           5        1         0        1           0.095      n/a         n/a
+
+=== Pi0.5 inference episode: 2026-10-01 18:06:40 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=5, fps=30
+summary: total_time=6.020s, inference_calls=23, completed_chunks=23, prefix_chunks=22, actions_applied=135, empty_action_steps=46
+latency: avg_first_action=0.097s, p95_first_action=0.096s, recommended_delay=3, avg_final=0.229s, avg_chunk_duration=0.176s
+boundary discontinuity (second action difference):
+  position: boundary=0.004, interior=0.003, contrast=0.001, samples=42/63
+  rotation: boundary=0.006, interior=0.003, contrast=0.003, samples=42/63
+  gripper: boundary=0.000, interior=0.048, contrast=-0.048, samples=42/63
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+        1       HAS       0          30       30        30        9           0.128    0.228       0.969
+        2       HAS       3          30       30         5        9           0.096    0.229       0.134
+        3       HAS       3          30       30         5        9           0.096    0.229       0.138
+        4       HAS       3          30       30         5        9           0.096    0.229       0.138
+        5       HAS       3          30       30         5        9           0.096    0.229       0.138
+        6       HAS       3          30       30         5        9           0.096    0.229       0.138
+        7       HAS       3          30       30         5        9           0.095    0.229       0.138
+        8       HAS       3          30       30         5        9           0.096    0.230       0.138
+        9       HAS       3          30       30         5        9           0.096    0.230       0.138
+       10       HAS       3          30       30         5        9           0.096    0.230       0.138
+       11       HAS       3          30       30         5        9           0.096    0.229       0.138
+       12       HAS       3          30       30         5        9           0.096    0.230       0.139
+       13       HAS       3          30       30         5        9           0.095    0.229       0.138
+       14       HAS       3          30       30         5        9           0.096    0.229       0.138
+       15       HAS       3          30       30         5        9           0.096    0.230       0.138
+       16       HAS       3          30       30         5        9           0.096    0.230       0.138
+       17       HAS       3          30       30         5        9           0.096    0.230       0.138
+       18       HAS       3          30       30         5        9           0.096    0.230       0.138
+       19       HAS       3          30       30         5        9           0.096    0.230       0.138
+       20       HAS       3          30       30         5        9           0.096    0.229       0.138
+       21       HAS       3          30       30         5        9           0.096    0.230       0.138
+       22       HAS       3          30       30         5        9           0.096    0.229       0.139
+       23       HAS       3          30        0         0        0             n/a      n/a         n/a
+
+=== Pi0.5 inference episode: 2026-10-01 18:06:59 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=5, fps=30
+summary: total_time=6.117s, inference_calls=23, completed_chunks=23, prefix_chunks=22, actions_applied=136, empty_action_steps=48
+latency: avg_first_action=0.099s, p95_first_action=0.126s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.168s
+boundary discontinuity (second action difference):
+  position: boundary=0.003, interior=0.003, contrast=0.000, samples=43/63
+  rotation: boundary=0.005, interior=0.003, contrast=0.003, samples=43/63
+  gripper: boundary=0.023, interior=0.032, contrast=-0.008, samples=43/63
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       24       HAS       0          30       30        30        9           0.129    0.229       0.969
+       25       HAS       3          30       30         5        9           0.129    0.230       0.134
+       26       HAS       3          30       30         5        9           0.096    0.230       0.138
+       27       HAS       3          30       30         5        9           0.096    0.229       0.138
+       28       HAS       3          30       30         5        9           0.096    0.229       0.138
+       29       HAS       3          30       30         5        9           0.096    0.229       0.138
+       30       HAS       3          30       30         5        9           0.096    0.230       0.139
+       31       HAS       3          30       30         5        9           0.095    0.229       0.138
+       32       HAS       3          30       30         5        9           0.096    0.230       0.139
+       33       HAS       3          30       30         5        9           0.095    0.229       0.139
+       34       HAS       3          30       30         5        9           0.095    0.229       0.138
+       35       HAS       3          30       30         5        9           0.096    0.230       0.138
+       36       HAS       3          30       30         5        9           0.096    0.230       0.139
+       37       HAS       3          30       30         5        9           0.096    0.229       0.138
+       38       HAS       3          30       30         5        9           0.096    0.230       0.138
+       39       HAS       3          30       30         5        9           0.096    0.230       0.139
+       40       HAS       3          30       30         5        9           0.095    0.229       0.138
+       41       HAS       3          30       30         5        9           0.096    0.229       0.138
+       42       HAS       3          30       30         5        9           0.096    0.230       0.138
+       43       HAS       3          30       30         5        9           0.095    0.229       0.138
+       44       HAS       3          30       30         5        9           0.096    0.230       0.139
+       45       HAS       3          30       30         5        9           0.095    0.229       0.138
+       46       HAS       3          30        1         1        1           0.096      n/a       0.000
+
+=== Pi0.5 inference episode: 2026-10-01 18:08:13 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=5, fps=30
+summary: total_time=6.651s, inference_calls=25, completed_chunks=25, prefix_chunks=24, actions_applied=148, empty_action_steps=52
+latency: avg_first_action=0.097s, p95_first_action=0.096s, recommended_delay=3, avg_final=0.229s, avg_chunk_duration=0.169s
+boundary discontinuity (second action difference):
+  position: boundary=0.005, interior=0.003, contrast=0.002, samples=48/70
+  rotation: boundary=0.006, interior=0.003, contrast=0.002, samples=48/70
+  gripper: boundary=0.000, interior=0.043, contrast=-0.043, samples=48/70
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       47       HAS       0          30       30        30        9           0.129    0.230       0.969
+       48       HAS       3          30       30         5        9           0.095    0.228       0.134
+       49       HAS       3          30       30         5        9           0.096    0.230       0.138
+       50       HAS       3          30       30         5        9           0.096    0.229       0.138
+       51       HAS       3          30       30         5        9           0.096    0.230       0.139
+       52       HAS       3          30       30         5        9           0.096    0.230       0.138
+       53       HAS       3          30       30         5        9           0.096    0.230       0.138
+       54       HAS       3          30       30         5        9           0.096    0.229       0.139
+       55       HAS       3          30       30         5        9           0.095    0.229       0.138
+       56       HAS       3          30       30         5        9           0.096    0.229       0.138
+       57       HAS       3          30       30         5        9           0.096    0.229       0.138
+       58       HAS       3          30       30         5        9           0.096    0.229       0.138
+       59       HAS       3          30       30         5        9           0.096    0.229       0.140
+       60       HAS       3          30       30         5        9           0.094    0.228       0.139
+       61       HAS       3          30       30         5        9           0.095    0.229       0.138
+       62       HAS       3          30       30         5        9           0.096    0.229       0.138
+       63       HAS       3          30       30         5        9           0.096    0.229       0.139
+       64       HAS       3          30       30         5        9           0.095    0.229       0.140
+       65       HAS       3          30       30         5        9           0.094    0.228       0.138
+       66       HAS       3          30       30         5        9           0.096    0.229       0.138
+       67       HAS       3          30       30         5        9           0.095    0.229       0.140
+       68       HAS       3          30       30         5        9           0.094    0.228       0.138
+       69       HAS       3          30       30         5        9           0.096    0.229       0.138
+       70       HAS       3          30       30         5        9           0.096    0.229       0.138
+       71       HAS       3          30       13         3        5           0.096      n/a       0.067
+
+=== Pi0.5 inference episode: 2026-10-01 18:08:54 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=5, fps=30
+summary: total_time=6.351s, inference_calls=24, completed_chunks=24, prefix_chunks=23, actions_applied=141, empty_action_steps=50
+latency: avg_first_action=0.098s, p95_first_action=0.124s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.167s
+boundary discontinuity (second action difference):
+  position: boundary=0.004, interior=0.003, contrast=0.002, samples=45/66
+  rotation: boundary=0.006, interior=0.003, contrast=0.003, samples=45/66
+  gripper: boundary=0.067, interior=0.000, contrast=0.067, samples=45/66
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       72       HAS       0          30       30        30        9           0.129    0.230       0.969
+       73       HAS       3          30       30         5        9           0.129    0.229       0.134
+       74       HAS       3          30       30         5        9           0.095    0.229       0.139
+       75       HAS       3          30       30         5        9           0.095    0.229       0.139
+       76       HAS       3          30       30         5        9           0.095    0.229       0.139
+       77       HAS       3          30       30         5        9           0.095    0.228       0.139
+       78       HAS       3          30       30         5        9           0.095    0.229       0.139
+       79       HAS       3          30       30         5        9           0.095    0.229       0.139
+       80       HAS       3          30       30         5        9           0.095    0.229       0.139
+       81       HAS       3          30       30         5        9           0.095    0.229       0.139
+       82       HAS       3          30       30         5        9           0.095    0.229       0.139
+       83       HAS       3          30       30         5        9           0.095    0.228       0.139
+       84       HAS       3          30       30         5        9           0.095    0.229       0.139
+       85       HAS       3          30       30         5        9           0.095    0.229       0.139
+       86       HAS       3          30       30         5        9           0.095    0.229       0.140
+       87       HAS       3          30       30         5        9           0.095    0.228       0.138
+       88       HAS       3          30       30         5        9           0.096    0.229       0.138
+       89       HAS       3          30       30         5        9           0.096    0.230       0.139
+       90       HAS       3          30       30         5        9           0.095    0.229       0.140
+       91       HAS       3          30       30         5        9           0.094    0.228       0.139
+       92       HAS       3          30       30         5        9           0.095    0.229       0.139
+       93       HAS       3          30       30         5        9           0.095    0.229       0.139
+       94       HAS       3          30       30         5        9           0.096    0.229       0.139
+       95       HAS       3          30        1         1        1           0.095      n/a       0.000
+
+=== Pi0.5 inference episode: 2026-10-01 18:09:40 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=5, fps=30
+summary: total_time=5.646s, inference_calls=21, completed_chunks=21, prefix_chunks=20, actions_applied=126, empty_action_steps=44
+latency: avg_first_action=0.097s, p95_first_action=0.096s, recommended_delay=3, avg_final=0.229s, avg_chunk_duration=0.171s
+boundary discontinuity (second action difference):
+  position: boundary=0.006, interior=0.003, contrast=0.002, samples=39/57
+  rotation: boundary=0.008, interior=0.004, contrast=0.004, samples=39/57
+  gripper: boundary=0.026, interior=0.035, contrast=-0.009, samples=39/57
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+       96       HAS       0          30       30        30        9           0.129    0.229       0.969
+       97       HAS       3          30       30         5        9           0.096    0.229       0.134
+       98       HAS       3          30       30         5        9           0.095    0.229       0.139
+       99       HAS       3          30       30         5        9           0.095    0.229       0.139
+      100       HAS       3          30       30         5        9           0.095    0.229       0.139
+      101       HAS       3          30       30         5        9           0.095    0.229       0.140
+      102       HAS       3          30       30         5        9           0.094    0.228       0.139
+      103       HAS       3          30       30         5        9           0.095    0.228       0.139
+      104       HAS       3          30       30         5        9           0.095    0.229       0.139
+      105       HAS       3          30       30         5        9           0.095    0.228       0.139
+      106       HAS       3          30       30         5        9           0.095    0.229       0.139
+      107       HAS       3          30       30         5        9           0.095    0.228       0.138
+      108       HAS       3          30       30         5        9           0.095    0.229       0.139
+      109       HAS       3          30       30         5        9           0.095    0.229       0.138
+      110       HAS       3          30       30         5        9           0.096    0.229       0.138
+      111       HAS       3          30       30         5        9           0.096    0.229       0.139
+      112       HAS       3          30       30         5        9           0.095    0.229       0.138
+      113       HAS       3          30       30         5        9           0.096    0.229       0.138
+      114       HAS       3          30       30         5        9           0.096    0.229       0.139
+      115       HAS       3          30       30         5        9           0.095    0.229       0.138
+      116       HAS       3          30        1         1        1           0.095      n/a       0.000
+
+=== Pi0.5 inference episode: 2026-10-01 18:11:03 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=5, fps=30
+summary: total_time=3.077s, inference_calls=10, completed_chunks=10, prefix_chunks=9, actions_applied=71, empty_action_steps=22
+latency: avg_first_action=0.099s, p95_first_action=0.114s, recommended_delay=4, avg_final=0.230s, avg_chunk_duration=0.207s
+boundary discontinuity (second action difference):
+  position: boundary=0.005, interior=0.003, contrast=0.003, samples=17/24
+  rotation: boundary=0.006, interior=0.002, contrast=0.004, samples=17/24
+  gripper: boundary=0.118, interior=0.042, contrast=0.076, samples=17/24
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+      117       HAS       0          30       30        30        9           0.129    0.229       0.969
+      118       HAS       3          30       30         5        9           0.096    0.230       0.134
+      119       HAS       3          30       30         5        9           0.096    0.230       0.138
+      120       HAS       3          30       30         5        9           0.096    0.230       0.138
+      121       HAS       3          30       30         5        9           0.096    0.229       0.138
+      122       HAS       3          30       30         5        9           0.096    0.229       0.138
+      123       HAS       3          30       30         5        9           0.096    0.230       0.138
+      124       HAS       3          30       30         5        9           0.096    0.229       0.138
+      125       HAS       3          30       30         5        9           0.095    0.230       0.139
+      126       HAS       3          30        1         1        1           0.096      n/a       0.000
+
+=== Pi0.5 inference episode: 2026-10-01 18:11:47 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=5, fps=30
+summary: total_time=6.183s, inference_calls=23, completed_chunks=23, prefix_chunks=22, actions_applied=138, empty_action_steps=48
+latency: avg_first_action=0.097s, p95_first_action=0.096s, recommended_delay=3, avg_final=0.229s, avg_chunk_duration=0.171s
+boundary discontinuity (second action difference):
+  position: boundary=0.004, interior=0.003, contrast=0.002, samples=44/64
+  rotation: boundary=0.007, interior=0.003, contrast=0.004, samples=44/64
+  gripper: boundary=0.000, interior=0.047, contrast=-0.047, samples=44/64
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+      127       HAS       0          30       30        30        9           0.129    0.229       0.970
+      128       HAS       3          30       30         5        9           0.096    0.230       0.134
+      129       HAS       3          30       30         5        9           0.096    0.230       0.139
+      130       HAS       3          30       30         5        9           0.095    0.229       0.138
+      131       HAS       3          30       30         5        9           0.096    0.230       0.139
+      132       HAS       3          30       30         5        9           0.095    0.229       0.138
+      133       HAS       3          30       30         5        9           0.096    0.229       0.138
+      134       HAS       3          30       30         5        9           0.096    0.229       0.138
+      135       HAS       3          30       30         5        9           0.095    0.229       0.138
+      136       HAS       3          30       30         5        9           0.096    0.229       0.138
+      137       HAS       3          30       30         5        9           0.096    0.229       0.138
+      138       HAS       3          30       30         5        9           0.096    0.229       0.138
+      139       HAS       3          30       30         5        9           0.096    0.229       0.139
+      140       HAS       3          30       30         5        9           0.095    0.229       0.139
+      141       HAS       3          30       30         5        9           0.095    0.229       0.139
+      142       HAS       3          30       30         5        9           0.095    0.229       0.139
+      143       HAS       3          30       30         5        9           0.095    0.229       0.139
+      144       HAS       3          30       30         5        9           0.095    0.229       0.138
+      145       HAS       3          30       30         5        9           0.095    0.229       0.139
+      146       HAS       3          30       30         5        9           0.095    0.229       0.139
+      147       HAS       3          30       30         5        9           0.095    0.229       0.139
+      148       HAS       3          30       30         5        9           0.095    0.229       0.139
+      149       HAS       3          30       13         3        5           0.095      n/a       0.067
+
+=== Pi0.5 inference episode: 2026-10-01 18:12:56 ===
+task: put red cube in bowl
+config: transport=streaming_zmq, schedule=HAS, prefix_mode=official_rtc, u0=0.900, alpha=0.600, delay=3, early_stop_actions=30, first_execution_horizon=30, execution_horizon=5, fps=30
+summary: total_time=5.748s, inference_calls=21, completed_chunks=21, prefix_chunks=19, actions_applied=127, empty_action_steps=46
+latency: avg_first_action=0.099s, p95_first_action=0.129s, recommended_delay=4, avg_final=0.229s, avg_chunk_duration=0.173s
+boundary discontinuity (second action difference):
+  position: boundary=0.007, interior=0.003, contrast=0.003, samples=40/57
+  rotation: boundary=0.008, interior=0.003, contrast=0.005, samples=40/57
+  gripper: boundary=0.050, interior=0.018, contrast=0.032, samples=40/57
+chunks:
+  request  schedule  prefix  early_stop  emitted  executed  updates  first_action_s  final_s  duration_s
+      150       HAS       0          30       30        30        9           0.129    0.229       0.969
+      152       HAS       0          30       30         5        9           0.095    0.229       0.139
+      153       HAS       3          30       30         5        9           0.095    0.229       0.138
+      154       HAS       3          30       30         5        9           0.095    0.229       0.138
+      155       HAS       3          30       30         5        9           0.096    0.229       0.138
+      156       HAS       3          30       30         5        9           0.096    0.229       0.139
+      157       HAS       3          30       30         5        9           0.095    0.229       0.138
+      158       HAS       3          30       30         5        9           0.096    0.229       0.138
+      159       HAS       3          30       30         5        9           0.096    0.229       0.138
+      160       HAS       3          30       30         5        9           0.096    0.230       0.138
+      161       HAS       3          30       30         5        9           0.096    0.230       0.138
+      162       HAS       3          30       30         5        9           0.096    0.229       0.138
+      163       HAS       3          30       30         5        9           0.096    0.229       0.138
+      164       HAS       3          30       30         5        9           0.095    0.229       0.138
+      165       HAS       3          30       30         5        9           0.096    0.230       0.139
+      166       HAS       3          30       30         5        9           0.095    0.229       0.138
+      167       HAS       3          30       30         5        9           0.096    0.229       0.138
+      168       HAS       3          30       30         5        9           0.096    0.229       0.138
+      169       HAS       3          30       30         5        9           0.096    0.229       0.138
+      151       HAS       3          30       30         5        8           0.129      n/a       0.134
+      170       HAS       3          30        2         2        2           0.096      n/a       0.033
