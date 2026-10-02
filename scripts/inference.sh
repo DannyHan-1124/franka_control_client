@@ -9,7 +9,7 @@ export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot/src:${PYTHONPATH:-
 # pgrep -af 'ssh.*(-L)'
 
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
-    --task "put red cylinder on red cube" \
+    --task "put red cube in bowl" \
     --stop_after_first_release \
     --fps 20 \
     --control_hz 100 \
@@ -21,6 +21,8 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --policy_transport zmq \
     --policy_zmq_endpoint tcp://127.0.0.1:17725 \
     --metrics_path "${REPO_ROOT}/logs/discontinuity_metrics.jsonl" \
+    --abpolicy_enabled \
+    --first_execution_horizon 20 \
     --static_camera static_cam \
     --wrist_camera wrist_cam
 
