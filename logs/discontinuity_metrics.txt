@@ -173,3 +173,146 @@ chunks:
        12  rtc_async         50         6       7      7      0.330    0.346       0.250
        13  rtc_async       None         0       7   None        n/a      n/a         n/a
 
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=True, rtc_execution_horizon=25, rtc_delay_steps=7
+summary: total_time=7.026s, inference_calls=6, completed_chunks=6, actions_applied=137, empty_action_steps=0
+latency: avg_request=0.286s, avg_first_action=0.298s, avg_chunk_duration=1.085s, recommended_delay=7
+boundary discontinuity (second action difference):
+  position: boundary=0.008, interior=0.002, contrast=0.006, samples=10/15
+  rotation: boundary=0.019, interior=0.003, contrast=0.016, samples=10/15
+  gripper: boundary=0.100, interior=0.000, contrast=0.100, samples=10/15
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        31    None   None      0.258    0.259       1.452
+        2  rtc_async         50        25       7      6      0.292    0.296       1.202
+        3  rtc_async         50        25       7      6      0.283    0.296       1.202
+        4  rtc_async         50        26       7      6      0.283    0.296       1.252
+        5  rtc_async         50        24       7      7      0.310    0.346       1.152
+        6  rtc_async         50         6       7      6      0.289    0.296       0.251
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=True, rtc_execution_horizon=25, rtc_delay_steps=7
+summary: total_time=6.975s, inference_calls=6, completed_chunks=6, actions_applied=136, empty_action_steps=0
+latency: avg_request=0.282s, avg_first_action=0.290s, avg_chunk_duration=1.077s, recommended_delay=6
+boundary discontinuity (second action difference):
+  position: boundary=0.007, interior=0.002, contrast=0.005, samples=10/15
+  rotation: boundary=0.018, interior=0.003, contrast=0.015, samples=10/15
+  gripper: boundary=0.000, interior=0.067, contrast=-0.067, samples=10/15
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        31    None   None      0.259    0.259       1.452
+        2  rtc_async         50        25       7      6      0.284    0.296       1.202
+        3  rtc_async         50        25       7      6      0.290    0.296       1.202
+        4  rtc_async         50        25       7      6      0.282    0.296       1.202
+        5  rtc_async         50        25       7      6      0.289    0.295       1.202
+        6  rtc_async         50         5       7      6      0.292    0.296       0.200
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=True, rtc_execution_horizon=25, rtc_delay_steps=7
+summary: total_time=6.928s, inference_calls=6, completed_chunks=6, actions_applied=135, empty_action_steps=0
+latency: avg_request=0.279s, avg_first_action=0.290s, avg_chunk_duration=1.069s, recommended_delay=6
+boundary discontinuity (second action difference):
+  position: boundary=0.007, interior=0.001, contrast=0.005, samples=10/14
+  rotation: boundary=0.022, interior=0.002, contrast=0.020, samples=10/14
+  gripper: boundary=0.000, interior=0.071, contrast=-0.071, samples=10/14
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        31    None   None      0.259    0.260       1.453
+        2  rtc_async         50        25       7      6      0.284    0.296       1.203
+        3  rtc_async         50        25       7      6      0.279    0.296       1.202
+        4  rtc_async         50        25       7      6      0.281    0.297       1.202
+        5  rtc_async         50        25       7      6      0.289    0.296       1.202
+        6  rtc_async         50         4       7      6      0.285    0.295       0.150
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=True, rtc_execution_horizon=25, rtc_delay_steps=7
+summary: total_time=7.073s, inference_calls=6, completed_chunks=6, actions_applied=138, empty_action_steps=0
+latency: avg_request=0.280s, avg_first_action=0.298s, avg_chunk_duration=1.093s, recommended_delay=7
+boundary discontinuity (second action difference):
+  position: boundary=0.007, interior=0.002, contrast=0.005, samples=10/15
+  rotation: boundary=0.015, interior=0.003, contrast=0.012, samples=10/15
+  gripper: boundary=0.000, interior=0.133, contrast=-0.133, samples=10/15
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        31    None   None      0.257    0.257       1.452
+        2  rtc_async         50        25       7      6      0.281    0.296       1.202
+        3  rtc_async         50        25       7      6      0.286    0.297       1.202
+        4  rtc_async         50        26       7      6      0.279    0.296       1.252
+        5  rtc_async         50        24       7      7      0.298    0.346       1.152
+        6  rtc_async         50         7       7      6      0.280    0.296       0.300
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=True, rtc_execution_horizon=25, rtc_delay_steps=7
+summary: total_time=7.374s, inference_calls=6, completed_chunks=6, actions_applied=144, empty_action_steps=0
+latency: avg_request=0.278s, avg_first_action=0.289s, avg_chunk_duration=1.144s, recommended_delay=6
+boundary discontinuity (second action difference):
+  position: boundary=0.014, interior=0.002, contrast=0.012, samples=10/15
+  rotation: boundary=0.033, interior=0.002, contrast=0.031, samples=10/15
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=10/15
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        31    None   None      0.256    0.257       1.453
+        2  rtc_async         50        25       7      6      0.280    0.296       1.202
+        3  rtc_async         50        25       7      6      0.289    0.296       1.202
+        4  rtc_async         50        25       7      6      0.280    0.295       1.202
+        5  rtc_async         50        25       7      6      0.279    0.296       1.202
+        6  rtc_async         50        13       7      6      0.281    0.296       0.601
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=True, rtc_execution_horizon=25, rtc_delay_steps=7
+summary: total_time=5.207s, inference_calls=6, completed_chunks=6, actions_applied=150, empty_action_steps=0
+latency: avg_request=0.271s, avg_first_action=0.289s, avg_chunk_duration=0.796s, recommended_delay=9
+boundary discontinuity (second action difference):
+  position: boundary=0.004, interior=0.003, contrast=0.002, samples=10/15
+  rotation: boundary=0.021, interior=0.003, contrast=0.018, samples=10/15
+  gripper: boundary=0.100, interior=0.067, contrast=0.033, samples=10/15
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        34    None   None      0.255    0.255       1.069
+        2  rtc_async         50        25       7      9      0.279    0.296       0.802
+        3  rtc_async         50        25       9      9      0.274    0.296       0.802
+        4  rtc_async         50        25       9      9      0.273    0.296       0.802
+        5  rtc_async         50        25       9      9      0.273    0.296       0.802
+        6  rtc_async         50        16       9      9      0.274    0.296       0.501
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=True, rtc_execution_horizon=25, rtc_delay_steps=7
+summary: total_time=6.773s, inference_calls=6, completed_chunks=6, actions_applied=132, empty_action_steps=0
+latency: avg_request=0.277s, avg_first_action=0.289s, avg_chunk_duration=1.043s, recommended_delay=6
+boundary discontinuity (second action difference):
+  position: boundary=0.006, interior=0.002, contrast=0.004, samples=9/12
+  rotation: boundary=0.020, interior=0.002, contrast=0.018, samples=9/12
+  gripper: boundary=0.111, interior=0.000, contrast=0.111, samples=9/12
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        31    None   None      0.256    0.256       1.452
+        2  rtc_async         50        25       7      6      0.287    0.296       1.202
+        3  rtc_async         50        25       7      6      0.277    0.296       1.202
+        4  rtc_async         50        25       7      6      0.277    0.296       1.202
+        5  rtc_async         50        25       7      6      0.278    0.296       1.202
+        6  rtc_async         50         1       7      6      0.287    0.296       0.000
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: rtc_enabled=True, rtc_execution_horizon=25, rtc_delay_steps=7
+summary: total_time=7.022s, inference_calls=6, completed_chunks=6, actions_applied=137, empty_action_steps=0
+latency: avg_request=0.278s, avg_first_action=0.289s, avg_chunk_duration=1.085s, recommended_delay=6
+boundary discontinuity (second action difference):
+  position: boundary=0.005, interior=0.003, contrast=0.002, samples=10/15
+  rotation: boundary=0.014, interior=0.002, contrast=0.012, samples=10/15
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=10/15
+chunks:
+  request  kind         actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  rtc_initial       50        31    None   None      0.255    0.256       1.453
+        2  rtc_async         50        25       7      6      0.286    0.296       1.202
+        3  rtc_async         50        25       7      6      0.277    0.296       1.202
+        4  rtc_async         50        25       7      6      0.278    0.296       1.202
+        5  rtc_async         50        25       7      6      0.285    0.296       1.202
+        6  rtc_async         50         6       7      6      0.286    0.296       0.250
+
