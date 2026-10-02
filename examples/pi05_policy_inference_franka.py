@@ -54,6 +54,12 @@ def _parse_args() -> argparse.Namespace:
         help="RTC minimum execution horizon s_min before starting the next async inference.",
     )
     parser.add_argument(
+        "--first_execution_horizon",
+        type=int,
+        default=0,
+        help="Minimum execution horizon for the first chunk only; 0 uses rtc_execution_horizon.",
+    )
+    parser.add_argument(
         "--rtc_delay_steps",
         type=int,
         default=0,
@@ -125,6 +131,7 @@ def main() -> None:
         chunk_replan_steps=args.chunk_replan_steps,
         rtc_enabled=args.rtc_enabled,
         rtc_execution_horizon=args.rtc_execution_horizon,
+        first_execution_horizon=args.first_execution_horizon,
         rtc_delay_steps=args.rtc_delay_steps,
         rtc_delay_buffer_size=args.rtc_delay_buffer_size,
         stop_after_first_release=args.stop_after_first_release,

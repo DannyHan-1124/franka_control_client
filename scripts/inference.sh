@@ -20,6 +20,7 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --policy_zmq_endpoint tcp://127.0.0.1:17725 \
     --metrics_path "${REPO_ROOT}/logs/discontinuity_metrics.jsonl" \
     --rtc_enabled \
+    --first_execution_horizon 30 \
     --rtc_execution_horizon 25 \
     --rtc_delay_steps 7 \
     --static_camera static_cam \

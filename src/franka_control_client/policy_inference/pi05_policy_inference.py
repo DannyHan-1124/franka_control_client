@@ -50,6 +50,7 @@ class Pi05PolicyInferenceConfig:
     run_metadata: Optional[Dict[str, Any]] = None
     rtc_enabled: bool = False
     rtc_execution_horizon: int = 25
+    first_execution_horizon: int = 0
     rtc_delay_steps: int = 0
     rtc_delay_buffer_size: int = 8
 
@@ -73,6 +74,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.data_collectors = data_collectors
         self.control_pair = control_pair
         self.cfg = cfg
+        if cfg.first_execution_horizon < 0:
+            raise ValueError("first_execution_horizon must be non-negative.")
         if cfg.policy_transport == "zmq":
             if not cfg.policy_zmq_endpoint:
                 raise ValueError("policy_zmq_endpoint is required for ZMQ policy transport.")
@@ -130,6 +133,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._rtc_next_launch_step = 0
         self._rtc_next_metric_id: Optional[int] = None
         self._rtc_pending_error: Optional[BaseException] = None
+        self._rtc_is_first_chunk = True
         self._rtc_generation = 0
         self._rtc_delay_history: Deque[int] = deque(
             maxlen=max(1, int(cfg.rtc_delay_buffer_size))
@@ -391,6 +395,12 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
         self._action_chunk = self._parse_action_payload(action_msg["action"])
         self._raw_action_chunk = self._parse_raw_action_payload(action_msg)
+        if self.cfg.first_execution_horizon >= len(self._action_chunk):
+            raise ValueError(
+                "first_execution_horizon must be smaller than the first RTC chunk so an "
+                "asynchronous request can be launched before it ends: "
+                f"{self.cfg.first_execution_horizon} >= {len(self._action_chunk)}"
+            )
         self._chunk_step = 0
         self._last_action_timestamp = timestamp
         self._finish_chunk_metric(
@@ -523,6 +533,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._action_chunk = next_chunk
         self._raw_action_chunk = next_raw_chunk
         self._chunk_step = start_step
+        self._rtc_is_first_chunk = False
         self._record_rtc_delay(observed_delay)
         self._active_chunk_metric_id = metric_id
         if self._active_chunk_metric_id is not None:
@@ -534,7 +545,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._log_action_chunk_debug(self._action_chunk)
 
     def _rtc_min_execution_horizon(self, chunk_len: int) -> int:
-        return max(1, min(int(self.cfg.rtc_execution_horizon), chunk_len))
+        horizon = int(self.cfg.rtc_execution_horizon)
+        if self._rtc_is_first_chunk and self.cfg.first_execution_horizon > 0:
+            horizon = int(self.cfg.first_execution_horizon)
+        return max(1, min(horizon, chunk_len))
 
     def _rtc_delay_estimate(self, chunk_len: int) -> int:
         with self._rtc_lock:
@@ -579,6 +593,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._rtc_next_launch_step = 0
             self._rtc_next_metric_id = None
             self._rtc_pending_error = None
+            self._rtc_is_first_chunk = True
             self._rtc_delay_history.clear()
             self._rtc_delay_history.append(max(0, int(self.cfg.rtc_delay_steps)))
 
@@ -690,6 +705,9 @@ class Pi05PolicyInference(PolicyInferenceManager):
             summary.update(
                 {
                     "rtc_execution_horizon": int(self.cfg.rtc_execution_horizon),
+                    "first_execution_horizon": int(
+                        self.cfg.first_execution_horizon or self.cfg.rtc_execution_horizon
+                    ),
                     "rtc_delay_steps": int(self.cfg.rtc_delay_steps),
                     "rtc_delay_buffer_size": int(self.cfg.rtc_delay_buffer_size),
                     "avg_observed_delay_steps": _mean([float(delay) for delay in observed_delays]),
@@ -765,6 +783,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             config_items.extend(
                 [
                     f"rtc_execution_horizon={summary.get('rtc_execution_horizon')}",
+                    f"first_execution_horizon={summary.get('first_execution_horizon')}",
                     f"rtc_delay_steps={summary.get('rtc_delay_steps')}",
                 ]
             )
