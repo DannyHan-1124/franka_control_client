@@ -62,6 +62,7 @@ class Pi05PolicyInferenceConfig:
     max_rotation_step_rad: float = 0.0
     execution_horizon: int = 50
     first_execution_horizon: int = 0
+    first_chunk_start_index: int = 0
     gripper_open_confirm_steps: int = 1
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
@@ -103,19 +104,26 @@ class Pi05PolicyInference(PolicyInferenceManager):
             raise ValueError("execution_horizon must be positive.")
         if cfg.first_execution_horizon < 0:
             raise ValueError("first_execution_horizon must be non-negative.")
+        if cfg.first_chunk_start_index < 0:
+            raise ValueError("first_chunk_start_index must be non-negative.")
         first_horizon = cfg.first_execution_horizon or cfg.execution_horizon
-        if first_horizon > MODEL_ACTION_HORIZON:
+        if cfg.first_chunk_start_index + first_horizon > MODEL_ACTION_HORIZON:
             raise ValueError(
-                f"first_execution_horizon must not exceed the model action horizon ({MODEL_ACTION_HORIZON})."
+                "first_chunk_start_index + first_execution_horizon must not exceed "
+                f"the model action horizon ({MODEL_ACTION_HORIZON})."
             )
+        if cfg.first_chunk_start_index > 0 and cfg.policy_transport != "streaming_zmq":
+            raise ValueError("first_chunk_start_index requires policy_transport=streaming_zmq.")
         if cfg.delay < 0:
             raise ValueError("delay must be non-negative.")
         if cfg.early_stop_actions < 0:
             raise ValueError("early_stop_actions must be non-negative.")
-        if 0 < cfg.early_stop_actions < max(cfg.execution_horizon, first_horizon):
+        required_initial_actions = cfg.first_chunk_start_index + first_horizon
+        if 0 < cfg.early_stop_actions < max(cfg.execution_horizon, required_initial_actions):
             raise ValueError(
-                "early_stop_actions must be 0 (disabled) or at least both execution horizons "
-                "so the next delay prefix remains available."
+                "early_stop_actions must be 0 (disabled) or large enough to cover both the "
+                "regular execution horizon and first_chunk_start_index + "
+                "first_execution_horizon."
             )
         if cfg.early_stop_actions > 0 and cfg.policy_transport != "streaming_zmq":
             raise ValueError("early_stop_actions requires policy_transport=streaming_zmq.")
@@ -246,7 +254,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         # The official RTC client keeps the executing and incoming chunks separate.
         self._current_actions: dict[int, np.ndarray] = {}
         self._current_request_id: Optional[int] = None
-        self._current_model_offset = 0
+        self._current_model_offset = int(self.cfg.first_chunk_start_index)
         self._current_step = 0
         self._current_is_first_chunk = True
         self._current_final = False
@@ -454,7 +462,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._request_targets[request_id] = target
         if is_initial:
             self._current_request_id = request_id
-            self._current_model_offset = 0
+            self._current_model_offset = int(self.cfg.first_chunk_start_index)
             self._current_actions = {}
             self._current_final = False
         else:
@@ -758,6 +766,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "first_execution_horizon": int(
                 self.cfg.first_execution_horizon or self.cfg.execution_horizon
             ),
+            "first_chunk_start_index": int(self.cfg.first_chunk_start_index),
             "gripper_open_confirm_steps": int(self.cfg.gripper_open_confirm_steps),
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),
             "close_gripper_on_reset": bool(self.cfg.close_gripper_on_reset),
@@ -854,6 +863,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         config_parts.extend(
             [
                 f"first_execution_horizon={summary.get('first_execution_horizon')}",
+                f"first_chunk_start_index={summary.get('first_chunk_start_index')}",
                 f"execution_horizon={summary.get('execution_horizon')}",
                 f"fps={summary.get('fps')}",
             ]
