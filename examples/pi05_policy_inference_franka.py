@@ -57,7 +57,10 @@ def _parse_args() -> argparse.Namespace:
         "--first_execution_horizon",
         type=int,
         default=0,
-        help="Minimum execution horizon for the first chunk only; 0 uses rtc_execution_horizon.",
+        help=(
+            "Actions executed from the first chunk before replanning; 0 uses "
+            "rtc_execution_horizon in RTC mode or chunk_replan_steps in normal mode."
+        ),
     )
     parser.add_argument(
         "--rtc_delay_steps",

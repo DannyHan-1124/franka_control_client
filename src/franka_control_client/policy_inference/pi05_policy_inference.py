@@ -121,6 +121,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._action_chunk: Optional[np.ndarray] = None
         self._raw_action_chunk: Optional[np.ndarray] = None
         self._chunk_step = 0
+        self._sync_is_first_chunk = True
         self._last_action_timestamp: Optional[float] = None
         self._last_gripper_cmd: Optional[float] = None
         self._release_confirmed = False
@@ -150,6 +151,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._action_chunk = None
         self._raw_action_chunk = None
         self._chunk_step = 0
+        self._sync_is_first_chunk = True
         self._last_gripper_cmd = None
         self._release_confirmed = False
         self._stop_after_release_countdown = None
@@ -300,6 +302,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             if action_msg is not None:
                 timestamp = float(action_msg["timestamp"])
                 if timestamp != self._last_action_timestamp:
+                    replacing_existing_chunk = self._action_chunk is not None
                     self._action_chunk = self._parse_action_payload(action_msg["action"])
                     self._raw_action_chunk = (
                         self._parse_raw_action_payload(action_msg)
@@ -315,6 +318,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
                     )
                     self._active_chunk_metric_id = request_id
                     self._log_action_chunk_debug(self._action_chunk)
+                    if replacing_existing_chunk:
+                        self._sync_is_first_chunk = False
 
         if self._action_chunk is not None and self._chunk_step < len(self._action_chunk):
             action = self._action_chunk[self._chunk_step]
@@ -341,7 +346,10 @@ class Pi05PolicyInference(PolicyInferenceManager):
             return True
         if self._chunk_step >= len(self._action_chunk):
             return True
-        return self._chunk_step >= max(1, int(self.cfg.chunk_replan_steps))
+        replan_steps = int(self.cfg.chunk_replan_steps)
+        if self._sync_is_first_chunk and self.cfg.first_execution_horizon > 0:
+            replan_steps = int(self.cfg.first_execution_horizon)
+        return self._chunk_step >= max(1, replan_steps)
 
     def _infer_rtc_step(self) -> None:
         if self.cfg.policy_transport != "zmq":
@@ -684,6 +692,15 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "action_topic": self.cfg.action_topic,
             "fps": int(self.fps),
             "rtc_enabled": bool(self.cfg.rtc_enabled),
+            "chunk_replan_steps": int(self.cfg.chunk_replan_steps),
+            "first_execution_horizon": int(
+                self.cfg.first_execution_horizon
+                or (
+                    self.cfg.rtc_execution_horizon
+                    if self.cfg.rtc_enabled
+                    else self.cfg.chunk_replan_steps
+                )
+            ),
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),
             "close_gripper_on_reset": bool(self.cfg.close_gripper_on_reset),
             "total_time_s": total_time_s,
@@ -705,9 +722,6 @@ class Pi05PolicyInference(PolicyInferenceManager):
             summary.update(
                 {
                     "rtc_execution_horizon": int(self.cfg.rtc_execution_horizon),
-                    "first_execution_horizon": int(
-                        self.cfg.first_execution_horizon or self.cfg.rtc_execution_horizon
-                    ),
                     "rtc_delay_steps": int(self.cfg.rtc_delay_steps),
                     "rtc_delay_buffer_size": int(self.cfg.rtc_delay_buffer_size),
                     "avg_observed_delay_steps": _mean([float(delay) for delay in observed_delays]),
@@ -778,15 +792,17 @@ class Pi05PolicyInference(PolicyInferenceManager):
         chunks = record["chunks"]
         config_items = [
             f"rtc_enabled={summary.get('rtc_enabled')}",
+            f"first_execution_horizon={summary.get('first_execution_horizon')}",
         ]
         if summary.get("rtc_enabled"):
             config_items.extend(
                 [
                     f"rtc_execution_horizon={summary.get('rtc_execution_horizon')}",
-                    f"first_execution_horizon={summary.get('first_execution_horizon')}",
                     f"rtc_delay_steps={summary.get('rtc_delay_steps')}",
                 ]
             )
+        else:
+            config_items.append(f"chunk_replan_steps={summary.get('chunk_replan_steps')}")
 
         latency_line = (
             "latency: "
