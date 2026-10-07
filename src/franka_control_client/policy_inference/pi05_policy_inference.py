@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import threading
 import time
 from collections import deque
 from dataclasses import dataclass
@@ -41,6 +42,9 @@ class Pi05PolicyInferenceConfig:
     policy_zmq_endpoint: Optional[str] = None
     policy_zmq_timeout_ms: int = 30000
     chunk_replan_steps: int = 50
+    execution_horizon: int = 0
+    first_execution_horizon: int = 0
+    delay: int = 0
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
     close_gripper_on_reset: bool = False
@@ -69,6 +73,22 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.data_collectors = data_collectors
         self.control_pair = control_pair
         self.cfg = cfg
+        if cfg.execution_horizon < 0:
+            raise ValueError("execution_horizon must be non-negative.")
+        if cfg.first_execution_horizon < 0:
+            raise ValueError("first_execution_horizon must be non-negative.")
+        if cfg.delay < 0:
+            raise ValueError("delay must be non-negative.")
+        if cfg.execution_horizon == 0 and cfg.delay != 0:
+            raise ValueError("delay requires execution_horizon > 0.")
+        if cfg.execution_horizon > 0:
+            if cfg.policy_transport != "zmq":
+                raise ValueError("Asynchronous inference requires policy_transport=zmq.")
+            if cfg.delay > cfg.execution_horizon:
+                raise ValueError("delay must not exceed execution_horizon.")
+            first_horizon = cfg.first_execution_horizon or cfg.execution_horizon
+            if cfg.delay > first_horizon:
+                raise ValueError("delay must not exceed first_execution_horizon.")
         if cfg.policy_transport == "zmq":
             if not cfg.policy_zmq_endpoint:
                 raise ValueError("policy_zmq_endpoint is required for ZMQ policy transport.")
@@ -118,6 +138,14 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._release_confirmed = False
         self._stop_after_release_countdown: Optional[int] = None
         self._last_sanitized_action: Optional[np.ndarray] = None
+        self._active_chunk_start_index = 0
+        self._current_is_first_chunk = True
+        self._async_lock = threading.Lock()
+        self._async_inflight = False
+        self._async_next_chunk: Optional[np.ndarray] = None
+        self._async_next_metric_id: Optional[int] = None
+        self._async_pending_error: Optional[BaseException] = None
+        self._async_generation = 0
         history_length = cfg.puma_history_steps * cfg.puma_history_stride + 1
         self._puma_static_history = deque(maxlen=history_length)
         self._reset_metrics()
@@ -129,11 +157,14 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._reset_metrics()
         self._action_chunk = None
         self._chunk_step = 0
+        self._active_chunk_start_index = 0
+        self._current_is_first_chunk = True
         self._last_gripper_cmd = None
         self._release_confirmed = False
         self._stop_after_release_countdown = None
         self._last_sanitized_action = None
         self._puma_static_history.clear()
+        self._reset_async_state()
         current_action = self.policy.current_action
         self._last_action_timestamp = (
             float(current_action["timestamp"]) if current_action is not None else None
@@ -168,13 +199,15 @@ class Pi05PolicyInference(PolicyInferenceManager):
             np.asarray(action, dtype=np.float64).copy()
         )
 
-    def _start_chunk_metric(self, request_time_s: float, observation_build_s: float) -> int:
+    def _start_chunk_metric(
+        self, request_time_s: float, observation_build_s: float, kind: str = "sync"
+    ) -> int:
         self._metrics_inference_calls += 1
         request_id = self._metrics_inference_calls
         self._metrics_chunks.append(
             {
                 "request_id": request_id,
-                "kind": "sync",
+                "kind": kind,
                 "transport": self.cfg.policy_transport,
                 "request_time_s": request_time_s,
                 "client_observation_build_s": observation_build_s,
@@ -221,6 +254,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
         observation_start = time.perf_counter()
         observation = self._build_observation()
         observation_build_s = time.perf_counter() - observation_start
+        if self.cfg.execution_horizon > 0:
+            self._infer_async_step(observation, observation_build_s)
+            self._sleep_remaining_control_period(start)
+            return
+
         if self._should_request_action_chunk():
             request_start = time.perf_counter()
             request_id = self._start_chunk_metric(request_start, observation_build_s)
@@ -242,6 +280,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             if action_msg is not None:
                 timestamp = float(action_msg["timestamp"])
                 if timestamp != self._last_action_timestamp:
+                    replacing_existing_chunk = self._action_chunk is not None
                     self._mark_next_action_as_discontinuity_boundary()
                     self._action_chunk = self._parse_action_payload(action_msg["action"])
                     self._chunk_step = 0
@@ -252,6 +291,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
                         metric["action_count"] = len(self._action_chunk)
                     self._active_chunk_metric_id = request_id
                     self._log_action_chunk_debug(self._action_chunk)
+                    if replacing_existing_chunk:
+                        self._current_is_first_chunk = False
 
         if self._action_chunk is not None and self._chunk_step < len(self._action_chunk):
             action = self._action_chunk[self._chunk_step]
@@ -266,17 +307,214 @@ class Pi05PolicyInference(PolicyInferenceManager):
         else:
             self._metrics_empty_action_steps += 1
 
+        self._sleep_remaining_control_period(start)
+
+    def _sleep_remaining_control_period(self, start: float) -> None:
         elapsed = time.perf_counter() - start
         sleep_time = max(0.0, (1.0 / self.fps) - elapsed)
         if sleep_time > 0.001:
             time.sleep(sleep_time)
+
+    def _infer_async_step(
+        self, observation: Dict[str, Any], observation_build_s: float
+    ) -> None:
+        pending_error = self._take_async_error()
+        if pending_error is not None:
+            self._action_chunk = None
+            self._chunk_step = 0
+            self.control_pair.reset_action()
+            pyzlc.error(f"Stopping inference after asynchronous policy error: {pending_error}")
+            self._state_machine.trigger(PolicyInferenceEvent.DISCARD)
+            return
+
+        if self._action_chunk is None:
+            if not self._request_initial_async_chunk(observation, observation_build_s):
+                return
+
+        self._maybe_launch_async_request(observation, observation_build_s)
+        self._maybe_swap_to_async_chunk()
+
+        horizon = self._current_execution_horizon()
+        if self._action_chunk is not None and self._chunk_step < horizon:
+            action = self._action_chunk[self._chunk_step]
+            action_index = self._active_chunk_start_index + self._chunk_step
+            self._chunk_step += 1
+            sanitized_action = self._sanitize_action(action)
+            self._last_sanitized_action = sanitized_action.copy()
+            self.control_pair.update_action(sanitized_action)
+            self._record_discontinuity_action(sanitized_action)
+            self._metrics_actions_applied += 1
+            self._record_active_chunk_action_execution(action_index)
+            self._maybe_stop_after_release()
+        else:
+            self._metrics_empty_action_steps += 1
+
+        self._maybe_swap_to_async_chunk()
+
+    def _request_initial_async_chunk(
+        self, observation: Dict[str, Any], observation_build_s: float
+    ) -> bool:
+        request_start = time.perf_counter()
+        request_id = self._start_chunk_metric(
+            request_start, observation_build_s, kind="async_initial"
+        )
+        try:
+            self.policy.send_observation(observation)
+            action_msg = self.policy.current_action
+            if action_msg is None:
+                raise RuntimeError("Initial asynchronous policy request returned no actions.")
+            chunk = self._prepare_async_chunk(
+                action_msg["action"], self._first_execution_horizon()
+            )
+        except Exception as exc:
+            metric = self._chunk_metric(request_id)
+            if metric is not None:
+                metric["request_latency_s"] = time.perf_counter() - request_start
+                metric["error"] = str(exc)
+            self._async_pending_error = exc
+            return False
+
+        self._action_chunk = chunk
+        self._chunk_step = 0
+        self._active_chunk_start_index = int(self.cfg.delay)
+        self._last_action_timestamp = float(action_msg["timestamp"])
+        metric = self._chunk_metric(request_id)
+        if metric is not None:
+            metric["request_latency_s"] = time.perf_counter() - request_start
+            metric["action_count"] = len(chunk)
+        self._active_chunk_metric_id = request_id
+        self._log_action_chunk_debug(chunk)
+        return True
+
+    def _prepare_async_chunk(self, payload: Any, horizon: int) -> np.ndarray:
+        full_chunk = self._parse_action_payload(payload)
+        delay = int(self.cfg.delay)
+        required = delay + horizon
+        if len(full_chunk) < required:
+            raise ValueError(
+                "Asynchronous inference requires delay + execution_horizon actions, "
+                f"but the policy returned {len(full_chunk)} < {required}."
+            )
+        return full_chunk[delay : delay + horizon].copy()
+
+    def _maybe_launch_async_request(
+        self, observation: Dict[str, Any], observation_build_s: float
+    ) -> None:
+        with self._async_lock:
+            if self._async_inflight or self._async_next_chunk is not None:
+                return
+        launch_step = max(0, self._current_execution_horizon() - int(self.cfg.delay))
+        if self._chunk_step < launch_step:
+            return
+
+        request_start = time.perf_counter()
+        request_id = self._start_chunk_metric(
+            request_start, observation_build_s, kind="async"
+        )
+        with self._async_lock:
+            self._async_inflight = True
+            generation = self._async_generation
+        threading.Thread(
+            target=self._async_request_worker,
+            args=(observation, generation, request_id, request_start),
+            daemon=True,
+        ).start()
+
+    def _async_request_worker(
+        self,
+        observation: Dict[str, Any],
+        generation: int,
+        request_id: int,
+        request_start: float,
+    ) -> None:
+        policy = DirectZmqPolicy(
+            self.cfg.policy_name,
+            endpoint=self.cfg.policy_zmq_endpoint or "",
+            timeout_ms=self.cfg.policy_zmq_timeout_ms,
+        )
+        try:
+            policy.send_observation(observation)
+            action_msg = policy.current_action
+            if action_msg is None:
+                raise RuntimeError("Asynchronous policy request returned no actions.")
+            chunk = self._prepare_async_chunk(
+                action_msg["action"], int(self.cfg.execution_horizon)
+            )
+            with self._async_lock:
+                if generation == self._async_generation:
+                    self._async_next_chunk = chunk
+                    self._async_next_metric_id = request_id
+                    metric = self._chunk_metric(request_id)
+                    if metric is not None:
+                        metric["request_latency_s"] = time.perf_counter() - request_start
+                        metric["action_count"] = len(chunk)
+        except BaseException as exc:
+            with self._async_lock:
+                if generation == self._async_generation:
+                    self._async_pending_error = exc
+                    metric = self._chunk_metric(request_id)
+                    if metric is not None:
+                        metric["request_latency_s"] = time.perf_counter() - request_start
+                        metric["error"] = str(exc)
+        finally:
+            policy.close()
+            with self._async_lock:
+                if generation == self._async_generation:
+                    self._async_inflight = False
+
+    def _maybe_swap_to_async_chunk(self) -> None:
+        if self._action_chunk is None or self._chunk_step < self._current_execution_horizon():
+            return
+        with self._async_lock:
+            if self._async_next_chunk is None:
+                return
+            next_chunk = self._async_next_chunk
+            metric_id = self._async_next_metric_id
+            self._async_next_chunk = None
+            self._async_next_metric_id = None
+        self._mark_next_action_as_discontinuity_boundary()
+        self._action_chunk = next_chunk
+        self._chunk_step = 0
+        self._current_is_first_chunk = False
+        self._active_chunk_start_index = int(self.cfg.delay)
+        self._active_chunk_metric_id = metric_id
+        self._log_action_chunk_debug(next_chunk)
+
+    def _take_async_error(self) -> Optional[BaseException]:
+        with self._async_lock:
+            error = self._async_pending_error
+            self._async_pending_error = None
+        return error
+
+    def _reset_async_state(self) -> None:
+        with self._async_lock:
+            self._async_generation += 1
+            self._async_inflight = False
+            self._async_next_chunk = None
+            self._async_next_metric_id = None
+            self._async_pending_error = None
+
+    def _first_execution_horizon(self) -> int:
+        if self.cfg.first_execution_horizon > 0:
+            return int(self.cfg.first_execution_horizon)
+        if self.cfg.execution_horizon > 0:
+            return int(self.cfg.execution_horizon)
+        return max(1, int(self.cfg.chunk_replan_steps))
+
+    def _current_execution_horizon(self) -> int:
+        if self._current_is_first_chunk:
+            return self._first_execution_horizon()
+        return int(self.cfg.execution_horizon)
 
     def _should_request_action_chunk(self) -> bool:
         if self._action_chunk is None:
             return True
         if self._chunk_step >= len(self._action_chunk):
             return True
-        return self._chunk_step >= max(1, int(self.cfg.chunk_replan_steps))
+        replan_steps = int(self.cfg.chunk_replan_steps)
+        if self._current_is_first_chunk and self.cfg.first_execution_horizon > 0:
+            replan_steps = int(self.cfg.first_execution_horizon)
+        return self._chunk_step >= max(1, replan_steps)
 
     def _log_action_chunk_debug(self, action_chunk: np.ndarray) -> None:
         gripper = np.asarray(action_chunk[:, 7], dtype=np.float64)
@@ -348,6 +586,11 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "obs_topic": self.cfg.obs_topic,
             "action_topic": self.cfg.action_topic,
             "fps": int(self.fps),
+            "async_enabled": bool(self.cfg.execution_horizon > 0),
+            "execution_horizon": int(self.cfg.execution_horizon),
+            "first_execution_horizon": int(self._first_execution_horizon()),
+            "delay": int(self.cfg.delay),
+            "chunk_replan_steps": int(self.cfg.chunk_replan_steps),
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),
             "close_gripper_on_reset": bool(self.cfg.close_gripper_on_reset),
             "puma_history_steps": int(self.cfg.puma_history_steps),
@@ -397,6 +640,15 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "Pi0.5 PUMA inference metrics",
             f"task: {summary['task']}",
             (
+                "config: "
+                f"async_enabled={summary['async_enabled']}, "
+                f"execution_horizon={summary['execution_horizon']}, "
+                f"first_execution_horizon={summary['first_execution_horizon']}, "
+                f"delay={summary['delay']}, "
+                f"chunk_replan_steps={summary['chunk_replan_steps']}, "
+                f"fps={summary['fps']}"
+            ),
+            (
                 "summary: "
                 f"total_time={_format_optional(summary['total_time_s'])}s, "
                 f"inference_calls={summary['inference_calls']}, "
@@ -416,12 +668,13 @@ class Pi05PolicyInference(PolicyInferenceManager):
             _format_discontinuity_text("rotation", summary["boundary_discontinuity"]["rotation"]),
             _format_discontinuity_text("gripper", summary["boundary_discontinuity"]["gripper"]),
             "chunks:",
-            "  request  actions  executed  request_s  first_s  duration_s  error",
+            "  request  kind           actions  executed  request_s  first_s  duration_s  error",
         ]
         for chunk in chunks:
             lines.append(
                 "  "
                 f"{str(chunk['request_id']):>7}  "
+                f"{str(chunk['kind']):<13}  "
                 f"{str(chunk['action_count']):>7}  "
                 f"{str(chunk['executed_action_count']):>8}  "
                 f"{_format_optional(chunk['request_latency_s']):>9}  "

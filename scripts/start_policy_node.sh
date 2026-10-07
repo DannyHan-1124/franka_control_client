@@ -12,8 +12,8 @@ export XDG_CACHE_HOME=/scratch/$USER/cache
 mkdir -p "$HF_HOME" "$HF_DATASETS_CACHE" "$TRANSFORMERS_CACHE" "$XDG_CACHE_HOME"
 
 python -m franka_control_client.policy.pi05_policy_node \
-    --checkpoint_path /hkfs/work/workspace/scratch/utphd-myspace/outputs/pi05_puma_cylinder_full_10k/checkpoints/last/pretrained_model \
-    --dataset_path /hkfs/work/workspace/scratch/utphd-myspace/datasets/cylinder_full \
+    --checkpoint_path /hkfs/work/workspace/scratch/utphd-myspace/outputs/pi05_puma_conveyor_cube_2k/checkpoints/001500/pretrained_model \
+    --dataset_path /hkfs/work/workspace/scratch/utphd-myspace/datasets/conveyor_cube \
     --device cuda \
     --policy_dtype bfloat16 \
     --obs_topic pi05/observation \

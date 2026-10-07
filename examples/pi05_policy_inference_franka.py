@@ -42,6 +42,30 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--policy_zmq_endpoint", default=None)
     parser.add_argument("--policy_zmq_timeout_ms", type=int, default=30000)
     parser.add_argument("--chunk_replan_steps", type=int, default=50)
+    parser.add_argument(
+        "--execution_horizon",
+        type=int,
+        default=0,
+        help=(
+            "Actions executed from each chunk in asynchronous mode; "
+            "0 keeps the existing synchronous inference mode."
+        ),
+    )
+    parser.add_argument(
+        "--first_execution_horizon",
+        type=int,
+        default=0,
+        help=(
+            "Actions executed from the first chunk; 0 uses execution_horizon "
+            "in asynchronous mode or chunk_replan_steps in synchronous mode."
+        ),
+    )
+    parser.add_argument(
+        "--delay",
+        type=int,
+        default=0,
+        help="Actions skipped from every predicted chunk in asynchronous mode.",
+    )
     parser.add_argument("--stop_after_first_release", action="store_true")
     parser.add_argument("--stop_after_release_steps", type=int, default=0)
     parser.add_argument(
@@ -102,6 +126,9 @@ def main() -> None:
         policy_zmq_endpoint=args.policy_zmq_endpoint,
         policy_zmq_timeout_ms=args.policy_zmq_timeout_ms,
         chunk_replan_steps=args.chunk_replan_steps,
+        execution_horizon=args.execution_horizon,
+        first_execution_horizon=args.first_execution_horizon,
+        delay=args.delay,
         stop_after_first_release=args.stop_after_first_release,
         stop_after_release_steps=args.stop_after_release_steps,
         close_gripper_on_reset=args.close_gripper_on_reset,
