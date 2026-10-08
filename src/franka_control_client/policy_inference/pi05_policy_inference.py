@@ -51,6 +51,7 @@ class Pi05PolicyInferenceConfig:
     policy_zmq_timeout_ms: int = 30000
     chunk_replan_steps: int = 50
     first_execution_horizon: int = 0
+    first_chunk_start_index: int = 0
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
     close_gripper_on_reset: bool = False
@@ -80,6 +81,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self.cfg = cfg
         if cfg.first_execution_horizon < 0:
             raise ValueError("first_execution_horizon must be non-negative.")
+        if cfg.first_chunk_start_index < 0:
+            raise ValueError("first_chunk_start_index must be non-negative.")
         if cfg.policy_transport == "zmq":
             if not cfg.policy_zmq_endpoint:
                 raise ValueError("policy_zmq_endpoint is required for ZMQ policy transport.")
@@ -389,7 +392,18 @@ class Pi05PolicyInference(PolicyInferenceManager):
         trajectory = packed_rotvec_to_cartesian(
             packed_trajectory, metadata["reference_quaternion_xyzw"]
         )
-        start_step = metadata["past_action_steps"]
+        # The reconstructed spline contains the past-action prefix followed by
+        # predicted future actions. Skip the prefix unconditionally, then apply
+        # the optional offset only to this initial trajectory.
+        start_step = metadata["past_action_steps"] + self.cfg.first_chunk_start_index
+        if start_step >= len(trajectory):
+            raise ValueError(
+                "first_chunk_start_index leaves no executable actions in the "
+                "reconstructed first trajectory: "
+                f"past_action_steps={metadata['past_action_steps']}, "
+                f"first_chunk_start_index={self.cfg.first_chunk_start_index}, "
+                f"trajectory_length={len(trajectory)}"
+            )
         self._action_chunk = trajectory[start_step:]
         if self.cfg.first_execution_horizon > len(self._action_chunk):
             raise ValueError(
@@ -696,6 +710,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             "fps": int(self.fps),
             "abpolicy_enabled": bool(self.cfg.abpolicy_enabled),
             "first_execution_horizon": int(self.cfg.first_execution_horizon),
+            "first_chunk_start_index": int(self.cfg.first_chunk_start_index),
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),
             "close_gripper_on_reset": bool(self.cfg.close_gripper_on_reset),
             "total_time_s": total_time_s,
@@ -781,6 +796,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
         config_items = [
             f"abpolicy_enabled={summary.get('abpolicy_enabled')}",
             f"first_execution_horizon={summary.get('first_execution_horizon')}",
+            f"first_chunk_start_index={summary.get('first_chunk_start_index')}",
         ]
         asynchronous = summary.get("abpolicy_enabled")
 

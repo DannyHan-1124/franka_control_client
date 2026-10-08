@@ -6,8 +6,8 @@ WORKSPACE_ROOT="$(cd "${REPO_ROOT}/.." && pwd)"
 export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot-abpolicy/src:${PYTHONPATH:-}"
 
 python -m franka_control_client.policy.pi05_policy_node \
-    --checkpoint_path /hkfs/work/workspace/scratch/utphd-myspace/outputs/pi05_cylinder_full_abpolicy_10ksteps/checkpoints/last/pretrained_model \
-    --dataset_path /hkfs/work/workspace/scratch/utphd-myspace/datasets/cylinder_full \
+    --checkpoint_path /hkfs/work/workspace/scratch/utphd-myspace/outputs/pi05_conveyor_cube_abpolicy_2ksteps/checkpoints/001500/pretrained_model \
+    --dataset_path /hkfs/work/workspace/scratch/utphd-myspace/datasets/conveyor_cube \
     --device cuda \
     --policy_dtype bfloat16 \
     --fps 20 \

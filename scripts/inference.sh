@@ -26,4 +26,5 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
 
 #   --abpolicy_enabled \
 #   --metrics_path "${REPO_ROOT}/logs/abpolicy_inference_metrics_new.jsonl" \
+#   --first_chunk_start_index 3 \
 #   --first_execution_horizon 20 \
