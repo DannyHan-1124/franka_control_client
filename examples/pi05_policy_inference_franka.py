@@ -78,6 +78,14 @@ def _parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--stream_initial_chunk",
+        action="store_true",
+        help=(
+            "Execute initial actions as soon as they are streamed; by default, "
+            "wait for the complete initial execution window before moving."
+        ),
+    )
+    parser.add_argument(
         "--gripper_open_confirm_steps",
         type=int,
         default=1,
@@ -180,6 +188,7 @@ def main() -> None:
         execution_horizon=args.execution_horizon,
         first_execution_horizon=args.first_execution_horizon,
         first_chunk_start_index=args.first_chunk_start_index,
+        stream_initial_chunk=args.stream_initial_chunk,
         gripper_open_confirm_steps=args.gripper_open_confirm_steps,
         stop_after_first_release=args.stop_after_first_release,
         stop_after_release_steps=args.stop_after_release_steps,

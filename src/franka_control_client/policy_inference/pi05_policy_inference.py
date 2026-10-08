@@ -63,6 +63,7 @@ class Pi05PolicyInferenceConfig:
     execution_horizon: int = 50
     first_execution_horizon: int = 0
     first_chunk_start_index: int = 0
+    stream_initial_chunk: bool = False
     gripper_open_confirm_steps: int = 1
     stop_after_first_release: bool = False
     stop_after_release_steps: int = 0
@@ -114,6 +115,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
             )
         if cfg.first_chunk_start_index > 0 and cfg.policy_transport != "streaming_zmq":
             raise ValueError("first_chunk_start_index requires policy_transport=streaming_zmq.")
+        if cfg.stream_initial_chunk and cfg.policy_transport != "streaming_zmq":
+            raise ValueError("stream_initial_chunk requires policy_transport=streaming_zmq.")
         if cfg.delay < 0:
             raise ValueError("delay must be non-negative.")
         if cfg.early_stop_actions < 0:
@@ -556,8 +559,14 @@ class Pi05PolicyInference(PolicyInferenceManager):
             return None
         horizon = self._current_execution_horizon()
 
-        # The first chunk is obtained synchronously before moving.
-        if self._current_step == 0 and self._metrics_actions_applied == 0:
+        # By default the first chunk is obtained conservatively before moving.
+        # The opt-in streaming mode instead starts as soon as the next required
+        # initial action has arrived, matching how later chunks are consumed.
+        if (
+            not self.cfg.stream_initial_chunk
+            and self._current_step == 0
+            and self._metrics_actions_applied == 0
+        ):
             if not self._current_final:
                 self._log_stream_wait_state("waiting for first final chunk")
                 return None
@@ -767,6 +776,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
                 self.cfg.first_execution_horizon or self.cfg.execution_horizon
             ),
             "first_chunk_start_index": int(self.cfg.first_chunk_start_index),
+            "stream_initial_chunk": bool(self.cfg.stream_initial_chunk),
             "gripper_open_confirm_steps": int(self.cfg.gripper_open_confirm_steps),
             "stop_after_first_release": bool(self.cfg.stop_after_first_release),
             "close_gripper_on_reset": bool(self.cfg.close_gripper_on_reset),
@@ -864,6 +874,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             [
                 f"first_execution_horizon={summary.get('first_execution_horizon')}",
                 f"first_chunk_start_index={summary.get('first_chunk_start_index')}",
+                f"stream_initial_chunk={summary.get('stream_initial_chunk')}",
                 f"execution_horizon={summary.get('execution_horizon')}",
                 f"fps={summary.get('fps')}",
             ]

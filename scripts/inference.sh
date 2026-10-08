@@ -22,12 +22,13 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --metrics_path "${REPO_ROOT}/logs/pi05_horizon20_inference.jsonl" \
     --first_execution_horizon 20 \
     --first_chunk_start_index 3 \
+    --stream_initial_chunk \
     --execution_horizon 5 \
     --faster_infer_time_schedule HAS \
     --faster_alpha 0.6 \
     --faster_u0 0.9 \
     --delay 3 \
-    --early_stop_actions 20 \
+    --early_stop_actions 23 \
     --phase_fallback_schedule none \
     --phase_fallback_trigger before_gripper_open \
     --static_camera static_cam \
