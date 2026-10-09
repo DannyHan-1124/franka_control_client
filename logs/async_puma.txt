@@ -1,0 +1,1478 @@
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=20, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=9.720s, inference_calls=19, completed_chunks=19, actions_applied=188, empty_action_steps=0
+latency: avg_request=0.327s, avg_first_action=0.350s, avg_chunk_duration=0.470s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.015, interior=0.002, contrast=0.014, samples=34/51
+  rotation: boundary=0.017, interior=0.002, contrast=0.016, samples=34/51
+  gripper: boundary=0.029, interior=0.000, contrast=0.029, samples=34/51
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       20        20      0.344    0.344       0.907  
+        2  async               10        10      0.326    0.351       0.451  
+        3  async               10        10      0.325    0.351       0.451  
+        4  async               10        10      0.327    0.351       0.451  
+        5  async               10        10      0.329    0.351       0.450  
+        6  async               10        10      0.323    0.351       0.452  
+        7  async               10        10      0.326    0.351       0.451  
+        8  async               10        10      0.325    0.351       0.450  
+        9  async               10        10      0.326    0.351       0.451  
+       10  async               10        10      0.324    0.351       0.451  
+       11  async               10        10      0.324    0.351       0.450  
+       12  async               10        10      0.327    0.351       0.451  
+       13  async               10        10      0.323    0.352       0.449  
+       14  async               10        10      0.326    0.351       0.450  
+       15  async               10        10      0.325    0.350       0.450  
+       16  async               10        10      0.332    0.351       0.451  
+       17  async               10        10      0.325    0.351       0.451  
+       18  async               10         8      0.325    0.350       0.351  
+       19  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=8.673s, inference_calls=16, completed_chunks=16, actions_applied=168, empty_action_steps=0
+latency: avg_request=0.326s, avg_first_action=0.351s, avg_chunk_duration=0.473s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.013, interior=0.002, contrast=0.012, samples=30/43
+  rotation: boundary=0.017, interior=0.002, contrast=0.015, samples=30/43
+  gripper: boundary=0.000, interior=0.047, contrast=-0.047, samples=30/43
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.344    0.344       1.156  
+        2  async               10        10      0.328    0.351       0.450  
+        3  async               10        10      0.325    0.350       0.451  
+        4  async               10        10      0.327    0.350       0.451  
+        5  async               10        10      0.328    0.351       0.451  
+        6  async               10        10      0.324    0.350       0.451  
+        7  async               10        10      0.325    0.351       0.451  
+        8  async               10        10      0.324    0.351       0.450  
+        9  async               10        10      0.328    0.351       0.450  
+       10  async               10        10      0.326    0.351       0.450  
+       11  async               10        10      0.326    0.351       0.451  
+       12  async               10        10      0.323    0.352       0.451  
+       13  async               10        10      0.327    0.351       0.450  
+       14  async               10        10      0.325    0.352       0.449  
+       15  async               10        10      0.323    0.351       0.451  
+       16  async               10         3      0.324    0.351       0.100  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=8.118s, inference_calls=15, completed_chunks=15, actions_applied=156, empty_action_steps=0
+latency: avg_request=0.326s, avg_first_action=0.351s, avg_chunk_duration=0.468s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.011, interior=0.002, contrast=0.009, samples=27/39
+  rotation: boundary=0.019, interior=0.002, contrast=0.017, samples=27/39
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=27/39
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.344    0.344       1.157  
+        2  async               10        10      0.328    0.351       0.450  
+        3  async               10        10      0.326    0.351       0.451  
+        4  async               10        10      0.327    0.351       0.450  
+        5  async               10        10      0.325    0.351       0.452  
+        6  async               10        10      0.325    0.351       0.451  
+        7  async               10        10      0.321    0.352       0.450  
+        8  async               10        10      0.326    0.351       0.450  
+        9  async               10        10      0.324    0.351       0.452  
+       10  async               10        10      0.323    0.351       0.450  
+       11  async               10        10      0.326    0.351       0.450  
+       12  async               10        10      0.324    0.351       0.451  
+       13  async               10        10      0.324    0.351       0.451  
+       14  async               10        10      0.321    0.352       0.450  
+       15  async               10         1      0.325    0.351       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=5.756s, inference_calls=11, completed_chunks=11, actions_applied=109, empty_action_steps=0
+latency: avg_request=0.326s, avg_first_action=0.350s, avg_chunk_duration=0.491s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.010, interior=0.002, contrast=0.009, samples=18/26
+  rotation: boundary=0.014, interior=0.002, contrast=0.011, samples=18/26
+  gripper: boundary=0.000, interior=0.038, contrast=-0.038, samples=18/26
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.339    0.339       1.158  
+        2  async               10        10      0.328    0.349       0.451  
+        3  async               10        10      0.324    0.351       0.451  
+        4  async               10        10      0.324    0.351       0.451  
+        5  async               10        10      0.326    0.351       0.450  
+        6  async               10        10      0.323    0.351       0.451  
+        7  async               10        10      0.325    0.351       0.450  
+        8  async               10        10      0.326    0.351       0.450  
+        9  async               10        10      0.325    0.351       0.451  
+       10  async               10         4      0.322    0.351       0.150  
+       11  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=6.061s, inference_calls=11, completed_chunks=11, actions_applied=116, empty_action_steps=0
+latency: avg_request=0.327s, avg_first_action=0.350s, avg_chunk_duration=0.473s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.009, interior=0.002, contrast=0.007, samples=19/27
+  rotation: boundary=0.013, interior=0.003, contrast=0.010, samples=19/27
+  gripper: boundary=0.053, interior=0.000, contrast=0.053, samples=19/27
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.340    0.340       1.157  
+        2  async               10        10      0.327    0.352       0.449  
+        3  async               10        10      0.324    0.352       0.450  
+        4  async               10        10      0.327    0.351       0.450  
+        5  async               10        10      0.323    0.352       0.450  
+        6  async               10        10      0.329    0.351       0.451  
+        7  async               10        10      0.323    0.352       0.449  
+        8  async               10        10      0.326    0.351       0.451  
+        9  async               10        10      0.322    0.351       0.450  
+       10  async               10        10      0.325    0.351       0.450  
+       11  async               10         1      0.327    0.350       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=3.559s, inference_calls=6, completed_chunks=6, actions_applied=66, empty_action_steps=0
+latency: avg_request=0.333s, avg_first_action=0.349s, avg_chunk_duration=0.493s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.013, interior=0.002, contrast=0.011, samples=9/12
+  rotation: boundary=0.021, interior=0.003, contrast=0.018, samples=9/12
+  gripper: boundary=0.111, interior=0.000, contrast=0.111, samples=9/12
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.342    0.342       1.156  
+        2  async               10        10      0.332    0.351       0.451  
+        3  async               10        10      0.331    0.350       0.451  
+        4  async               10        10      0.333    0.351       0.450  
+        5  async               10        10      0.332    0.351       0.451  
+        6  async               10         1      0.330    0.351       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=2.260s, inference_calls=4, completed_chunks=4, actions_applied=40, empty_action_steps=0
+latency: avg_request=0.335s, avg_first_action=0.349s, avg_chunk_duration=0.602s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.020, interior=0.003, contrast=0.016, samples=4/6
+  rotation: boundary=0.031, interior=0.004, contrast=0.027, samples=4/6
+  gripper: boundary=0.500, interior=0.167, contrast=0.333, samples=4/6
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.346    0.346       1.157  
+        2  async               10        10      0.333    0.351       0.450  
+        3  async               10         5      0.328    0.351       0.200  
+        4  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=3.569s, inference_calls=6, completed_chunks=6, actions_applied=66, empty_action_steps=0
+latency: avg_request=0.335s, avg_first_action=0.350s, avg_chunk_duration=0.494s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.009, interior=0.001, contrast=0.007, samples=9/12
+  rotation: boundary=0.015, interior=0.002, contrast=0.013, samples=9/12
+  gripper: boundary=0.111, interior=0.000, contrast=0.111, samples=9/12
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.350    0.350       1.157  
+        2  async               10        10      0.335    0.351       0.450  
+        3  async               10        10      0.336    0.350       0.452  
+        4  async               10        10      0.332    0.350       0.451  
+        5  async               10        10      0.328    0.350       0.452  
+        6  async               10         1      0.332    0.351       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=3.560s, inference_calls=6, completed_chunks=6, actions_applied=66, empty_action_steps=0
+latency: avg_request=0.333s, avg_first_action=0.349s, avg_chunk_duration=0.494s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.008, interior=0.002, contrast=0.006, samples=9/12
+  rotation: boundary=0.017, interior=0.003, contrast=0.014, samples=9/12
+  gripper: boundary=0.111, interior=0.000, contrast=0.111, samples=9/12
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.342    0.342       1.157  
+        2  async               10        10      0.336    0.350       0.451  
+        3  async               10        10      0.334    0.350       0.451  
+        4  async               10        10      0.329    0.351       0.452  
+        5  async               10        10      0.329    0.351       0.451  
+        6  async               10         1      0.329    0.350       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=3.567s, inference_calls=6, completed_chunks=6, actions_applied=66, empty_action_steps=0
+latency: avg_request=0.334s, avg_first_action=0.351s, avg_chunk_duration=0.493s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.009, interior=0.002, contrast=0.007, samples=9/12
+  rotation: boundary=0.014, interior=0.003, contrast=0.011, samples=9/12
+  gripper: boundary=0.111, interior=0.000, contrast=0.111, samples=9/12
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.348    0.348       1.157  
+        2  async               10        10      0.332    0.351       0.450  
+        3  async               10        10      0.331    0.351       0.451  
+        4  async               10        10      0.331    0.351       0.450  
+        5  async               10        10      0.332    0.351       0.450  
+        6  async               10         1      0.330    0.351       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=6.773s, inference_calls=13, completed_chunks=13, actions_applied=130, empty_action_steps=0
+latency: avg_request=0.332s, avg_first_action=0.351s, avg_chunk_duration=0.488s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.012, interior=0.002, contrast=0.010, samples=22/33
+  rotation: boundary=0.020, interior=0.003, contrast=0.017, samples=22/33
+  gripper: boundary=0.091, interior=0.030, contrast=0.061, samples=22/33
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.350    0.350       1.157  
+        2  async               10        10      0.334    0.351       0.451  
+        3  async               10        10      0.331    0.351       0.450  
+        4  async               10        10      0.329    0.351       0.450  
+        5  async               10        10      0.331    0.352       0.449  
+        6  async               10        10      0.334    0.352       0.450  
+        7  async               10        10      0.330    0.351       0.450  
+        8  async               10        10      0.330    0.351       0.451  
+        9  async               10        10      0.331    0.350       0.450  
+       10  async               10        10      0.330    0.351       0.451  
+       11  async               10        10      0.330    0.351       0.450  
+       12  async               10         5      0.329    0.351       0.200  
+       13  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=6.773s, inference_calls=13, completed_chunks=13, actions_applied=130, empty_action_steps=0
+latency: avg_request=0.331s, avg_first_action=0.351s, avg_chunk_duration=0.489s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.009, interior=0.002, contrast=0.007, samples=22/33
+  rotation: boundary=0.013, interior=0.003, contrast=0.010, samples=22/33
+  gripper: boundary=0.045, interior=0.030, contrast=0.015, samples=22/33
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.349    0.349       1.157  
+        2  async               10        10      0.336    0.350       0.451  
+        3  async               10        10      0.333    0.351       0.451  
+        4  async               10        10      0.335    0.350       0.451  
+        5  async               10        10      0.333    0.352       0.450  
+        6  async               10        10      0.331    0.351       0.451  
+        7  async               10        10      0.331    0.351       0.450  
+        8  async               10        10      0.329    0.350       0.453  
+        9  async               10        10      0.326    0.352       0.450  
+       10  async               10        10      0.323    0.351       0.451  
+       11  async               10        10      0.323    0.351       0.451  
+       12  async               10         5      0.326    0.351       0.200  
+       13  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=6.863s, inference_calls=13, completed_chunks=13, actions_applied=132, empty_action_steps=0
+latency: avg_request=0.327s, avg_first_action=0.350s, avg_chunk_duration=0.497s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.013, interior=0.002, contrast=0.011, samples=22/33
+  rotation: boundary=0.027, interior=0.002, contrast=0.025, samples=22/33
+  gripper: boundary=0.000, interior=0.030, contrast=-0.030, samples=22/33
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.340    0.340       1.157  
+        2  async               10        10      0.331    0.351       0.450  
+        3  async               10        10      0.327    0.351       0.450  
+        4  async               10        10      0.325    0.351       0.450  
+        5  async               10        10      0.326    0.351       0.451  
+        6  async               10        10      0.323    0.351       0.450  
+        7  async               10        10      0.321    0.351       0.450  
+        8  async               10        10      0.325    0.351       0.450  
+        9  async               10        10      0.322    0.350       0.451  
+       10  async               10        10      0.328    0.350       0.451  
+       11  async               10        10      0.325    0.351       0.451  
+       12  async               10         7      0.324    0.351       0.300  
+       13  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=6.918s, inference_calls=13, completed_chunks=13, actions_applied=133, empty_action_steps=0
+latency: avg_request=0.327s, avg_first_action=0.350s, avg_chunk_duration=0.501s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.014, interior=0.003, contrast=0.011, samples=22/33
+  rotation: boundary=0.026, interior=0.004, contrast=0.022, samples=22/33
+  gripper: boundary=0.000, interior=0.030, contrast=-0.030, samples=22/33
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.344    0.345       1.157  
+        2  async               10        10      0.331    0.349       0.451  
+        3  async               10        10      0.324    0.350       0.451  
+        4  async               10        10      0.324    0.351       0.450  
+        5  async               10        10      0.324    0.351       0.451  
+        6  async               10        10      0.327    0.349       0.451  
+        7  async               10        10      0.322    0.350       0.451  
+        8  async               10        10      0.322    0.350       0.451  
+        9  async               10        10      0.328    0.351       0.451  
+       10  async               10        10      0.326    0.350       0.451  
+       11  async               10        10      0.326    0.350       0.451  
+       12  async               10         8      0.321    0.351       0.351  
+       13  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=6.808s, inference_calls=13, completed_chunks=13, actions_applied=131, empty_action_steps=0
+latency: avg_request=0.327s, avg_first_action=0.350s, avg_chunk_duration=0.493s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.012, interior=0.003, contrast=0.009, samples=22/33
+  rotation: boundary=0.020, interior=0.004, contrast=0.016, samples=22/33
+  gripper: boundary=0.045, interior=0.030, contrast=0.015, samples=22/33
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.335    0.335       1.156  
+        2  async               10        10      0.327    0.351       0.451  
+        3  async               10        10      0.325    0.352       0.450  
+        4  async               10        10      0.324    0.351       0.451  
+        5  async               10        10      0.325    0.350       0.451  
+        6  async               10        10      0.324    0.350       0.451  
+        7  async               10        10      0.323    0.351       0.451  
+        8  async               10        10      0.330    0.351       0.451  
+        9  async               10        10      0.328    0.351       0.451  
+       10  async               10        10      0.324    0.351       0.451  
+       11  async               10        10      0.328    0.350       0.451  
+       12  async               10         6      0.328    0.351       0.250  
+       13  async             None         0        n/a      n/a         n/a  
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=8.115s, inference_calls=15, completed_chunks=15, actions_applied=157, empty_action_steps=0
+latency: avg_request=0.328s, avg_first_action=0.350s, avg_chunk_duration=0.471s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.009, interior=0.001, contrast=0.007, samples=28/39
+  rotation: boundary=0.013, interior=0.002, contrast=0.011, samples=28/39
+  gripper: boundary=0.036, interior=0.051, contrast=-0.016, samples=28/39
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.340    0.340       1.157  
+        2  async               10        10      0.329    0.350       0.451  
+        3  async               10        10      0.324    0.351       0.452  
+        4  async               10        10      0.328    0.350       0.450  
+        5  async               10        10      0.329    0.351       0.451  
+        6  async               10        10      0.328    0.350       0.451  
+        7  async               10        10      0.324    0.350       0.450  
+        8  async               10        10      0.324    0.351       0.451  
+        9  async               10        10      0.331    0.351       0.450  
+       10  async               10        10      0.328    0.351       0.450  
+       11  async               10        10      0.324    0.352       0.450  
+       12  async               10        10      0.330    0.351       0.451  
+       13  async               10        10      0.330    0.351       0.451  
+       14  async               10        10      0.332    0.351       0.451  
+       15  async               10         2      0.327    0.350       0.050  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=8.169s, inference_calls=15, completed_chunks=15, actions_applied=158, empty_action_steps=0
+latency: avg_request=0.327s, avg_first_action=0.350s, avg_chunk_duration=0.475s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.008, interior=0.002, contrast=0.006, samples=28/40
+  rotation: boundary=0.014, interior=0.002, contrast=0.012, samples=28/40
+  gripper: boundary=0.000, interior=0.025, contrast=-0.025, samples=28/40
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.344    0.344       1.156  
+        2  async               10        10      0.329    0.351       0.452  
+        3  async               10        10      0.325    0.350       0.451  
+        4  async               10        10      0.323    0.350       0.452  
+        5  async               10        10      0.327    0.351       0.450  
+        6  async               10        10      0.326    0.351       0.451  
+        7  async               10        10      0.325    0.350       0.450  
+        8  async               10        10      0.327    0.351       0.451  
+        9  async               10        10      0.327    0.350       0.451  
+       10  async               10        10      0.323    0.352       0.450  
+       11  async               10        10      0.324    0.351       0.452  
+       12  async               10        10      0.325    0.351       0.451  
+       13  async               10        10      0.325    0.351       0.451  
+       14  async               10        10      0.325    0.351       0.451  
+       15  async               10         3      0.328    0.350       0.100  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=8.076s, inference_calls=15, completed_chunks=15, actions_applied=156, empty_action_steps=0
+latency: avg_request=0.329s, avg_first_action=0.351s, avg_chunk_duration=0.468s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.009, interior=0.002, contrast=0.007, samples=27/39
+  rotation: boundary=0.018, interior=0.003, contrast=0.015, samples=27/39
+  gripper: boundary=0.037, interior=0.051, contrast=-0.014, samples=27/39
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.348    0.348       1.156  
+        2  async               10        10      0.326    0.351       0.450  
+        3  async               10        10      0.327    0.350       0.451  
+        4  async               10        10      0.329    0.351       0.451  
+        5  async               10        10      0.327    0.349       0.451  
+        6  async               10        10      0.330    0.351       0.450  
+        7  async               10        10      0.327    0.351       0.451  
+        8  async               10        10      0.335    0.351       0.451  
+        9  async               10        10      0.324    0.350       0.452  
+       10  async               10        10      0.326    0.351       0.451  
+       11  async               10        10      0.325    0.351       0.451  
+       12  async               10        10      0.327    0.351       0.451  
+       13  async               10        10      0.325    0.350       0.451  
+       14  async               10        10      0.328    0.351       0.450  
+       15  async               10         1      0.326    0.352       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=8.071s, inference_calls=15, completed_chunks=15, actions_applied=156, empty_action_steps=0
+latency: avg_request=0.327s, avg_first_action=0.350s, avg_chunk_duration=0.468s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.009, interior=0.002, contrast=0.007, samples=27/39
+  rotation: boundary=0.017, interior=0.002, contrast=0.015, samples=27/39
+  gripper: boundary=0.037, interior=0.000, contrast=0.037, samples=27/39
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.343    0.343       1.158  
+        2  async               10        10      0.329    0.351       0.451  
+        3  async               10        10      0.327    0.351       0.451  
+        4  async               10        10      0.326    0.351       0.450  
+        5  async               10        10      0.324    0.352       0.451  
+        6  async               10        10      0.326    0.351       0.450  
+        7  async               10        10      0.325    0.351       0.451  
+        8  async               10        10      0.327    0.351       0.451  
+        9  async               10        10      0.326    0.351       0.451  
+       10  async               10        10      0.328    0.351       0.451  
+       11  async               10        10      0.325    0.350       0.451  
+       12  async               10        10      0.326    0.351       0.451  
+       13  async               10        10      0.323    0.351       0.451  
+       14  async               10        10      0.329    0.351       0.450  
+       15  async               10         1      0.326    0.351       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=8.122s, inference_calls=15, completed_chunks=15, actions_applied=157, empty_action_steps=0
+latency: avg_request=0.327s, avg_first_action=0.350s, avg_chunk_duration=0.471s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.012, interior=0.002, contrast=0.010, samples=28/39
+  rotation: boundary=0.020, interior=0.002, contrast=0.018, samples=28/39
+  gripper: boundary=0.036, interior=0.000, contrast=0.036, samples=28/39
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.345    0.345       1.157  
+        2  async               10        10      0.328    0.352       0.450  
+        3  async               10        10      0.324    0.350       0.450  
+        4  async               10        10      0.324    0.351       0.450  
+        5  async               10        10      0.326    0.351       0.450  
+        6  async               10        10      0.325    0.351       0.451  
+        7  async               10        10      0.328    0.350       0.451  
+        8  async               10        10      0.326    0.352       0.450  
+        9  async               10        10      0.324    0.351       0.451  
+       10  async               10        10      0.326    0.351       0.451  
+       11  async               10        10      0.327    0.351       0.451  
+       12  async               10        10      0.329    0.350       0.451  
+       13  async               10        10      0.324    0.351       0.451  
+       14  async               10        10      0.325    0.351       0.451  
+       15  async               10         2      0.324    0.351       0.050  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=7.317s, inference_calls=14, completed_chunks=14, actions_applied=141, empty_action_steps=0
+latency: avg_request=0.327s, avg_first_action=0.351s, avg_chunk_duration=0.489s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.007, interior=0.002, contrast=0.005, samples=24/36
+  rotation: boundary=0.011, interior=0.002, contrast=0.009, samples=24/36
+  gripper: boundary=0.042, interior=0.028, contrast=0.014, samples=24/36
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.343    0.343       1.156  
+        2  async               10        10      0.328    0.352       0.449  
+        3  async               10        10      0.326    0.351       0.451  
+        4  async               10        10      0.326    0.351       0.451  
+        5  async               10        10      0.327    0.352       0.450  
+        6  async               10        10      0.325    0.351       0.450  
+        7  async               10        10      0.326    0.351       0.450  
+        8  async               10        10      0.323    0.352       0.450  
+        9  async               10        10      0.325    0.350       0.451  
+       10  async               10        10      0.324    0.351       0.450  
+       11  async               10        10      0.325    0.352       0.450  
+       12  async               10        10      0.325    0.352       0.450  
+       13  async               10         6      0.329    0.351       0.250  
+       14  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=6.661s, inference_calls=12, completed_chunks=12, actions_applied=128, empty_action_steps=0
+latency: avg_request=0.327s, avg_first_action=0.350s, avg_chunk_duration=0.480s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.008, interior=0.002, contrast=0.006, samples=22/31
+  rotation: boundary=0.011, interior=0.002, contrast=0.009, samples=22/31
+  gripper: boundary=0.000, interior=0.097, contrast=-0.097, samples=22/31
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.338    0.338       1.157  
+        2  async               10        10      0.328    0.351       0.451  
+        3  async               10        10      0.325    0.352       0.451  
+        4  async               10        10      0.325    0.351       0.450  
+        5  async               10        10      0.326    0.351       0.450  
+        6  async               10        10      0.325    0.351       0.451  
+        7  async               10        10      0.328    0.351       0.450  
+        8  async               10        10      0.326    0.351       0.451  
+        9  async               10        10      0.327    0.351       0.451  
+       10  async               10        10      0.329    0.351       0.451  
+       11  async               10        10      0.325    0.351       0.450  
+       12  async               10         3      0.325    0.352       0.099  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=7.117s, inference_calls=13, completed_chunks=13, actions_applied=137, empty_action_steps=0
+latency: avg_request=0.328s, avg_first_action=0.350s, avg_chunk_duration=0.474s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.010, interior=0.002, contrast=0.008, samples=24/33
+  rotation: boundary=0.013, interior=0.003, contrast=0.010, samples=24/33
+  gripper: boundary=0.042, interior=0.061, contrast=-0.019, samples=24/33
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.344    0.345       1.157  
+        2  async               10        10      0.327    0.350       0.451  
+        3  async               10        10      0.326    0.350       0.451  
+        4  async               10        10      0.329    0.351       0.450  
+        5  async               10        10      0.325    0.351       0.450  
+        6  async               10        10      0.325    0.351       0.450  
+        7  async               10        10      0.329    0.351       0.451  
+        8  async               10        10      0.326    0.351       0.451  
+        9  async               10        10      0.323    0.350       0.451  
+       10  async               10        10      0.329    0.350       0.451  
+       11  async               10        10      0.326    0.351       0.452  
+       12  async               10        10      0.326    0.351       0.450  
+       13  async               10         2      0.325    0.351       0.050  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=7.169s, inference_calls=13, completed_chunks=13, actions_applied=138, empty_action_steps=0
+latency: avg_request=0.329s, avg_first_action=0.350s, avg_chunk_duration=0.478s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.006, interior=0.002, contrast=0.004, samples=24/34
+  rotation: boundary=0.007, interior=0.002, contrast=0.005, samples=24/34
+  gripper: boundary=0.000, interior=0.029, contrast=-0.029, samples=24/34
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.344    0.344       1.160  
+        2  async               10        10      0.329    0.349       0.452  
+        3  async               10        10      0.326    0.351       0.450  
+        4  async               10        10      0.325    0.350       0.451  
+        5  async               10        10      0.326    0.351       0.450  
+        6  async               10        10      0.329    0.351       0.451  
+        7  async               10        10      0.328    0.351       0.451  
+        8  async               10        10      0.327    0.351       0.451  
+        9  async               10        10      0.327    0.351       0.451  
+       10  async               10        10      0.326    0.351       0.451  
+       11  async               10        10      0.327    0.350       0.450  
+       12  async               10        10      0.330    0.350       0.451  
+       13  async               10         3      0.330    0.352       0.099  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=7.066s, inference_calls=13, completed_chunks=13, actions_applied=136, empty_action_steps=0
+latency: avg_request=0.328s, avg_first_action=0.350s, avg_chunk_duration=0.470s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.006, interior=0.002, contrast=0.004, samples=23/33
+  rotation: boundary=0.008, interior=0.002, contrast=0.006, samples=23/33
+  gripper: boundary=0.043, interior=0.000, contrast=0.043, samples=23/33
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.343    0.343       1.156  
+        2  async               10        10      0.328    0.351       0.450  
+        3  async               10        10      0.326    0.350       0.450  
+        4  async               10        10      0.329    0.351       0.450  
+        5  async               10        10      0.324    0.351       0.451  
+        6  async               10        10      0.328    0.351       0.450  
+        7  async               10        10      0.326    0.350       0.451  
+        8  async               10        10      0.330    0.351       0.450  
+        9  async               10        10      0.325    0.351       0.450  
+       10  async               10        10      0.325    0.351       0.451  
+       11  async               10        10      0.333    0.350       0.451  
+       12  async               10        10      0.328    0.350       0.451  
+       13  async               10         1      0.326    0.351       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=3.559s, inference_calls=6, completed_chunks=6, actions_applied=66, empty_action_steps=0
+latency: avg_request=0.331s, avg_first_action=0.350s, avg_chunk_duration=0.493s, avg_observation_build=0.004s
+boundary discontinuity (second action difference):
+  position: boundary=0.012, interior=0.003, contrast=0.008, samples=9/12
+  rotation: boundary=0.015, interior=0.003, contrast=0.012, samples=9/12
+  gripper: boundary=0.111, interior=0.083, contrast=0.028, samples=9/12
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.342    0.343       1.156  
+        2  async               10        10      0.328    0.351       0.451  
+        3  async               10        10      0.327    0.352       0.450  
+        4  async               10        10      0.327    0.351       0.450  
+        5  async               10        10      0.329    0.351       0.450  
+        6  async               10         1      0.329    0.351       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=3.560s, inference_calls=6, completed_chunks=6, actions_applied=66, empty_action_steps=0
+latency: avg_request=0.331s, avg_first_action=0.350s, avg_chunk_duration=0.494s, avg_observation_build=0.004s
+boundary discontinuity (second action difference):
+  position: boundary=0.017, interior=0.002, contrast=0.016, samples=9/12
+  rotation: boundary=0.030, interior=0.002, contrast=0.028, samples=9/12
+  gripper: boundary=0.111, interior=0.000, contrast=0.111, samples=9/12
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.342    0.342       1.157  
+        2  async               10        10      0.327    0.351       0.451  
+        3  async               10        10      0.331    0.351       0.451  
+        4  async               10        10      0.330    0.351       0.451  
+        5  async               10        10      0.329    0.351       0.451  
+        6  async               10         1      0.328    0.351       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=3.559s, inference_calls=6, completed_chunks=6, actions_applied=66, empty_action_steps=0
+latency: avg_request=0.336s, avg_first_action=0.349s, avg_chunk_duration=0.493s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.010, interior=0.002, contrast=0.008, samples=9/12
+  rotation: boundary=0.021, interior=0.003, contrast=0.018, samples=9/12
+  gripper: boundary=0.111, interior=0.000, contrast=0.111, samples=9/12
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.342    0.342       1.157  
+        2  async               10        10      0.339    0.351       0.450  
+        3  async               10        10      0.331    0.351       0.451  
+        4  async               10        10      0.335    0.351       0.451  
+        5  async               10        10      0.334    0.351       0.451  
+        6  async               10         1      0.331    0.351       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=3.556s, inference_calls=6, completed_chunks=6, actions_applied=66, empty_action_steps=0
+latency: avg_request=0.330s, avg_first_action=0.349s, avg_chunk_duration=0.493s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.012, interior=0.002, contrast=0.010, samples=9/12
+  rotation: boundary=0.019, interior=0.002, contrast=0.018, samples=9/12
+  gripper: boundary=0.111, interior=0.083, contrast=0.028, samples=9/12
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.339    0.339       1.157  
+        2  async               10        10      0.332    0.351       0.451  
+        3  async               10        10      0.326    0.351       0.450  
+        4  async               10        10      0.330    0.351       0.451  
+        5  async               10        10      0.327    0.351       0.450  
+        6  async               10         1      0.326    0.351       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=3.562s, inference_calls=6, completed_chunks=6, actions_applied=66, empty_action_steps=0
+latency: avg_request=0.331s, avg_first_action=0.349s, avg_chunk_duration=0.494s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.015, interior=0.002, contrast=0.013, samples=9/12
+  rotation: boundary=0.027, interior=0.003, contrast=0.025, samples=9/12
+  gripper: boundary=0.111, interior=0.167, contrast=-0.056, samples=9/12
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.343    0.344       1.158  
+        2  async               10        10      0.333    0.351       0.451  
+        3  async               10        10      0.329    0.350       0.451  
+        4  async               10        10      0.327    0.350       0.452  
+        5  async               10        10      0.326    0.350       0.452  
+        6  async               10         1      0.329    0.351       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=5.207s, inference_calls=9, completed_chunks=9, actions_applied=98, empty_action_steps=0
+latency: avg_request=0.329s, avg_first_action=0.350s, avg_chunk_duration=0.490s, avg_observation_build=0.004s
+boundary discontinuity (second action difference):
+  position: boundary=0.011, interior=0.001, contrast=0.010, samples=16/22
+  rotation: boundary=0.017, interior=0.001, contrast=0.015, samples=16/22
+  gripper: boundary=0.062, interior=0.000, contrast=0.062, samples=16/22
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.342    0.342       1.157  
+        2  async               10        10      0.328    0.351       0.451  
+        3  async               10        10      0.327    0.351       0.451  
+        4  async               10        10      0.331    0.350       0.451  
+        5  async               10        10      0.325    0.351       0.451  
+        6  async               10        10      0.327    0.351       0.450  
+        7  async               10        10      0.329    0.351       0.451  
+        8  async               10        10      0.328    0.351       0.451  
+        9  async               10         3      0.326    0.351       0.100  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=6.506s, inference_calls=12, completed_chunks=12, actions_applied=124, empty_action_steps=0
+latency: avg_request=0.330s, avg_first_action=0.350s, avg_chunk_duration=0.510s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.010, interior=0.001, contrast=0.009, samples=20/30
+  rotation: boundary=0.021, interior=0.002, contrast=0.019, samples=20/30
+  gripper: boundary=0.000, interior=0.067, contrast=-0.067, samples=20/30
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.339    0.339       1.157  
+        2  async               10        10      0.328    0.351       0.451  
+        3  async               10        10      0.328    0.351       0.451  
+        4  async               10        10      0.328    0.351       0.450  
+        5  async               10        10      0.333    0.351       0.451  
+        6  async               10        10      0.329    0.351       0.450  
+        7  async               10        10      0.332    0.350       0.450  
+        8  async               10        10      0.325    0.351       0.451  
+        9  async               10        10      0.331    0.351       0.451  
+       10  async               10        10      0.327    0.350       0.450  
+       11  async               10         9      0.328    0.350       0.401  
+       12  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=5.056s, inference_calls=9, completed_chunks=9, actions_applied=95, empty_action_steps=0
+latency: avg_request=0.328s, avg_first_action=0.350s, avg_chunk_duration=0.539s, avg_observation_build=0.004s
+boundary discontinuity (second action difference):
+  position: boundary=0.011, interior=0.001, contrast=0.010, samples=14/21
+  rotation: boundary=0.016, interior=0.002, contrast=0.015, samples=14/21
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=14/21
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.342    0.342       1.157  
+        2  async               10        10      0.327    0.351       0.451  
+        3  async               10        10      0.328    0.352       0.450  
+        4  async               10        10      0.324    0.352       0.449  
+        5  async               10        10      0.327    0.351       0.450  
+        6  async               10        10      0.324    0.351       0.450  
+        7  async               10        10      0.324    0.351       0.450  
+        8  async               10        10      0.326    0.351       0.450  
+        9  async               10         0      0.327      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=7.066s, inference_calls=13, completed_chunks=13, actions_applied=136, empty_action_steps=0
+latency: avg_request=0.329s, avg_first_action=0.350s, avg_chunk_duration=0.470s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.006, interior=0.002, contrast=0.004, samples=23/33
+  rotation: boundary=0.012, interior=0.002, contrast=0.010, samples=23/33
+  gripper: boundary=0.087, interior=0.000, contrast=0.087, samples=23/33
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.342    0.342       1.157  
+        2  async               10        10      0.342    0.351       0.451  
+        3  async               10        10      0.328    0.350       0.451  
+        4  async               10        10      0.325    0.351       0.450  
+        5  async               10        10      0.327    0.351       0.451  
+        6  async               10        10      0.328    0.351       0.451  
+        7  async               10        10      0.328    0.349       0.451  
+        8  async               10        10      0.324    0.351       0.451  
+        9  async               10        10      0.327    0.351       0.451  
+       10  async               10        10      0.327    0.351       0.451  
+       11  async               10        10      0.328    0.350       0.451  
+       12  async               10        10      0.327    0.352       0.450  
+       13  async               10         1      0.327    0.351       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=6.672s, inference_calls=12, completed_chunks=12, actions_applied=128, empty_action_steps=0
+latency: avg_request=0.329s, avg_first_action=0.350s, avg_chunk_duration=0.481s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.008, interior=0.002, contrast=0.007, samples=22/31
+  rotation: boundary=0.014, interior=0.002, contrast=0.013, samples=22/31
+  gripper: boundary=0.000, interior=0.032, contrast=-0.032, samples=22/31
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.346    0.347       1.158  
+        2  async               10        10      0.329    0.350       0.452  
+        3  async               10        10      0.324    0.351       0.451  
+        4  async               10        10      0.323    0.350       0.452  
+        5  async               10        10      0.327    0.351       0.451  
+        6  async               10        10      0.329    0.351       0.451  
+        7  async               10        10      0.333    0.350       0.452  
+        8  async               10        10      0.331    0.351       0.451  
+        9  async               10        10      0.331    0.351       0.451  
+       10  async               10        10      0.324    0.350       0.451  
+       11  async               10        10      0.328    0.350       0.451  
+       12  async               10         3      0.324    0.351       0.100  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=6.765s, inference_calls=13, completed_chunks=13, actions_applied=130, empty_action_steps=0
+latency: avg_request=0.328s, avg_first_action=0.350s, avg_chunk_duration=0.489s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.006, interior=0.002, contrast=0.004, samples=22/33
+  rotation: boundary=0.012, interior=0.002, contrast=0.010, samples=22/33
+  gripper: boundary=0.000, interior=0.030, contrast=-0.030, samples=22/33
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.343    0.343       1.157  
+        2  async               10        10      0.336    0.351       0.451  
+        3  async               10        10      0.327    0.351       0.451  
+        4  async               10        10      0.326    0.351       0.450  
+        5  async               10        10      0.328    0.351       0.451  
+        6  async               10        10      0.323    0.351       0.450  
+        7  async               10        10      0.328    0.351       0.450  
+        8  async               10        10      0.322    0.351       0.451  
+        9  async               10        10      0.328    0.350       0.451  
+       10  async               10        10      0.327    0.350       0.451  
+       11  async               10        10      0.325    0.351       0.451  
+       12  async               10         5      0.323    0.351       0.200  
+       13  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=9.172s, inference_calls=17, completed_chunks=17, actions_applied=178, empty_action_steps=0
+latency: avg_request=0.328s, avg_first_action=0.350s, avg_chunk_duration=0.472s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.013, interior=0.002, contrast=0.012, samples=32/46
+  rotation: boundary=0.025, interior=0.002, contrast=0.023, samples=32/46
+  gripper: boundary=0.000, interior=0.043, contrast=-0.043, samples=32/46
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.344    0.344       1.156  
+        2  async               10        10      0.327    0.351       0.451  
+        3  async               10        10      0.330    0.351       0.451  
+        4  async               10        10      0.324    0.351       0.451  
+        5  async               10        10      0.322    0.350       0.451  
+        6  async               10        10      0.325    0.351       0.452  
+        7  async               10        10      0.327    0.351       0.451  
+        8  async               10        10      0.326    0.349       0.452  
+        9  async               10        10      0.327    0.352       0.450  
+       10  async               10        10      0.326    0.351       0.451  
+       11  async               10        10      0.329    0.351       0.450  
+       12  async               10        10      0.329    0.350       0.451  
+       13  async               10        10      0.328    0.351       0.450  
+       14  async               10        10      0.326    0.350       0.452  
+       15  async               10        10      0.327    0.352       0.450  
+       16  async               10        10      0.329    0.351       0.450  
+       17  async               10         3      0.329    0.350       0.100  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=2.904s, inference_calls=5, completed_chunks=5, actions_applied=52, empty_action_steps=0
+latency: avg_request=0.330s, avg_first_action=0.349s, avg_chunk_duration=0.590s, avg_observation_build=0.004s
+boundary discontinuity (second action difference):
+  position: boundary=0.019, interior=0.002, contrast=0.017, samples=6/9
+  rotation: boundary=0.030, interior=0.001, contrast=0.028, samples=6/9
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=6/9
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.342    0.342       1.157  
+        2  async               10        10      0.326    0.351       0.450  
+        3  async               10        10      0.322    0.351       0.452  
+        4  async               10         7      0.329    0.352       0.301  
+        5  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=9.568s, inference_calls=18, completed_chunks=18, actions_applied=185, empty_action_steps=0
+latency: avg_request=0.328s, avg_first_action=0.350s, avg_chunk_duration=0.492s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.009, interior=0.001, contrast=0.008, samples=32/48
+  rotation: boundary=0.022, interior=0.001, contrast=0.021, samples=32/48
+  gripper: boundary=0.031, interior=0.021, contrast=0.010, samples=32/48
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.344    0.344       1.157  
+        2  async               10        10      0.331    0.350       0.452  
+        3  async               10        10      0.330    0.351       0.450  
+        4  async               10        10      0.325    0.350       0.452  
+        5  async               10        10      0.326    0.351       0.451  
+        6  async               10        10      0.324    0.350       0.451  
+        7  async               10        10      0.325    0.352       0.450  
+        8  async               10        10      0.327    0.351       0.450  
+        9  async               10        10      0.325    0.350       0.451  
+       10  async               10        10      0.326    0.350       0.451  
+       11  async               10        10      0.328    0.350       0.451  
+       12  async               10        10      0.326    0.350       0.451  
+       13  async               10        10      0.328    0.351       0.451  
+       14  async               10        10      0.326    0.351       0.451  
+       15  async               10        10      0.331    0.351       0.451  
+       16  async               10        10      0.327    0.351       0.451  
+       17  async               10        10      0.327    0.351       0.451  
+       18  async               10         0      0.325      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=7.366s, inference_calls=14, completed_chunks=14, actions_applied=142, empty_action_steps=0
+latency: avg_request=0.330s, avg_first_action=0.350s, avg_chunk_duration=0.493s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.013, interior=0.001, contrast=0.012, samples=24/36
+  rotation: boundary=0.021, interior=0.002, contrast=0.019, samples=24/36
+  gripper: boundary=0.000, interior=0.056, contrast=-0.056, samples=24/36
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.341    0.341       1.156  
+        2  async               10        10      0.330    0.351       0.451  
+        3  async               10        10      0.325    0.350       0.451  
+        4  async               10        10      0.327    0.352       0.450  
+        5  async               10        10      0.325    0.350       0.451  
+        6  async               10        10      0.327    0.351       0.450  
+        7  async               10        10      0.331    0.351       0.451  
+        8  async               10        10      0.328    0.351       0.450  
+        9  async               10        10      0.327    0.351       0.451  
+       10  async               10        10      0.328    0.351       0.451  
+       11  async               10        10      0.329    0.351       0.450  
+       12  async               10        10      0.349    0.351       0.450  
+       13  async               10         7      0.328    0.351       0.300  
+       14  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=4.001s, inference_calls=7, completed_chunks=7, actions_applied=74, empty_action_steps=0
+latency: avg_request=0.328s, avg_first_action=0.349s, avg_chunk_duration=0.560s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.017, interior=0.002, contrast=0.016, samples=10/15
+  rotation: boundary=0.022, interior=0.002, contrast=0.020, samples=10/15
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=10/15
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.337    0.338       1.157  
+        2  async               10        10      0.329    0.352       0.451  
+        3  async               10        10      0.324    0.351       0.451  
+        4  async               10        10      0.326    0.351       0.451  
+        5  async               10        10      0.325    0.350       0.450  
+        6  async               10         9      0.327    0.350       0.401  
+        7  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=6.569s, inference_calls=12, completed_chunks=12, actions_applied=126, empty_action_steps=0
+latency: avg_request=0.330s, avg_first_action=0.350s, avg_chunk_duration=0.472s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.011, interior=0.001, contrast=0.009, samples=21/30
+  rotation: boundary=0.016, interior=0.002, contrast=0.014, samples=21/30
+  gripper: boundary=0.095, interior=0.000, contrast=0.095, samples=21/30
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.344    0.344       1.158  
+        2  async               10        10      0.330    0.351       0.451  
+        3  async               10        10      0.328    0.351       0.450  
+        4  async               10        10      0.331    0.350       0.452  
+        5  async               10        10      0.326    0.351       0.452  
+        6  async               10        10      0.322    0.352       0.451  
+        7  async               10        10      0.337    0.351       0.450  
+        8  async               10        10      0.325    0.351       0.451  
+        9  async               10        10      0.325    0.350       0.451  
+       10  async               10        10      0.330    0.351       0.450  
+       11  async               10        10      0.333    0.351       0.451  
+       12  async               10         1      0.327    0.350       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=6.563s, inference_calls=12, completed_chunks=12, actions_applied=126, empty_action_steps=0
+latency: avg_request=0.327s, avg_first_action=0.349s, avg_chunk_duration=0.472s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.013, interior=0.003, contrast=0.010, samples=21/30
+  rotation: boundary=0.020, interior=0.003, contrast=0.017, samples=21/30
+  gripper: boundary=0.048, interior=0.067, contrast=-0.019, samples=21/30
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.341    0.341       1.157  
+        2  async               10        10      0.328    0.350       0.451  
+        3  async               10        10      0.324    0.351       0.451  
+        4  async               10        10      0.328    0.350       0.451  
+        5  async               10        10      0.324    0.350       0.451  
+        6  async               10        10      0.324    0.350       0.451  
+        7  async               10        10      0.324    0.350       0.451  
+        8  async               10        10      0.325    0.350       0.451  
+        9  async               10        10      0.323    0.350       0.452  
+       10  async               10        10      0.326    0.351       0.452  
+       11  async               10        10      0.324    0.350       0.451  
+       12  async               10         1      0.328    0.350       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=6.112s, inference_calls=11, completed_chunks=11, actions_applied=117, empty_action_steps=0
+latency: avg_request=0.328s, avg_first_action=0.350s, avg_chunk_duration=0.479s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.011, interior=0.003, contrast=0.008, samples=20/27
+  rotation: boundary=0.022, interior=0.003, contrast=0.019, samples=20/27
+  gripper: boundary=0.100, interior=0.000, contrast=0.100, samples=20/27
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.340    0.340       1.157  
+        2  async               10        10      0.330    0.351       0.450  
+        3  async               10        10      0.325    0.351       0.450  
+        4  async               10        10      0.330    0.351       0.451  
+        5  async               10        10      0.324    0.351       0.451  
+        6  async               10        10      0.329    0.350       0.452  
+        7  async               10        10      0.323    0.351       0.450  
+        8  async               10        10      0.324    0.350       0.452  
+        9  async               10        10      0.327    0.351       0.451  
+       10  async               10        10      0.324    0.350       0.451  
+       11  async               10         2      0.337    0.350       0.050  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=4.962s, inference_calls=9, completed_chunks=9, actions_applied=93, empty_action_steps=0
+latency: avg_request=0.330s, avg_first_action=0.350s, avg_chunk_duration=0.527s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.013, interior=0.001, contrast=0.012, samples=14/21
+  rotation: boundary=0.022, interior=0.002, contrast=0.020, samples=14/21
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=14/21
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.344    0.344       1.157  
+        2  async               10        10      0.328    0.350       0.451  
+        3  async               10        10      0.328    0.351       0.451  
+        4  async               10        10      0.327    0.351       0.451  
+        5  async               10        10      0.328    0.351       0.452  
+        6  async               10        10      0.328    0.350       0.451  
+        7  async               10        10      0.327    0.351       0.451  
+        8  async               10         8      0.328    0.351       0.351  
+        9  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=4.807s, inference_calls=9, completed_chunks=9, actions_applied=90, empty_action_steps=0
+latency: avg_request=0.329s, avg_first_action=0.350s, avg_chunk_duration=0.508s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.011, interior=0.001, contrast=0.010, samples=14/21
+  rotation: boundary=0.019, interior=0.002, contrast=0.017, samples=14/21
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=14/21
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.343    0.343       1.157  
+        2  async               10        10      0.329    0.350       0.451  
+        3  async               10        10      0.327    0.351       0.450  
+        4  async               10        10      0.329    0.351       0.450  
+        5  async               10        10      0.328    0.350       0.451  
+        6  async               10        10      0.326    0.351       0.451  
+        7  async               10        10      0.326    0.350       0.451  
+        8  async               10         5      0.325    0.351       0.200  
+        9  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=4.057s, inference_calls=7, completed_chunks=7, actions_applied=76, empty_action_steps=0
+latency: avg_request=0.329s, avg_first_action=0.349s, avg_chunk_duration=0.487s, avg_observation_build=0.004s
+boundary discontinuity (second action difference):
+  position: boundary=0.006, interior=0.002, contrast=0.004, samples=11/15
+  rotation: boundary=0.013, interior=0.002, contrast=0.010, samples=11/15
+  gripper: boundary=0.182, interior=0.000, contrast=0.182, samples=11/15
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.339    0.339       1.157  
+        2  async               10        10      0.332    0.351       0.451  
+        3  async               10        10      0.322    0.350       0.451  
+        4  async               10        10      0.325    0.351       0.451  
+        5  async               10        10      0.327    0.351       0.450  
+        6  async               10        10      0.325    0.351       0.450  
+        7  async               10         1      0.330    0.350       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=4.058s, inference_calls=7, completed_chunks=7, actions_applied=76, empty_action_steps=0
+latency: avg_request=0.328s, avg_first_action=0.349s, avg_chunk_duration=0.487s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.006, interior=0.002, contrast=0.004, samples=11/15
+  rotation: boundary=0.013, interior=0.002, contrast=0.011, samples=11/15
+  gripper: boundary=0.091, interior=0.000, contrast=0.091, samples=11/15
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.339    0.339       1.157  
+        2  async               10        10      0.327    0.352       0.450  
+        3  async               10        10      0.324    0.351       0.451  
+        4  async               10        10      0.326    0.350       0.451  
+        5  async               10        10      0.325    0.350       0.451  
+        6  async               10        10      0.327    0.351       0.452  
+        7  async               10         1      0.327    0.352       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=7.264s, inference_calls=14, completed_chunks=14, actions_applied=140, empty_action_steps=0
+latency: avg_request=0.328s, avg_first_action=0.350s, avg_chunk_duration=0.486s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.006, interior=0.002, contrast=0.003, samples=24/36
+  rotation: boundary=0.012, interior=0.002, contrast=0.010, samples=24/36
+  gripper: boundary=0.000, interior=0.028, contrast=-0.028, samples=24/36
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.341    0.342       1.157  
+        2  async               10        10      0.331    0.351       0.450  
+        3  async               10        10      0.327    0.350       0.452  
+        4  async               10        10      0.328    0.351       0.451  
+        5  async               10        10      0.326    0.350       0.450  
+        6  async               10        10      0.329    0.351       0.450  
+        7  async               10        10      0.326    0.351       0.451  
+        8  async               10        10      0.325    0.350       0.450  
+        9  async               10        10      0.327    0.351       0.450  
+       10  async               10        10      0.324    0.350       0.451  
+       11  async               10        10      0.327    0.351       0.451  
+       12  async               10        10      0.324    0.351       0.450  
+       13  async               10         5      0.329    0.351       0.199  
+       14  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=4.061s, inference_calls=7, completed_chunks=7, actions_applied=76, empty_action_steps=0
+latency: avg_request=0.329s, avg_first_action=0.350s, avg_chunk_duration=0.487s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.004, interior=0.002, contrast=0.002, samples=11/15
+  rotation: boundary=0.015, interior=0.002, contrast=0.013, samples=11/15
+  gripper: boundary=0.091, interior=0.000, contrast=0.091, samples=11/15
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.343    0.343       1.157  
+        2  async               10        10      0.332    0.351       0.451  
+        3  async               10        10      0.324    0.351       0.451  
+        4  async               10        10      0.327    0.350       0.451  
+        5  async               10        10      0.323    0.351       0.451  
+        6  async               10        10      0.325    0.350       0.450  
+        7  async               10         1      0.328    0.351       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=20
+summary: total_time=4.061s, inference_calls=7, completed_chunks=7, actions_applied=76, empty_action_steps=0
+latency: avg_request=0.328s, avg_first_action=0.349s, avg_chunk_duration=0.487s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.004, interior=0.002, contrast=0.002, samples=11/15
+  rotation: boundary=0.014, interior=0.002, contrast=0.012, samples=11/15
+  gripper: boundary=0.091, interior=0.000, contrast=0.091, samples=11/15
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.343    0.343       1.157  
+        2  async               10        10      0.328    0.350       0.450  
+        3  async               10        10      0.325    0.351       0.450  
+        4  async               10        10      0.325    0.351       0.451  
+        5  async               10        10      0.324    0.351       0.451  
+        6  async               10        10      0.326    0.351       0.451  
+        7  async               10         1      0.328    0.350       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=30
+summary: total_time=1.823s, inference_calls=4, completed_chunks=4, actions_applied=39, empty_action_steps=6
+latency: avg_request=0.333s, avg_first_action=0.338s, avg_chunk_duration=0.391s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.046, interior=0.001, contrast=0.045, samples=4/5
+  rotation: boundary=0.075, interior=0.001, contrast=0.075, samples=4/5
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=4/5
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.346    0.346       0.773  
+        2  async               10        10      0.327    0.334       0.300  
+        3  async               10         4      0.326    0.334       0.101  
+        4  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=30
+summary: total_time=4.194s, inference_calls=9, completed_chunks=9, actions_applied=94, empty_action_steps=22
+latency: avg_request=0.330s, avg_first_action=0.340s, avg_chunk_duration=0.355s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.015, interior=0.002, contrast=0.013, samples=14/21
+  rotation: boundary=0.022, interior=0.002, contrast=0.020, samples=14/21
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=14/21
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.343    0.343       0.774  
+        2  async               10        10      0.329    0.334       0.300  
+        3  async               10        10      0.326    0.335       0.300  
+        4  async               10        10      0.324    0.335       0.301  
+        5  async               10        10      0.345    0.370       0.300  
+        6  async               10        10      0.327    0.335       0.300  
+        7  async               10        10      0.324    0.335       0.300  
+        8  async               10         9      0.323    0.334       0.268  
+        9  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=30
+summary: total_time=4.298s, inference_calls=9, completed_chunks=9, actions_applied=96, empty_action_steps=24
+latency: avg_request=0.328s, avg_first_action=0.335s, avg_chunk_duration=0.320s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.006, interior=0.001, contrast=0.005, samples=15/21
+  rotation: boundary=0.014, interior=0.002, contrast=0.012, samples=15/21
+  gripper: boundary=0.067, interior=0.048, contrast=0.019, samples=15/21
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.342    0.342       0.773  
+        2  async               10        10      0.329    0.334       0.301  
+        3  async               10        10      0.326    0.334       0.301  
+        4  async               10        10      0.327    0.335       0.301  
+        5  async               10        10      0.327    0.334       0.300  
+        6  async               10        10      0.326    0.334       0.301  
+        7  async               10        10      0.324    0.334       0.302  
+        8  async               10        10      0.327    0.335       0.301  
+        9  async               10         1      0.324    0.334       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=30
+summary: total_time=3.392s, inference_calls=7, completed_chunks=7, actions_applied=75, empty_action_steps=17
+latency: avg_request=0.331s, avg_first_action=0.341s, avg_chunk_duration=0.380s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.033, interior=0.002, contrast=0.031, samples=10/15
+  rotation: boundary=0.039, interior=0.003, contrast=0.036, samples=10/15
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=10/15
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.343    0.343       0.774  
+        2  async               10        10      0.328    0.334       0.301  
+        3  async               10        10      0.328    0.335       0.301  
+        4  async               10        10      0.325    0.335       0.300  
+        5  async               10        10      0.336    0.367       0.301  
+        6  async               10        10      0.325    0.335       0.301  
+        7  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=30
+summary: total_time=3.924s, inference_calls=8, completed_chunks=8, actions_applied=87, empty_action_steps=21
+latency: avg_request=0.327s, avg_first_action=0.335s, avg_chunk_duration=0.326s, avg_observation_build=0.004s
+boundary discontinuity (second action difference):
+  position: boundary=0.019, interior=0.001, contrast=0.017, samples=14/18
+  rotation: boundary=0.023, interior=0.002, contrast=0.021, samples=14/18
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=14/18
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.342    0.342       0.773  
+        2  async               10        10      0.327    0.335       0.301  
+        3  async               10        10      0.323    0.335       0.300  
+        4  async               10        10      0.327    0.335       0.300  
+        5  async               10        10      0.325    0.334       0.301  
+        6  async               10        10      0.323    0.334       0.301  
+        7  async               10        10      0.323    0.334       0.301  
+        8  async               10         2      0.325    0.334       0.033  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=30
+summary: total_time=5.778s, inference_calls=13, completed_chunks=13, actions_applied=131, empty_action_steps=33
+latency: avg_request=0.330s, avg_first_action=0.336s, avg_chunk_duration=0.329s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.009, interior=0.002, contrast=0.007, samples=22/33
+  rotation: boundary=0.012, interior=0.002, contrast=0.010, samples=22/33
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=22/33
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.354    0.355       0.773  
+        2  async               10        10      0.333    0.334       0.300  
+        3  async               10        10      0.326    0.334       0.301  
+        4  async               10        10      0.326    0.335       0.300  
+        5  async               10        10      0.332    0.335       0.301  
+        6  async               10        10      0.327    0.335       0.300  
+        7  async               10        10      0.330    0.334       0.300  
+        8  async               10        10      0.324    0.334       0.301  
+        9  async               10        10      0.328    0.334       0.300  
+       10  async               10        10      0.324    0.334       0.301  
+       11  async               10        10      0.325    0.334       0.300  
+       12  async               10         6      0.326    0.334       0.167  
+       13  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=30
+summary: total_time=5.799s, inference_calls=13, completed_chunks=13, actions_applied=132, empty_action_steps=33
+latency: avg_request=0.328s, avg_first_action=0.335s, avg_chunk_duration=0.332s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.010, interior=0.002, contrast=0.008, samples=22/33
+  rotation: boundary=0.020, interior=0.002, contrast=0.018, samples=22/33
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=22/33
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.340    0.340       0.774  
+        2  async               10        10      0.329    0.334       0.301  
+        3  async               10        10      0.331    0.335       0.301  
+        4  async               10        10      0.325    0.335       0.301  
+        5  async               10        10      0.326    0.332       0.301  
+        6  async               10        10      0.325    0.335       0.300  
+        7  async               10        10      0.323    0.334       0.301  
+        8  async               10        10      0.329    0.334       0.301  
+        9  async               10        10      0.328    0.336       0.298  
+       10  async               10        10      0.327    0.334       0.301  
+       11  async               10        10      0.329    0.334       0.301  
+       12  async               10         7      0.324    0.333       0.200  
+       13  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=30
+summary: total_time=5.801s, inference_calls=13, completed_chunks=13, actions_applied=132, empty_action_steps=33
+latency: avg_request=0.328s, avg_first_action=0.335s, avg_chunk_duration=0.332s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.010, interior=0.002, contrast=0.008, samples=22/33
+  rotation: boundary=0.017, interior=0.002, contrast=0.014, samples=22/33
+  gripper: boundary=0.091, interior=0.000, contrast=0.091, samples=22/33
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.342    0.342       0.773  
+        2  async               10        10      0.328    0.335       0.301  
+        3  async               10        10      0.323    0.334       0.301  
+        4  async               10        10      0.325    0.335       0.301  
+        5  async               10        10      0.324    0.334       0.300  
+        6  async               10        10      0.328    0.334       0.301  
+        7  async               10        10      0.325    0.334       0.301  
+        8  async               10        10      0.326    0.335       0.300  
+        9  async               10        10      0.326    0.335       0.300  
+       10  async               10        10      0.331    0.335       0.300  
+       11  async               10        10      0.329    0.334       0.300  
+       12  async               10         7      0.328    0.334       0.201  
+       13  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=30
+summary: total_time=3.863s, inference_calls=8, completed_chunks=8, actions_applied=86, empty_action_steps=21
+latency: avg_request=0.329s, avg_first_action=0.336s, avg_chunk_duration=0.322s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.009, interior=0.002, contrast=0.007, samples=13/18
+  rotation: boundary=0.011, interior=0.002, contrast=0.009, samples=13/18
+  gripper: boundary=0.077, interior=0.000, contrast=0.077, samples=13/18
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.344    0.344       0.773  
+        2  async               10        10      0.328    0.334       0.301  
+        3  async               10        10      0.327    0.334       0.301  
+        4  async               10        10      0.328    0.336       0.298  
+        5  async               10        10      0.324    0.334       0.301  
+        6  async               10        10      0.324    0.335       0.301  
+        7  async               10        10      0.325    0.335       0.300  
+        8  async               10         1      0.329    0.334       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=30
+summary: total_time=3.429s, inference_calls=7, completed_chunks=7, actions_applied=76, empty_action_steps=18
+latency: avg_request=0.327s, avg_first_action=0.336s, avg_chunk_duration=0.325s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.010, interior=0.001, contrast=0.009, samples=11/15
+  rotation: boundary=0.018, interior=0.002, contrast=0.016, samples=11/15
+  gripper: boundary=0.091, interior=0.000, contrast=0.091, samples=11/15
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.344    0.344       0.773  
+        2  async               10        10      0.326    0.334       0.301  
+        3  async               10        10      0.323    0.334       0.301  
+        4  async               10        10      0.325    0.334       0.301  
+        5  async               10        10      0.324    0.335       0.300  
+        6  async               10        10      0.322    0.335       0.302  
+        7  async               10         1      0.324    0.335       0.000  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=30
+summary: total_time=5.703s, inference_calls=13, completed_chunks=13, actions_applied=129, empty_action_steps=33
+latency: avg_request=0.330s, avg_first_action=0.335s, avg_chunk_duration=0.323s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.011, interior=0.002, contrast=0.010, samples=22/32
+  rotation: boundary=0.023, interior=0.002, contrast=0.021, samples=22/32
+  gripper: boundary=0.091, interior=0.031, contrast=0.060, samples=22/32
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.344    0.344       0.774  
+        2  async               10        10      0.327    0.335       0.300  
+        3  async               10        10      0.328    0.335       0.300  
+        4  async               10        10      0.330    0.335       0.300  
+        5  async               10        10      0.323    0.336       0.300  
+        6  async               10        10      0.330    0.334       0.301  
+        7  async               10        10      0.330    0.335       0.300  
+        8  async               10        10      0.329    0.334       0.301  
+        9  async               10        10      0.331    0.334       0.301  
+       10  async               10        10      0.330    0.335       0.300  
+       11  async               10        10      0.327    0.335       0.300  
+       12  async               10         4      0.328    0.334       0.101  
+       13  async             None         0        n/a      n/a         n/a  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=30
+summary: total_time=5.667s, inference_calls=12, completed_chunks=12, actions_applied=128, empty_action_steps=33
+latency: avg_request=0.329s, avg_first_action=0.335s, avg_chunk_duration=0.320s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.011, interior=0.002, contrast=0.009, samples=22/31
+  rotation: boundary=0.023, interior=0.002, contrast=0.021, samples=22/31
+  gripper: boundary=0.045, interior=0.065, contrast=-0.019, samples=22/31
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.342    0.342       0.774  
+        2  async               10        10      0.331    0.334       0.300  
+        3  async               10        10      0.328    0.335       0.300  
+        4  async               10        10      0.328    0.334       0.300  
+        5  async               10        10      0.328    0.334       0.300  
+        6  async               10        10      0.329    0.335       0.299  
+        7  async               10        10      0.326    0.334       0.300  
+        8  async               10        10      0.326    0.334       0.301  
+        9  async               10        10      0.325    0.334       0.301  
+       10  async               10        10      0.329    0.334       0.301  
+       11  async               10        10      0.327    0.335       0.300  
+       12  async               10         3      0.325    0.334       0.067  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=30
+summary: total_time=5.662s, inference_calls=12, completed_chunks=12, actions_applied=128, empty_action_steps=33
+latency: avg_request=0.326s, avg_first_action=0.335s, avg_chunk_duration=0.321s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.011, interior=0.002, contrast=0.009, samples=22/31
+  rotation: boundary=0.023, interior=0.003, contrast=0.021, samples=22/31
+  gripper: boundary=0.000, interior=0.065, contrast=-0.065, samples=22/31
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.337    0.337       0.773  
+        2  async               10        10      0.326    0.334       0.301  
+        3  async               10        10      0.326    0.335       0.300  
+        4  async               10        10      0.327    0.334       0.301  
+        5  async               10        10      0.323    0.334       0.301  
+        6  async               10        10      0.325    0.334       0.300  
+        7  async               10        10      0.324    0.334       0.301  
+        8  async               10        10      0.324    0.334       0.300  
+        9  async               10        10      0.324    0.334       0.301  
+       10  async               10        10      0.324    0.334       0.301  
+       11  async               10        10      0.324    0.334       0.301  
+       12  async               10         3      0.328    0.334       0.067  
+
+Pi0.5 PUMA inference metrics
+task: put red cube in bowl
+config: async_enabled=True, execution_horizon=10, first_execution_horizon=25, delay=7, chunk_replan_steps=50, fps=30
+summary: total_time=5.633s, inference_calls=12, completed_chunks=12, actions_applied=127, empty_action_steps=33
+latency: avg_request=0.327s, avg_first_action=0.335s, avg_chunk_duration=0.318s, avg_observation_build=0.005s
+boundary discontinuity (second action difference):
+  position: boundary=0.012, interior=0.002, contrast=0.010, samples=22/30
+  rotation: boundary=0.025, interior=0.002, contrast=0.023, samples=22/30
+  gripper: boundary=0.136, interior=0.000, contrast=0.136, samples=22/30
+chunks:
+  request  kind           actions  executed  request_s  first_s  duration_s  error
+        1  async_initial       25        25      0.343    0.343       0.773  
+        2  async               10        10      0.327    0.335       0.301  
+        3  async               10        10      0.329    0.334       0.301  
+        4  async               10        10      0.323    0.334       0.301  
+        5  async               10        10      0.324    0.335       0.300  
+        6  async               10        10      0.324    0.334       0.301  
+        7  async               10        10      0.323    0.335       0.300  
+        8  async               10        10      0.322    0.334       0.300  
+        9  async               10        10      0.328    0.334       0.301  
+       10  async               10        10      0.325    0.335       0.300  
+       11  async               10        10      0.324    0.334       0.301  
+       12  async               10         2      0.328    0.334       0.034  
+

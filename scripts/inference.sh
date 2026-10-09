@@ -15,11 +15,10 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --policy_transport zmq \
     --fps 30 \
     --policy_zmq_endpoint tcp://127.0.0.1:17725 \
-    --chunk_replan_steps 50 \
-    --execution_horizon 0 \
-    --first_execution_horizon 0 \
-    --delay 0 \
-    --metrics_path "${REPO_ROOT}/logs/discontinuity_metrics.jsonl" \
+    --execution_horizon 10 \
+    --first_execution_horizon 25 \
+    --delay 7 \
+    --metrics_path "${REPO_ROOT}/logs/async_puma.jsonl" \
     --static_camera static_cam \
     --wrist_camera wrist_cam
 
