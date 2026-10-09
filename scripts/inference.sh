@@ -11,7 +11,7 @@ export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot/src"
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --task "put red cube in bowl" \
     --stop_after_first_release \
-    --fps 20 \
+    --fps 30 \
     --robot_name FrankaPanda \
     --pyzlc_name policy_inference \
     --pyzlc_host 141.3.53.25 \
@@ -19,16 +19,14 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --pyzlc_group_port 7725 \
     --policy_transport streaming_zmq \
     --policy_zmq_endpoint tcp://127.0.0.1:17726 \
-    --metrics_path "${REPO_ROOT}/logs/pi05_horizon20_inference.jsonl" \
-    --first_execution_horizon 20 \
-    --first_chunk_start_index 3 \
-    --stream_initial_chunk \
+    --metrics_path "${REPO_ROOT}/logs/faster_new_eval.jsonl" \
+    --first_execution_horizon 28 \
     --execution_horizon 5 \
     --faster_infer_time_schedule HAS \
     --faster_alpha 0.6 \
     --faster_u0 0.9 \
     --delay 3 \
-    --early_stop_actions 23 \
+    --early_stop_actions 35 \
     --phase_fallback_schedule none \
     --phase_fallback_trigger before_gripper_open \
     --static_camera static_cam \
