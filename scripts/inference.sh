@@ -9,7 +9,7 @@ export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot/src:${PYTHONPATH:-
 # pgrep -af 'ssh.*(-L)'
 
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
-    --task "put red cube in bowl" \
+    --task "put red cylinder on red cube" \
     --fps 20 \
     --pyzlc_name policy_inference \
     --pyzlc_host 141.3.53.25 \
@@ -17,14 +17,13 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --pyzlc_group_port 7725 \
     --policy_transport zmq \
     --policy_zmq_endpoint tcp://127.0.0.1:17725 \
-    --metrics_path "${REPO_ROOT}/logs/discontinuity_metrics.jsonl" \
+    --metrics_path "${REPO_ROOT}/logs/oopsie_data_collection.jsonl" \
     --oopsie_output_dir "${REPO_ROOT}/oopsie_rollouts" \
     --oopsie_robot_profile "${REPO_ROOT}/robot_profiles/franka_pi05_cartesian.yaml" \
-    --oopsie_operator_name "utphd" \
     --rtc_enabled \
-    --first_execution_horizon 30 \
     --rtc_execution_horizon 25 \
     --rtc_delay_steps 7 \
+    --oopsie_operator_name "utphd" \
     --static_camera static_cam \
     --wrist_camera wrist_cam \
 
