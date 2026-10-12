@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import dataclasses
 import datetime
+import logging
 from concurrent.futures import Future, ThreadPoolExecutor
 from pathlib import Path
 from typing import Dict, Optional
@@ -13,6 +14,7 @@ import pyzlc
 
 
 OUTCOME_TO_SUCCESS = {"success": 1.0, "fail": 0.0}
+PENDING_LAB_ID = "pending_local_collection"
 
 
 class OopsieRolloutRecorder:
@@ -42,7 +44,7 @@ class OopsieRolloutRecorder:
         self.task = task
         profile = load_robot_profile(robot_profile_path)
         self.profile = dataclasses.replace(profile, control_freq=int(control_freq))
-        contributor_config.read_contributor_config()
+        self._contributor_config = contributor_config
 
         expected_cameras = {"static_cam", "wrist_cam"}
         missing = expected_cameras - set(self.profile.camera_names)
@@ -66,12 +68,7 @@ class OopsieRolloutRecorder:
     def start(self) -> None:
         if self._episode is not None:
             self.discard()
-        self._episode = self._episode_cls(
-            robot_profile=self.profile,
-            data_root_dir=self.root_dir,
-            operator_name=self.operator_name,
-            resume_session_name=self.session_name,
-        )
+        self._episode = self._create_episode_recorder()
         base, attempt = self._episode.save_fname, 1
         while self._episode.save_fname in self._used_names:
             attempt += 1
@@ -82,6 +79,38 @@ class OopsieRolloutRecorder:
             f"Oopsie rollout started: "
             f"{self._episode.session_dir / self._episode.save_fname}"
         )
+
+    def _create_episode_recorder(self):
+        kwargs = {
+            "robot_profile": self.profile,
+            "data_root_dir": self.root_dir,
+            "operator_name": self.operator_name,
+            "resume_session_name": self.session_name,
+        }
+        try:
+            return self._episode_cls(**kwargs)
+        except RuntimeError as exc:
+            if "Contributor config" not in str(exc) and "lab_id" not in str(exc):
+                raise
+
+        # EpisodeRecorder currently has no lab-id override for local-only collection.
+        # Substitute a conspicuous placeholder only while constructing this recorder;
+        # finalize_oopsie_lab_id.py replaces it after the supervisor runs `oopsie-data init`.
+        original_reader = self._contributor_config.read_contributor_config
+        self._contributor_config.read_contributor_config = lambda *args, **kwargs: (
+            PENDING_LAB_ID,
+            "",
+        )
+        try:
+            episode = self._episode_cls(**kwargs)
+        finally:
+            self._contributor_config.read_contributor_config = original_reader
+        logging.getLogger(__name__).warning(
+            "Oopsie contributor config is not initialized. Recording locally with "
+            "temporary lab_id=%r; finalize the files before validation or upload.",
+            PENDING_LAB_ID,
+        )
+        return episode
 
     def save(self, outcome: Optional[str]) -> Optional[Path]:
         episode, self._episode = self._episode, None
