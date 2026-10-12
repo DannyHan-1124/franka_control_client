@@ -13,6 +13,7 @@ import numpy as np
 import pyzlc
 
 from .policy_inference_manager import PolicyInferenceEvent, PolicyInferenceManager
+from .oopsie_recorder import OopsieRolloutRecorder
 from ..control_pair.cartesian_policy_panda_control_pair import (
     CartesianPolicyPandaRobotiqControlPair,
 )
@@ -53,6 +54,9 @@ class Pi05PolicyInferenceConfig:
     first_execution_horizon: int = 0
     rtc_delay_steps: int = 0
     rtc_delay_buffer_size: int = 8
+    oopsie_output_dir: Optional[str] = None
+    oopsie_robot_profile: Optional[str] = None
+    oopsie_operator_name: Optional[str] = None
 
 
 class Pi05PolicyInference(PolicyInferenceManager):
@@ -143,6 +147,24 @@ class Pi05PolicyInference(PolicyInferenceManager):
         self._metrics_lock = threading.Lock()
         self._reset_metrics()
 
+        self._oopsie_recorder: Optional[OopsieRolloutRecorder] = None
+        if cfg.oopsie_output_dir:
+            if not cfg.oopsie_robot_profile:
+                raise ValueError(
+                    "oopsie_robot_profile is required when Oopsie recording is enabled."
+                )
+            if not cfg.oopsie_operator_name:
+                raise ValueError(
+                    "oopsie_operator_name is required when Oopsie recording is enabled."
+                )
+            self._oopsie_recorder = OopsieRolloutRecorder(
+                root_dir=cfg.oopsie_output_dir,
+                robot_profile_path=cfg.oopsie_robot_profile,
+                operator_name=cfg.oopsie_operator_name,
+                control_freq=cfg.fps,
+                task=cfg.task,
+            )
+
         self.register_start_infering_event(self.control_pair.start_control_pair)
         self.register_stop_infering_event(self.control_pair.stop_control_pair)
 
@@ -162,6 +184,8 @@ class Pi05PolicyInference(PolicyInferenceManager):
             float(current_action["timestamp"]) if current_action is not None else None
         )
         self.control_pair.reset_action()
+        if self._oopsie_recorder is not None:
+            self._oopsie_recorder.start()
         super()._start_infering()
 
     def _reset_metrics(self) -> None:
@@ -326,6 +350,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._chunk_step += 1
             sanitized_action = self._sanitize_action(action)
             self._last_sanitized_action = sanitized_action.copy()
+            self._record_oopsie_step(sanitized_action)
             self.control_pair.update_action(sanitized_action)
             self._metrics_actions_applied += 1
             self._record_active_chunk_action_execution(self._chunk_step - 1)
@@ -371,6 +396,7 @@ class Pi05PolicyInference(PolicyInferenceManager):
             self._chunk_step += 1
             sanitized_action = self._sanitize_action(action)
             self._last_sanitized_action = sanitized_action.copy()
+            self._record_oopsie_step(sanitized_action)
             self.control_pair.update_action(sanitized_action)
             self._record_rtc_discontinuity_action(sanitized_action)
             self._metrics_actions_applied += 1
@@ -627,11 +653,28 @@ class Pi05PolicyInference(PolicyInferenceManager):
 
     def _save_episode(self) -> None:
         self._stop_infering()
-        self._ui_console.log("Episode saved.")
+        if self._oopsie_recorder is None:
+            self._ui_console.log("Episode stopped (Oopsie recording is disabled).")
+            return
+        path = self._oopsie_recorder.save(self._episode_outcome)
+        if path is None:
+            self._ui_console.log("Empty episode; nothing was saved.")
+        else:
+            outcome = self._episode_outcome or "unlabeled"
+            self._ui_console.log(
+                f"Episode queued for saving as {outcome}: {path}"
+            )
 
     def _discard_infering(self) -> None:
         self._stop_infering()
+        if self._oopsie_recorder is not None:
+            self._oopsie_recorder.discard()
         self._ui_console.log("Episode discarded.")
+
+    def _close(self) -> None:
+        if self._oopsie_recorder is not None:
+            self._oopsie_recorder.close()
+        super()._close()
 
     def _stop_infering(self) -> None:
         self._report_metrics()
@@ -928,6 +971,20 @@ class Pi05PolicyInference(PolicyInferenceManager):
         gripper = float(np.clip(gripper, 0.0, 1.0))
 
         return np.concatenate([ee_pose, np.asarray([gripper], dtype=np.float32)])
+
+    def _record_oopsie_step(self, action: np.ndarray) -> None:
+        if self._oopsie_recorder is None:
+            return
+        static_rgb = self._capture_rgb(self.static_cam)
+        wrist_rgb = self._capture_rgb(self.wrist_cam)
+        arm_state = self.arm_wrapper.capture_step()
+        grip_state = self.gripper_wrapper.capture_step()
+        self._oopsie_recorder.record_step(
+            arm_state=arm_state,
+            grip_state=grip_state,
+            images={"static_cam": static_rgb, "wrist_cam": wrist_rgb},
+            action=action,
+        )
 
     def _parse_action_payload(self, payload: Any) -> np.ndarray:
         arr = np.asarray(payload, dtype=np.float64)

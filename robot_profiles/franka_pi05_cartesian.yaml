@@ -1,0 +1,43 @@
+# Oopsie robot profile for Cartesian Pi0.5 policy rollouts.
+# control_freq is overwritten at runtime with --fps.
+policy_name: pi05_rtc
+robot_name: franka_panda
+gripper_name: robotiq_2f85
+is_biarm: false
+uses_mobile_base: false
+control_freq: 20
+controller: cartesian_impedance
+
+camera_names:
+  - static_cam
+  - wrist_cam
+
+robot_state_keys:
+  - joint_position
+  - cartesian_position
+  - gripper_position
+
+robot_state_joint_names: [panda_joint1, panda_joint2, panda_joint3, panda_joint4, panda_joint5, panda_joint6, panda_joint7]
+
+# [x, y, z, qx, qy, qz, qw] in the robot base frame.
+robot_state_orientation_representation: quat
+
+# Absolute Cartesian target plus binary gripper command (0=open, 1=closed).
+action_space:
+  - cartesian_position
+  - gripper_binary
+orientation_representation: quat
+
+additional_data:
+  joint_velocity:
+    sensor: franka_panda
+    sensor_info: {quantity: dq, unit: rad/s, shape: [7]}
+  external_joint_torque:
+    sensor: franka_panda
+    sensor_info: {quantity: tau_ext_hat_filtered, unit: Nm, shape: [7]}
+  external_wrench:
+    sensor: franka_panda
+    sensor_info: {quantity: O_F_ext_hat_K, unit: "N, Nm", frame: base, shape: [6]}
+  gripper_current:
+    sensor: robotiq_2f85
+    sensor_info: {quantity: motor current, shape: [1]}

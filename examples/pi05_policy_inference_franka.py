@@ -83,6 +83,13 @@ def _parse_args() -> argparse.Namespace:
         "instead of starting the episode with it open.",
     )
     parser.add_argument("--metrics_path", default=None)
+    parser.add_argument(
+        "--oopsie_output_dir",
+        default=None,
+        help="Enable Oopsie recording and store rollout sessions under this directory.",
+    )
+    parser.add_argument("--oopsie_robot_profile", default=None)
+    parser.add_argument("--oopsie_operator_name", default=None)
     parser.add_argument("--robot_name", default="FrankaPanda")
     parser.add_argument("--static_camera", default="static_cam")
     parser.add_argument("--wrist_camera", default="wrist_cam")
@@ -141,6 +148,9 @@ def main() -> None:
         stop_after_release_steps=args.stop_after_release_steps,
         close_gripper_on_reset=args.close_gripper_on_reset,
         metrics_path=args.metrics_path,
+        oopsie_output_dir=args.oopsie_output_dir,
+        oopsie_robot_profile=args.oopsie_robot_profile,
+        oopsie_operator_name=args.oopsie_operator_name,
         run_metadata={
             "control_hz": args.control_hz,
             "pyzlc_name": args.pyzlc_name,

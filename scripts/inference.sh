@@ -11,7 +11,6 @@ export PYTHONPATH="${REPO_ROOT}/src:${WORKSPACE_ROOT}/lerobot/src:${PYTHONPATH:-
 python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --task "put red cube in bowl" \
     --fps 20 \
-    --stop_after_first_release \
     --pyzlc_name policy_inference \
     --pyzlc_host 141.3.53.25 \
     --pyzlc_group_name robot_lab_robotiq_202 \
@@ -19,6 +18,9 @@ python "${REPO_ROOT}/examples/pi05_policy_inference_franka.py" \
     --policy_transport zmq \
     --policy_zmq_endpoint tcp://127.0.0.1:17725 \
     --metrics_path "${REPO_ROOT}/logs/discontinuity_metrics.jsonl" \
+    --oopsie_output_dir "${REPO_ROOT}/oopsie_rollouts" \
+    --oopsie_robot_profile "${REPO_ROOT}/robot_profiles/franka_pi05_cartesian.yaml" \
+    --oopsie_operator_name "utphd" \
     --rtc_enabled \
     --first_execution_horizon 30 \
     --rtc_execution_horizon 25 \
