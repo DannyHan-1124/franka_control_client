@@ -176,4 +176,7 @@ cython_debug/
 
 .vscode/
 
+# Local Oopsie rollout data (HDF5 episodes and camera videos).
+oopsie_rollouts/
+
 .outputs/

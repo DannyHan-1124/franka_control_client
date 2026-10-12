@@ -102,6 +102,13 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--debug_image_interval", type=int, default=25, help="Save one debug image pair every N policy steps.")
     parser.add_argument("--metrics_path", default=None, help="Append per-episode metrics as JSONL to this path.")
     parser.add_argument(
+        "--oopsie_output_dir",
+        default=None,
+        help="Enable Oopsie recording and store rollout sessions under this directory.",
+    )
+    parser.add_argument("--oopsie_robot_profile", default=None)
+    parser.add_argument("--oopsie_operator_name", default=None)
+    parser.add_argument(
         "--reclose_after_release_min_motion_m",
         type=float,
         default=0.0,
@@ -196,6 +203,9 @@ def main() -> None:
         debug_image_dir=args.debug_image_dir,
         debug_image_interval=args.debug_image_interval,
         metrics_path=args.metrics_path,
+        oopsie_output_dir=args.oopsie_output_dir,
+        oopsie_robot_profile=args.oopsie_robot_profile,
+        oopsie_operator_name=args.oopsie_operator_name,
         reclose_after_release_min_motion_m=args.reclose_after_release_min_motion_m,
         faster_infer_time_schedule=args.faster_infer_time_schedule,
         faster_alpha=args.faster_alpha,

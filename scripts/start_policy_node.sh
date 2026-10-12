@@ -13,7 +13,7 @@ export HF_HUB_CACHE="${HF_HUB_CACHE:-${HF_HOME}/hub}"
 mkdir -p "${HF_DATASETS_CACHE}" "${HF_HUB_CACHE}"
 
 python -m franka_control_client.policy.pi05_policy_node \
-    --checkpoint_path /hkfs/work/workspace/scratch/utphd-myspace/outputs/pi05_cylinder_full_FASTER_10ksteps/checkpoints/last/pretrained_model \
+    --checkpoint_path /hkfs/work/workspace/scratch/utphd-myspace/outputs/pi05_cylinder_full_10ksteps/checkpoints/last/pretrained_model \
     --dataset_path /hkfs/work/workspace/scratch/utphd-myspace/datasets/cylinder_full \
     --device cuda \
     --policy_dtype bfloat16 \

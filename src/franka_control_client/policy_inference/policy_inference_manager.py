@@ -78,6 +78,7 @@ class PolicyInferenceManager(abc.ABC):
         self.task = task
         self.fps = fps
         self.last_timestamp = None
+        self._episode_outcome: Optional[str] = None
         self._ui_console = UIConsole()
         self._start_infering_event = VoidEvent()
         self._stop_infering_event = VoidEvent()
@@ -167,10 +168,16 @@ class PolicyInferenceManager(abc.ABC):
 
     def _handle_keypress(self, key: str) -> None:
         if key == "n":
+            self._episode_outcome = None
             self._state_machine.trigger(PolicyInferenceEvent.NEW_EPISODE)
         elif key == "s":
+            self._episode_outcome = "success"
+            self._state_machine.trigger(PolicyInferenceEvent.SAVE)
+        elif key == "f":
+            self._episode_outcome = "fail"
             self._state_machine.trigger(PolicyInferenceEvent.SAVE)
         elif key == "d":
+            self._episode_outcome = None
             self._state_machine.trigger(PolicyInferenceEvent.DISCARD)
         elif key == "r":
             self._state_machine.trigger(PolicyInferenceEvent.RESET_ARM)
@@ -184,7 +191,8 @@ class PolicyInferenceManager(abc.ABC):
             )
         elif state == PolicyInferenceState.INFERING:
             self._ui_console.update_hint(
-                "Infering... Press 's' to save, 'd' to discard, or 'q' to quit"
+                "Infering... Press 's' for success, 'f' for failure, "
+                "'d' to discard, or 'q' to quit"
             )
         elif state == PolicyInferenceState.STOPPED:
             self._ui_console.update_hint("Infering stopped. Resetting...")
