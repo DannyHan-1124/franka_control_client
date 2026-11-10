@@ -1670,3 +1670,251 @@ chunks:
        18  abpolicy_async         32         5    None      8      0.241    0.263       0.133
        19  abpolicy_async       None         0    None   None        n/a      n/a         n/a
 
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True, first_execution_horizon=20, first_chunk_start_index=0
+summary: total_time=6.608s, inference_calls=9, completed_chunks=9, actions_applied=55, empty_action_steps=0
+latency: avg_request=0.597s, avg_first_action=0.692s, avg_chunk_duration=0.249s, recommended_delay=20
+boundary discontinuity (second action difference):
+  position: boundary=0.005, interior=0.000, contrast=0.005, samples=15/20
+  rotation: boundary=0.007, interior=0.000, contrast=0.006, samples=15/20
+  gripper: boundary=0.000, interior=0.000, contrast=0.000, samples=15/20
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32        20    None   None      3.892    3.897       0.902
+        2  abpolicy_async         32         4    None     20      0.190    0.957       0.146
+        3  abpolicy_async         32         5    None      4      0.187    0.197       0.200
+        4  abpolicy_async         32         5    None      4      0.186    0.196       0.200
+        5  abpolicy_async         32         5    None      4      0.184    0.196       0.200
+        6  abpolicy_async         32         5    None      4      0.182    0.196       0.200
+        7  abpolicy_async         32         5    None      4      0.182    0.197       0.200
+        8  abpolicy_async         32         5    None      4      0.183    0.197       0.200
+        9  abpolicy_async         32         1    None      4      0.184    0.196       0.000
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True, first_execution_horizon=20, first_chunk_start_index=0
+summary: total_time=6.852s, inference_calls=24, completed_chunks=24, actions_applied=134, empty_action_steps=0
+latency: avg_request=0.193s, avg_first_action=0.244s, avg_chunk_duration=0.239s, recommended_delay=20
+boundary discontinuity (second action difference):
+  position: boundary=0.001, interior=0.000, contrast=0.001, samples=44/63
+  rotation: boundary=0.002, interior=0.000, contrast=0.002, samples=44/63
+  gripper: boundary=0.023, interior=0.000, contrast=0.023, samples=44/63
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32        20    None   None      0.182    0.187       0.901
+        2  abpolicy_async         32         4    None     20      0.180    0.957       0.145
+        3  abpolicy_async         32         5    None      4      0.185    0.196       0.200
+        4  abpolicy_async         32         6    None      4      0.182    0.196       0.250
+        5  abpolicy_async         32         6    None      5      0.225    0.246       0.250
+        6  abpolicy_async         32         5    None      5      0.205    0.246       0.200
+        7  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+        8  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+        9  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       10  abpolicy_async         32         5    None      4      0.182    0.196       0.200
+       11  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       12  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       13  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       14  abpolicy_async         32         5    None      4      0.182    0.196       0.200
+       15  abpolicy_async         32         5    None      4      0.181    0.197       0.200
+       16  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       17  abpolicy_async         32         5    None      4      0.182    0.196       0.200
+       18  abpolicy_async         32         6    None      4      0.182    0.196       0.250
+       19  abpolicy_async         32         6    None      5      0.222    0.246       0.250
+       20  abpolicy_async         32         6    None      5      0.220    0.246       0.250
+       21  abpolicy_async         32         6    None      5      0.220    0.245       0.250
+       22  abpolicy_async         32         6    None      5      0.219    0.245       0.250
+       23  abpolicy_async         32         3    None      5      0.220    0.246       0.100
+       24  abpolicy_async       None         0    None   None        n/a      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True, first_execution_horizon=20, first_chunk_start_index=0
+summary: total_time=12.793s, inference_calls=47, completed_chunks=47, actions_applied=252, empty_action_steps=0
+latency: avg_request=0.189s, avg_first_action=0.222s, avg_chunk_duration=0.222s, recommended_delay=20
+boundary discontinuity (second action difference):
+  position: boundary=0.001, interior=0.000, contrast=0.001, samples=90/135
+  rotation: boundary=0.003, interior=0.000, contrast=0.002, samples=90/135
+  gripper: boundary=0.000, interior=0.030, contrast=-0.030, samples=90/135
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32        20    None   None      0.211    0.216       0.902
+        2  abpolicy_async         32         5    None     20      0.215    0.957       0.196
+        3  abpolicy_async         32         6    None      5      0.223    0.247       0.250
+        4  abpolicy_async         32         6    None      5      0.220    0.247       0.249
+        5  abpolicy_async         32         6    None      5      0.220    0.246       0.250
+        6  abpolicy_async         32         5    None      5      0.198    0.247       0.199
+        7  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+        8  abpolicy_async         32         5    None      4      0.180    0.196       0.199
+        9  abpolicy_async         32         5    None      4      0.181    0.195       0.200
+       10  abpolicy_async         32         5    None      4      0.183    0.197       0.199
+       11  abpolicy_async         32         5    None      4      0.183    0.196       0.200
+       12  abpolicy_async         32         5    None      4      0.181    0.197       0.199
+       13  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       14  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       15  abpolicy_async         32         5    None      4      0.181    0.195       0.200
+       16  abpolicy_async         32         5    None      4      0.181    0.195       0.200
+       17  abpolicy_async         32         5    None      4      0.181    0.197       0.200
+       18  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       19  abpolicy_async         32         5    None      4      0.182    0.196       0.200
+       20  abpolicy_async         32         5    None      4      0.181    0.197       0.199
+       21  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       22  abpolicy_async         32         5    None      4      0.181    0.197       0.199
+       23  abpolicy_async         32         5    None      4      0.182    0.196       0.200
+       24  abpolicy_async         32         5    None      4      0.182    0.197       0.199
+       25  abpolicy_async         32         5    None      4      0.182    0.196       0.200
+       26  abpolicy_async         32         5    None      4      0.184    0.196       0.200
+       27  abpolicy_async         32         5    None      4      0.182    0.196       0.199
+       28  abpolicy_async         32         6    None      4      0.181    0.196       0.250
+       29  abpolicy_async         32         6    None      5      0.210    0.247       0.249
+       30  abpolicy_async         32         6    None      5      0.220    0.246       0.250
+       31  abpolicy_async         32         6    None      5      0.220    0.246       0.249
+       32  abpolicy_async         32         5    None      5      0.219    0.247       0.199
+       33  abpolicy_async         32         5    None      4      0.182    0.196       0.200
+       34  abpolicy_async         32         5    None      4      0.180    0.197       0.200
+       35  abpolicy_async         32         5    None      4      0.182    0.196       0.200
+       36  abpolicy_async         32         5    None      4      0.182    0.197       0.200
+       37  abpolicy_async         32         5    None      4      0.182    0.197       0.200
+       38  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       39  abpolicy_async         32         5    None      4      0.183    0.196       0.200
+       40  abpolicy_async         32         5    None      4      0.181    0.197       0.200
+       41  abpolicy_async         32         5    None      4      0.180    0.196       0.200
+       42  abpolicy_async         32         5    None      4      0.181    0.197       0.200
+       43  abpolicy_async         32         5    None      4      0.181    0.197       0.200
+       44  abpolicy_async         32         5    None      4      0.181    0.197       0.200
+       45  abpolicy_async         32         5    None      4      0.183    0.196       0.200
+       46  abpolicy_async         32         5    None      4      0.183    0.197       0.200
+       47  abpolicy_async         32         0    None   None      0.182      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True, first_execution_horizon=20, first_chunk_start_index=0
+summary: total_time=18.282s, inference_calls=70, completed_chunks=70, actions_applied=362, empty_action_steps=0
+latency: avg_request=0.183s, avg_first_action=0.209s, avg_chunk_duration=0.211s, recommended_delay=20
+boundary discontinuity (second action difference):
+  position: boundary=0.001, interior=0.000, contrast=0.001, samples=136/203
+  rotation: boundary=0.002, interior=0.000, contrast=0.001, samples=136/203
+  gripper: boundary=0.029, interior=0.020, contrast=0.010, samples=136/203
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32        20    None   None      0.192    0.197       0.902
+        2  abpolicy_async         32         4    None     20      0.191    0.957       0.146
+        3  abpolicy_async         32         5    None      4      0.183    0.197       0.200
+        4  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+        5  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+        6  abpolicy_async         32         5    None      4      0.182    0.196       0.200
+        7  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+        8  abpolicy_async         32         5    None      4      0.182    0.196       0.200
+        9  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       10  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       11  abpolicy_async         32         5    None      4      0.181    0.197       0.200
+       12  abpolicy_async         32         5    None      4      0.180    0.196       0.200
+       13  abpolicy_async         32         5    None      4      0.180    0.196       0.200
+       14  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       15  abpolicy_async         32         5    None      4      0.182    0.196       0.200
+       16  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       17  abpolicy_async         32         6    None      4      0.183    0.196       0.250
+       18  abpolicy_async         32         6    None      5      0.215    0.246       0.250
+       19  abpolicy_async         32         6    None      5      0.220    0.246       0.250
+       20  abpolicy_async         32         5    None      5      0.203    0.246       0.200
+       21  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       22  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       23  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       24  abpolicy_async         32         5    None      4      0.180    0.196       0.200
+       25  abpolicy_async         32         5    None      4      0.180    0.196       0.200
+       26  abpolicy_async         32         5    None      4      0.180    0.196       0.200
+       27  abpolicy_async         32         5    None      4      0.180    0.196       0.200
+       28  abpolicy_async         32         5    None      4      0.180    0.197       0.200
+       29  abpolicy_async         32         5    None      4      0.183    0.196       0.200
+       30  abpolicy_async         32         5    None      4      0.182    0.196       0.200
+       31  abpolicy_async         32         5    None      4      0.182    0.197       0.199
+       32  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       33  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       34  abpolicy_async         32         5    None      4      0.182    0.196       0.200
+       35  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       36  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       37  abpolicy_async         32         5    None      4      0.180    0.196       0.200
+       38  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       39  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       40  abpolicy_async         32         5    None      4      0.182    0.196       0.200
+       41  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       42  abpolicy_async         32         5    None      4      0.180    0.196       0.200
+       43  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       44  abpolicy_async         32         5    None      4      0.180    0.196       0.200
+       45  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       46  abpolicy_async         32         5    None      4      0.181    0.195       0.200
+       47  abpolicy_async         32         5    None      4      0.182    0.196       0.200
+       48  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       49  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       50  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       51  abpolicy_async         32         5    None      4      0.180    0.196       0.200
+       52  abpolicy_async         32         5    None      4      0.180    0.196       0.200
+       53  abpolicy_async         32         5    None      4      0.183    0.196       0.200
+       54  abpolicy_async         32         5    None      4      0.182    0.196       0.200
+       55  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       56  abpolicy_async         32         5    None      4      0.181    0.197       0.200
+       57  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       58  abpolicy_async         32         5    None      4      0.182    0.196       0.200
+       59  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       60  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       61  abpolicy_async         32         5    None      4      0.182    0.196       0.200
+       62  abpolicy_async         32         5    None      4      0.181    0.197       0.200
+       63  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       64  abpolicy_async         32         5    None      4      0.182    0.197       0.200
+       65  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       66  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       67  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       68  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       69  abpolicy_async         32         5    None      4      0.181    0.196       0.200
+       70  abpolicy_async         32         0    None   None      0.181      n/a         n/a
+
+Pi0.5 inference metrics
+task: put red cube in bowl
+config: abpolicy_enabled=True, first_execution_horizon=20, first_chunk_start_index=0
+summary: total_time=9.110s, inference_calls=38, completed_chunks=38, actions_applied=268, empty_action_steps=0
+latency: avg_request=0.181s, avg_first_action=0.208s, avg_chunk_duration=0.207s, recommended_delay=20
+boundary discontinuity (second action difference):
+  position: boundary=0.001, interior=0.000, contrast=0.001, samples=72/107
+  rotation: boundary=0.002, interior=0.000, contrast=0.002, samples=72/107
+  gripper: boundary=0.014, interior=0.009, contrast=0.005, samples=72/107
+chunks:
+  request  kind              actions  executed  pred_d  obs_d  request_s  first_s  duration_s
+        1  abpolicy_initial       32        20    None   None      0.178    0.184       0.601
+        2  abpolicy_async         32         6    None     20      0.180    0.640       0.162
+        3  abpolicy_async         32         7    None      6      0.184    0.196       0.200
+        4  abpolicy_async         32         7    None      6      0.180    0.196       0.200
+        5  abpolicy_async         32         7    None      6      0.182    0.197       0.200
+        6  abpolicy_async         32         7    None      6      0.182    0.197       0.200
+        7  abpolicy_async         32         7    None      6      0.184    0.196       0.200
+        8  abpolicy_async         32         7    None      6      0.181    0.196       0.200
+        9  abpolicy_async         32         7    None      6      0.181    0.197       0.200
+       10  abpolicy_async         32         7    None      6      0.182    0.196       0.200
+       11  abpolicy_async         32         7    None      6      0.182    0.196       0.200
+       12  abpolicy_async         32         7    None      6      0.181    0.196       0.200
+       13  abpolicy_async         32         7    None      6      0.182    0.197       0.200
+       14  abpolicy_async         32         7    None      6      0.181    0.197       0.200
+       15  abpolicy_async         32         7    None      6      0.181    0.197       0.200
+       16  abpolicy_async         32         7    None      6      0.181    0.196       0.200
+       17  abpolicy_async         32         7    None      6      0.180    0.197       0.200
+       18  abpolicy_async         32         7    None      6      0.181    0.197       0.200
+       19  abpolicy_async         32         7    None      6      0.181    0.197       0.200
+       20  abpolicy_async         32         7    None      6      0.181    0.196       0.200
+       21  abpolicy_async         32         7    None      6      0.180    0.197       0.200
+       22  abpolicy_async         32         7    None      6      0.181    0.197       0.200
+       23  abpolicy_async         32         7    None      6      0.183    0.197       0.200
+       24  abpolicy_async         32         7    None      6      0.181    0.197       0.200
+       25  abpolicy_async         32         7    None      6      0.180    0.196       0.200
+       26  abpolicy_async         32         7    None      6      0.182    0.197       0.200
+       27  abpolicy_async         32         7    None      6      0.181    0.197       0.200
+       28  abpolicy_async         32         7    None      6      0.181    0.197       0.200
+       29  abpolicy_async         32         7    None      6      0.180    0.197       0.200
+       30  abpolicy_async         32         7    None      6      0.180    0.197       0.200
+       31  abpolicy_async         32         7    None      6      0.185    0.196       0.200
+       32  abpolicy_async         32         7    None      6      0.180    0.197       0.200
+       33  abpolicy_async         32         7    None      6      0.181    0.196       0.200
+       34  abpolicy_async         32         7    None      6      0.180    0.197       0.200
+       35  abpolicy_async         32         7    None      6      0.181    0.196       0.200
+       36  abpolicy_async         32         7    None      6      0.181    0.197       0.200
+       37  abpolicy_async         32         4    None      6      0.181    0.197       0.100
+       38  abpolicy_async       None         0    None   None        n/a      n/a         n/a
+
